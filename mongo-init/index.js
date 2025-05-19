@@ -1,7 +1,7 @@
 // This script will be executed when MongoDB container starts for the first time
 // It creates a database user with appropriate permissions
 
-db.auth(process.env.MONGO_ROOT_USERNAME, process.env.MONGO_ROOT_PASSWORD)
+db.auth(process.env.MONGO_ROOT_USERNAME, process.env.MONGO_ROOT_PASSWORD);
 
 db = db.getSiblingDB(process.env.MONGO_DATABASE);
 

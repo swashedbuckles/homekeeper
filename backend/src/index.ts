@@ -27,25 +27,35 @@ const connectDB = async () => {
       throw new Error('MongoDB URI is not defined in environment variables');
     }
     
+    console.log('Attempting to connect to MongoDB with URI:', mongoURI);
     await mongoose.connect(mongoURI);
     console.log('MongoDB connected successfully');
   } catch (error) {
     console.error('MongoDB connection error:', error);
-    process.exit(1);
+    // Continue execution even if MongoDB fails - for debugging
+    console.log('Continuing execution despite MongoDB connection failure');
   }
 };
 
-// Simple health check route
+// API routes
 app.get('/api/health', (req, res) => {
+  res.status(200).json({ status: 'ok', message: 'API server is running' });
+});
+
+// Root health check for easier debugging
+app.get('/', (req, res) => {
   res.status(200).json({ status: 'ok', message: 'Server is running' });
 });
 
 // Start server
 const startServer = async () => {
   try {
-    await connectDB();
+    // Try to connect to MongoDB but don't fail if it doesn't connect
+    await connectDB().catch(err => console.log('MongoDB connection issue, continuing...', err));
+    
     app.listen(port, () => {
       console.log(`Server running on port ${port}`);
+      console.log(`Health endpoint available at http://localhost:${port}/api/health`);
     });
   } catch (error) {
     console.error('Failed to start server:', error);

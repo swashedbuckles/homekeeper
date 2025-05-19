@@ -16,4 +16,4 @@ ENV NODE_ENV development
 EXPOSE 3000
 
 # Use development server with hot reloading
-CMD ["npm", "start"]
+CMD ["npm", "run", "dev"]
