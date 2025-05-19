@@ -1,0 +1,109 @@
+services:
+  # Frontend React Application
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=${NODE_ENV}
+      - REACT_APP_API_URL=http://localhost:4000/api
+    depends_on:
+      - backend
+  
+  # Backend Node.js API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=${NODE_ENV}
+      - MONGODB_URI=mongodb://${MONGO_APP_USERNAME}:${MONGO_APP_PASSWORD}@mongodb:27017/${MONGO_DATABASE}
+      - JWT_SECRET=${JWT_SECRET}
+      - ELASTICSEARCH_HOST=http://elasticsearch:9200
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_S3_BUCKET=${AWS_S3_BUCKET}
+      - AWS_ENDPOINT=http://localstack:4566
+      - AWS_REGION=${AWS_REGION}
+      - AWS_S3_FORCE_PATH_STYLE=true
+    depends_on:
+      - mongodb
+      - elasticsearch
+  
+  # MongoDB Database
+  mongodb:
+    image: mongo:7.0
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+      - ./mongo-init:/docker-entrypoint-initdb.d
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_ROOT_PASSWORD}
+      - MONGO_INITDB_DATABASE=${MONGO_DATABASE}
+    command: ["--auth", "--wiredTigerCacheSizeGB", "1"]
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+  
+  # Elasticsearch for Search
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.14.0
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    environment:
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+  
+  # Optional: Redis for caching
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+      
+  # LocalStack for AWS Services simulation
+  localstack:
+    image: localstack/localstack:latest
+    ports:
+      - "4566:4566"      # LocalStack endpoint
+      - "4510-4559:4510-4559"  # external services port range
+    environment:
+      - SERVICES=s3
+      - DEBUG=1
+      - DATA_DIR=/tmp/localstack/data
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - AWS_DEFAULT_REGION=${AWS_REGION}
+    volumes:
+      - localstack_data:/tmp/localstack
+      - ./localstack-init:/docker-entrypoint-initaws.d
+      - /var/run/docker.sock:/var/run/docker.sock
+      
+volumes:
+  mongodb_data:
+  elasticsearch_data:
+  redis_data:
+  localstack_data:
