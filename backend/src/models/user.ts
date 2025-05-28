@@ -1,8 +1,10 @@
-import mongoose from 'mongoose';
-const {Schema, model} = mongoose;
-import {isEmail} from 'validator';
+import { Schema, model } from 'mongoose';
+import { isEmail } from 'validator';
+import bcrypt from 'bcryptjs';
 
-const userSchema = new Schema({
+import type { IUser, IUserModel, IUserMethods, SafeUser, UserDocument } from './user.d';
+
+const userSchema = new Schema<IUser, IUserModel, IUserMethods>({
   email: {
     type: String,
     required: true,
@@ -16,7 +18,7 @@ const userSchema = new Schema({
   },
   password: {
     type: String,
-    required: true
+    required: true,
   },
   name: {
     type: String,
@@ -34,11 +36,58 @@ const userSchema = new Schema({
   householdRoles: {
     type: Map,
     of: String // "owner" | "admin" | "member" | "guest"
-  }
+  },
 }, {
-  timestamps: true,
+  timestamps: true, // createdAt, updatedAt
   toJSON: { virtuals: true },
-  toObject: { virtuals: true }
+  toObject: { virtuals: true },
+
+  methods: {
+    async comparePassword(pword): Promise<boolean> {
+      return bcrypt.compare(pword, this.password);
+    },
+
+    toSafeObject() {
+      const me = this.toObject();
+      const { password, ...safeUser } = me;
+      return safeUser as SafeUser;
+    },
+
+    toJSON() {
+      return this.toSafeObject();
+    }
+  },
+
+  statics: {
+    createUser(userData: { email: string, password: string, name: string }): Promise<UserDocument> {
+      const user = new this(userData);
+      return user.save() as Promise<UserDocument>;  // workaround for struggling with mongoose typing.
+    },
+
+    findByEmail(email: string): Promise<UserDocument | null> {
+      return this.findOne({ email }).exec() as Promise<UserDocument | null>;
+    }
+  }
 });
 
-export const User = model('User', userSchema);
+
+/** 
+ * Pre-save hook to hash the password before storing it in the database.
+ * Should only hash if the password has been modified (which even counts for
+ * new users).
+ */
+userSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) {
+    return next();
+  }
+
+  try {
+    const salt = await bcrypt.genSalt(12);
+    this.password = await bcrypt.hash(this.password, salt);
+    next();
+  } catch (error) {
+    next(error as Error);
+  }
+});
+
+export const User = model<IUser, IUserModel>('User', userSchema);
