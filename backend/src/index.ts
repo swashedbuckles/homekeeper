@@ -1,9 +1,14 @@
-import express from 'express';
+import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import helmet from 'helmet';
-import morgan from 'morgan';
-import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import express from 'express';
+import helmet from 'helmet';
+import mongoose from 'mongoose';
+import morgan from 'morgan';
+
+import './config/passport'; // jwt-strategy
+import authRouter from './routes/auth';
+import passport from 'passport';
 
 // Load environment variables
 dotenv.config();
@@ -17,7 +22,9 @@ app.use(cors());
 app.use(helmet());
 app.use(morgan('dev'));
 app.use(express.json());
+app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
+app.use(passport.initialize());
 
 // MongoDB Connection
 const connectDB = async () => {
@@ -37,10 +44,21 @@ const connectDB = async () => {
   }
 };
 
+app.use('/auth', authRouter);
+
 // API routes
 app.get('/api/health', (req, res) => {
   res.status(200).json({ status: 'ok', message: 'API server is running' });
 });
+
+app.get('/protected', 
+    passport.authenticate('jwt', { session: false }),
+    (req, res) => {
+        res.send(200).json({
+            message: 'welcome to the protected route!'
+        })
+    }
+)
 
 // Root health check for easier debugging
 app.get('/', (req, res) => {
