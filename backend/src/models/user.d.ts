@@ -1,8 +1,8 @@
-import {Types, HydratedDocument, Model} from 'mongoose';
+import { Types, HydratedDocument, Model } from 'mongoose';
 
 export interface IUser {
-  _id: Types.ObjectId,
-  id?: string;  // this is a mongoose virtual
+  _id: Types.ObjectId;
+  id?: string; // this is a mongoose virtual
   email: string;
   password: string;
   name: string;
@@ -15,7 +15,7 @@ export interface IUser {
     defaultHouseholdId?: string;
   };
   householdRoles: {
-    [householdId: string]: "owner" | "admin" | "member" | "guest"
+    [householdId: string]: 'owner' | 'admin' | 'member' | 'guest';
   };
 }
 

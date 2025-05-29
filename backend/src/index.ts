@@ -5,10 +5,10 @@ import express from 'express';
 import helmet from 'helmet';
 import mongoose from 'mongoose';
 import morgan from 'morgan';
+import passport from 'passport';
 
 import './config/passport'; // jwt-strategy
 import authRouter from './routes/auth';
-import passport from 'passport';
 
 // Load environment variables
 dotenv.config();
@@ -33,7 +33,7 @@ const connectDB = async () => {
     if (!mongoURI) {
       throw new Error('MongoDB URI is not defined in environment variables');
     }
-    
+
     console.log('Attempting to connect to MongoDB with URI:', mongoURI);
     await mongoose.connect(mongoURI);
     console.log('MongoDB connected successfully');
@@ -51,14 +51,9 @@ app.get('/api/health', (req, res) => {
   res.status(200).json({ status: 'ok', message: 'API server is running' });
 });
 
-app.get('/protected', 
-    passport.authenticate('jwt', { session: false }),
-    (req, res) => {
-        res.send(200).json({
-            message: 'welcome to the protected route!'
-        })
-    }
-)
+app.get('/protected', passport.authenticate('jwt', { session: false }), (req, res) => {
+  res.send(200).json({ message: 'welcome to the protected route!' });
+});
 
 // Root health check for easier debugging
 app.get('/', (req, res) => {
@@ -69,8 +64,8 @@ app.get('/', (req, res) => {
 const startServer = async () => {
   try {
     // Try to connect to MongoDB but don't fail if it doesn't connect
-    await connectDB().catch(err => console.log('MongoDB connection issue, continuing...', err));
-    
+    await connectDB().catch((err) => console.log('MongoDB connection issue, continuing...', err));
+
     app.listen(port, () => {
       console.log(`Server running on port ${port}`);
       console.log(`Health endpoint available at http://localhost:${port}/api/health`);
