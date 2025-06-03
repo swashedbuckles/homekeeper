@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 
 import { register, login } from '../../src/services/authentication';
 import { SafeUser } from '../../src/types/user';
-import { request, loginUser, registerUser, getAuthCookie } from '../helpers/app';
+import { request, loginUser, registerUser, getAuthCookie, mockAuthenticatedUser } from '../helpers/app';
 
 // Mock the authentication service
 vi.mock('../../src/services/authentication');
@@ -79,6 +79,33 @@ describe('Auth Routes', () => {
 
       expect(response.status).toBe(200);
       expect(response.body.message).toBe('You have logged out');
+    });
+  });
+
+  describe('GET /auth/whoami', () => {
+    beforeEach(() => {
+      mockAuthenticatedUser(null);
+    });
+
+    it('should return a user if logged in', async () => {
+      const mockUser: SafeUser = {
+        id: 'user-123',
+        email: 'test@example.com',
+        name: 'Test User',
+      } as SafeUser;
+
+      // Mock the user as authenticated
+      mockAuthenticatedUser(mockUser);
+
+      const response = await request.get('/auth/whoami');
+
+      expect(response.status).toBe(200);
+      expect(response.body.user).toEqual(mockUser);
+    });
+
+    it('should return 204 if not logged in', async () => {
+      const response = await request.get('/auth/whoami/').send();
+      expect(response.status).toBe(204);
     });
   });
 });
