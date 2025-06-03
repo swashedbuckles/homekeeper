@@ -1,13 +1,55 @@
+import { NextFunction, Request, Response } from 'express';
+import passport from 'passport';
 import supertest from 'supertest';
+import { vi } from 'vitest';
 
 import { createApp } from '../../src/index';
 import { RegistrationParams } from '../../src/services/authentication';
+import type { SafeUser } from '../../src/types/user';
+
+// Mock passport globally for tests
+vi.mock('passport', () => ({
+  default: {
+    authenticate: vi.fn(),
+    initialize: vi.fn(() => (req: Request, res: Response, next: NextFunction) => next()),
+    use: vi.fn(),
+  },
+}));
 
 export const app = createApp();
 export const request = supertest(app);
 
 /** Shorthand for SuperTest API Type */
 type TestRes = supertest.Test;
+
+/**
+ * Mock out the auth middleware for unit tests
+ *
+ * @param user User or User-like object
+ */
+export const mockAuthenticatedUser = (user: SafeUser | null): void => {
+  vi.mocked(passport.authenticate).mockImplementation((strategy, options, callback) => {
+    return (req: Request, res: Response, next: NextFunction): void => {
+      if (user) {
+        req.user = user;
+        callback!(null, user);
+      } else {
+        callback!(null, null);
+      }
+      next();
+    };
+  });
+};
+
+// Helper to mock authentication error
+export const mockAuthenticationError = (error: Error) => {
+  vi.mocked(passport.authenticate).mockImplementation((strategy, options, callback) => {
+    return (req: Request, res: Response, next: NextFunction): void => {
+      callback!(error, null);
+      next();
+    };
+  });
+};
 
 /**
  * Test helper to login the user
@@ -43,21 +85,4 @@ export const getAuthCookie = (response: supertest.Response): string | undefined 
   /** @todo extract cookie name to a common place */
   const jwtCookie = setCookieHeader.find((cookie) => cookie.startsWith('jwt='));
   return jwtCookie?.split(';')[0];
-};
-
-/**
- * HTTP Verbs for Requests
- */
-type HttpVerbs = 'get' | 'post' | 'put' | 'delete';
-
-/**
- * Make an authenticated request against SuperTest to help with testing
- *
- * @param method HTTP method
- * @param url location
- * @param authCookie jwt authentication cookie
- * @returns Authenticated request for testing
- */
-export const makeAuthenticatedRequest = (method: HttpVerbs, url: string, authCookie: string): TestRes => {
-  return request[method](url).set('Cookie', [authCookie]);
 };

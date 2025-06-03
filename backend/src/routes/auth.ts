@@ -3,6 +3,7 @@ import { body as validateBody, validationResult } from 'express-validator';
 import jwt from 'jsonwebtoken';
 
 import { JwtPayload } from '../config/passport';
+import { optionalAuth } from '../middleware/auth';
 import { register, login } from '../services/authentication';
 
 const router = Router();
@@ -111,14 +112,24 @@ router.post(
 
 router.get('/logout', (req, res) => {
   if (req.cookies['jwt']) {
-    res.clearCookie('jwt').status(200).json({
-      message: 'You have logged out',
-    });
-  } else {
-    res.status(200).json({
+    return res.clearCookie('jwt').status(200).json({
       message: 'You have logged out',
     });
   }
+
+  return res.status(200).json({
+    message: 'You have logged out',
+  });
+});
+
+router.get('/whoami', optionalAuth, (req, res) => {
+  if (req.user) {
+    return res.status(200).json({
+      user: req.user,
+    });
+  }
+
+  return res.status(204).send();
 });
 
 export default router;
