@@ -10,25 +10,50 @@ import passport from 'passport';
 import { requireAuth } from './middleware/auth';
 import authRouter from './routes/auth';
 
-import './config/passport'; // jwt-strategy
+import './config/passport'; // authentication strategies
 
-// Load environment variables
 dotenv.config();
 
-// Initialize Express app
-const app = express();
-const port = process.env.PORT || 4000;
+/**
+ * Setup the express application without kicking it off directly.
+ * Add and configure all middleware and routes
+ *
+ * @returns {express.Application}
+ */
+export const createApp = (): express.Application => {
+  const app = express();
+  app.use(cors());
+  app.use(helmet());
+  app.use(morgan('dev'));
+  app.use(express.json());
+  app.use(cookieParser());
+  app.use(express.urlencoded({ extended: true }));
+  app.use(passport.initialize());
 
-// Middleware
-app.use(cors());
-app.use(helmet());
-app.use(morgan('dev'));
-app.use(express.json());
-app.use(cookieParser());
-app.use(express.urlencoded({ extended: true }));
-app.use(passport.initialize());
+  app.use('/auth', authRouter);
 
-// MongoDB Connection Setup
+  app.get('/api/health', (req, res) => {
+    res.status(200).json({ status: 'ok', message: 'API server is running' });
+  });
+
+  app.get('/protected', requireAuth, (req, res) => {
+    res.status(200).json({
+      message: 'Welcome to the protected route!',
+      user: req.user,
+    });
+  });
+
+  // Root health check for easier debugging
+  app.get('/', (req, res) => {
+    res.status(200).json({ status: 'ok', message: 'Server is running' });
+  });
+
+  return app;
+};
+
+/**
+ * Setup the database connection
+ */
 const connectDB = async (): Promise<void> => {
   try {
     const mongoURI = process.env.MONGODB_URI;
@@ -45,27 +70,17 @@ const connectDB = async (): Promise<void> => {
   }
 };
 
-app.use('/auth', authRouter);
+/**
+ * Create and start the express server.
+ *
+ * Wait for the db connection before starting the server -- even if it errors, as
+ * we want to see the connection issues and our error handing in the rest of the
+ * app should handle it
+ */
+const startServer = async (): Promise<void> => {
+  const port = process.env.PORT || 4000;
+  const app = createApp();
 
-// API routes
-app.get('/api/health', (req, res) => {
-  res.status(200).json({ status: 'ok', message: 'API server is running' });
-});
-
-app.get('/protected', requireAuth, (req, res) => {
-  res.status(200).json({
-    message: 'Welcome to the protected route!',
-    user: req.user,
-  });
-});
-
-// Root health check for easier debugging
-app.get('/', (req, res) => {
-  res.status(200).json({ status: 'ok', message: 'Server is running' });
-});
-
-// Start server
-const startServer = async () => {
   try {
     // Try to connect to MongoDB but don't fail if it doesn't connect
     await connectDB().catch((err) => console.log('MongoDB connection issue, continuing...', err));
@@ -80,4 +95,7 @@ const startServer = async () => {
   }
 };
 
-startServer();
+// Don't start the server if we're importing this module (e.g. testing)
+if (require.main === module) {
+  startServer();
+}

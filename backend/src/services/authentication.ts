@@ -1,10 +1,10 @@
 import { User } from '../models/user';
 import { SafeUser, UserDocument } from '../types/user';
 
-type AuthenticationData = { user: SafeUser };
-type registrationParams = Pick<UserDocument, 'email' | 'password' | 'name'>;
+export type AuthenticationData = { user: SafeUser };
+export type RegistrationParams = Pick<UserDocument, 'email' | 'password' | 'name'>;
 
-export async function register(userData: registrationParams): Promise<AuthenticationData> {
+export async function register(userData: RegistrationParams): Promise<AuthenticationData> {
   const existingUser = await User.findByEmail(userData.email);
   if (existingUser) {
     throw new Error('User already exists');
