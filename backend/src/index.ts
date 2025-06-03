@@ -7,8 +7,10 @@ import mongoose from 'mongoose';
 import morgan from 'morgan';
 import passport from 'passport';
 
-import './config/passport'; // jwt-strategy
+import { requireAuth } from './middleware/auth';
 import authRouter from './routes/auth';
+
+import './config/passport'; // jwt-strategy
 
 // Load environment variables
 dotenv.config();
@@ -26,8 +28,8 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(passport.initialize());
 
-// MongoDB Connection
-const connectDB = async () => {
+// MongoDB Connection Setup
+const connectDB = async (): Promise<void> => {
   try {
     const mongoURI = process.env.MONGODB_URI;
     if (!mongoURI) {
@@ -39,7 +41,6 @@ const connectDB = async () => {
     console.log('MongoDB connected successfully');
   } catch (error) {
     console.error('MongoDB connection error:', error);
-    // Continue execution even if MongoDB fails - for debugging
     console.log('Continuing execution despite MongoDB connection failure');
   }
 };
@@ -51,8 +52,11 @@ app.get('/api/health', (req, res) => {
   res.status(200).json({ status: 'ok', message: 'API server is running' });
 });
 
-app.get('/protected', passport.authenticate('jwt', { session: false }), (req, res) => {
-  res.send(200).json({ message: 'welcome to the protected route!' });
+app.get('/protected', requireAuth, (req, res) => {
+  res.status(200).json({
+    message: 'Welcome to the protected route!',
+    user: req.user,
+  });
 });
 
 // Root health check for easier debugging

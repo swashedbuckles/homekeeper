@@ -1,47 +1,77 @@
 import { Router } from 'express';
-import { body as validateBody } from 'express-validator';
+import { body as validateBody, validationResult } from 'express-validator';
 import jwt from 'jsonwebtoken';
 
-import { loginMw } from '../middleware/user';
-import { register } from '../services/authentication';
+import { JwtPayload } from '../config/passport';
+import { register, login } from '../services/authentication';
+
 const router = Router();
 
 const JWT_EXPIRE_TIME_MS = 600000;
 const JWT_SECRET = process.env.JWT_SECRET || '';
 
-router.get('/login', (req, res, next) => {
+/* ------------ LOGIN ------------ */
+router.get('/login', (req, res) => {
   res.status(200).json({
     status: 'ok',
     message: 'GET Login',
   });
 });
 
-router.post('/login', loginMw, (req, res, next) => {
-  const { user } = res.locals;
+router.post('/login', validateBody('email').isEmail(), validateBody('password').notEmpty(), async (req, res) => {
+  const errors = validationResult(req);
 
-  /** @todo extract into separate function for testability */
-  const payload = {
-    /** @todo type for jwt payload */
-    username: user.email,
-    expiration: Date.now() + JWT_EXPIRE_TIME_MS,
-  };
-
-  const token = jwt.sign(JSON.stringify(payload), JWT_SECRET);
-
-  res
-    .cookie('jwt', token, {
-      httpOnly: true,
-      secure: false /** @todo set based on dev/production */,
-    })
-    .status(200)
-    .json({
-      status: 'ok',
-      message: 'POST login',
-      user: res.locals['user'] ?? {},
+  if (!errors.isEmpty()) {
+    return res.status(400).json({
+      error: 'Invalid input',
+      details: errors.array(),
     });
-});
+  }
 
-router.get('/register', (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+
+    // Call login service directly
+    const { user } = await login(email, password);
+
+    // Create JWT payload
+    const payload: JwtPayload = {
+      email: user.email,
+      id: user.id,
+      expiration: Date.now() + JWT_EXPIRE_TIME_MS,
+    };
+
+    const token = jwt.sign(payload, JWT_SECRET);
+
+    res
+      .cookie('jwt', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+      })
+      .status(200)
+      .json({
+        status: 'ok',
+        message: 'Login successful',
+        user: user,
+      });
+  } catch (error) {
+    if (error instanceof Error && error.message === 'Invalid credentials') {
+      return res.status(401).json({
+        error: 'Invalid email or password',
+      });
+    }
+
+    console.error('Login error:', error);
+    return res.status(500).json({
+      error: 'Internal server error',
+    });
+  }
+});
+/* ------------ /LOGIN ------------ */
+
+/* ------------ REGISTRATION ------------ */
+router.get('/register', (req, res) => {
   res.status(200).json({
     status: 'ok',
     message: 'GET Register',
@@ -53,17 +83,31 @@ router.post(
   validateBody('email').isEmail(),
   validateBody('name').isString().notEmpty(),
   validateBody('password').isString().notEmpty().isStrongPassword(),
-  async (req, res, next) => {
+  async (req, res) => {
     const { email, password, name } = req.body;
-    const newUser = await register({ email, password, name });
+    try {
+      const newUser = await register({ email, password, name });
 
-    res.status(200).json({
-      status: 'ok',
-      message: 'POST Register',
-      user: newUser,
-    });
+      res.status(201).json({
+        status: 'ok',
+        message: 'Registration successful',
+        user: newUser.user,
+      });
+    } catch (error) {
+      if (error instanceof Error && error.message === 'User already exists') {
+        return res.status(409).json({
+          error: 'User already exists' /** @todo is this an issue letting someone know an email exists? */,
+        });
+      }
+
+      console.error('Registration error:', error);
+      return res.status(500).json({
+        error: 'Internal server error',
+      });
+    }
   },
 );
+/* ------------ /REGISTRATION------------ */
 
 router.get('/logout', (req, res, next) => {
   if (req.cookies['jwt']) {

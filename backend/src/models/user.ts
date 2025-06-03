@@ -2,7 +2,8 @@ import bcrypt from 'bcryptjs';
 import { Schema, model } from 'mongoose';
 import { isEmail } from 'validator';
 
-import type { IUser, IUserModel, IUserMethods, SafeUser, UserDocument } from './user.d';
+import type { IUser, IUserModel, IUserMethods, SafeUser, UserDocument } from '../types/user';
+export type * from '../types/user.d'; // so we don't have to go searching for the type file
 
 const userSchema = new Schema<IUser, IUserModel, IUserMethods>(
   {

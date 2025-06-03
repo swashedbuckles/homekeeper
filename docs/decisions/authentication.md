@@ -4,6 +4,7 @@
 **Date:** May 28, 2025  
 **Author:** Tom Joseph
 **Version:** 1.3
+**Context:** Node.js Express/React application using Passport.js for authentication
 
 ## Purpose
 

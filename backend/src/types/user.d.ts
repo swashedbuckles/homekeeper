@@ -2,7 +2,7 @@ import { Types, HydratedDocument, Model } from 'mongoose';
 
 export interface IUser {
   _id: Types.ObjectId;
-  id?: string; // this is a mongoose virtual
+  id: string; // this is a mongoose virtual
   email: string;
   password: string;
   name: string;
