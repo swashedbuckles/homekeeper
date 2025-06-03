@@ -1,6 +1,7 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { register, login, changePassword } from '../../src/services/authentication';
+import { describe, it, expect, beforeEach } from 'vitest';
+
 import { User } from '../../src/models/user';
+import { register, login, changePassword, RegistrationParams } from '../../src/services/authentication';
 
 describe('Authentication Service', () => {
   describe('register', () => {
@@ -8,7 +9,7 @@ describe('Authentication Service', () => {
       const userData = {
         email: 'newuser@example.com',
         password: 'password123',
-        name: 'New User'
+        name: 'New User',
       };
 
       const result = await register(userData);
@@ -28,14 +29,14 @@ describe('Authentication Service', () => {
       const userData = {
         email: 'duplicate@example.com',
         password: 'password123',
-        name: 'First User'
+        name: 'First User',
       };
 
       await register(userData);
 
       const duplicateData = {
         ...userData,
-        name: 'Second User'
+        name: 'Second User',
       };
 
       await expect(register(duplicateData)).rejects.toThrow();
@@ -45,34 +46,40 @@ describe('Authentication Service', () => {
       const userData = {
         email: 'invalid-email',
         password: 'password123',
-        name: 'Invalid Email User'
+        name: 'Invalid Email User',
       };
 
       await expect(register(userData)).rejects.toThrow();
     });
 
     it('should throw error for missing required fields', async () => {
-      await expect(register({
-        password: 'password123',
-        name: 'No Email User'
-      } as any)).rejects.toThrow();
+      await expect(
+        register({
+          password: 'password123',
+          name: 'No Email User',
+        } as RegistrationParams),
+      ).rejects.toThrow();
 
-      await expect(register({
-        email: 'noemail@example.com',
-        name: 'No Password User'
-      } as any)).rejects.toThrow();
+      await expect(
+        register({
+          email: 'noemail@example.com',
+          name: 'No Password User',
+        } as RegistrationParams),
+      ).rejects.toThrow();
 
-      await expect(register({
-        email: 'noname@example.com',
-        password: 'password123'
-      } as any)).rejects.toThrow();
+      await expect(
+        register({
+          email: 'noname@example.com',
+          password: 'password123',
+        } as RegistrationParams),
+      ).rejects.toThrow();
     });
 
     it('should hash password before storing', async () => {
       const userData = {
         email: 'hashtest@example.com',
         password: 'password123',
-        name: 'Hash Test User'
+        name: 'Hash Test User',
       };
 
       await register(userData);
@@ -88,7 +95,7 @@ describe('Authentication Service', () => {
     const testUser = {
       email: 'logintest@example.com',
       password: 'password123',
-      name: 'Login Test User'
+      name: 'Login Test User',
     };
 
     beforeEach(async () => {
@@ -107,23 +114,19 @@ describe('Authentication Service', () => {
     });
 
     it('should throw error for non-existent email', async () => {
-      await expect(login('nonexistent@example.com', 'password123'))
-        .rejects.toThrow();
+      await expect(login('nonexistent@example.com', 'password123')).rejects.toThrow();
     });
 
     it('should throw error for incorrect password', async () => {
-      await expect(login(testUser.email, 'wrongpassword'))
-        .rejects.toThrow();
+      await expect(login(testUser.email, 'wrongpassword')).rejects.toThrow();
     });
 
     it('should throw error for empty email', async () => {
-      await expect(login('', testUser.password))
-        .rejects.toThrow();
+      await expect(login('', testUser.password)).rejects.toThrow();
     });
 
     it('should throw error for empty password', async () => {
-      await expect(login(testUser.email, ''))
-        .rejects.toThrow();
+      await expect(login(testUser.email, '')).rejects.toThrow();
     });
   });
 
@@ -131,7 +134,7 @@ describe('Authentication Service', () => {
     const testUser = {
       email: 'changepass@example.com',
       password: 'oldpassword123',
-      name: 'Change Password User'
+      name: 'Change Password User',
     };
     let userId: string;
 
@@ -155,8 +158,7 @@ describe('Authentication Service', () => {
     it('should throw error for incorrect old password', async () => {
       const newPassword = 'newpassword456';
 
-      await expect(changePassword(userId, 'wrongoldpassword', newPassword))
-        .rejects.toThrow();
+      await expect(changePassword(userId, 'wrongoldpassword', newPassword)).rejects.toThrow();
     });
 
     it('should throw error for non-existent user', async () => {

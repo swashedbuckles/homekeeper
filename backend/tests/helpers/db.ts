@@ -7,11 +7,10 @@ export const connectTestDB = async (): Promise<void> => {
   if (!mongod) {
     mongod = await MongoMemoryServer.create();
   }
-  
+
   const uri = mongod.getUri();
   await mongoose.connect(uri);
   console.log('Test database connected');
-
 };
 
 export const closeTestDB = async (): Promise<void> => {

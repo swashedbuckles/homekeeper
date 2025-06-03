@@ -1,23 +1,35 @@
 import { User } from '../models/user';
-import { UserDocument } from '../models/user.d';
+import { SafeUser, UserDocument } from '../types/user';
 
-export async function register(userData: {
-  email: string;
-  password: string;
-  name: string;
-}) {
+/** Return from authentication helpers; may expand to include JWT info */
+export type AuthenticationData = { user: SafeUser };
+/** Required values for authentication */
+export type RegistrationParams = Pick<UserDocument, 'email' | 'password' | 'name'>;
+
+/**
+ * Register a new user in the system
+ *
+ * @param userData Email/Name/Password
+ * @returns Authenticated User
+ */
+export async function register(userData: RegistrationParams): Promise<AuthenticationData> {
   const existingUser = await User.findByEmail(userData.email);
   if (existingUser) {
     throw new Error('User already exists');
   }
 
   const user = await User.createUser(userData);
-  return {
-    user: user.toSafeObject()
-  };
+  return { user: user.toSafeObject() };
 }
 
-export async function login(email: string, password: string) {
+/**
+ * Allow an existing user to log in
+ *
+ * @param email email-address
+ * @param password user password
+ * @returns Authenticated User
+ */
+export async function login(email: string, password: string): Promise<AuthenticationData> {
   const user = await User.findByEmail(email);
 
   if (!user) {
@@ -29,13 +41,19 @@ export async function login(email: string, password: string) {
     throw new Error('Invalid credentials');
   }
 
-  return {
-    user: user.toSafeObject()
-  };
+  return { user: user.toSafeObject() };
 }
 
-export async function changePassword(userId: string, oldPassword: string, newPassword: string) {
-  const user = await User.findById(userId) as UserDocument | null;
+/**
+ * Change a user's password
+ *
+ * @param userId id of user model to change
+ * @param oldPassword old password
+ * @param newPassword new password
+ * @returns Authenticated User
+ */
+export async function changePassword(userId: string, oldPassword: string, newPassword: string): Promise<SafeUser> {
+  const user = (await User.findById(userId)) as UserDocument | null;
   if (!user) {
     throw new Error('User not found');
   }
