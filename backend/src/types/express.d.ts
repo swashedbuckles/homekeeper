@@ -5,6 +5,9 @@ import { SafeUser } from './user';
  */
 declare global {
   namespace Express {
+    /**
+     * Express Request Object
+     */
     interface Request {
       user?: SafeUser;
     }

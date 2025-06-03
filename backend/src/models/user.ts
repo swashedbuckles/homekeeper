@@ -14,8 +14,8 @@ const userSchema = new Schema<IUser, IUserModel, IUserMethods>(
       lowercase: true,
       trim: true,
       validate: {
-        validator: (value) => isEmail(value),
-        message: (props) => `${props.value} is not a valid email address!`,
+        validator: (value): boolean => isEmail(value),
+        message: (props): string => `${props.value} is not a valid email address!`,
       },
     },
     password: {
@@ -50,13 +50,14 @@ const userSchema = new Schema<IUser, IUserModel, IUserMethods>(
         return bcrypt.compare(pword, this.password);
       },
 
-      toSafeObject() {
+      toSafeObject(): SafeUser {
         const me = this.toObject();
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { password, ...safeUser } = me;
         return safeUser as SafeUser;
       },
 
-      toJSON() {
+      toJSON(): SafeUser {
         return this.toSafeObject();
       },
     },

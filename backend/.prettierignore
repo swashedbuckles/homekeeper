@@ -5,3 +5,4 @@ build/
 .env
 package-lock.json
 yarn.lock
+coverage/

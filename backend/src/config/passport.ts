@@ -14,6 +14,9 @@ import { UserDocument } from '../types/user';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'DEV_JWT_SECRET';
 
+/**
+ * Used for authentication and user lookup
+ */
 export type JwtPayload = {
   expiration: number;
   email: string;

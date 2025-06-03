@@ -18,7 +18,7 @@ dotenv.config();
  * Setup the express application without kicking it off directly.
  * Add and configure all middleware and routes
  *
- * @returns {express.Application}
+ * @returns Express App
  */
 export const createApp = (): express.Application => {
   const app = express();

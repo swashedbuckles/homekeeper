@@ -6,10 +6,12 @@ import { RegistrationParams } from '../../src/services/authentication';
 export const app = createApp();
 export const request = supertest(app);
 
+/** Shorthand for SuperTest API Type */
 type TestRes = supertest.Test;
 
 /**
  * Test helper to login the user
+ *
  * @param email email address
  * @param password password
  * @returns Test Response
@@ -19,6 +21,7 @@ export const loginUser = async (email: string, password: string): Promise<TestRe
 
 /**
  * Test helper to register a user
+ *
  * @param userData email/name/password
  * @returns Test Response
  */
@@ -27,6 +30,7 @@ export const registerUser = async (userData: RegistrationParams): Promise<TestRe
 
 /**
  * Test helper to get the authentication cookie
+ *
  * @param response Test Response
  * @returns auth cookie (Jwt)
  */
@@ -41,7 +45,11 @@ export const getAuthCookie = (response: supertest.Response): string | undefined 
   return jwtCookie?.split(';')[0];
 };
 
+/**
+ * HTTP Verbs for Requests
+ */
 type HttpVerbs = 'get' | 'post' | 'put' | 'delete';
+
 /**
  * Make an authenticated request against SuperTest to help with testing
  *

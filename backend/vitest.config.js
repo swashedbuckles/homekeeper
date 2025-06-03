@@ -6,12 +6,7 @@ export default defineConfig({
     environment: 'node',
     setupFiles: ['./tests/setup.ts'],
     testTimeout: 10000,
-    testMatch: [
-      'src/**/*.test.ts',
-      'tests/**/*.test.ts',
-      'tests/**/*.integration.ts',
-      'tests/**/*.e2e.ts'
-    ],
+    testMatch: ['src/**/*.test.ts', 'tests/**/*.test.ts', 'tests/**/*.integration.ts', 'tests/**/*.e2e.ts'],
     coverage: {
       reporter: ['text', 'json', 'html'],
       exclude: [
@@ -21,8 +16,8 @@ export default defineConfig({
         'tests/**',
         '**/*.test.ts',
         '**/*.config.ts',
-        '**/*.d.ts'
-      ]
-    }
-  }
+        '**/*.d.ts',
+      ],
+    },
+  },
 });

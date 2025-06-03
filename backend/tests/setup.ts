@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable jsdoc/require-jsdoc */
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import { beforeAll, afterAll, beforeEach, vi, expect } from 'vitest';
@@ -36,6 +37,7 @@ vi.mock('aws-sdk', () => ({
 }));
 
 // Console overrides for cleaner test output
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const originalConsole = { ...console };
 if (process.env.SUPPRESS_TEST_LOGS === 'true') {
   console.log = vi.fn();
@@ -47,8 +49,8 @@ expect.extend({
   toBeValidObjectId(received) {
     const pass = mongoose.Types.ObjectId.isValid(received);
     const message = pass
-      ? () => `expected ${received} not to be a valid ObjectId`
-      : () => `expected ${received} to be a valid ObjectId`;
+      ? (): string => `expected ${received} not to be a valid ObjectId`
+      : (): string => `expected ${received} to be a valid ObjectId`;
 
     return {
       message,
@@ -62,7 +64,7 @@ expect.extend({
     );
 
     return {
-      message: () => `expected function to have been called with ObjectId ${expected}`,
+      message: (): string => `expected function to have been called with ObjectId ${expected}`,
       pass,
     };
   },
