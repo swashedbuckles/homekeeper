@@ -11,8 +11,10 @@ node_modules/
 # Build outputs
 /frontend/build/
 /frontend/dist/
+/frontend/coverage/
 /backend/dist/
 /backend/build/
+/backend/coverage/
 
 # TypeScript
 *.tsbuildinfo

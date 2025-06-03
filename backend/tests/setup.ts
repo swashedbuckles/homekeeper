@@ -1,10 +1,10 @@
-
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import { beforeAll, afterAll, beforeEach, vi, expect } from 'vitest';
+
 import { connectTestDB, closeTestDB, clearTestDB } from './helpers/db';
 
-// Load test environment variables
 dotenv.config({ path: '.env.test' });
 
 // Mock environment variables for testing
@@ -25,14 +25,14 @@ vi.mock('aws-sdk', () => ({
       promise: vi.fn().mockResolvedValue({
         Location: 'https://test-bucket.s3.amazonaws.com/test-file.pdf',
         Key: 'test-file.pdf',
-        Bucket: 'test-bucket'
-      })
+        Bucket: 'test-bucket',
+      }),
     }),
     deleteObject: vi.fn().mockReturnValue({
-      promise: vi.fn().mockResolvedValue({})
+      promise: vi.fn().mockResolvedValue({}),
     }),
-    getSignedUrl: vi.fn().mockReturnValue('https://signed-url.com/file.pdf')
-  }))
+    getSignedUrl: vi.fn().mockReturnValue('https://signed-url.com/file.pdf'),
+  })),
 }));
 
 // Console overrides for cleaner test output
@@ -49,8 +49,8 @@ expect.extend({
     const message = pass
       ? () => `expected ${received} not to be a valid ObjectId`
       : () => `expected ${received} to be a valid ObjectId`;
-    
-      return {
+
+    return {
       message,
       pass,
     };
@@ -58,17 +58,14 @@ expect.extend({
 
   toHaveBeenCalledWithObjectId(received, expected) {
     const pass = received.mock.calls.some((call: any[]) =>
-      call.some(arg => 
-        mongoose.Types.ObjectId.isValid(arg) && 
-        arg.toString() === expected.toString()
-      )
+      call.some((arg) => mongoose.Types.ObjectId.isValid(arg) && arg.toString() === expected.toString()),
     );
-    
+
     return {
       message: () => `expected function to have been called with ObjectId ${expected}`,
       pass,
     };
-  }
+  },
 });
 
 // Type declarations for custom matchers

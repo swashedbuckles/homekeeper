@@ -17,6 +17,7 @@ export default defineConfig({
       exclude: [
         'node_modules/',
         'dist/**',
+        'vitest.config.js',
         'tests/**',
         '**/*.test.ts',
         '**/*.config.ts',

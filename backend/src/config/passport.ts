@@ -1,11 +1,16 @@
 import type { Request } from 'express';
 import passport from 'passport';
-import { Strategy as JWTStrategy, StrategyOptionsWithoutRequest } from 'passport-jwt';
-import { Strategy as LocalStrategy } from 'passport-local';
+import {
+  Strategy as JWTStrategy,
+  StrategyOptionsWithoutRequest,
+  JwtFromRequestFunction,
+  VerifyCallback,
+} from 'passport-jwt';
+import { Strategy as LocalStrategy, VerifyFunction } from 'passport-local';
 
 import { User } from '../models/user';
-import { UserDocument } from '../types/user';
 import { login } from '../services/authentication';
+import { UserDocument } from '../types/user';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'DEV_JWT_SECRET';
 
@@ -15,7 +20,9 @@ export type JwtPayload = {
   id: string;
 };
 
-const jwtFromRequest = (req: Request) => (req && req.cookies ? req.cookies['jwt'] : null);
+export const jwtFromRequest: JwtFromRequestFunction = (req: Request) => {
+  return req && req.cookies ? (req.cookies['jwt'] ?? null) : null;
+};
 
 const jwtOptions: StrategyOptionsWithoutRequest = {
   jwtFromRequest,
@@ -24,10 +31,9 @@ const jwtOptions: StrategyOptionsWithoutRequest = {
   // audience: 'tomseph.dev',
 };
 
-const jwtStrategy = new JWTStrategy(jwtOptions, async (jwtPayload: JwtPayload | null, done) => {
+export const jwtVerifyCallback: VerifyCallback = async (jwtPayload: JwtPayload | null, done) => {
   if (!jwtPayload) {
     return done(null, false, { message: 'No JWT payload' });
-    return;
   }
 
   const { expiration, id } = jwtPayload;
@@ -46,16 +52,19 @@ const jwtStrategy = new JWTStrategy(jwtOptions, async (jwtPayload: JwtPayload | 
   } catch (error) {
     done(error, false);
   }
-});
+};
 
-const localStrategy = new LocalStrategy({ usernameField: 'email' }, async (email, password, done) => {
+export const localVerifyFn: VerifyFunction = async (email, password, done) => {
   try {
-    const result = await login(email, password);
+    const { user: result } = await login(email, password);
     return done(null, result);
   } catch (error) {
     return done(null, false, { message: 'Invalid credentials' });
   }
-});
+};
+
+const jwtStrategy = new JWTStrategy(jwtOptions, jwtVerifyCallback);
+const localStrategy = new LocalStrategy({ usernameField: 'email' }, localVerifyFn);
 
 passport.use('jwt', jwtStrategy);
 passport.use('local', localStrategy);

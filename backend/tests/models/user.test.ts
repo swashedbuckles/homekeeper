@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
+
 import { User } from '../../src/models/user';
-import { UserDocument } from '../../src/models/user.d';
-import becrypt from 'bcryptjs';
+import { UserDocument } from '../../src/types/user.d';
 
 describe('User Model Tests', () => {
   describe('Validation', () => {
@@ -21,11 +21,10 @@ describe('User Model Tests', () => {
       expect(savedUser.password).not.toBe(userData.password);
     });
 
-
     it('should require email field', async () => {
       const userData = {
         password: 'password123',
-        name: 'Test User'
+        name: 'Test User',
       };
 
       const user = new User(userData);
@@ -36,7 +35,7 @@ describe('User Model Tests', () => {
     it('should require password field', async () => {
       const userData = {
         email: 'test@example.com',
-        name: 'Test User'
+        name: 'Test User',
       };
 
       const user = new User(userData);
@@ -47,7 +46,7 @@ describe('User Model Tests', () => {
     it('should require name field', async () => {
       const userData = {
         email: 'test@example.com',
-        password: 'password123'
+        password: 'password123',
       };
 
       const user = new User(userData);
@@ -59,7 +58,7 @@ describe('User Model Tests', () => {
       const userData = {
         email: 'invalid-email',
         password: 'password123',
-        name: 'Test User'
+        name: 'Test User',
       };
 
       const user = new User(userData);
@@ -71,7 +70,7 @@ describe('User Model Tests', () => {
       const userData = {
         email: 'test@example.com',
         password: 'password123',
-        name: 'Test User'
+        name: 'Test User',
       };
 
       // Create first user
@@ -81,7 +80,7 @@ describe('User Model Tests', () => {
       // Try to create second user with same email
       const user2 = new User({
         ...userData,
-        name: 'Another User'
+        name: 'Another User',
       });
 
       await expect(user2.save()).rejects.toThrow();
@@ -95,7 +94,7 @@ describe('User Model Tests', () => {
         const userData = {
           email: 'test@example.com',
           password: plainPassword,
-          name: 'Test User'
+          name: 'Test User',
         };
 
         const user = new User(userData);
@@ -110,7 +109,7 @@ describe('User Model Tests', () => {
         const userData = {
           email: 'test@example.com',
           password: 'password123',
-          name: 'Test User'
+          name: 'Test User',
         };
 
         const user = new User(userData);
@@ -129,7 +128,7 @@ describe('User Model Tests', () => {
         const userData = {
           email: 'test@example.com',
           password: 'password123',
-          name: 'Test User'
+          name: 'Test User',
         };
 
         const user = new User(userData);
@@ -185,7 +184,7 @@ describe('User Model Tests', () => {
         const userData = {
           email: 'boris.karloff@example.com',
           name: 'Boris Karloff',
-          password: 'password1234'
+          password: 'password1234',
         };
 
         const user = await User.createUser(userData);
@@ -203,8 +202,8 @@ describe('User Model Tests', () => {
         const userData = {
           email: 'email-invalid',
           password: 'password',
-          name: 'invalid'
-        }
+          name: 'invalid',
+        };
 
         await expect(User.createUser(userData)).rejects.toThrow();
       });
@@ -215,7 +214,7 @@ describe('User Model Tests', () => {
         const userData = {
           email: 'findme@example.com',
           password: 'password123',
-          name: 'Claude Raines'
+          name: 'Claude Raines',
         };
 
         await User.createUser(userData);
