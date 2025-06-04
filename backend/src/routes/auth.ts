@@ -3,6 +3,7 @@ import rateLimit from 'express-rate-limit';
 import { body as validateBody, validationResult } from 'express-validator';
 import jwt from 'jsonwebtoken';
 
+import { jwtConfig } from '../config/jwt';
 import { JwtPayload } from '../config/passport';
 import { optionalAuth } from '../middleware/auth';
 import { register, login } from '../services/authentication';
@@ -55,18 +56,11 @@ router.post(
 
       const token = jwt.sign(payload, JWT_SECRET);
 
-      res
-        .cookie('jwt', token, {
-          httpOnly: true,
-          secure: process.env.NODE_ENV === 'production',
-          sameSite: 'strict',
-        })
-        .status(200)
-        .json({
-          status: 'ok',
-          message: 'Login successful',
-          user: user,
-        });
+      res.cookie('jwt', token, jwtConfig).status(200).json({
+        status: 'ok',
+        message: 'Login successful',
+        user: user,
+      });
     } catch (error) {
       if (error instanceof Error && error.message === 'Invalid credentials') {
         return res.status(401).json({

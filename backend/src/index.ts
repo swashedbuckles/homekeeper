@@ -7,6 +7,7 @@ import mongoose from 'mongoose';
 import morgan from 'morgan';
 import passport from 'passport';
 
+import { corsOptions } from './config/cors';
 import { requireAuth } from './middleware/auth';
 import authRouter from './routes/auth';
 
@@ -23,7 +24,7 @@ dotenv.config();
 export const createApp = (): express.Application => {
   const app = express();
 
-  app.use(cors());
+  app.use(cors(corsOptions));
   app.use(helmet());
   app.use(morgan('dev'));
   app.use(express.json());
