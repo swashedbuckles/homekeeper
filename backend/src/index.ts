@@ -22,6 +22,7 @@ dotenv.config();
  */
 export const createApp = (): express.Application => {
   const app = express();
+
   app.use(cors());
   app.use(helmet());
   app.use(morgan('dev'));
