@@ -8,6 +8,7 @@ import morgan from 'morgan';
 import passport from 'passport';
 
 import { corsOptions } from './config/cors';
+import { helmetConfig } from './config/helmet';
 import { requireAuth } from './middleware/auth';
 import { csrfProtection } from './middleware/csrf';
 import authRouter from './routes/auth';
@@ -26,7 +27,7 @@ export const createApp = (): express.Application => {
   const app = express();
 
   app.use(cors(corsOptions));
-  app.use(helmet());
+  app.use(helmet(helmetConfig));
   app.use(morgan('dev'));
   app.use(express.json());
   app.use(cookieParser());
