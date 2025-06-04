@@ -3,9 +3,10 @@ import rateLimit from 'express-rate-limit';
 import { body as validateBody, validationResult } from 'express-validator';
 import jwt from 'jsonwebtoken';
 
-import { jwtConfig } from '../config/jwt';
+import { csrfCookie, jwtCookie } from '../config/cookies';
 import { JwtPayload } from '../config/passport';
 import { optionalAuth } from '../middleware/auth';
+import { generateCSRFToken } from '../middleware/csrf';
 import { register, login } from '../services/authentication';
 
 const router = Router();
@@ -56,7 +57,7 @@ router.post(
 
       const token = jwt.sign(payload, JWT_SECRET);
 
-      res.cookie('jwt', token, jwtConfig).status(200).json({
+      res.cookie('jwt', token, jwtCookie()).cookie('csrfToken', generateCSRFToken(), csrfCookie()).status(200).json({
         status: 'ok',
         message: 'Login successful',
         user: user,
@@ -121,6 +122,12 @@ router.post(
   },
 );
 /* ------------ /REGISTRATION------------ */
+
+router.get('/csrf-token', optionalAuth, (req, res) => {
+  const token = generateCSRFToken();
+
+  res.cookie('csrfToken', token, csrfCookie()).json({ csrfToken: token });
+});
 
 router.get('/logout', (req, res) => {
   if (req.cookies['jwt']) {
