@@ -26,7 +26,7 @@ describe('Auth Routes', () => {
       const response = await loginUser('test@example.com', 'wrongpassword');
 
       expect(response.status).toBe(401);
-      expect(response.body.error).toBe('Invalid email or password');
+      expect(response.body.error).toBe('Invalid credentials');
     });
 
     it('should return 200 with JWT cookie on success', async () => {
@@ -59,7 +59,7 @@ describe('Auth Routes', () => {
       expect(response.body.user).toEqual(mockUser);
     });
 
-    it('should return 409 for existing user', async () => {
+    it('should obfuscate if user exists', async () => {
       vi.mocked(register).mockRejectedValue(new Error('User already exists'));
 
       const response = await registerUser({
@@ -68,8 +68,8 @@ describe('Auth Routes', () => {
         name: 'Existing User',
       });
 
-      expect(response.status).toBe(409);
-      expect(response.body.error).toBe('User already exists');
+      expect(response.status).toBe(201);
+      expect(response.body.message).toBe('Registration successful.');
     });
   });
 

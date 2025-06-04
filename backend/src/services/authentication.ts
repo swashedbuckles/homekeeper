@@ -38,7 +38,7 @@ export async function login(email: string, password: string): Promise<Authentica
 
   const isMatch = await user.comparePassword(password);
   if (!isMatch) {
-    throw new Error('Invalid credentials');
+    throw new Error('Invalid credentials'); /** @todo type for authentication error */
   }
 
   return { user: user.toSafeObject() };

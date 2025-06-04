@@ -70,12 +70,14 @@ router.post(
     } catch (error) {
       if (error instanceof Error && error.message === 'Invalid credentials') {
         return res.status(401).json({
-          error: 'Invalid email or password',
+          status: 'failure',
+          error: 'Invalid credentials',
         });
       }
 
       console.error('Login error:', error);
       return res.status(500).json({
+        status: 'failure',
         error: 'Internal server error',
       });
     }
@@ -102,6 +104,7 @@ router.post(
     try {
       const newUser = await register({ email, password, name });
 
+      /** @todo send verification email */
       res.status(201).json({
         status: 'ok',
         message: 'Registration successful',
@@ -109,8 +112,10 @@ router.post(
       });
     } catch (error) {
       if (error instanceof Error && error.message === 'User already exists') {
-        return res.status(409).json({
-          error: 'User already exists' /** @todo is this an issue letting someone know an email exists? */,
+        /** @todo send registration attempt notification */
+        res.status(201).json({
+          status: 'ok',
+          message: 'Registration successful.',
         });
       }
 
@@ -126,11 +131,13 @@ router.post(
 router.get('/logout', (req, res) => {
   if (req.cookies['jwt']) {
     return res.clearCookie('jwt').status(200).json({
+      status: 'ok',
       message: 'You have logged out',
     });
   }
 
   return res.status(200).json({
+    status: 'ok',
     message: 'You have logged out',
   });
 });
@@ -138,11 +145,15 @@ router.get('/logout', (req, res) => {
 router.get('/whoami', optionalAuth, (req, res) => {
   if (req.user) {
     return res.status(200).json({
+      status: 'ok',
       user: req.user,
     });
   }
 
-  return res.status(204).send();
+  return res.status(204).json({
+    status: 'ok',
+    user: {},
+  });
 });
 
 export default router;
