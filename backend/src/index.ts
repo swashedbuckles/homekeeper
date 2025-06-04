@@ -9,6 +9,7 @@ import passport from 'passport';
 
 import { corsOptions } from './config/cors';
 import { requireAuth } from './middleware/auth';
+import { csrfProtection } from './middleware/csrf';
 import authRouter from './routes/auth';
 
 import './config/passport'; // authentication strategies
@@ -31,6 +32,9 @@ export const createApp = (): express.Application => {
   app.use(cookieParser());
   app.use(express.urlencoded({ extended: true }));
   app.use(passport.initialize());
+
+  app.use('/api', csrfProtection);
+  app.use('/protected', csrfProtection);
 
   app.use('/auth', authRouter);
 

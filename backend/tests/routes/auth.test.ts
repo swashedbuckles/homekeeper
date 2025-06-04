@@ -2,9 +2,15 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 
 import { register, login } from '../../src/services/authentication';
 import { SafeUser } from '../../src/types/user';
-import { request, loginUser, registerUser, getAuthCookie, mockAuthenticatedUser } from '../helpers/app';
+import {
+  request,
+  loginUser,
+  registerUser,
+  getAuthCookie,
+  mockAuthenticatedUser,
+  mockAuthenticationError,
+} from '../helpers/app';
 
-// Mock the authentication service
 vi.mock('../../src/services/authentication');
 
 describe('Auth Routes', () => {
@@ -94,7 +100,6 @@ describe('Auth Routes', () => {
         name: 'Test User',
       } as SafeUser;
 
-      // Mock the user as authenticated
       mockAuthenticatedUser(mockUser);
 
       const response = await request.get('/auth/whoami');
@@ -106,6 +111,137 @@ describe('Auth Routes', () => {
     it('should return 204 if not logged in', async () => {
       const response = await request.get('/auth/whoami/').send();
       expect(response.status).toBe(204);
+    });
+  });
+
+  describe('GET /auth/csrf-token', () => {
+    it('should return CSRF token and set cookie for anonymous users', async () => {
+      mockAuthenticatedUser(null);
+
+      const response = await request.get('/auth/csrf-token');
+
+      expect(response.status).toBe(200);
+      expect(response.body).toHaveProperty('csrfToken');
+      expect(response.body.csrfToken).toMatch(/^[a-f0-9]{64}$/);
+
+      const setCookieHeader = response.get('Set-Cookie');
+      expect(setCookieHeader).toBeDefined();
+
+      const csrfCookie = setCookieHeader?.find((cookie) => cookie.startsWith('csrfToken='));
+      expect(csrfCookie).toBeDefined();
+      expect(csrfCookie).toContain(`csrfToken=${response.body.csrfToken}`);
+      expect(csrfCookie).toContain('SameSite=Strict');
+    });
+
+    it('should return CSRF token and set cookie for authenticated users', async () => {
+      const mockUser: SafeUser = {
+        id: 'user-123',
+        email: 'test@example.com',
+        name: 'Test User',
+      } as SafeUser;
+
+      mockAuthenticatedUser(mockUser);
+
+      const response = await request.get('/auth/csrf-token');
+
+      expect(response.status).toBe(200);
+      expect(response.body).toHaveProperty('csrfToken');
+      expect(response.body.csrfToken).toMatch(/^[a-f0-9]{64}$/);
+
+      const setCookieHeader = response.get('Set-Cookie');
+      expect(setCookieHeader).toBeDefined();
+
+      const csrfCookie = setCookieHeader?.find((cookie) => cookie.startsWith('csrfToken='));
+      expect(csrfCookie).toBeDefined();
+      expect(csrfCookie).toContain(`csrfToken=${response.body.csrfToken}`);
+    });
+
+    it('should generate unique tokens on multiple requests', async () => {
+      mockAuthenticatedUser(null);
+
+      const response1 = await request.get('/auth/csrf-token');
+      const response2 = await request.get('/auth/csrf-token');
+
+      expect(response1.status).toBe(200);
+      expect(response2.status).toBe(200);
+      expect(response1.body.csrfToken).not.toBe(response2.body.csrfToken);
+      expect(response1.body.csrfToken).toMatch(/^[a-f0-9]{64}$/);
+      expect(response2.body.csrfToken).toMatch(/^[a-f0-9]{64}$/);
+    });
+
+    it('should set cookie with correct security attributes in production', async () => {
+      const originalEnv = process.env.NODE_ENV;
+      process.env.NODE_ENV = 'production';
+
+      mockAuthenticatedUser(null);
+
+      const response = await request.get('/auth/csrf-token');
+
+      expect(response.status).toBe(200);
+
+      const setCookieHeader = response.get('Set-Cookie');
+      const csrfCookie = setCookieHeader?.find((cookie) => cookie.startsWith('csrfToken='));
+
+      expect(csrfCookie).toContain('Secure');
+      expect(csrfCookie).toContain('SameSite=Strict');
+
+      process.env.NODE_ENV = originalEnv;
+    });
+
+    it('should set cookie without Secure flag in development', async () => {
+      const originalEnv = process.env.NODE_ENV;
+      process.env.NODE_ENV = 'development';
+
+      mockAuthenticatedUser(null);
+
+      const response = await request.get('/auth/csrf-token');
+
+      expect(response.status).toBe(200);
+
+      const setCookieHeader = response.get('Set-Cookie');
+      const csrfCookie = setCookieHeader?.find((cookie) => cookie.startsWith('csrfToken='));
+
+      expect(csrfCookie).not.toContain('Secure');
+      expect(csrfCookie).toContain('SameSite=Strict');
+
+      process.env.NODE_ENV = originalEnv;
+    });
+
+    it('should handle authentication errors gracefully', async () => {
+      mockAuthenticationError(new Error('Token validation failed'));
+
+      const response = await request.get('/auth/csrf-token');
+
+      expect(response.status).toBe(200);
+      expect(response.body).toHaveProperty('csrfToken');
+      expect(response.body.csrfToken).toMatch(/^[a-f0-9]{64}$/);
+    });
+
+    it('should return valid JSON response format', async () => {
+      mockAuthenticatedUser(null);
+
+      const response = await request.get('/auth/csrf-token');
+
+      expect(response.status).toBe(200);
+      expect(response.type).toBe('application/json');
+      expect(response.body).toEqual({
+        csrfToken: expect.stringMatching(/^[a-f0-9]{64}$/),
+      });
+    });
+
+    it('should work with existing cookies', async () => {
+      mockAuthenticatedUser(null);
+
+      const response = await request
+        .get('/auth/csrf-token')
+        .set('Cookie', ['existingCookie=value', 'anotherCookie=anotherValue']);
+
+      expect(response.status).toBe(200);
+      expect(response.body).toHaveProperty('csrfToken');
+
+      const setCookieHeader = response.get('Set-Cookie');
+      const csrfCookie = setCookieHeader?.find((cookie) => cookie.startsWith('csrfToken='));
+      expect(csrfCookie).toBeDefined();
     });
   });
 });
