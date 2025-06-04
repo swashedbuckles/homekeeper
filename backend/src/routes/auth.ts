@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import rateLimit from 'express-rate-limit';
 import { body as validateBody, validationResult } from 'express-validator';
 import jwt from 'jsonwebtoken';
 
@@ -11,6 +12,11 @@ const router = Router();
 const JWT_EXPIRE_TIME_MS = 600000;
 const JWT_SECRET = process.env.JWT_SECRET || '';
 
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+});
+
 /* ------------ LOGIN ------------ */
 router.get('/login', (req, res) => {
   res.status(200).json({
@@ -19,56 +25,62 @@ router.get('/login', (req, res) => {
   });
 });
 
-router.post('/login', validateBody('email').isEmail(), validateBody('password').notEmpty(), async (req, res) => {
-  const errors = validationResult(req);
+router.post(
+  '/login',
+  limiter,
+  validateBody('email').isEmail(),
+  validateBody('password').notEmpty(),
+  async (req, res) => {
+    const errors = validationResult(req);
 
-  if (!errors.isEmpty()) {
-    return res.status(400).json({
-      error: 'Invalid input',
-      details: errors.array(),
-    });
-  }
-
-  try {
-    const { email, password } = req.body;
-
-    // Call login service directly
-    const { user } = await login(email, password);
-
-    // Create JWT payload
-    const payload: JwtPayload = {
-      email: user.email,
-      id: user.id,
-      expiration: Date.now() + JWT_EXPIRE_TIME_MS,
-    };
-
-    const token = jwt.sign(payload, JWT_SECRET);
-
-    res
-      .cookie('jwt', token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
-      })
-      .status(200)
-      .json({
-        status: 'ok',
-        message: 'Login successful',
-        user: user,
-      });
-  } catch (error) {
-    if (error instanceof Error && error.message === 'Invalid credentials') {
-      return res.status(401).json({
-        error: 'Invalid email or password',
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        error: 'Invalid input',
+        details: errors.array(),
       });
     }
 
-    console.error('Login error:', error);
-    return res.status(500).json({
-      error: 'Internal server error',
-    });
-  }
-});
+    try {
+      const { email, password } = req.body;
+
+      // Call login service directly
+      const { user } = await login(email, password);
+
+      // Create JWT payload
+      const payload: JwtPayload = {
+        email: user.email,
+        id: user.id,
+        expiration: Date.now() + JWT_EXPIRE_TIME_MS,
+      };
+
+      const token = jwt.sign(payload, JWT_SECRET);
+
+      res
+        .cookie('jwt', token, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: 'strict',
+        })
+        .status(200)
+        .json({
+          status: 'ok',
+          message: 'Login successful',
+          user: user,
+        });
+    } catch (error) {
+      if (error instanceof Error && error.message === 'Invalid credentials') {
+        return res.status(401).json({
+          error: 'Invalid email or password',
+        });
+      }
+
+      console.error('Login error:', error);
+      return res.status(500).json({
+        error: 'Internal server error',
+      });
+    }
+  },
+);
 /* ------------ /LOGIN ------------ */
 
 /* ------------ REGISTRATION ------------ */
@@ -81,6 +93,7 @@ router.get('/register', (req, res) => {
 
 router.post(
   '/register',
+  limiter,
   validateBody('email').isEmail(),
   validateBody('name').isString().notEmpty(),
   validateBody('password').isString().notEmpty().isStrongPassword(),
