@@ -1,4 +1,4 @@
-import type { Request, Response, NextFunction } from 'express';
+import type { NextFunction, Request, Response } from 'express';
 import passport from 'passport';
 
 import { ERROR_MESSAGES, HTTP_STATUS } from '../constants';

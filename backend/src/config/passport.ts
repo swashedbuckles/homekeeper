@@ -2,16 +2,16 @@ import type { Request } from 'express';
 import passport from 'passport';
 import {
   Strategy as JWTStrategy,
-  StrategyOptionsWithoutRequest,
-  JwtFromRequestFunction,
-  VerifyCallback,
+  type JwtFromRequestFunction,
+  type StrategyOptionsWithoutRequest,
+  type VerifyCallback,
 } from 'passport-jwt';
-import { Strategy as LocalStrategy, VerifyFunction } from 'passport-local';
+import { Strategy as LocalStrategy, type VerifyFunction } from 'passport-local';
 
 import { ERROR_MESSAGES, JWT_COOKIE_NAME, JWT_SECRET } from '../constants';
 import { User } from '../models/user';
 import { login } from '../services/auth';
-import { UserDocument } from '../types/user';
+import type { UserDocument } from '../types/user';
 
 /**
  * Used for authentication and user lookup
@@ -23,7 +23,7 @@ export type JwtPayload = {
 };
 
 export const jwtFromRequest: JwtFromRequestFunction = (req: Request) => {
-  return req && req.cookies ? (req.cookies[JWT_COOKIE_NAME] ?? null) : null;
+  return req?.cookies ? (req.cookies[JWT_COOKIE_NAME] ?? null) : null;
 };
 
 const jwtOptions: StrategyOptionsWithoutRequest = {
@@ -83,7 +83,7 @@ export const localVerifyFn: VerifyFunction = async (email, password, done) => {
   try {
     const { user: result } = await login(email, password);
     return done(null, result);
-  } catch (error) {
+  } catch (_error) {
     return done(null, false, { message: ERROR_MESSAGES.INVALID_CREDENTIALS });
   }
 };

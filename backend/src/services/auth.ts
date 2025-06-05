@@ -1,6 +1,6 @@
 import { ERROR_MESSAGES } from '../constants';
 import { User } from '../models/user';
-import { SafeUser, UserDocument } from '../types/user';
+import type { SafeUser, UserDocument } from '../types/user';
 
 /** Return from authentication helpers; may expand to include JWT info */
 export type AuthenticationData = { user: SafeUser };

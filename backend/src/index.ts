@@ -14,7 +14,7 @@ import { configurePassport } from './config/passport';
 import { DEFAULT_PORT, HTTP_STATUS, RESPONSE_MESSAGES } from './constants';
 import { requireAuth } from './middleware/auth';
 import { csrfProtection } from './middleware/csrf';
-import authRouter from './routes/auth';
+import { router as authRouter } from './routes/auth';
 
 dotenv.config();
 
@@ -43,7 +43,7 @@ export const createApp = (): express.Application => {
 
   app.use('/auth', authRouter);
 
-  app.get('/api/health', (req, res) => {
+  app.get('/api/health', (_req, res) => {
     res.status(HTTP_STATUS.OK).json({ message: RESPONSE_MESSAGES.API_RUNNING });
   });
 
@@ -55,7 +55,7 @@ export const createApp = (): express.Application => {
   });
 
   // Root health check for easier debugging
-  app.get('/', (req, res) => {
+  app.get('/', (_req, res) => {
     res.status(HTTP_STATUS.OK).json({ message: RESPONSE_MESSAGES.SERVER_RUNNING });
   });
 

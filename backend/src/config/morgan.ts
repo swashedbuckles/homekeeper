@@ -2,7 +2,7 @@ import type { Request, Response } from 'express';
 import type { Options } from 'morgan';
 import morgan from 'morgan';
 
-import { SafeUser } from '../types/user';
+import type { SafeUser } from '../types/user';
 
 /**
  * The `safe-body` token represents the request body

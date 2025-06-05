@@ -1,7 +1,7 @@
-import crypto from 'crypto';
+import crypto from 'node:crypto';
 
-import type { Request, Response, NextFunction } from 'express';
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import type { NextFunction, Request, Response } from 'express';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { csrfProtection, generateCSRFToken } from '../../src/middleware/csrf';
 

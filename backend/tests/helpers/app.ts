@@ -1,18 +1,18 @@
-import { NextFunction, Request, Response } from 'express';
+import type { NextFunction, Request, Response } from 'express';
 import passport from 'passport';
 import supertest from 'supertest';
 import { vi } from 'vitest';
 
 import { JWT_COOKIE_NAME } from '../../src/constants';
 import { createApp } from '../../src/index';
-import { RegistrationParams } from '../../src/services/auth';
+import type { RegistrationParams } from '../../src/services/auth';
 import type { SafeUser } from '../../src/types/user';
 
 // Mock passport globally for tests
 vi.mock('passport', () => ({
   default: {
     authenticate: vi.fn(),
-    initialize: vi.fn(() => (req: Request, res: Response, next: NextFunction) => next()),
+    initialize: vi.fn(() => (_req: Request, _res: Response, next: NextFunction) => next()),
     use: vi.fn(),
   },
 }));
@@ -29,13 +29,13 @@ type TestRes = supertest.Test;
  * @param user User or User-like object
  */
 export const mockAuthenticatedUser = (user: SafeUser | null): void => {
-  vi.mocked(passport.authenticate).mockImplementation((strategy, options, callback) => {
-    return (req: Request, res: Response, next: NextFunction): void => {
+  vi.mocked(passport.authenticate).mockImplementation((_strategy, _options, callback) => {
+    return (req: Request, _res: Response, next: NextFunction): void => {
       if (user) {
         req.user = user;
-        callback!(null, user);
+        callback?.(null, user);
       } else {
-        callback!(null, null);
+        callback?.(null, null);
       }
       next();
     };
@@ -44,9 +44,9 @@ export const mockAuthenticatedUser = (user: SafeUser | null): void => {
 
 // Helper to mock authentication error
 export const mockAuthenticationError = (error: Error) => {
-  vi.mocked(passport.authenticate).mockImplementation((strategy, options, callback) => {
-    return (req: Request, res: Response, next: NextFunction): void => {
-      callback!(error, null);
+  vi.mocked(passport.authenticate).mockImplementation((_strategy, _options, callback) => {
+    return (_req: Request, _res: Response, next: NextFunction): void => {
+      callback?.(error, null);
       next();
     };
   });

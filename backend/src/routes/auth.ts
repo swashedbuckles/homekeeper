@@ -4,7 +4,7 @@ import { body as validateBody, validationResult } from 'express-validator';
 import jwt from 'jsonwebtoken';
 
 import { csrfCookie, jwtCookie } from '../config/cookies';
-import { JwtPayload } from '../config/passport';
+import type { JwtPayload } from '../config/passport';
 import {
   CSRF_COOKIE_NAME,
   ERROR_MESSAGES,
@@ -18,9 +18,9 @@ import {
 } from '../constants';
 import { optionalAuth } from '../middleware/auth';
 import { generateCSRFToken } from '../middleware/csrf';
-import { register, login } from '../services/auth';
+import { login, register } from '../services/auth';
 
-const router = Router();
+export const router = Router();
 
 const limiter = rateLimit({
   windowMs: RATE_LIMIT_WINDOW_MS,
@@ -28,7 +28,7 @@ const limiter = rateLimit({
 });
 
 /* ------------ LOGIN ------------ */
-router.get('/login', (req, res) => {
+router.get('/login', (_req, res) => {
   res.status(HTTP_STATUS.OK).json({
     message: 'GET Login',
   });
@@ -95,7 +95,7 @@ router.post(
 /* ------------ /LOGIN ------------ */
 
 /* ------------ REGISTRATION ------------ */
-router.get('/register', (req, res) => {
+router.get('/register', (_req, res) => {
   res.status(HTTP_STATUS.OK).json({
     message: 'GET Register',
   });
@@ -140,7 +140,7 @@ router.post(
 );
 /* ------------ /REGISTRATION------------ */
 
-router.get('/csrf-token', optionalAuth, (req, res) => {
+router.get('/csrf-token', optionalAuth, (_req, res) => {
   const token = generateCSRFToken();
 
   res.cookie('csrfToken', token, csrfCookie()).json({ csrfToken: token });
@@ -172,5 +172,3 @@ router.get('/whoami', optionalAuth, (req, res) => {
     user: {},
   });
 });
-
-export default router;

@@ -1,4 +1,4 @@
-import { Types, HydratedDocument, Model } from 'mongoose';
+import type { HydratedDocument, Model, Types } from 'mongoose';
 
 /**
  * Base type for User Model

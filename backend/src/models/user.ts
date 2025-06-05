@@ -3,7 +3,7 @@ import { Schema, model } from 'mongoose';
 import { isEmail } from 'validator';
 
 import { BCRYPT_SALT_ROUNDS } from '../constants';
-import type { IUser, IUserModel, IUserMethods, SafeUser, UserDocument } from '../types/user';
+import type { IUser, IUserMethods, IUserModel, SafeUser, UserDocument } from '../types/user';
 export type * from '../types/user.d'; // so we don't have to go searching for the type file
 
 const userSchema = new Schema<IUser, IUserModel, IUserMethods>(
