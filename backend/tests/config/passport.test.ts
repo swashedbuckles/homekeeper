@@ -1,7 +1,12 @@
 import type { Request } from 'express';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
-import { jwtVerifyCallback, localVerifyFn, jwtFromRequest, type JwtPayload } from '../../src/config/passport';
+import {
+  jwtVerifyCallback,
+  localVerifyFn,
+  jwtFromRequest,
+  type JwtPayload,
+} from '../../src/config/passport';
 import { User } from '../../src/models/user';
 import { login } from '../../src/services/auth';
 import type { UserDocument, SafeUser } from '../../src/types/user';

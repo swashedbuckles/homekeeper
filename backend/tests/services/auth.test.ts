@@ -165,14 +165,18 @@ describe('Authentication Service', () => {
       const fakeUserId = '507f1f77bcf86cd799439011';
       const newPassword = 'newpassword456';
 
-      await expect(changePassword(fakeUserId, testUser.password, newPassword)).rejects.toThrow();
+      await expect(
+        changePassword(fakeUserId, testUser.password, newPassword),
+      ).rejects.toThrow();
     });
 
     it('should throw error for invalid user ID', async () => {
       const invalidUserId = 'invalid-id';
       const newPassword = 'newpassword456';
 
-      await expect(changePassword(invalidUserId, testUser.password, newPassword)).rejects.toThrow();
+      await expect(
+        changePassword(invalidUserId, testUser.password, newPassword),
+      ).rejects.toThrow();
     });
 
     it('should throw error for empty old password', async () => {

@@ -42,7 +42,10 @@ const jwtOptions: StrategyOptionsWithoutRequest = {
  * @param done next callback
  * @returns nothing
  */
-export const jwtVerifyCallback: VerifyCallback = async (jwtPayload: JwtPayload | null, done) => {
+export const jwtVerifyCallback: VerifyCallback = async (
+  jwtPayload: JwtPayload | null,
+  done,
+) => {
   if (!jwtPayload) {
     return done(null, false, { message: ERROR_MESSAGES.NO_JWT_PAYLOAD });
   }

@@ -14,22 +14,28 @@ import type { SafeUser } from '../types/user';
  * @param next call next middleware
  */
 export const requireAuth = (req: Request, res: Response, next: NextFunction): void => {
-  passport.authenticate('jwt', { session: false }, (err: unknown, user: SafeUser, info: { message: string }) => {
-    if (err) {
-      /** @todo internal vs. external status -- exposing Authentication Error vs. Server Error */
-      return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ error: ERROR_MESSAGES.AUTHENTICATION_ERROR });
-    }
+  passport.authenticate(
+    'jwt',
+    { session: false },
+    (err: unknown, user: SafeUser, info: { message: string }) => {
+      if (err) {
+        /** @todo internal vs. external status -- exposing Authentication Error vs. Server Error */
+        return res
+          .status(HTTP_STATUS.INTERNAL_SERVER_ERROR)
+          .json({ error: ERROR_MESSAGES.AUTHENTICATION_ERROR });
+      }
 
-    if (!user) {
-      return res.status(HTTP_STATUS.UNAUTHORIZED).json({
-        error: ERROR_MESSAGES.UNAUTHORIZED,
-        message: info?.message || ERROR_MESSAGES.AUTHENTICATION_REQUIRED,
-      });
-    }
+      if (!user) {
+        return res.status(HTTP_STATUS.UNAUTHORIZED).json({
+          error: ERROR_MESSAGES.UNAUTHORIZED,
+          message: info?.message || ERROR_MESSAGES.AUTHENTICATION_REQUIRED,
+        });
+      }
 
-    req.user = user;
-    next();
-  })(req, res, next);
+      req.user = user;
+      next();
+    },
+  )(req, res, next);
 };
 
 /**

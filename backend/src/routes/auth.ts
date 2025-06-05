@@ -117,7 +117,9 @@ router.post(
     } catch (error) {
       if (error instanceof Error && error.message === 'User already exists') {
         /** @todo send registration attempt notification */
-        console.log(`[AUTH_INFO] Registration attempt for existing user: ${email} from ${req.ip}`);
+        console.log(
+          `[AUTH_INFO] Registration attempt for existing user: ${email} from ${req.ip}`,
+        );
 
         res.status(HTTP_STATUS.CREATED).json({
           message: RESPONSE_MESSAGES.REGISTRATION_SUCCESS,

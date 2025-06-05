@@ -53,7 +53,11 @@ export async function login(email: string, password: string): Promise<Authentica
  * @param newPassword new password
  * @returns Authenticated User
  */
-export async function changePassword(userId: string, oldPassword: string, newPassword: string): Promise<SafeUser> {
+export async function changePassword(
+  userId: string,
+  oldPassword: string,
+  newPassword: string,
+): Promise<SafeUser> {
   const user = (await User.findById(userId)) as UserDocument | null;
   if (!user) {
     throw new Error(ERROR_MESSAGES.USER_NOT_FOUND);
