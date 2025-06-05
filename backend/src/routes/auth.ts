@@ -62,7 +62,9 @@ router.post(
         message: 'Login successful',
         user: user,
       });
+      console.log(`[AUTH_SUCCESS] Login: ${user.email} from ${req.ip}`);
     } catch (error) {
+      console.log(`[AUTH_FAILED] Login attempt: ${req.body.email || 'unknown'} from ${req.ip}`);
       if (error instanceof Error && error.message === 'Invalid credentials') {
         return res.status(401).json({
           status: 'failure',
@@ -105,8 +107,10 @@ router.post(
         message: 'Registration successful',
         user: newUser.user,
       });
+      console.log(`[AUTH_SUCCESS] Registration: ${newUser.user.email} from ${req.ip}`);
     } catch (error) {
       if (error instanceof Error && error.message === 'User already exists') {
+        console.log(`[AUTH_INFO] Registration attempt for existing user: ${email} from ${req.ip}`);
         /** @todo send registration attempt notification */
         res.status(201).json({
           status: 'ok',
@@ -131,6 +135,7 @@ router.get('/csrf-token', optionalAuth, (req, res) => {
 
 router.get('/logout', (req, res) => {
   if (req.cookies['jwt']) {
+    console.log(`[AUTH_INFO] Logout from ${req.ip}`);
     return res.clearCookie('jwt').status(200).json({
       status: 'ok',
       message: 'You have logged out',
