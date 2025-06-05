@@ -43,10 +43,12 @@ router.post(
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-      return res.status(HTTP_STATUS.BAD_REQUEST).json({
+      res.status(HTTP_STATUS.BAD_REQUEST).json({
         error: 'Invalid input',
         details: errors.array(),
       });
+
+      return;
     }
 
     try {
@@ -77,13 +79,16 @@ router.post(
       console.log(`[AUTH_FAILED] Login attempt: ${req.body.email || 'unknown'} from ${req.ip}`);
 
       if (error instanceof Error && error.message === 'Invalid credentials') {
-        return res.status(HTTP_STATUS.UNAUTHORIZED).json({
+        res.status(HTTP_STATUS.UNAUTHORIZED).json({
           error: ERROR_MESSAGES.INVALID_CREDENTIALS,
         });
+        return;
       }
-      return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+
+      res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
         error: ERROR_MESSAGES.INTERNAL_SERVER_ERROR,
       });
+      return;
     }
   },
 );
@@ -127,7 +132,7 @@ router.post(
       }
 
       console.error('Registration error:', error);
-      return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+      res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
         error: ERROR_MESSAGES.INTERNAL_SERVER_ERROR,
       });
     }
@@ -144,24 +149,26 @@ router.get('/csrf-token', optionalAuth, (req, res) => {
 router.get('/logout', (req, res) => {
   if (req.cookies[JWT_COOKIE_NAME]) {
     console.log(`[AUTH_INFO] Logout from ${req.ip}`);
-    return res.clearCookie(JWT_COOKIE_NAME).status(HTTP_STATUS.OK).json({
+    res.clearCookie(JWT_COOKIE_NAME).status(HTTP_STATUS.OK).json({
       message: RESPONSE_MESSAGES.LOGOUT_SUCCESS,
     });
+    return;
   }
 
-  return res.status(HTTP_STATUS.OK).json({
+  res.status(HTTP_STATUS.OK).json({
     message: RESPONSE_MESSAGES.LOGOUT_SUCCESS,
   });
 });
 
 router.get('/whoami', optionalAuth, (req, res) => {
   if (req.user) {
-    return res.status(HTTP_STATUS.OK).json({
+    res.status(HTTP_STATUS.OK).json({
       user: req.user,
     });
+    return;
   }
 
-  return res.status(HTTP_STATUS.NO_CONTENT).json({
+  res.status(HTTP_STATUS.NO_CONTENT).json({
     user: {},
   });
 });
