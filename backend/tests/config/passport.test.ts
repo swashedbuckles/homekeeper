@@ -3,12 +3,12 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 import { jwtVerifyCallback, localVerifyFn, jwtFromRequest, type JwtPayload } from '../../src/config/passport';
 import { User } from '../../src/models/user';
-import { login } from '../../src/services/authentication';
+import { login } from '../../src/services/auth';
 import type { UserDocument, SafeUser } from '../../src/types/user';
 
 // Mock dependencies
 vi.mock('../../src/models/user');
-vi.mock('../../src/services/authentication');
+vi.mock('../../src/services/auth');
 
 describe('Passport Strategy Callbacks', () => {
   const mockDone = vi.fn();

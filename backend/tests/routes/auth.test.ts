@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 
-import { register, login } from '../../src/services/authentication';
+import { register, login } from '../../src/services/auth';
 import { SafeUser } from '../../src/types/user';
 import {
   request,
@@ -11,7 +11,7 @@ import {
   mockAuthenticationError,
 } from '../helpers/app';
 
-vi.mock('../../src/services/authentication');
+vi.mock('../../src/services/auth');
 
 describe('Auth Routes', () => {
   beforeEach(() => {

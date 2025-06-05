@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 
 import { User } from '../../src/models/user';
-import { register, login, changePassword, RegistrationParams } from '../../src/services/authentication';
+import { register, login, changePassword, RegistrationParams } from '../../src/services/auth';
 
 describe('Authentication Service', () => {
   describe('register', () => {

@@ -2,14 +2,14 @@ import crypto from 'crypto';
 
 import type { Request, Response, NextFunction } from 'express';
 
-const FILTERED_METHODS = ['POST', 'PUT', 'DELETE', 'PATCH'];
+import { CSRF_PROTECTED_METHODS, CSRF_TOKEN_BYTES, ERROR_MESSAGES, HTTP_STATUS } from '../constants';
 
 /**
  * Use crypto to generate a string for CSRF token -- locking down cross site forgery
  *
  * @returns csrf token -- random string
  */
-export const generateCSRFToken = (): string => crypto.randomBytes(32).toString('hex');
+export const generateCSRFToken = (): string => crypto.randomBytes(CSRF_TOKEN_BYTES).toString('hex');
 
 /**
  * Middleware that checks a token in the cookie against the one presented in
@@ -20,7 +20,7 @@ export const generateCSRFToken = (): string => crypto.randomBytes(32).toString('
  * @param next next function
  */
 export const csrfProtection = (req: Request, res: Response, next: NextFunction): void => {
-  if (FILTERED_METHODS.includes(req.method)) {
+  if ((CSRF_PROTECTED_METHODS as string[]).includes(req.method)) {
     const tokenFromHeader = req?.headers?.['x-csrf-token'];
     const tokenFromCookie = req?.cookies?.csrfToken;
 
@@ -28,7 +28,7 @@ export const csrfProtection = (req: Request, res: Response, next: NextFunction):
     const tokensDontMatch = tokenFromCookie !== tokenFromHeader;
 
     if (noTokens || tokensDontMatch) {
-      res.status(403).json({ error: 'Forbidden' });
+      res.status(HTTP_STATUS.FORBIDDEN).json({ error: ERROR_MESSAGES.FORBIDDEN });
 
       return;
     }

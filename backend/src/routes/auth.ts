@@ -5,24 +5,31 @@ import jwt from 'jsonwebtoken';
 
 import { csrfCookie, jwtCookie } from '../config/cookies';
 import { JwtPayload } from '../config/passport';
+import {
+  CSRF_COOKIE_NAME,
+  ERROR_MESSAGES,
+  HTTP_STATUS,
+  JWT_COOKIE_NAME,
+  JWT_EXPIRE_TIME_MS,
+  JWT_SECRET,
+  RATE_LIMIT_MAX_REQUESTS,
+  RATE_LIMIT_WINDOW_MS,
+  RESPONSE_MESSAGES,
+} from '../constants';
 import { optionalAuth } from '../middleware/auth';
 import { generateCSRFToken } from '../middleware/csrf';
-import { register, login } from '../services/authentication';
+import { register, login } from '../services/auth';
 
 const router = Router();
 
-const JWT_EXPIRE_TIME_MS = 600000;
-const JWT_SECRET = process.env.JWT_SECRET || '';
-
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 5,
+  windowMs: RATE_LIMIT_WINDOW_MS,
+  max: RATE_LIMIT_MAX_REQUESTS,
 });
 
 /* ------------ LOGIN ------------ */
 router.get('/login', (req, res) => {
-  res.status(200).json({
-    status: 'ok',
+  res.status(HTTP_STATUS.OK).json({
     message: 'GET Login',
   });
 });
@@ -36,7 +43,7 @@ router.post(
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-      return res.status(400).json({
+      return res.status(HTTP_STATUS.BAD_REQUEST).json({
         error: 'Invalid input',
         details: errors.array(),
       });
@@ -57,25 +64,25 @@ router.post(
 
       const token = jwt.sign(payload, JWT_SECRET);
 
-      res.cookie('jwt', token, jwtCookie()).cookie('csrfToken', generateCSRFToken(), csrfCookie()).status(200).json({
-        status: 'ok',
-        message: 'Login successful',
-        user: user,
-      });
+      res
+        .cookie(JWT_COOKIE_NAME, token, jwtCookie())
+        .cookie(CSRF_COOKIE_NAME, generateCSRFToken(), csrfCookie())
+        .status(HTTP_STATUS.OK)
+        .json({
+          message: RESPONSE_MESSAGES.LOGIN_SUCCESS,
+          user: user,
+        });
       console.log(`[AUTH_SUCCESS] Login: ${user.email} from ${req.ip}`);
     } catch (error) {
       console.log(`[AUTH_FAILED] Login attempt: ${req.body.email || 'unknown'} from ${req.ip}`);
+
       if (error instanceof Error && error.message === 'Invalid credentials') {
-        return res.status(401).json({
-          status: 'failure',
-          error: 'Invalid credentials',
+        return res.status(HTTP_STATUS.UNAUTHORIZED).json({
+          error: ERROR_MESSAGES.INVALID_CREDENTIALS,
         });
       }
-
-      console.error('Login error:', error);
-      return res.status(500).json({
-        status: 'failure',
-        error: 'Internal server error',
+      return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+        error: ERROR_MESSAGES.INTERNAL_SERVER_ERROR,
       });
     }
   },
@@ -84,8 +91,7 @@ router.post(
 
 /* ------------ REGISTRATION ------------ */
 router.get('/register', (req, res) => {
-  res.status(200).json({
-    status: 'ok',
+  res.status(HTTP_STATUS.OK).json({
     message: 'GET Register',
   });
 });
@@ -102,25 +108,25 @@ router.post(
       const newUser = await register({ email, password, name });
 
       /** @todo send verification email */
-      res.status(201).json({
-        status: 'ok',
-        message: 'Registration successful',
+      res.status(HTTP_STATUS.CREATED).json({
+        message: RESPONSE_MESSAGES.REGISTRATION_SUCCESS,
         user: newUser.user,
       });
+
       console.log(`[AUTH_SUCCESS] Registration: ${newUser.user.email} from ${req.ip}`);
     } catch (error) {
       if (error instanceof Error && error.message === 'User already exists') {
-        console.log(`[AUTH_INFO] Registration attempt for existing user: ${email} from ${req.ip}`);
         /** @todo send registration attempt notification */
-        res.status(201).json({
-          status: 'ok',
-          message: 'Registration successful.',
+        console.log(`[AUTH_INFO] Registration attempt for existing user: ${email} from ${req.ip}`);
+
+        res.status(HTTP_STATUS.CREATED).json({
+          message: RESPONSE_MESSAGES.REGISTRATION_SUCCESS,
         });
       }
 
       console.error('Registration error:', error);
-      return res.status(500).json({
-        error: 'Internal server error',
+      return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+        error: ERROR_MESSAGES.INTERNAL_SERVER_ERROR,
       });
     }
   },
@@ -134,30 +140,26 @@ router.get('/csrf-token', optionalAuth, (req, res) => {
 });
 
 router.get('/logout', (req, res) => {
-  if (req.cookies['jwt']) {
+  if (req.cookies[JWT_COOKIE_NAME]) {
     console.log(`[AUTH_INFO] Logout from ${req.ip}`);
-    return res.clearCookie('jwt').status(200).json({
-      status: 'ok',
-      message: 'You have logged out',
+    return res.clearCookie(JWT_COOKIE_NAME).status(HTTP_STATUS.OK).json({
+      message: RESPONSE_MESSAGES.LOGOUT_SUCCESS,
     });
   }
 
-  return res.status(200).json({
-    status: 'ok',
-    message: 'You have logged out',
+  return res.status(HTTP_STATUS.OK).json({
+    message: RESPONSE_MESSAGES.LOGOUT_SUCCESS,
   });
 });
 
 router.get('/whoami', optionalAuth, (req, res) => {
   if (req.user) {
-    return res.status(200).json({
-      status: 'ok',
+    return res.status(HTTP_STATUS.OK).json({
       user: req.user,
     });
   }
 
-  return res.status(204).json({
-    status: 'ok',
+  return res.status(HTTP_STATUS.NO_CONTENT).json({
     user: {},
   });
 });

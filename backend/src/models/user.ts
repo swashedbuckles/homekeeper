@@ -2,6 +2,7 @@ import bcrypt from 'bcryptjs';
 import { Schema, model } from 'mongoose';
 import { isEmail } from 'validator';
 
+import { BCRYPT_SALT_ROUNDS } from '../constants';
 import type { IUser, IUserModel, IUserMethods, SafeUser, UserDocument } from '../types/user';
 export type * from '../types/user.d'; // so we don't have to go searching for the type file
 
@@ -86,7 +87,7 @@ userSchema.pre('save', async function (next) {
   }
 
   try {
-    const salt = await bcrypt.genSalt(12);
+    const salt = await bcrypt.genSalt(BCRYPT_SALT_ROUNDS);
     this.password = await bcrypt.hash(this.password, salt);
     next();
   } catch (error) {

@@ -10,11 +10,11 @@ import passport from 'passport';
 import { corsOptions } from './config/cors';
 import { helmetConfig } from './config/helmet';
 import { authLogFormat, authMorganConfig, morganConfig, morganFormat } from './config/morgan';
+import { configurePassport } from './config/passport';
+import { DEFAULT_PORT, HTTP_STATUS, RESPONSE_MESSAGES } from './constants';
 import { requireAuth } from './middleware/auth';
 import { csrfProtection } from './middleware/csrf';
 import authRouter from './routes/auth';
-
-import './config/passport'; // authentication strategies
 
 dotenv.config();
 
@@ -26,6 +26,8 @@ dotenv.config();
  */
 export const createApp = (): express.Application => {
   const app = express();
+
+  configurePassport();
 
   app.use(cookieParser());
   app.use(cors(corsOptions));
@@ -42,11 +44,11 @@ export const createApp = (): express.Application => {
   app.use('/auth', authRouter);
 
   app.get('/api/health', (req, res) => {
-    res.status(200).json({ status: 'ok', message: 'API server is running' });
+    res.status(HTTP_STATUS.OK).json({ message: RESPONSE_MESSAGES.API_RUNNING });
   });
 
   app.get('/protected', requireAuth, (req, res) => {
-    res.status(200).json({
+    res.status(HTTP_STATUS.OK).json({
       message: 'Welcome to the protected route!',
       user: req.user,
     });
@@ -54,7 +56,7 @@ export const createApp = (): express.Application => {
 
   // Root health check for easier debugging
   app.get('/', (req, res) => {
-    res.status(200).json({ status: 'ok', message: 'Server is running' });
+    res.status(HTTP_STATUS.OK).json({ message: RESPONSE_MESSAGES.SERVER_RUNNING });
   });
 
   return app;
@@ -87,7 +89,7 @@ const connectDB = async (): Promise<void> => {
  * app should handle it
  */
 const startServer = async (): Promise<void> => {
-  const port = process.env.PORT || 4000;
+  const port = DEFAULT_PORT;
   const app = createApp();
 
   try {

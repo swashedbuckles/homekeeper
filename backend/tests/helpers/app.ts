@@ -3,8 +3,9 @@ import passport from 'passport';
 import supertest from 'supertest';
 import { vi } from 'vitest';
 
+import { JWT_COOKIE_NAME } from '../../src/constants';
 import { createApp } from '../../src/index';
-import { RegistrationParams } from '../../src/services/authentication';
+import { RegistrationParams } from '../../src/services/auth';
 import type { SafeUser } from '../../src/types/user';
 
 // Mock passport globally for tests
@@ -82,7 +83,6 @@ export const getAuthCookie = (response: supertest.Response): string | undefined 
     return;
   }
 
-  /** @todo extract cookie name to a common place */
-  const jwtCookie = setCookieHeader.find((cookie) => cookie.startsWith('jwt='));
+  const jwtCookie = setCookieHeader.find((cookie) => cookie.startsWith(`${JWT_COOKIE_NAME}=`));
   return jwtCookie?.split(';')[0];
 };

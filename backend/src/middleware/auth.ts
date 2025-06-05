@@ -1,6 +1,7 @@
 import type { Request, Response, NextFunction } from 'express';
 import passport from 'passport';
 
+import { ERROR_MESSAGES, HTTP_STATUS } from '../constants';
 import type { SafeUser } from '../types/user';
 
 /** @todo redirect to login */
@@ -16,13 +17,13 @@ export const requireAuth = (req: Request, res: Response, next: NextFunction): vo
   passport.authenticate('jwt', { session: false }, (err: unknown, user: SafeUser, info: { message: string }) => {
     if (err) {
       /** @todo internal vs. external status -- exposing Authentication Error vs. Server Error */
-      return res.status(500).json({ error: 'Authentication error' });
+      return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ error: ERROR_MESSAGES.AUTHENTICATION_ERROR });
     }
 
     if (!user) {
-      return res.status(401).json({
-        error: 'Unauthorized',
-        message: info?.message || 'Authentication required',
+      return res.status(HTTP_STATUS.UNAUTHORIZED).json({
+        error: ERROR_MESSAGES.UNAUTHORIZED,
+        message: info?.message || ERROR_MESSAGES.AUTHENTICATION_REQUIRED,
       });
     }
 

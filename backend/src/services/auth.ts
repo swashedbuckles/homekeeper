@@ -1,3 +1,4 @@
+import { ERROR_MESSAGES } from '../constants';
 import { User } from '../models/user';
 import { SafeUser, UserDocument } from '../types/user';
 
@@ -15,7 +16,7 @@ export type RegistrationParams = Pick<UserDocument, 'email' | 'password' | 'name
 export async function register(userData: RegistrationParams): Promise<AuthenticationData> {
   const existingUser = await User.findByEmail(userData.email);
   if (existingUser) {
-    throw new Error('User already exists');
+    throw new Error(ERROR_MESSAGES.USER_ALREADY_EXISTS);
   }
 
   const user = await User.createUser(userData);
@@ -33,12 +34,12 @@ export async function login(email: string, password: string): Promise<Authentica
   const user = await User.findByEmail(email);
 
   if (!user) {
-    throw new Error('Invalid credentials');
+    throw new Error(ERROR_MESSAGES.INVALID_CREDENTIALS);
   }
 
   const isMatch = await user.comparePassword(password);
   if (!isMatch) {
-    throw new Error('Invalid credentials'); /** @todo type for authentication error */
+    throw new Error(ERROR_MESSAGES.INVALID_CREDENTIALS);
   }
 
   return { user: user.toSafeObject() };
@@ -55,11 +56,11 @@ export async function login(email: string, password: string): Promise<Authentica
 export async function changePassword(userId: string, oldPassword: string, newPassword: string): Promise<SafeUser> {
   const user = (await User.findById(userId)) as UserDocument | null;
   if (!user) {
-    throw new Error('User not found');
+    throw new Error(ERROR_MESSAGES.USER_NOT_FOUND);
   }
   const isMatch = await user.comparePassword(oldPassword);
   if (!isMatch) {
-    throw new Error('Invalid current password');
+    throw new Error(ERROR_MESSAGES.INVALID_CURRENT_PASSWORD);
   }
 
   user.password = newPassword;
