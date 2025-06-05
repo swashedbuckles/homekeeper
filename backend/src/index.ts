@@ -9,6 +9,7 @@ import passport from 'passport';
 
 import { corsOptions } from './config/cors';
 import { helmetConfig } from './config/helmet';
+import { authLogFormat, authMorganConfig, morganConfig, morganFormat } from './config/morgan';
 import { requireAuth } from './middleware/auth';
 import { csrfProtection } from './middleware/csrf';
 import authRouter from './routes/auth';
@@ -26,12 +27,13 @@ dotenv.config();
 export const createApp = (): express.Application => {
   const app = express();
 
-  app.use(cors(corsOptions));
-  app.use(helmet(helmetConfig));
-  app.use(morgan('dev'));
-  app.use(express.json());
   app.use(cookieParser());
+  app.use(cors(corsOptions));
+  app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
+  app.use(helmet(helmetConfig));
+  app.use(morgan(authLogFormat, authMorganConfig()));
+  app.use(morgan(morganFormat(), morganConfig()));
   app.use(passport.initialize());
 
   app.use('/api', csrfProtection);
