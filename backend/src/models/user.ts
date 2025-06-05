@@ -64,7 +64,11 @@ const userSchema = new Schema<IUser, IUserModel, IUserMethods>(
     },
 
     statics: {
-      createUser(userData: { email: string; password: string; name: string }): Promise<UserDocument> {
+      createUser(userData: {
+        email: string;
+        password: string;
+        name: string;
+      }): Promise<UserDocument> {
         const user = new this(userData);
         return user.save() as Promise<UserDocument>; // workaround for struggling with mongoose typing.
       },

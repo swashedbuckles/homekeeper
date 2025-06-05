@@ -20,7 +20,9 @@ describe('Auth Routes', () => {
 
   describe('POST /auth/login', () => {
     it('should return 400 for invalid email', async () => {
-      const response = await request.post('/auth/login').send({ email: 'invalid-email', password: 'password123' });
+      const response = await request
+        .post('/auth/login')
+        .send({ email: 'invalid-email', password: 'password123' });
 
       expect(response.status).toBe(400);
       expect(response.body.error).toBe('Invalid input');
@@ -36,7 +38,11 @@ describe('Auth Routes', () => {
     });
 
     it('should return 200 with JWT cookie on success', async () => {
-      const mockUser = { id: 'user-123', email: 'test@example.com', name: 'Test User' } as SafeUser;
+      const mockUser = {
+        id: 'user-123',
+        email: 'test@example.com',
+        name: 'Test User',
+      } as SafeUser;
       vi.mocked(login).mockResolvedValue({ user: mockUser });
 
       const response = await loginUser('test@example.com', 'password123');
@@ -52,7 +58,11 @@ describe('Auth Routes', () => {
 
   describe('POST /auth/register', () => {
     it('should return 201 on successful registration', async () => {
-      const mockUser = { id: 'user-123', email: 'new@example.com', name: 'New User' } as SafeUser;
+      const mockUser = {
+        id: 'user-123',
+        email: 'new@example.com',
+        name: 'New User',
+      } as SafeUser;
       vi.mocked(register).mockResolvedValue({ user: mockUser });
 
       const response = await registerUser({

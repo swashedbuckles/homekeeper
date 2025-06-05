@@ -2,14 +2,20 @@ import crypto from 'crypto';
 
 import type { Request, Response, NextFunction } from 'express';
 
-import { CSRF_PROTECTED_METHODS, CSRF_TOKEN_BYTES, ERROR_MESSAGES, HTTP_STATUS } from '../constants';
+import {
+  CSRF_PROTECTED_METHODS,
+  CSRF_TOKEN_BYTES,
+  ERROR_MESSAGES,
+  HTTP_STATUS,
+} from '../constants';
 
 /**
  * Use crypto to generate a string for CSRF token -- locking down cross site forgery
  *
  * @returns csrf token -- random string
  */
-export const generateCSRFToken = (): string => crypto.randomBytes(CSRF_TOKEN_BYTES).toString('hex');
+export const generateCSRFToken = (): string =>
+  crypto.randomBytes(CSRF_TOKEN_BYTES).toString('hex');
 
 /**
  * Middleware that checks a token in the cookie against the one presented in

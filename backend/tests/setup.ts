@@ -60,7 +60,9 @@ expect.extend({
 
   toHaveBeenCalledWithObjectId(received, expected) {
     const pass = received.mock.calls.some((call: any[]) =>
-      call.some((arg) => mongoose.Types.ObjectId.isValid(arg) && arg.toString() === expected.toString()),
+      call.some(
+        (arg) => mongoose.Types.ObjectId.isValid(arg) && arg.toString() === expected.toString(),
+      ),
     );
 
     return {

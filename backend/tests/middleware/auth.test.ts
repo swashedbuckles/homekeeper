@@ -37,7 +37,9 @@ describe('Authentication Middleware', () => {
 
     mockNext = vi.fn();
 
-    mockPassportAuthenticate = passport.authenticate as MockedFunction<typeof passport.authenticate>;
+    mockPassportAuthenticate = passport.authenticate as MockedFunction<
+      typeof passport.authenticate
+    >;
   });
 
   describe('requireAuth', () => {
@@ -47,7 +49,11 @@ describe('Authentication Middleware', () => {
 
       requireAuth(mockReq as Request, mockRes as Response, mockNext);
 
-      expect(mockPassportAuthenticate).toHaveBeenCalledWith('jwt', { session: false }, expect.any(Function));
+      expect(mockPassportAuthenticate).toHaveBeenCalledWith(
+        'jwt',
+        { session: false },
+        expect.any(Function),
+      );
       expect(mockAuthFunction).toHaveBeenCalledWith(mockReq, mockRes, mockNext);
     });
 
@@ -158,7 +164,11 @@ describe('Authentication Middleware', () => {
 
       optionalAuth(mockReq as Request, mockRes as Response, mockNext);
 
-      expect(mockPassportAuthenticate).toHaveBeenCalledWith('jwt', { session: false }, expect.any(Function));
+      expect(mockPassportAuthenticate).toHaveBeenCalledWith(
+        'jwt',
+        { session: false },
+        expect.any(Function),
+      );
       expect(mockAuthFunction).toHaveBeenCalledWith(mockReq, mockRes, mockNext);
     });
 
@@ -253,7 +263,10 @@ describe('Authentication Middleware', () => {
 
   describe('Integration scenarios', () => {
     it('should handle request objects that already have a user', () => {
-      const existingUser: Partial<SafeUser> = { id: 'existing-user', email: 'existing@example.com' };
+      const existingUser: Partial<SafeUser> = {
+        id: 'existing-user',
+        email: 'existing@example.com',
+      };
       mockReq.user = existingUser;
 
       mockPassportAuthenticate.mockImplementation((strategy, options, callback) => {
