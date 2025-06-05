@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import type { Request, Response, NextFunction } from 'express';
+import type { NextFunction, Request, Response } from 'express';
 import passport from 'passport';
-import { describe, it, expect, vi, beforeEach, type MockedFunction } from 'vitest';
+import { type MockedFunction, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { requireAuth, optionalAuth } from '../../src/middleware/auth';
+import { optionalAuth, requireAuth } from '../../src/middleware/auth';
 import type { SafeUser } from '../../src/types/user';
 
 vi.mock('passport', () => ({
@@ -60,9 +60,9 @@ describe('Authentication Middleware', () => {
     it('should return 500 error when authentication throws an error', () => {
       const mockError = new Error('Database connection failed');
 
-      mockPassportAuthenticate.mockImplementation((strategy, options, callback) => {
-        return (req: Request, res: Response, next: NextFunction): void => {
-          callback!(mockError, null);
+      mockPassportAuthenticate.mockImplementation((_strategy, _options, callback) => {
+        return (_req: Request, _res: Response, _next: NextFunction): void => {
+          callback?.(mockError, null);
         };
       });
 
@@ -76,9 +76,9 @@ describe('Authentication Middleware', () => {
     it('should return 401 error when user is not authenticated', () => {
       const mockInfo = { message: 'Token expired' };
 
-      mockPassportAuthenticate.mockImplementation((strategy, options, callback) => {
-        return (req: Request, res: Response, next: NextFunction): void => {
-          callback!(null, null, mockInfo);
+      mockPassportAuthenticate.mockImplementation((_strategy, _options, callback) => {
+        return (_req: Request, _res: Response, _next: NextFunction): void => {
+          callback?.(null, null, mockInfo);
         };
       });
 
@@ -93,9 +93,9 @@ describe('Authentication Middleware', () => {
     });
 
     it('should return 401 error with default message when info is not provided', () => {
-      mockPassportAuthenticate.mockImplementation((strategy, options, callback) => {
-        return (req: Request, res: Response, next: NextFunction): void => {
-          callback!(null, null);
+      mockPassportAuthenticate.mockImplementation((_strategy, _options, callback) => {
+        return (_req: Request, _res: Response, _next: NextFunction): void => {
+          callback?.(null, null);
         };
       });
 
@@ -112,9 +112,9 @@ describe('Authentication Middleware', () => {
     it('should return 401 error with default message when info.message is empty', () => {
       const mockInfo = { message: '' };
 
-      mockPassportAuthenticate.mockImplementation((strategy, options, callback) => {
-        return (req: Request, res: Response, next: NextFunction): void => {
-          callback!(null, null, mockInfo);
+      mockPassportAuthenticate.mockImplementation((_strategy, _options, callback) => {
+        return (_req: Request, _res: Response, _next: NextFunction): void => {
+          callback?.(null, null, mockInfo);
         };
       });
 
@@ -129,9 +129,9 @@ describe('Authentication Middleware', () => {
     });
 
     it('should set user on request and call next when authentication succeeds', () => {
-      mockPassportAuthenticate.mockImplementation((strategy, options, callback) => {
-        return (req: Request, res: Response, next: NextFunction): void => {
-          callback!(null, mockUser);
+      mockPassportAuthenticate.mockImplementation((_strategy, _options, callback) => {
+        return (_req: Request, _res: Response, _next: NextFunction): void => {
+          callback?.(null, mockUser);
         };
       });
 
@@ -144,9 +144,9 @@ describe('Authentication Middleware', () => {
     });
 
     it('should handle falsy user values correctly', () => {
-      mockPassportAuthenticate.mockImplementation((strategy, options, callback) => {
-        return (req: Request, res: Response, next: NextFunction): void => {
-          callback!(null, undefined, { message: 'No token provided' });
+      mockPassportAuthenticate.mockImplementation((_strategy, _options, callback) => {
+        return (_req: Request, _res: Response, _next: NextFunction): void => {
+          callback?.(null, undefined, { message: 'No token provided' });
         };
       });
 
@@ -173,9 +173,9 @@ describe('Authentication Middleware', () => {
     });
 
     it('should set user on request and call next when authentication succeeds', () => {
-      mockPassportAuthenticate.mockImplementation((strategy, options, callback) => {
-        return (req: Request, res: Response, next: NextFunction): void => {
-          callback!(null, mockUser);
+      mockPassportAuthenticate.mockImplementation((_strategy, _options, callback) => {
+        return (_req: Request, _res: Response, _next: NextFunction): void => {
+          callback?.(null, mockUser);
         };
       });
 
@@ -188,9 +188,9 @@ describe('Authentication Middleware', () => {
     });
 
     it('should call next without setting user when authentication fails', () => {
-      mockPassportAuthenticate.mockImplementation((strategy, options, callback) => {
-        return (req: Request, res: Response, next: NextFunction): void => {
-          callback!(null, null);
+      mockPassportAuthenticate.mockImplementation((_strategy, _options, callback) => {
+        return (_req: Request, _res: Response, _next: NextFunction): void => {
+          callback?.(null, null);
         };
       });
 
@@ -205,9 +205,9 @@ describe('Authentication Middleware', () => {
     it('should call next without setting user when there is an error', () => {
       const mockError = new Error('JWT malformed');
 
-      mockPassportAuthenticate.mockImplementation((strategy, options, callback) => {
-        return (req: Request, res: Response, next: NextFunction): void => {
-          callback!(mockError, null);
+      mockPassportAuthenticate.mockImplementation((_strategy, _options, callback) => {
+        return (_req: Request, _res: Response, _next: NextFunction): void => {
+          callback?.(mockError, null);
         };
       });
 
@@ -220,9 +220,9 @@ describe('Authentication Middleware', () => {
     });
 
     it('should not set user when user is falsy even without error', () => {
-      mockPassportAuthenticate.mockImplementation((strategy, options, callback) => {
-        return (req: Request, res: Response, next: NextFunction): void => {
-          callback!(null, undefined);
+      mockPassportAuthenticate.mockImplementation((_strategy, _options, callback) => {
+        return (_req: Request, _res: Response, _next: NextFunction): void => {
+          callback?.(null, undefined);
         };
       });
 
@@ -235,9 +235,9 @@ describe('Authentication Middleware', () => {
     it('should handle both error and user being falsy', () => {
       const mockError = new Error('Token validation failed');
 
-      mockPassportAuthenticate.mockImplementation((strategy, options, callback) => {
-        return (req: Request, res: Response, next: NextFunction): void => {
-          callback!(mockError, undefined);
+      mockPassportAuthenticate.mockImplementation((_strategy, _options, callback) => {
+        return (_req: Request, _res: Response, _next: NextFunction): void => {
+          callback?.(mockError, undefined);
         };
       });
 
@@ -248,9 +248,9 @@ describe('Authentication Middleware', () => {
     });
 
     it('should set user even when there is a non-critical error with valid user', () => {
-      mockPassportAuthenticate.mockImplementation((strategy, options, callback) => {
-        return (req: Request, res: Response, next: NextFunction): void => {
-          callback!(null, mockUser);
+      mockPassportAuthenticate.mockImplementation((_strategy, _options, callback) => {
+        return (_req: Request, _res: Response, _next: NextFunction): void => {
+          callback?.(null, mockUser);
         };
       });
 
@@ -269,9 +269,9 @@ describe('Authentication Middleware', () => {
       };
       mockReq.user = existingUser;
 
-      mockPassportAuthenticate.mockImplementation((strategy, options, callback) => {
-        return (req: Request, res: Response, next: NextFunction): void => {
-          callback!(null, mockUser);
+      mockPassportAuthenticate.mockImplementation((_strategy, _options, callback) => {
+        return (_req: Request, _res: Response, _next: NextFunction): void => {
+          callback?.(null, mockUser);
         };
       });
 

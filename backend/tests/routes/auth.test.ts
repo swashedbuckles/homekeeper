@@ -1,14 +1,14 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { register, login } from '../../src/services/auth';
-import { SafeUser } from '../../src/types/user';
+import { login, register } from '../../src/services/auth';
+import type { SafeUser } from '../../src/types/user';
 import {
-  request,
-  loginUser,
-  registerUser,
   getAuthCookie,
+  loginUser,
   mockAuthenticatedUser,
   mockAuthenticationError,
+  registerUser,
+  request,
 } from '../helpers/app';
 
 vi.mock('../../src/services/auth');

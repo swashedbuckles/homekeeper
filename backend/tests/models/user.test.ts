@@ -1,7 +1,7 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 import { User } from '../../src/models/user';
-import { UserDocument } from '../../src/types/user.d';
+import type { UserDocument } from '../../src/types/user.d';
 
 describe('User Model Tests', () => {
   describe('Validation', () => {
@@ -195,7 +195,7 @@ describe('User Model Tests', () => {
 
         const foundUser = await User.findById(user._id);
         expect(foundUser).toBeTruthy();
-        expect(foundUser!.email).toBe(userData.email);
+        expect(foundUser?.email).toBe(userData.email);
       });
 
       it('should not bypass validations', async () => {
@@ -224,8 +224,8 @@ describe('User Model Tests', () => {
         const user = await User.findByEmail('findme@example.com');
 
         expect(user).toBeTruthy();
-        expect(user!.email).toBe('findme@example.com');
-        expect(user!.name).toBe('Claude Raines');
+        expect(user?.email).toBe('findme@example.com');
+        expect(user?.name).toBe('Claude Raines');
       });
 
       it('should return null for non-existent email', async () => {
@@ -236,8 +236,8 @@ describe('User Model Tests', () => {
       it('should not be case-sensitive for email search', async () => {
         const user = await User.findByEmail('FindMe@Example.com');
         expect(user).toBeTruthy();
-        expect(user!.email).toBe('findme@example.com');
-        expect(user!.name).toBe('Claude Raines');
+        expect(user?.email).toBe('findme@example.com');
+        expect(user?.name).toBe('Claude Raines');
       });
     });
   });

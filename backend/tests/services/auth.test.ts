@@ -1,7 +1,12 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 import { User } from '../../src/models/user';
-import { register, login, changePassword, RegistrationParams } from '../../src/services/auth';
+import {
+  type RegistrationParams,
+  changePassword,
+  login,
+  register,
+} from '../../src/services/auth';
 
 describe('Authentication Service', () => {
   describe('register', () => {
@@ -18,11 +23,12 @@ describe('Authentication Service', () => {
       expect(result.user).toBeDefined();
       expect(result.user.email).toBe(userData.email);
       expect(result.user.name).toBe(userData.name);
+      // biome-ignore lint/complexity/useLiteralKeys: <explanation>
       expect(result.user['password']).toBeUndefined();
 
       const savedUser = await User.findByEmail(userData.email);
       expect(savedUser).toBeTruthy();
-      expect(savedUser!.email).toBe(userData.email);
+      expect(savedUser?.email).toBe(userData.email);
     });
 
     it('should throw error for duplicate email', async () => {
@@ -86,8 +92,8 @@ describe('Authentication Service', () => {
 
       const savedUser = await User.findByEmail(userData.email);
       expect(savedUser).toBeTruthy();
-      expect(savedUser!.password).not.toBe(userData.password);
-      expect(savedUser!.password.length).toBeGreaterThan(userData.password.length);
+      expect(savedUser?.password).not.toBe(userData.password);
+      expect(savedUser?.password.length).toBeGreaterThan(userData.password.length);
     });
   });
 
@@ -110,6 +116,7 @@ describe('Authentication Service', () => {
       expect(result.user.email).toBe(testUser.email);
       expect(result.user.name).toBe(testUser.name);
 
+      // biome-ignore lint/complexity/useLiteralKeys: <explanation>
       expect(result.user['password']).toBeUndefined();
     });
 
@@ -196,21 +203,21 @@ describe('Authentication Service', () => {
 
       const user = await User.findById(userId);
       expect(user).toBeTruthy();
-      expect(user!.password).not.toBe(newPassword);
-      expect(user!.password.length).toBeGreaterThan(newPassword.length);
-      expect(user!.password).toMatch(/^\$2[ayb]\$\d+\$/);
+      expect(user?.password).not.toBe(newPassword);
+      expect(user?.password.length).toBeGreaterThan(newPassword.length);
+      expect(user?.password).toMatch(/^\$2[ayb]\$\d+\$/);
     });
 
     it('should update password in database', async () => {
       const newPassword = 'databaseupdatetest';
 
       const originalUser = await User.findById(userId);
-      const originalPasswordHash = originalUser!.password;
+      const originalPasswordHash = originalUser?.password;
 
       await changePassword(userId, testUser.password, newPassword);
 
       const updatedUser = await User.findById(userId);
-      expect(updatedUser!.password).not.toBe(originalPasswordHash);
+      expect(updatedUser?.password).not.toBe(originalPasswordHash);
     });
   });
 });

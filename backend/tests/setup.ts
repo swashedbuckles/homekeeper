@@ -1,10 +1,8 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable jsdoc/require-jsdoc */
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
-import { beforeAll, afterAll, beforeEach, vi, expect } from 'vitest';
+import { afterAll, beforeAll, beforeEach, expect, vi } from 'vitest';
 
-import { connectTestDB, closeTestDB, clearTestDB } from './helpers/db';
+import { clearTestDB, closeTestDB, connectTestDB } from './helpers/db';
 
 dotenv.config({ path: '.env.test' });
 
@@ -37,8 +35,7 @@ vi.mock('aws-sdk', () => ({
 }));
 
 // Console overrides for cleaner test output
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const originalConsole = { ...console };
+const _originalConsole = { ...console };
 if (process.env.SUPPRESS_TEST_LOGS === 'true') {
   console.log = vi.fn();
   console.info = vi.fn();
@@ -59,6 +56,7 @@ expect.extend({
   },
 
   toHaveBeenCalledWithObjectId(received, expected) {
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     const pass = received.mock.calls.some((call: any[]) =>
       call.some(
         (arg) => mongoose.Types.ObjectId.isValid(arg) && arg.toString() === expected.toString(),
@@ -74,12 +72,16 @@ expect.extend({
 
 // Type declarations for custom matchers
 declare module 'vitest' {
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   interface Assertion<T = any> {
     toBeValidObjectId(): T;
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     toHaveBeenCalledWithObjectId(expected: any): T;
   }
   interface AsymmetricMatchersContaining {
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     toBeValidObjectId(): any;
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     toHaveBeenCalledWithObjectId(expected: any): any;
   }
 }

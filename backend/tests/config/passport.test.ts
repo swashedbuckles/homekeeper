@@ -1,15 +1,15 @@
 import type { Request } from 'express';
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import {
+  type JwtPayload,
+  jwtFromRequest,
   jwtVerifyCallback,
   localVerifyFn,
-  jwtFromRequest,
-  type JwtPayload,
 } from '../../src/config/passport';
 import { User } from '../../src/models/user';
 import { login } from '../../src/services/auth';
-import type { UserDocument, SafeUser } from '../../src/types/user';
+import type { SafeUser, UserDocument } from '../../src/types/user';
 
 // Mock dependencies
 vi.mock('../../src/models/user');
