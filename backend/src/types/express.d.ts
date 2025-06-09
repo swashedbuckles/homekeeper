@@ -1,6 +1,6 @@
 import type { SafeUser } from './user';
 import type { ApiResponse } from '@homekeeper/shared';
-
+console.log('hey??');
 /**
  * Patch the Express Request object so that we know about our User data
  */
@@ -16,3 +16,6 @@ declare global {
     }
   }
 }
+
+// This export makes it a module and ensures the declarations are processed
+export {};

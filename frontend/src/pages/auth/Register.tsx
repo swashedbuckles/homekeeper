@@ -4,7 +4,7 @@ export function Register() {
   const navigate = useNavigate();
 
   const handleClick = async () => {
-    const res = await register('tom@tomseph.dev', 'abc123', 'tom');
+    const res = await register('tom@tomseph.dev', 'abcDEFG123!@#$', 'tom');
     console.log('res!!', res);
 
     navigate('/');

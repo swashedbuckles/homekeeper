@@ -15,6 +15,9 @@ export const handleValidation = (req: Request, res: Response, next: NextFunction
   const errors = validationResult(req);
   
   if (!errors.isEmpty()) {
+    errors.array().forEach((error, index, array) => {
+      console.log(`[VALIDATION ERROR (${index} of ${array.length})]: ${error.type}`, error.msg);
+    });
     /** @todo conform to API Error Response Types */
     res.status(HTTP_STATUS.BAD_REQUEST).json({
       error: 'Invalid input',

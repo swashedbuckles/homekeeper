@@ -4,7 +4,7 @@ import { useNavigate } from "react-router";
 export function Login() {
   const navigate = useNavigate();
   const handleClick = async () => {
-    const res = await login('tom@tomseph.dev', 'abc123');
+    const res = await login('tom@tomseph.dev', 'abcDEFG123!@#$');
     console.log('res!', res);
     navigate('/');
   };
