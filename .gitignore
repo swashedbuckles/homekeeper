@@ -15,6 +15,7 @@ node_modules/
 /backend/dist/
 /backend/build/
 /backend/coverage/
+/shared/dist/
 
 # TypeScript
 *.tsbuildinfo

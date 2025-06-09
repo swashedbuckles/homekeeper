@@ -1,25 +1,11 @@
+import type { IUser as BaseUser } from '@homekeeper/shared';
 import type { HydratedDocument, Model, Types } from 'mongoose';
 
 /**
  * Base type for User Model
  */
-export interface IUser {
+export interface IUser extends BaseUser {
   _id: Types.ObjectId;
-  id: string; // this is a mongoose virtual
-  email: string;
-  password: string;
-  name: string;
-  preferences: {
-    theme: string;
-    notifications: {
-      email: boolean;
-      push: boolean;
-    };
-    defaultHouseholdId?: string;
-  };
-  householdRoles: {
-    [householdId: string]: 'owner' | 'admin' | 'member' | 'guest';
-  };
 }
 
 /**
@@ -37,12 +23,9 @@ export interface IUserMethods {
 }
 
 /**
- * Hydrated Mongoose Document for User
+ * Hydrated Mongoose Documents for User
  */
 export type UserDocument = HydratedDocument<IUser, IUserMethods>;
-/**
- * Safe version of the hydrated document
- */
 export type SafeUserDocument = HydratedDocument<SafeUser, IUserMethods>;
 
 /**
