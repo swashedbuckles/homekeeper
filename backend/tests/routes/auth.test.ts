@@ -48,7 +48,7 @@ describe('Auth Routes', () => {
       const response = await loginUser('test@example.com', 'password123');
 
       expect(response.status).toBe(200);
-      expect(response.body.user).toEqual(mockUser);
+      expect(response.body.data).toEqual(mockUser);
 
       const authCookie = getAuthCookie(response);
       expect(authCookie).toBeDefined();
@@ -72,7 +72,7 @@ describe('Auth Routes', () => {
       });
 
       expect(response.status).toBe(201);
-      expect(response.body.user).toEqual(mockUser);
+      expect(response.body.data).toEqual(mockUser);
     });
 
     it('should obfuscate if user exists', async () => {
@@ -115,7 +115,7 @@ describe('Auth Routes', () => {
       const response = await request.get('/auth/whoami');
 
       expect(response.status).toBe(200);
-      expect(response.body.user).toEqual(mockUser);
+      expect(response.body.data).toEqual(mockUser);
     });
 
     it('should return 204 if not logged in', async () => {

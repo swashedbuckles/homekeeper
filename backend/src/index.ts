@@ -1,3 +1,5 @@
+import type {} from './types/express.d.ts';
+
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import dotenv from 'dotenv';
@@ -15,6 +17,7 @@ import { DEFAULT_PORT, HTTP_STATUS, RESPONSE_MESSAGES } from './constants';
 import { requireAuth } from './middleware/auth';
 import { csrfProtection } from './middleware/csrf';
 import { router as authRouter } from './routes/auth';
+import { apiResponseMiddleware } from './middleware/apiResponse';
 
 dotenv.config();
 
@@ -37,6 +40,7 @@ export const createApp = (): express.Application => {
   app.use(morgan(authLogFormat, authMorganConfig()));
   app.use(morgan(morganFormat(), morganConfig()));
   app.use(passport.initialize());
+  app.use(apiResponseMiddleware);
 
   app.use('/api', csrfProtection);
   app.use('/protected', csrfProtection);
