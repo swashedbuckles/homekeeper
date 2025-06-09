@@ -32,15 +32,15 @@ HomeKeeper is a full-stack web application designed to help households organize 
                     │    Express.js API       │
                     │   (Node.js/TypeScript)  │
                     │                         │
-                    │  ┌─────────────────┐   │
-                    │  │   Auth Service  │   │
-                    │  │  (JWT Cookies)  │   │
-                    │  └─────────────────┘   │
+                    │  ┌─────────────────┐    │
+                    │  │   Auth Service  │    │
+                    │  │  (JWT Cookies)  │    │
+                    │  └─────────────────┘    │
                     │                         │
-                    │  ┌─────────────────┐   │
-                    │  │  File Service   │   │
-                    │  │   (S3/Local)    │   │
-                    │  └─────────────────┘   │
+                    │  ┌─────────────────┐    │
+                    │  │  File Service   │    │
+                    │  │   (S3/Local)    │    │
+                    │  └─────────────────┘    │
                     └────────────┬────────────┘
                                  │
           ┌──────────────────────┼──────────────────────┐
