@@ -1,0 +1,24 @@
+import type { NextFunction, Request, Response } from 'express';
+import { ApiResponse } from '@homekeeper/shared';
+
+const makeResponse = <T>(data: ApiResponse<T>): ApiResponse<T> => data;
+
+/**
+ * Adds `apiSuccess` and `apiError` to express response chain, allowing us to 
+ * strictly type the API responses. 
+ * 
+ * @param req Request object
+ * @param res Response object
+ * @param next Next function
+ */
+export const apiResponseMiddleware = (req: Request, res: Response, next: NextFunction): void => {
+  res.apiSuccess = function<T>(data: ApiResponse<T>) {
+    return this.json(makeResponse(data));
+  };
+  
+  res.apiError = function(statusCode: number, error: string) {
+    return this.status(statusCode).json(makeResponse({ error, statusCode }));
+  };
+  
+  next();
+};

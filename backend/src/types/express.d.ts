@@ -1,14 +1,16 @@
 import type { SafeUser } from './user';
+import type { ApiResponse } from '@homekeeper/shared';
 
 /**
  * Patch the Express Request object so that we know about our User data
  */
 declare global {
-  // biome-ignore lint/style/noNamespace: patching express type
   namespace Express {
-    /**
-     * Express Request Object
-     */
+    interface Response {
+      apiSuccess<T>(data: ApiResponse<T>): this;
+      apiError(statusCode: number, error: string): this;
+    }
+    
     interface Request {
       user?: SafeUser;
     }
