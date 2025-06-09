@@ -14,9 +14,9 @@ process.env.AWS_SECRET_ACCESS_KEY = 'test-secret-key';
 process.env.AWS_S3_BUCKET = 'test-bucket';
 process.env.AWS_REGION = 'us-east-1';
 
-beforeAll(async () => await connectTestDB(), 30000);
-afterAll(async () => await closeTestDB(), 10000);
-beforeEach(async () => await clearTestDB());
+beforeAll(async () => { await connectTestDB(); }, 30000);
+afterAll(async () => { await closeTestDB(); }, 10000);
+beforeEach(async () => { await clearTestDB(); });
 
 vi.mock('aws-sdk', () => ({
   S3: vi.fn(() => ({

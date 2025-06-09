@@ -8,6 +8,7 @@ describe('apiResponseMiddleware', () => {
       apiSuccess<T>(data: ApiResponse<T>): Response;
       apiError(statusCode: number, error: string): Response;
     };
+
   let mockReq: Partial<Request>;
   let mockRes: Partial<middlewareExtension>;
   let mockNext: NextFunction;
@@ -49,7 +50,11 @@ describe('apiResponseMiddleware', () => {
     it('should call res.json with wrapped data', () => {
       const testData = { message: 'Success', data: { id: 1, name: 'Test' } };
       
-      mockRes.apiSuccess!(testData);
+      if(!mockRes.apiSuccess) {
+        throw new Error('Middleware not attached correctly');
+      }
+
+      mockRes.apiSuccess(testData);
 
       expect(mockRes.json).toHaveBeenCalledWith(testData);
     });
@@ -57,7 +62,11 @@ describe('apiResponseMiddleware', () => {
     it('should return the response object for chaining', () => {
       const testData = { message: 'Success', data: { id: 1 } };
       
-      const result = mockRes.apiSuccess!(testData);
+      if(!mockRes.apiSuccess) {
+        throw new Error('Middleware not attached correctly');
+      }
+
+      const result = mockRes.apiSuccess(testData);
 
       expect(result).toBe(mockRes);
     });
@@ -86,7 +95,10 @@ describe('apiResponseMiddleware', () => {
       const statusCode = 400;
       const errorMessage = 'Bad Request';
 
-      mockRes.apiError!(statusCode, errorMessage);
+      if(!mockRes.apiError) {
+        throw new Error('Middleware not attached properly');
+      }
+      mockRes.apiError(statusCode, errorMessage);
 
       expect(mockRes.status).toHaveBeenCalledWith(statusCode);
       expect(mockRes.json).toHaveBeenCalledWith({ 
@@ -96,7 +108,11 @@ describe('apiResponseMiddleware', () => {
     });
 
     it('should return the response object for chaining', () => {
-      const result = mockRes.apiError!(500, 'Server Error');
+      if(!mockRes.apiError) {
+        throw new Error('Middleware not attached properly');
+      }
+
+      const result = mockRes.apiError(500, 'Server Error');
 
       expect(result).toBe(mockRes);
     });

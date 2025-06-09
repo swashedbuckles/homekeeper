@@ -39,7 +39,7 @@ describe('Passport Strategy Callbacks', () => {
     it('should extract JWT from cookies', () => {
       const mockReq = {
         cookies: { jwt: 'test-token' },
-      } as Request;
+      } as unknown as Request;
 
       const result = jwtFromRequest(mockReq);
       expect(result).toBe('test-token');
@@ -54,7 +54,7 @@ describe('Passport Strategy Callbacks', () => {
     it('should return null when no jwt cookie', () => {
       const mockReq = {
         cookies: { other: 'value' },
-      } as Request;
+      } as unknown as Request;
 
       const result = jwtFromRequest(mockReq);
       expect(result).toBeNull();
@@ -82,6 +82,7 @@ describe('Passport Strategy Callbacks', () => {
 
       await jwtVerifyCallback(expiredPayload, mockDone);
 
+
       expect(mockDone).toHaveBeenCalledWith(null, false, { message: 'Token expired' });
     });
 
@@ -89,6 +90,7 @@ describe('Passport Strategy Callbacks', () => {
       vi.mocked(User.findById).mockResolvedValue(null);
 
       await jwtVerifyCallback(validPayload, mockDone);
+
 
       expect(User.findById).toHaveBeenCalledWith('user-123');
       expect(mockDone).toHaveBeenCalledWith(null, false, { message: 'User not found' });

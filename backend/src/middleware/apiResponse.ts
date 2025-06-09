@@ -12,11 +12,11 @@ const makeResponse = <T>(data: ApiResponse<T>): ApiResponse<T> => data;
  * @param next Next function
  */
 export const apiResponseMiddleware = (req: Request, res: Response, next: NextFunction): void => {
-  res.apiSuccess = function<T>(data: ApiResponse<T>) {
+  res.apiSuccess = function<T>(data: ApiResponse<T>): Response {
     return this.json(makeResponse(data));
   };
   
-  res.apiError = function(statusCode: number, error: string) {
+  res.apiError = function(statusCode: number, error: string): Response {
     return this.status(statusCode).json(makeResponse({ error, statusCode }));
   };
   

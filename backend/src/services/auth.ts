@@ -58,6 +58,8 @@ export async function changePassword(
   oldPassword: string,
   newPassword: string,
 ): Promise<SafeUser> {
+  /** @todo figure out how to assert this properly.  */
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
   const user = (await User.findById(userId)) as UserDocument | null;
   if (!user) {
     throw new Error(ERROR_MESSAGES.USER_NOT_FOUND);

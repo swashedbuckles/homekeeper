@@ -1,7 +1,9 @@
-import { Router } from 'express';
+import { Router, Request, Response} from 'express';
 import rateLimit from 'express-rate-limit';
 import { body as validateBody } from 'express-validator';
 import jwt from 'jsonwebtoken';
+
+import { LoginRequest, RegisterRequest } from '@homekeeper/shared';
 
 import { csrfCookie, jwtCookie } from '../config/cookies';
 import type { JwtPayload } from '../config/passport';
@@ -42,7 +44,7 @@ router.post(
   validateBody('email').isEmail(),
   validateBody('password').notEmpty(),
   handleValidation,
-  async (req, res) => {
+  async (req: Request< object, object, LoginRequest>, res: Response) => {
     try {
       const { email, password } = req.body;
       const { user } = await login(email, password);
@@ -91,7 +93,7 @@ router.post(
   validateBody('name').isString().notEmpty(),
   validateBody('password').isString().notEmpty().isStrongPassword(),
   handleValidation,
-  async (req, res) => {
+  async (req: Request<object, object, RegisterRequest>, res: Response) => {
     const { email, password, name } = req.body;
     try {
       const newUser = await register({ email, password, name });
@@ -134,6 +136,8 @@ router.get('/csrf-token', optionalAuth, (_req, res) => {
 });
 
 router.get('/logout', (req, res) => {
+  /** @todo fix typing for request object to have cookies setup correctly */
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   if (req.cookies[JWT_COOKIE_NAME]) {
     console.log(`[AUTH_INFO] Logout from ${req.ip}`);
     res
