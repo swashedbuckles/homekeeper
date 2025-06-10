@@ -19,6 +19,11 @@ import { csrfProtection } from './middleware/csrf';
 import { router as authRouter } from './routes/auth';
 import { apiResponseMiddleware } from './middleware/apiResponse';
 
+const isProduction = process.env.NODE_ENV === 'production';
+// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+const isBehindProxy = process.env.RENDER || process.env.RAILWAY || process.env.HEROKU;
+
+
 dotenv.config();
 
 /**
@@ -29,6 +34,10 @@ dotenv.config();
  */
 export const createApp = (): express.Application => {
   const app = express();
+  
+  if (isProduction || isBehindProxy) {
+    app.set('trust proxy', true);
+  }
 
   configurePassport();
 
