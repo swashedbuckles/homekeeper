@@ -1,4 +1,3 @@
-import './App.css'
 import { BrowserRouter, Route, Routes } from 'react-router'
 // import Logo from './assets/logo.svg';
 import { Root } from './components/Root';

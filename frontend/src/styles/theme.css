@@ -1,0 +1,24 @@
+@import 'tailwindcss';
+
+@theme {
+  /* Primary/brand colors */
+  --color-primary: #e67e22;
+  --color-secondary: #4a6fa5;
+  --color-accent: '#5d9c59';
+
+  /* Bg and text */
+  --color-background: #f5f0e8;
+  --color-text-primary: #2c3e50;
+  --color-text-secondary: #7f8c8d;
+
+  /* UI Components */
+  --color-ui-light: #f8f9fa;
+  --color-ui-border: #e0e0e0;
+  --color-ui-error: #e74c3c;
+
+  /* Semantic colors */
+  --color-success: #5d9c59;
+  --color-warning: #e67e22;
+  --color-error: #e74c3c;
+  --color-info: #4a6fa5;
+}
