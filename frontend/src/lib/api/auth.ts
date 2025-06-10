@@ -1,5 +1,5 @@
 import type { SafeUser } from "@homekeeper/shared";
-import { apiRequest } from "../api-client";
+import { apiRequest } from "../apiClient";
 
 export function login(email: string, password: string) {
   return apiRequest<SafeUser>('/auth/login', {

@@ -1,7 +1,7 @@
 import type { ApiResponse } from "@homekeeper/shared";
-import { ApiError } from "../utils/ApiError";
+import { ApiError } from "../types/apiError";
 
-const API_BASE_URL = import.meta.env.PROD 
+export const API_BASE_URL = import.meta.env.PROD 
   ? 'https://homekeeper-api.tomseph.dev' 
   : 'http://localhost:4000';
 
