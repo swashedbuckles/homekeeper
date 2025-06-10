@@ -102,7 +102,7 @@ const connectDB = async (): Promise<void> => {
  * app should handle it
  */
 const startServer = async (): Promise<void> => {
-  const port = DEFAULT_PORT;
+  const port = process.env.PORT || DEFAULT_PORT;
   const app = createApp();
 
   try {
