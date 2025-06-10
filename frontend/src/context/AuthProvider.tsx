@@ -2,12 +2,23 @@ import { useState } from "react";
 import type { Nullable } from "../types/nullable";
 import type { SafeUser } from "@homekeeper/shared";
 import { AuthStatus, type AuthStatusType } from "../types/authStatus";
-import { AuthActionsContext, AuthContext } from "./authContexts";
+import { AuthActionsContext, AuthContext, type IAuthContext } from "./authContexts";
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [authStatus, setAuthStatus] = useState<AuthStatusType>(AuthStatus.CHECKING);
-  const [csrfToken, setCsrfToken] = useState<Nullable<string>>(null);
-  const [user, setUser] = useState<Nullable<SafeUser>>(null);
+type AuthProviderProps = {
+   children: React.ReactNode,
+   initialState: IAuthContext,
+};
+
+const DEFAULT_INITIAL_STATE = {
+  authStatus: AuthStatus.CHECKING,
+  csrfToken: null,
+  user: null,
+};
+
+export function AuthProvider({ children, initialState = DEFAULT_INITIAL_STATE }: AuthProviderProps) {
+  const [authStatus, setAuthStatus] = useState<AuthStatusType>(initialState.authStatus);
+  const [csrfToken, setCsrfToken] = useState<Nullable<string>>(initialState.csrfToken);
+  const [user, setUser] = useState<Nullable<SafeUser>>(initialState.user);
 
   return (
     <AuthContext value={{ authStatus, csrfToken, user }}>

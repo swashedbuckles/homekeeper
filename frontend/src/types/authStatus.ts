@@ -7,5 +7,5 @@ export const AuthStatus = {
 } as const;
 
 export type AuthStatusType = (typeof AuthStatus)[keyof typeof AuthStatus];
-export const authIsLoading = (status: AuthStatusType) => status === AuthStatus.LOGGING_IN || status === AuthStatus.LOGGING_OUT;
-export const authIsKnown   = (status: AuthStatusType) => status !== AuthStatus.CHECKING;
+export const authIsLoading = (status: AuthStatusType) => status === AuthStatus.LOGGING_IN || status === AuthStatus.LOGGING_OUT || status === AuthStatus.CHECKING;
+export const authIsKnown   = (status: AuthStatusType) => status === AuthStatus.LOGGED_IN || status === AuthStatus.LOGGED_OUT;
