@@ -1,5 +1,6 @@
 import js from '@eslint/js';
 import tseslint from 'typescript-eslint';
+import customPlugin from './eslint-plugins/index.js';
 
 export default tseslint.config(
   js.configs.recommended,
@@ -7,6 +8,9 @@ export default tseslint.config(
   {
     // Configuration for source files
     files: ['src/**/*.ts'],
+    plugins: {
+      'custom': customPlugin,
+    },
     languageOptions: {
       parserOptions: {
         project: './tsconfig.json',
@@ -19,7 +23,8 @@ export default tseslint.config(
       '@typescript-eslint/no-explicit-any': 'error',
       '@typescript-eslint/prefer-nullish-coalescing': 'error',
       '@typescript-eslint/prefer-optional-chain': 'error',
-      "@typescript-eslint/restrict-template-expressions": "off"
+      '@typescript-eslint/restrict-template-expressions': 'off',
+      'custom/enforce-api-response': 'warn',
     },
   },
   {
@@ -51,8 +56,10 @@ export default tseslint.config(
       'dist/', 
       'node_modules/', 
       'coverage/',
-      'eslint.config.js', // Ignore ESLint config itself
-      'vitest.config.js'  // And Vitest config
+      'eslint.config.js', 
+      'vitest.config.js',
+      'eslint-plugins/',
+      '**/*.js',            // Ignore all .js files (we're TypeScript-first)
     ],
   }
 );

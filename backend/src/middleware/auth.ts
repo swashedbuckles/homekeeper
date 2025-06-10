@@ -22,8 +22,7 @@ export const requireAuth = (req: Request, res: Response, next: NextFunction): vo
       if (err) {
         /** @todo internal vs. external status -- exposing Authentication Error vs. Server Error */
         return res
-          .status(HTTP_STATUS.INTERNAL_SERVER_ERROR)
-          .json({ error: ERROR_MESSAGES.AUTHENTICATION_ERROR });
+          .apiError(HTTP_STATUS.INTERNAL_SERVER_ERROR, ERROR_MESSAGES.AUTHENTICATION_ERROR);
       }
 
       if (!user) {
