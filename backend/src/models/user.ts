@@ -15,7 +15,7 @@ const userSchema = new Schema<IUser, IUserModel, IUserMethods>(
       lowercase: true,
       trim: true,
       validate: {
-        validator: (value): boolean => isEmail(value),
+        validator: (value: string): boolean => isEmail(value),
         message: (props): string => `${props.value} is not a valid email address!`,
       },
     },
@@ -87,7 +87,8 @@ const userSchema = new Schema<IUser, IUserModel, IUserMethods>(
  */
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) {
-    return next();
+    next(); 
+    return;
   }
 
   try {

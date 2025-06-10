@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 import type { NextFunction, Request, Response } from 'express';
 import passport from 'passport';
 
@@ -17,17 +18,17 @@ export const requireAuth = (req: Request, res: Response, next: NextFunction): vo
   passport.authenticate(
     'jwt',
     { session: false },
-    (err: unknown, user: SafeUser, info: { message: string }) => {
+    (err: unknown, user?: SafeUser, info?: { message: string }) => {
       if (err) {
         /** @todo internal vs. external status -- exposing Authentication Error vs. Server Error */
         return res
-          .status(HTTP_STATUS.INTERNAL_SERVER_ERROR)
-          .json({ error: ERROR_MESSAGES.AUTHENTICATION_ERROR });
+          .apiError(HTTP_STATUS.INTERNAL_SERVER_ERROR, ERROR_MESSAGES.AUTHENTICATION_ERROR);
       }
 
       if (!user) {
         return res.status(HTTP_STATUS.UNAUTHORIZED).json({
           error: ERROR_MESSAGES.UNAUTHORIZED,
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
           message: info?.message || ERROR_MESSAGES.AUTHENTICATION_REQUIRED,
         });
       }
@@ -46,7 +47,7 @@ export const requireAuth = (req: Request, res: Response, next: NextFunction): vo
  * @param next call next middleware
  */
 export const optionalAuth = (req: Request, res: Response, next: NextFunction): void => {
-  passport.authenticate('jwt', { session: false }, (err: unknown, user: SafeUser) => {
+  passport.authenticate('jwt', { session: false }, (err: unknown, user?: SafeUser) => {
     if (!err && user) {
       req.user = user;
     }

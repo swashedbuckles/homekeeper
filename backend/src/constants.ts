@@ -6,7 +6,7 @@ export const HOUSEHOLD_ROLES = ['owner', 'admin', 'member', 'guest'];
 
 // Authentication & JWT
 export const JWT_EXPIRE_TIME_MS = 10 * 60 * 1000;
-export const JWT_SECRET = process.env.JWT_SECRET || 'DEV_JWT_SECRET';
+export const JWT_SECRET = process.env.JWT_SECRET ?? 'DEV_JWT_SECRET';
 export const JWT_COOKIE_NAME = 'jwt';
 
 // Rate limiting

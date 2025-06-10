@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unnecessary-condition */
 import crypto from 'node:crypto';
 
 import type { NextFunction, Request, Response } from 'express';
@@ -26,9 +27,9 @@ export const generateCSRFToken = (): string =>
  * @param next next function
  */
 export const csrfProtection = (req: Request, res: Response, next: NextFunction): void => {
-  if ((CSRF_PROTECTED_METHODS as string[]).includes(req.method)) {
+  if ((CSRF_PROTECTED_METHODS).includes(req.method)) {
     const tokenFromHeader = req?.headers?.['x-csrf-token'];
-    const tokenFromCookie = req?.cookies?.csrfToken;
+    const tokenFromCookie = req?.cookies?.csrfToken as string;
 
     const noTokens = !tokenFromCookie || !tokenFromHeader;
     const tokensDontMatch = tokenFromCookie !== tokenFromHeader;

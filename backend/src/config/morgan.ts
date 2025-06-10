@@ -1,8 +1,7 @@
 import type { Request, Response } from 'express';
 import type { Options } from 'morgan';
 import morgan from 'morgan';
-
-import type { SafeUser } from '../types/user';
+import { removeKeysReducer } from '../utils/removeKeys';
 
 /**
  * The `safe-body` token represents the request body
@@ -14,22 +13,13 @@ morgan.token('safe-body', (req: Request): string => {
   }
 
   const toRedact = ['password', 'token', 'jwt', 'authorization'];
-
-  const safeBody = Object.entries(req.body).reduce(
-    (acc, [key, val]) => {
-      const needsRedacting = toRedact.includes(key);
-      acc[key] = needsRedacting ? '[REDACTED]' : val;
-
-      return acc;
-    },
-    {} as Record<string, unknown>,
-  );
+  const safeBody = removeKeysReducer(req.body, toRedact);
 
   return JSON.stringify(safeBody);
 });
 
 morgan.token('user-id', (req: Request): string => {
-  return (req?.user as SafeUser)?.id ?? 'anonymous';
+  return req.user?.id ?? 'anonymous';
 });
 
 export const morganFormat = (): string => {

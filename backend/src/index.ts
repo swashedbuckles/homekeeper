@@ -98,9 +98,9 @@ const startServer = async (): Promise<void> => {
 
   try {
     // Try to connect to MongoDB but don't fail if it doesn't connect
-    await connectDB().catch((err) =>
-      console.log('MongoDB connection issue, continuing...', err),
-    );
+    await connectDB().catch((err: unknown) =>{ 
+      console.log('MongoDB connection issue, continuing...', err); 
+    });
 
     app.listen(port, () => {
       console.log(`Server running on port ${port}`);
@@ -114,5 +114,5 @@ const startServer = async (): Promise<void> => {
 
 // Don't start the server if we're importing this module (e.g. testing)
 if (require.main === module) {
-  startServer();
+  void startServer();
 }

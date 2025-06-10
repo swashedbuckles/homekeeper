@@ -1,17 +1,29 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
+/** @todo reconcile "misused promises" with typings of passport */
+
 import type { Request } from 'express';
 import passport from 'passport';
 import {
   Strategy as JWTStrategy,
+  type VerifiedCallback,
   type JwtFromRequestFunction,
   type StrategyOptionsWithoutRequest,
-  type VerifyCallback,
 } from 'passport-jwt';
-import { Strategy as LocalStrategy, type VerifyFunction } from 'passport-local';
+import { IVerifyOptions, Strategy as LocalStrategy, type VerifyFunction } from 'passport-local';
 
 import { ERROR_MESSAGES, JWT_COOKIE_NAME, JWT_SECRET } from '../constants';
 import { User } from '../models/user';
 import { login } from '../services/auth';
 import type { UserDocument } from '../types/user';
+
+type asyncVerifyCallback<T> = (payload: T, done: VerifiedCallback) => Promise<void>
+interface asyncVerifyFunction extends VerifyFunction {
+  (
+    username: string,
+    password: string,
+    done: (error: unknown, user?: Express.User | false, options?: IVerifyOptions) => void,
+  ): Promise<void>;
+}
 
 /**
  * Used for authentication and user lookup
@@ -23,7 +35,8 @@ export type JwtPayload = {
 };
 
 export const jwtFromRequest: JwtFromRequestFunction = (req: Request) => {
-  return req?.cookies ? (req.cookies[JWT_COOKIE_NAME] ?? null) : null;
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  return (req?.cookies?.[JWT_COOKIE_NAME] ?? null) as string | null; 
 };
 
 const jwtOptions: StrategyOptionsWithoutRequest = {
@@ -42,24 +55,25 @@ const jwtOptions: StrategyOptionsWithoutRequest = {
  * @param done next callback
  * @returns nothing
  */
-export const jwtVerifyCallback: VerifyCallback = async (
-  jwtPayload: JwtPayload | null,
-  done,
-) => {
+export const jwtVerifyCallback: asyncVerifyCallback<JwtPayload | null> = async (jwtPayload: JwtPayload | null, done) => {
   if (!jwtPayload) {
-    return done(null, false, { message: ERROR_MESSAGES.NO_JWT_PAYLOAD });
+    done(null, false, { message: ERROR_MESSAGES.NO_JWT_PAYLOAD });
+    return;
   }
 
   const { expiration, id } = jwtPayload;
 
   if (Date.now() > expiration) {
-    return done(null, false, { message: ERROR_MESSAGES.TOKEN_EXPIRED });
+    done(null, false, { message: ERROR_MESSAGES.TOKEN_EXPIRED });
+    return;
   }
 
   try {
     const user = (await User.findById(id)) as UserDocument;
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (!user) {
-      return done(null, false, { message: ERROR_MESSAGES.USER_NOT_FOUND });
+      done(null, false, { message: ERROR_MESSAGES.USER_NOT_FOUND });
+      return;
     }
 
     done(null, user.toSafeObject());
@@ -79,12 +93,12 @@ export const jwtVerifyCallback: VerifyCallback = async (
  * @param done callback to proceed
  * @returns nothing
  */
-export const localVerifyFn: VerifyFunction = async (email, password, done) => {
+export const localVerifyFn: asyncVerifyFunction = async (email, password, done) => {
   try {
     const { user: result } = await login(email, password);
-    return done(null, result);
-  } catch (_error) {
-    return done(null, false, { message: ERROR_MESSAGES.INVALID_CREDENTIALS });
+    done(null, result);
+  } catch {
+    done(null, false, { message: ERROR_MESSAGES.INVALID_CREDENTIALS });
   }
 };
 
@@ -93,7 +107,7 @@ export const localVerifyFn: VerifyFunction = async (email, password, done) => {
  */
 export const configurePassport = (): void => {
   const jwtStrategy = new JWTStrategy(jwtOptions, jwtVerifyCallback);
-  const localStrategy = new LocalStrategy({ usernameField: 'email' }, localVerifyFn);
+  const localStrategy = new LocalStrategy({ usernameField: 'email' }, localVerifyFn );
 
   passport.use('jwt', jwtStrategy);
   passport.use('local', localStrategy);

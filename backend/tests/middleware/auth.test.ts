@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import type { NextFunction, Request, Response } from 'express';
 import passport from 'passport';
 import { type MockedFunction, beforeEach, describe, expect, it, vi } from 'vitest';
