@@ -1,8 +1,11 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuth } from '../hooks/useAuth';
+import { Button } from '../components/common/Button';
+import { apiRequest } from '../lib/apiClient';
 
 export function Home() {
   console.log('homepage');
+  const [msg, setMsg] = useState('');
   const context = useAuth();
 
   useEffect(() => {
@@ -10,6 +13,20 @@ export function Home() {
     context.checkAuth()
       .then(() => {})
   }, [])
+
+  const onClick = async () => {
+    try {
+      const response = await apiRequest('/protected');
+      if(response && response.message) {
+        setMsg(response.message)
+      } else {
+        setMsg('Something went wrong');
+      }
+    } catch (error) {
+      console.error(error);
+      setMsg('What? ' + error);
+    }
+  };
 
   return (
     <>
@@ -20,7 +37,9 @@ export function Home() {
         <br />
         <pre>
           {JSON.stringify(context.user, null, 2)}
+          {msg}
         </pre>
+        <Button type="button" onClick={onClick}>Test Protected Route</Button>
       </div>
     </>
   )

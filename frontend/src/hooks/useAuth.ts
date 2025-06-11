@@ -20,28 +20,36 @@ export function useAuth() {
   const isKnown         = authIsKnown(context.authStatus);
 
   const checkAuth = async () => { 
+    console.log('#checkAuth');
+    // if(context.authStatus === AuthStatus.CHECKING) {
+    //   console.log('#checkAuth already checking so return early.');
+    //   return; 
+    // }
+
     const originalStatus = context.authStatus;
     actions.setAuthStatus(AuthStatus.CHECKING);
-    
     try {
+      console.log('#checkAuth: make request');
       const result = await authRequest.getProfile();
       if(result.data != null && !isEmptyObject(result.data)) {
-        console.log('CheckAuth got a user!');
+        console.log('#checkAuth got a user!');
         actions.setAuthStatus(AuthStatus.LOGGED_IN);
         actions.setUser(result.data);
-        console.log('After setting user');
       } else {
+        console.log('#checkAuth: no user');
         actions.setAuthStatus(AuthStatus.LOGGED_OUT);
       }
     } catch(error) {
-      console.error('Error checking auth', error);
+      console.error('#checkAuth: Error', error);
       actions.setAuthStatus(originalStatus);  // return from whence we came
       throw error; 
     }
   };
 
   const login = async ({email, password}: LoginRequest): Promise<SafeUser | undefined> => { 
+    console.log('CONTEXT: LOGIN', {isAuthenticated, isLoading, isKnown, status: context.authStatus});
     if(!isAuthenticated && !isLoading) {
+      console.log('Proceed with login');
       actions.setAuthStatus(AuthStatus.LOGGING_IN);
       try {
         const result = await authRequest.login(email, password);
