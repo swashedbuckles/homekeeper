@@ -10,6 +10,8 @@ import { PasswordStrengthIndicator } from "./common/PasswordStrengthIndicator";
 import { frontendRegisterSchema } from "../lib/schema/Registration";
 import { Button } from "./common/Button";
 import { ApiError } from "../lib/types/apiError";
+import { UI as logger } from "../lib/logger";
+
 
 export interface RegistrationFormProps {
   onSuccess?: (user: SafeUser) => void; 
@@ -23,17 +25,15 @@ export const RegistrationForm = ({ onSuccess }: RegistrationFormProps) => {
   const password = watch('password');
   const onSubmit = async (formData: RegisterRequest) => {
     try {
-      console.log('onsubmit');
       const { data: user, message } = await registerUser(formData.email, formData.password, formData.name);
-      console.log('Registration Result: ', message);
+      logger.log('Registration Result: ', message);
 
       if (onSuccess != null && user != null) {
-        console.log('hiiii');
         onSuccess(user);
       }
 
     } catch (error: unknown) {
-      console.error(error);
+      logger.error(error);
       if (error instanceof ApiError) {
         if (error.statusCode === 409) {
           setServerError("An account with this email already exists.");

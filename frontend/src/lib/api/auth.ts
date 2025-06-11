@@ -9,7 +9,6 @@ export function login(email: string, password: string) {
 }
 
 export function register(email: string, password: string, name: string) {
-  console.log('registre');
   return apiRequest<SafeUser>('/auth/register', {
       method: 'POST',
       body: JSON.stringify({ email, password, name }),

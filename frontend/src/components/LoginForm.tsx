@@ -1,12 +1,13 @@
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { loginSchema, type LoginRequest, type SafeUser } from "@homekeeper/shared";
 
 import { TextInput } from "./common/TextInput";
-import { loginSchema, type LoginRequest, type SafeUser } from "@homekeeper/shared";
 import { useAuth } from "../hooks/useAuth";
 import { Button } from "./common/Button";
-import { useState } from "react";
 import { ApiError } from "../lib/types/apiError";
+import { UI as logger } from "../lib/logger";
 
 export interface LoginFormProps {
   onSuccess?: (user: SafeUser) => void;
@@ -23,13 +24,13 @@ export const LoginForm = ({onSuccess}: LoginFormProps) => {
     try {
       const user = await context.login(formData);
 
-      console.log('Login Result: ', user);
+      logger.log('Login Result: ', user);
 
       if(onSuccess != null && user != null ) {
         onSuccess(user);
       }
     } catch (error) {
-      console.error(error);
+      logger.error(error);
       if (error instanceof ApiError) {
         if (error.statusCode === 401) {
           setServerError("Invalid email or password.");

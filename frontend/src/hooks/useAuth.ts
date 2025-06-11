@@ -3,6 +3,7 @@ import { AuthActionsContext, AuthContext } from "../context/authContexts";
 import { authIsKnown, authIsLoading, AuthStatus } from "../lib/types/authStatus";
 import * as authRequest from '../lib/api/auth';
 import type { LoginRequest, SafeUser } from "@homekeeper/shared";
+import { STATE as logger } from "../lib/logger";
 
 const isEmptyObject = (value: unknown): boolean => {
   return typeof value === 'object' 
@@ -19,36 +20,32 @@ export function useAuth() {
   const isKnown         = authIsKnown(context.authStatus);
 
   const checkAuth = async () => { 
-    console.log('#checkAuth');
-    // if(context.authStatus === AuthStatus.CHECKING) {
-    //   console.log('#checkAuth already checking so return early.');
-    //   return; 
-    // }
-
+    logger.log('#checkAuth');
     const originalStatus = context.authStatus;
     actions.setAuthStatus(AuthStatus.CHECKING);
+
     try {
-      console.log('#checkAuth: make request');
+      logger.log('#checkAuth: make request');
       const result = await authRequest.getProfile();
       if(result.data != null && !isEmptyObject(result.data)) {
-        console.log('#checkAuth got a user!');
+        logger.log('#checkAuth got a user!');
         actions.setAuthStatus(AuthStatus.LOGGED_IN);
         actions.setUser(result.data);
       } else {
-        console.log('#checkAuth: no user');
+        logger.log('#checkAuth: no user');
         actions.setAuthStatus(AuthStatus.LOGGED_OUT);
       }
     } catch(error) {
-      console.error('#checkAuth: Error', error);
+      logger.error('#checkAuth: Error', error);
       actions.setAuthStatus(originalStatus);  // return from whence we came
       throw error; 
     }
   };
 
   const login = async ({email, password}: LoginRequest): Promise<SafeUser | undefined> => { 
-    console.log('CONTEXT: LOGIN', {isAuthenticated, isLoading, isKnown, status: context.authStatus});
+    logger.log('CONTEXT: LOGIN', {isAuthenticated, isLoading, isKnown, status: context.authStatus});
     if(!isAuthenticated && !isLoading) {
-      console.log('Proceed with login');
+      logger.log('Proceed with login');
       actions.setAuthStatus(AuthStatus.LOGGING_IN);
       try {
         const result = await authRequest.login(email, password);

@@ -128,7 +128,6 @@ describe('AuthProvider', () => {
         return (<button
           data-testid="clear-user"
           onClick={() => {
-            console.log('hi I was clicked');
             actions.setUser(null);
             actions.setAuthStatus(AuthStatus.LOGGED_OUT);
           }}

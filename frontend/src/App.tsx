@@ -8,8 +8,7 @@ import { Register } from './pages/auth/Register';
 
 export function App() {
   const initialAuthState = {
-    authStatus: AuthStatus.CHECKING, // Start by checking auth status
-    csrfToken: null,
+    authStatus: AuthStatus.CHECKING,
     user: null,
   };
 

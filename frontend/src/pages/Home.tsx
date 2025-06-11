@@ -2,14 +2,15 @@ import { useEffect, useState } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { Button } from '../components/common/Button';
 import { apiRequest } from '../lib/apiClient';
-
+import { UI as logger } from '../lib/logger';
 export function Home() {
-  console.log('homepage');
+  
+  logger.log('homepage');
   const [msg, setMsg] = useState('');
   const context = useAuth();
 
   useEffect(() => {
-    console.log('homepage Checking auth');
+    logger.log('homepage Checking auth');
     context.checkAuth()
       .then(() => {})
   }, [])
@@ -23,7 +24,7 @@ export function Home() {
         setMsg('Something went wrong');
       }
     } catch (error) {
-      console.error(error);
+      logger.error(error);
       setMsg('What? ' + error);
     }
   };
@@ -37,7 +38,7 @@ export function Home() {
         setMsg('Something went wrong');
       }
     } catch (error) {
-      console.error(error);
+      logger.error(error);
       setMsg('What? ' + error);
     }
   };
