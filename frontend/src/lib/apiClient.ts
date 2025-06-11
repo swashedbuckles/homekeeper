@@ -1,6 +1,8 @@
 /// <reference types="vite/client" />
 import type { ApiResponse } from "@homekeeper/shared";
-import { ApiError } from "../types/apiError";
+import { ApiError } from "./types/apiError";
+
+console.log('ENVORNMENT', import.meta.env);
 
 export const API_BASE_URL = import.meta.env.PROD 
   ? 'https://homekeeper-api.tomseph.dev' 

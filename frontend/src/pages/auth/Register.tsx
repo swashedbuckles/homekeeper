@@ -1,22 +1,19 @@
-import { register } from "../../lib/api/auth";
 import { useNavigate } from "react-router";
+import { PageContainer } from "../../components/common/PageContainer";
+import { RegistrationForm } from "../../components/RegistrationForm";
+import type { SafeUser } from "@homekeeper/shared";
+
 export function Register() {
   const navigate = useNavigate();
 
-  const handleClick = async () => {
-    const res = await register('tom@tomseph.dev', 'abcDEFG123!@#$', 'tom');
-    console.log('res!!', res);
-
+  const handleSubmit = async (user: SafeUser) => {
+    console.log('hiii', user);
     navigate('/');
   };
 
   return (
-    <>
-      <div>
-        <p>Register Page</p>
-        <br/>
-        <button onClick={handleClick}>Register</button>
-      </div>
-    </>
+    <PageContainer>
+      <RegistrationForm onSuccess={handleSubmit} />
+    </PageContainer>
   )
 }

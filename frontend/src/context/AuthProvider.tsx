@@ -1,7 +1,7 @@
 import { useState } from "react";
-import type { Nullable } from "../types/nullable";
+import type { Nullable } from "../lib/types/nullable";
 import type { SafeUser } from "@homekeeper/shared";
-import { AuthStatus, type AuthStatusType } from "../types/authStatus";
+import { AuthStatus, type AuthStatusType } from "../lib/types/authStatus";
 import { AuthActionsContext, AuthContext, type IAuthContext } from "./authContexts";
 
 type AuthProviderProps = {

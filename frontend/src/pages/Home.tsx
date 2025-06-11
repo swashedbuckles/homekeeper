@@ -1,16 +1,14 @@
-import { useState, useEffect } from 'react';
-import type { SafeUser } from '@homekeeper/shared';
-import { getProfile } from "../lib/api/auth";
+import { useEffect } from 'react';
+import { useAuth } from '../hooks/useAuth';
 
 export function Home() {
-  const [profile, setProfile] = useState<SafeUser | null>();
+  console.log('homepage');
+  const context = useAuth();
 
   useEffect(() => {
-    getProfile().then(response => {
-      const {data} = response;
-      
-      setProfile((data as SafeUser) ?? null);
-    })
+    console.log('homepage Checking auth');
+    context.checkAuth()
+      .then(() => {})
   }, [])
 
   return (
@@ -21,7 +19,7 @@ export function Home() {
         <p>Home Page</p>
         <br />
         <pre>
-          {JSON.stringify(profile, null, 2)}
+          {JSON.stringify(context.user, null, 2)}
         </pre>
       </div>
     </>
