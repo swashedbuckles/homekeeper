@@ -11,6 +11,7 @@ export interface ButtonProps {
   onClick?: () => void;
   className?: string; 
   full?: boolean;
+  testId?: string;
 }
 
 export const Button = ({
@@ -23,6 +24,7 @@ export const Button = ({
   children,
   onClick,
   className,
+  testId
 }: ButtonProps) => {
   const isDisabled = disabled || loading;
   
@@ -76,6 +78,7 @@ export const Button = ({
       disabled={isDisabled}
       onClick={onClick}
       className={buttonStyles}
+      data-testid={testId}
     >
       {loading ? <span>{loadingText}</span> : children}
     </button>

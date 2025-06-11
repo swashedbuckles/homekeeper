@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import fetchMock from '@fetch-mock/vitest';
 import { apiRequest, API_BASE_URL } from '../../src/lib/apiClient';
-import { ApiError } from '../../src/types/apiError';
+import { ApiError } from '../../src/lib/types/apiError';
 
 describe('apiClient', () => {
   beforeEach(() => {

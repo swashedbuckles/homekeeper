@@ -8,9 +8,11 @@ export interface TextInputProps {
   error?: string;
   validationFeedback?: ReactNode; // Custom component (password strength)
   register?: UseFormRegisterReturn;
+  testId?: string;
 };
 
 export const TextInput = (props: TextInputProps) => {
+  const inputId = `input-${props.label.replace(/\s+/g, '-').toLowerCase()}`;
   const hasFeedback = props.validationFeedback != null;
   const hasError = props.error != null;
 
@@ -32,16 +34,19 @@ export const TextInput = (props: TextInputProps) => {
   
   return (
     <div className="mb-4"> 
-      <label className="block text-sm font-semibold text-text-primary mb-2">
+      <label htmlFor={inputId} className="block text-sm font-semibold text-text-primary mb-2">
         {props.label}
       </label>
 
       <div>
         <input 
+          id={inputId}
           {...props.register}
           placeholder={props.placeholder}
           type={props.type}
           className={inputStyles}
+          role="textbox"
+          data-testid={props.testId}        
         />
         {hasFeedback ? props.validationFeedback : null}
       </div>

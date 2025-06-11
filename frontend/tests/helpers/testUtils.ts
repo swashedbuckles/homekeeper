@@ -36,28 +36,38 @@ export const mockApiError = (statusCode: number, error: string, endpoint = '*') 
 
 export const mockAuthEndpoints = () => {
   // Mock CSRF token endpoint
-  fetchMock.get('express:/api/auth/csrf', {
+  fetchMock.route({
+    url: 'path:/auth/csrf', 
+    response: {
     status: 200,
     body: { data: { csrfToken: 'mock-csrf-token' } },
-  });
+  }});
 
   // Mock profile endpoint
-  fetchMock.get('express:/api/auth/profile', {
-    status: 200,
-    body: { data: createMockUser() },
+  fetchMock.route({
+    url: 'path:/auth/profile', 
+    response: {
+      status: 200,
+      body: { data: createMockUser() },
+    }
   });
 
   // Mock login endpoint
-  fetchMock.post('express:/api/auth/login', {
-    status: 200,
-    body: { data: createMockUser(), message: 'Login successful' },
+  fetchMock.route({
+    url: 'path:/auth/login', 
+    response: {
+      status: 200,
+      response: { data: createMockUser(), message: 'Login successful' },
+    }
   });
 
   // Mock logout endpoint
-  fetchMock.post('express:/api/auth/logout', {
-    status: 200,
-    body: { message: 'Logout successful' },
-  });
+  fetchMock.route({
+    url: 'path:/auth/logout', 
+    response: {
+      status: 200,
+      body: { message: 'Logout successful' },
+  }});
 };
 
 // Wait for async operations to complete

@@ -4,7 +4,7 @@ import type { ReactElement, ReactNode } from 'react';
 import type { SafeUser } from '@homekeeper/shared';
 
 import { AuthProvider } from '../../src/context/AuthProvider';
-import { AuthStatus, type AuthStatusType } from '../../src/types/authStatus';
+import { AuthStatus, type AuthStatusType } from '../../src/lib/types/authStatus';
 
 // Auth context test provider
 interface TestAuthProviderProps {

@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react';
 import { useContext } from 'react';
 import { AuthProvider } from '../../src/context/AuthProvider';
 import { AuthContext, AuthActionsContext } from '../../src/context/authContexts';
-import { AuthStatus } from '../../src/types/authStatus';
+import { AuthStatus } from '../../src/lib/types/authStatus';
 import { createMockUser } from '../helpers/testUtils';
 
 // Test component to access context values

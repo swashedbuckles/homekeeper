@@ -2,8 +2,6 @@
 import type { ApiResponse } from "@homekeeper/shared";
 import { ApiError } from "./types/apiError";
 
-console.log('ENVORNMENT', import.meta.env);
-
 export const API_BASE_URL = import.meta.env.PROD 
   ? 'https://homekeeper-api.tomseph.dev' 
   : 'http://localhost:4000';
@@ -23,6 +21,7 @@ export async function apiRequest<T>(endpoint: string, options: RequestInit = {})
   try {
     const response = await fetch(url, config);
     if(!response.ok) {
+      console.error('response not ok');
       const errorData = await response.json().catch(() => ({}));
       throw new ApiError(
         response.status,
@@ -32,10 +31,12 @@ export async function apiRequest<T>(endpoint: string, options: RequestInit = {})
 
     return await response.json();
   } catch (error) {
+    console.error('got an api error', error);
     if (error instanceof ApiError) {
+      console.error('already api error');
       throw error;
     }
 
-    throw new ApiError(0, 'Network Error',);
+    throw new ApiError(0, 'Network Error');
   }
 }
