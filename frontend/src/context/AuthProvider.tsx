@@ -11,18 +11,16 @@ type AuthProviderProps = {
 
 const DEFAULT_INITIAL_STATE = {
   authStatus: AuthStatus.CHECKING,
-  csrfToken: null,
   user: null,
 };
 
 export function AuthProvider({ children, initialState = DEFAULT_INITIAL_STATE }: AuthProviderProps) {
   const [authStatus, setAuthStatus] = useState<AuthStatusType>(initialState.authStatus);
-  const [csrfToken, setCsrfToken] = useState<Nullable<string>>(initialState.csrfToken);
   const [user, setUser] = useState<Nullable<SafeUser>>(initialState.user);
 
   return (
-    <AuthContext value={{ authStatus, csrfToken, user }}>
-      <AuthActionsContext value={{ setAuthStatus, setCsrfToken, setUser }}>
+    <AuthContext value={{ authStatus, user }}>
+      <AuthActionsContext value={{ setAuthStatus, setUser }}>
         {children}
       </AuthActionsContext>
     </AuthContext>

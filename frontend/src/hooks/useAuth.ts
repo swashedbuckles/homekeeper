@@ -3,7 +3,6 @@ import { AuthActionsContext, AuthContext } from "../context/authContexts";
 import { authIsKnown, authIsLoading, AuthStatus } from "../lib/types/authStatus";
 import * as authRequest from '../lib/api/auth';
 import type { LoginRequest, SafeUser } from "@homekeeper/shared";
-import { API_BASE_URL } from "../lib/apiClient";
 
 const isEmptyObject = (value: unknown): boolean => {
   return typeof value === 'object' 
@@ -56,9 +55,7 @@ export function useAuth() {
         if(result.data != null) {
           actions.setAuthStatus(AuthStatus.LOGGED_IN);
           actions.setUser(result.data);
-          
-          const token = await getCsrfToken();
-          actions.setCsrfToken(token);  /** @todo retry/error handling for logged-in but no token state */
+
           return result.data;
         } else {
           actions.setAuthStatus(AuthStatus.LOGGED_OUT);
@@ -79,7 +76,6 @@ export function useAuth() {
   
         actions.setAuthStatus(AuthStatus.LOGGED_OUT);
         actions.setUser(null);
-        actions.setCsrfToken(null);
       }
     } catch (error) {
       /** @todo do we do something else here? */
@@ -92,7 +88,6 @@ export function useAuth() {
   return {
     // State
     authStatus: context.authStatus,
-    csrfToken: context.csrfToken,
     user: context.user,
     
     // Actions
@@ -106,11 +101,3 @@ export function useAuth() {
     isAuthenticated,
   };
 }
-
-async function getCsrfToken(): Promise<string> {
-  const response = await fetch(`${API_BASE_URL}/auth/csrf-token`, {
-    credentials: 'include'
-  });
-  const data = await response.json();
-  return data.csrfToken;
-};
