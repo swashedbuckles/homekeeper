@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { TextInput } from "./common/TextInput";
 import { loginSchema, type LoginRequest, type SafeUser } from "@homekeeper/shared";
 import { useAuth } from "../hooks/useAuth";
+import { Button } from "./common/Button";
 
 export interface LoginFormProps {
   onSuccess?: (user: SafeUser) => void;
@@ -44,9 +45,14 @@ export const LoginForm = ({onSuccess}: LoginFormProps) => {
         register={register('password')}
         error={errors.password?.message}
       />
-      <button type="submit" disabled={isSubmitting}   className="w-full bg-primary text-white py-3 px-6 rounded-lg font-semibold hover:bg-opacity-90 disabled:opacity-50 disabled:cursor-not-allowed">
-        {isSubmitting ? 'Logging In...' : 'Log In'}
-      </button>
+      <Button 
+        full
+        type="submit" 
+        disabled={isSubmitting} 
+        variant="primary" 
+        loading={isSubmitting} 
+        loadingText="Logging In..."
+      >Create Account</Button>
     </form>
   );
 };
