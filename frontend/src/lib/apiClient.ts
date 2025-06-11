@@ -9,12 +9,12 @@ export async function apiRequest<T>(endpoint: string, options: RequestInit = {})
   const url = `${API_BASE_URL}${endpoint}`;
 
    const config: RequestInit = {
+    ...options,
     headers: {
       'Content-Type': 'application/json',
       ...options.headers,
     },
     credentials: 'include',
-    ...options,
   };
 
   try {
@@ -23,7 +23,7 @@ export async function apiRequest<T>(endpoint: string, options: RequestInit = {})
       const errorData = await response.json().catch(() => ({}));
       throw new ApiError(
         response.status,
-        errorData.message || `HTTP ${response.status}`,
+        errorData.error || `HTTP ${response.status}`,
       );
     }
 
@@ -33,6 +33,6 @@ export async function apiRequest<T>(endpoint: string, options: RequestInit = {})
       throw error;
     }
 
-    throw new ApiError(0, 'Network error',);
+    throw new ApiError(0, 'Network Error',);
   }
 }

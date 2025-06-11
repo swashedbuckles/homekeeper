@@ -5,6 +5,12 @@ import * as authRequest from '../lib/api/auth';
 import type { LoginRequest } from "@homekeeper/shared";
 import { API_BASE_URL } from "../lib/apiClient";
 
+const isEmptyObject = (value: unknown): boolean => {
+  return typeof value === 'object' 
+    && value != null 
+    && Object.keys(value).length === 0;
+};
+
 export function useAuth() {
   const context = useContext(AuthContext);
   const actions = useContext(AuthActionsContext);
@@ -19,15 +25,16 @@ export function useAuth() {
     
     try {
       const result = await authRequest.getProfile();
-      if(result.data != null) {
+      if(result.data != null && !isEmptyObject(result.data)) {
         actions.setAuthStatus(AuthStatus.LOGGED_IN);
         actions.setUser(result.data);
       } else {
         actions.setAuthStatus(AuthStatus.LOGGED_OUT);
       }
-    } catch (error) {
+    } catch(error) {
+      console.error('Error checking auth', error);
       actions.setAuthStatus(originalStatus);  // return from whence we came
-      throw error;
+      throw error; 
     }
   };
 
@@ -50,7 +57,8 @@ export function useAuth() {
         throw error;
       }
     }
-   };
+  };
+
   const logout = async () => { 
     const originalStatus = context.authStatus;
     try {
@@ -89,7 +97,7 @@ export function useAuth() {
 }
 
 async function getCsrfToken(): Promise<string> {
-  const response = await fetch(`${API_BASE_URL}/csrf-token`, {
+  const response = await fetch(`${API_BASE_URL}/auth/csrf-token`, {
     credentials: 'include'
   });
   const data = await response.json();

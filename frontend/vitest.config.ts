@@ -19,9 +19,13 @@ export default defineConfig({
         'vite.config.ts'
       ]
     },
-    globals: true, // Enables global test functions (describe, it, expect)
+    globals: true,
     testTimeout: 10000,
-    hookTimeout: 10000
+    hookTimeout: 10000,
+    // Use test-specific TypeScript config
+    typecheck: {
+      tsconfig: './tsconfig.test.json'
+    }
   },
   resolve: {
     alias: {
@@ -29,4 +33,8 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  // // Ensure TypeScript uses the test config
+  // esbuild: {
+  //   tsconfigRaw: './tsconfig.test.json'
+  // }
 });
