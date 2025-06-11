@@ -1,3 +1,4 @@
+/// <reference types="vite/client" />
 import type { ApiResponse } from "@homekeeper/shared";
 import { ApiError } from "../types/apiError";
 
