@@ -12,6 +12,9 @@ export interface RegisterRequest {
   name: string;
 }
 
+export type CsrfResponse = {
+  csrfToken: string;
+};
+
 /** @todo update backend responses to match ApiResponse type schema */
 export type AuthResponse = ApiResponse<SafeUser>;
-
