@@ -61,9 +61,9 @@ export const createApp = (): express.Application => {
   });
 
   app.get('/protected', requireAuth, (req, res) => {
-    res.status(HTTP_STATUS.OK).json({
+    res.status(HTTP_STATUS.OK).apiSuccess({
       message: 'Welcome to the protected route!',
-      user: req.user,
+      data: req.user,
     });
   });
 

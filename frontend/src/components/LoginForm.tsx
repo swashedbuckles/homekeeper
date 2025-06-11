@@ -82,7 +82,7 @@ export const LoginForm = ({onSuccess}: LoginFormProps) => {
         loading={isSubmitting} 
         loadingText="Logging In..."
         testId="submit-button"
-      >Create Account</Button>
+      >Log In</Button>
     </form>
   );
 };
