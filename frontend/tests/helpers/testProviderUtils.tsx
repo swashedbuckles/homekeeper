@@ -11,21 +11,18 @@ interface TestAuthProviderProps {
   children: ReactNode;
   initialAuthStatus?: AuthStatusType;
   initialUser?: SafeUser | null;
-  initialCsrfToken?: string | null;
 }
 
 export function TestAuthProvider({
   children,
   initialAuthStatus = AuthStatus.LOGGED_OUT,
   initialUser = null,
-  initialCsrfToken = null,
 }: TestAuthProviderProps) {
   return (
     <AuthProvider
       initialState={{
         authStatus: initialAuthStatus,
         user: initialUser,
-        csrfToken: initialCsrfToken,
       }}
     >
       {children}
@@ -37,7 +34,6 @@ export function TestAuthProvider({
 interface CustomRenderOptions extends Omit<RenderOptions, 'wrapper'> {
   authStatus?: AuthStatusType;
   user?: SafeUser | null;
-  csrfToken?: string | null;
 }
 
 export function renderWithAuth(
@@ -45,7 +41,6 @@ export function renderWithAuth(
   {
     authStatus = AuthStatus.LOGGED_OUT,
     user = null,
-    csrfToken = null,
     ...renderOptions
   }: CustomRenderOptions = {}
 ) {
@@ -54,7 +49,6 @@ export function renderWithAuth(
       <TestAuthProvider
         initialAuthStatus={authStatus}
         initialUser={user}
-        initialCsrfToken={csrfToken}
       >
         {children}
       </TestAuthProvider>
