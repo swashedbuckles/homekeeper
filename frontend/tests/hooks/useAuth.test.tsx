@@ -25,7 +25,6 @@ describe('useAuth', () => {
 
       expect(result.current.authStatus).toBe(AuthStatus.CHECKING);
       expect(result.current.user).toBeNull();
-      expect(result.current.csrfToken).toBeNull();
       expect(result.current.isLoading).toBe(true);
       expect(result.current.isAuthenticated).toBe(false);
     });
@@ -52,7 +51,6 @@ describe('useAuth', () => {
           <TestAuthProvider 
             initialAuthStatus={AuthStatus.LOGGED_IN}
             initialUser={mockUser}
-            initialCsrfToken="mock-csrf-token"
           >
             {children}
           </TestAuthProvider>
@@ -61,7 +59,6 @@ describe('useAuth', () => {
 
       expect(result.current.authStatus).toBe(AuthStatus.LOGGED_IN);
       expect(result.current.user).toEqual(mockUser);
-      expect(result.current.csrfToken).toBe('mock-csrf-token');
       expect(result.current.isLoading).toBe(false);
       expect(result.current.isAuthenticated).toBe(true);
     });
@@ -149,28 +146,12 @@ describe('useAuth', () => {
   });
 
   describe('login', () => {
-    beforeEach(() => {
-      // Mock CSRF token endpoint
-      fetchMock.route({
-        url: 'path:/auth/csrf',
-        allowRelativeUrls: true,
-        response: { data: { csrfToken: 'mock-csrf-token' } }
-      });
-    });
-
     it('should successfully login user', async () => {
       const mockUser = createMockUser();
-      
       fetchMock.route({
         url: 'path:/auth/login',
         allowRelativeUrls: true,
         response: { data: mockUser, message: 'Login successful' }
-      });
-
-      fetchMock.route({
-        url: 'path:/auth/csrf-token',
-        allowRelativeUrls: true,
-        response: { csrfToken: 'mock-csrf-token' }
       });
 
       const { result } = renderHook(() => useAuth(), {
@@ -188,7 +169,6 @@ describe('useAuth', () => {
       await waitFor(() => {
         expect(result.current.authStatus).toBe(AuthStatus.LOGGED_IN);
         expect(result.current.user).toEqual(mockUser);
-        expect(result.current.csrfToken).toBe('mock-csrf-token');
       });
 
       // Verify the request was made correctly
@@ -242,13 +222,6 @@ describe('useAuth', () => {
         response: {body: {data: mockUser}}
       });
 
-      fetchMock.route({
-        url: 'path:/auth/csrf-token',
-        allowRelativeUrls: true,
-        response: {body: {csrfToken: 'mock-csrf-token'}}
-      });
-
-
       const { result } = renderHook(() => useAuth(), {
         wrapper: ({ children }) => (
           <TestAuthProvider initialAuthStatus={AuthStatus.LOGGED_OUT}>
@@ -271,31 +244,6 @@ describe('useAuth', () => {
         expect(result.current.isLoading).toBe(false);
       });
     });
-
-    it('should handle CSRF token failure', async () => {
-      // Override CSRF endpoint to fail
-      fetchMock.route({
-        url: 'path:/auth/csrf',
-        allowRelativeUrls: true,
-        response: {
-          status: 500,
-          body: { error: 'CSRF token generation failed' }
-        }
-      });
-
-      const { result } = renderHook(() => useAuth(), {
-        wrapper: ({ children }) => (
-          <TestAuthProvider initialAuthStatus={AuthStatus.LOGGED_OUT}>
-            {children}
-          </TestAuthProvider>
-        ),
-      });
-
-      await act(async () => {
-        await expect(result.current.login({email: 'test@example.com', password: 'password123'}))
-          .rejects.toThrow();
-      });
-    });
   });
 
   describe('logout', () => {
@@ -313,7 +261,6 @@ describe('useAuth', () => {
           <TestAuthProvider 
             initialAuthStatus={AuthStatus.LOGGED_IN}
             initialUser={mockUser}
-            initialCsrfToken="mock-csrf-token"
           >
             {children}
           </TestAuthProvider>
@@ -327,7 +274,6 @@ describe('useAuth', () => {
       await waitFor(() => {
         expect(result.current.authStatus).toBe(AuthStatus.LOGGED_OUT);
         expect(result.current.user).toBeNull();
-        expect(result.current.csrfToken).toBeNull();
       });
     });
 

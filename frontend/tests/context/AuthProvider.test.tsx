@@ -15,7 +15,6 @@ function TestComponent() {
     <div>
       <span data-testid="auth-status">{auth.authStatus}</span>
       <span data-testid="user-email">{auth.user?.email || 'no-user'}</span>
-      <span data-testid="csrf-token">{auth.csrfToken || 'no-token'}</span>
       <button
         data-testid="set-logged-in"
         onClick={() => actions.setAuthStatus(AuthStatus.LOGGED_IN)}
@@ -28,12 +27,6 @@ function TestComponent() {
       >
         Set User
       </button>
-      <button
-        data-testid="set-csrf"
-        onClick={() => actions.setCsrfToken('new-csrf-token')}
-      >
-        Set CSRF
-      </button>
     </div>
   );
 }
@@ -43,7 +36,6 @@ describe('AuthProvider', () => {
     it('should provide default initial state', () => {
       const defaultInitialState = {
         authStatus: AuthStatus.CHECKING,
-        csrfToken: null,
         user: null,
       };
 
@@ -55,14 +47,12 @@ describe('AuthProvider', () => {
 
       expect(screen.getByTestId('auth-status')).toHaveTextContent(AuthStatus.CHECKING);
       expect(screen.getByTestId('user-email')).toHaveTextContent('no-user');
-      expect(screen.getByTestId('csrf-token')).toHaveTextContent('no-token');
     });
 
     it('should provide custom initial state', () => {
       const mockUser = createMockUser({ email: 'test@example.com' });
       const customInitialState = {
         authStatus: AuthStatus.LOGGED_IN,
-        csrfToken: 'initial-csrf-token',
         user: mockUser,
       };
 
@@ -74,13 +64,11 @@ describe('AuthProvider', () => {
 
       expect(screen.getByTestId('auth-status')).toHaveTextContent(AuthStatus.LOGGED_IN);
       expect(screen.getByTestId('user-email')).toHaveTextContent('test@example.com');
-      expect(screen.getByTestId('csrf-token')).toHaveTextContent('initial-csrf-token');
     });
 
     it('should provide logged out state', () => {
       const loggedOutState = {
         authStatus: AuthStatus.LOGGED_OUT,
-        csrfToken: null,
         user: null,
       };
 
@@ -92,7 +80,6 @@ describe('AuthProvider', () => {
 
       expect(screen.getByTestId('auth-status')).toHaveTextContent(AuthStatus.LOGGED_OUT);
       expect(screen.getByTestId('user-email')).toHaveTextContent('no-user');
-      expect(screen.getByTestId('csrf-token')).toHaveTextContent('no-token');
     });
   });
 
@@ -101,7 +88,6 @@ describe('AuthProvider', () => {
       const { getByTestId } = render(
         <AuthProvider initialState={{
           authStatus: AuthStatus.LOGGED_OUT,
-          csrfToken: null,
           user: null,
         }}>
           <TestComponent />
@@ -120,7 +106,6 @@ describe('AuthProvider', () => {
       const { getByTestId } = render(
         <AuthProvider initialState={{
           authStatus: AuthStatus.LOGGED_OUT,
-          csrfToken: null,
           user: null,
         }}>
           <TestComponent />
@@ -134,24 +119,6 @@ describe('AuthProvider', () => {
       expect(getByTestId('user-email')).toHaveTextContent('updated@example.com');
     });
 
-    it('should update CSRF token', async () => {
-      const { getByTestId } = render(
-        <AuthProvider initialState={{
-          authStatus: AuthStatus.LOGGED_OUT,
-          csrfToken: null,
-          user: null,
-        }}>
-          <TestComponent />
-        </AuthProvider>
-      );
-
-      expect(getByTestId('csrf-token')).toHaveTextContent('no-token');
-
-      await getByTestId('set-csrf').click();
-
-      expect(getByTestId('csrf-token')).toHaveTextContent('new-csrf-token');
-    });
-
     it('should handle clearing user data', async () => {
       const mockUser = createMockUser({ email: 'initial@example.com' });
 
@@ -163,7 +130,6 @@ describe('AuthProvider', () => {
           onClick={() => {
             console.log('hi I was clicked');
             actions.setUser(null);
-            actions.setCsrfToken(null);
             actions.setAuthStatus(AuthStatus.LOGGED_OUT);
           }}
         >
@@ -174,7 +140,6 @@ describe('AuthProvider', () => {
       const { getByTestId } = render(
         <AuthProvider initialState={{
           authStatus: AuthStatus.LOGGED_IN,
-          csrfToken: 'initial-token',
           user: mockUser,
         }}>
           <div>
@@ -187,7 +152,6 @@ describe('AuthProvider', () => {
       // Initial state
       expect(getByTestId('auth-status')).toHaveTextContent(AuthStatus.LOGGED_IN);
       expect(getByTestId('user-email')).toHaveTextContent('initial@example.com');
-      expect(getByTestId('csrf-token')).toHaveTextContent('initial-token');
 
       // Clear everything
       getByTestId('clear-user').click();
@@ -196,7 +160,6 @@ describe('AuthProvider', () => {
 
       expect(getByTestId('auth-status')).toHaveTextContent(AuthStatus.LOGGED_OUT);
       expect(getByTestId('user-email')).toHaveTextContent('no-user');
-      expect(getByTestId('csrf-token')).toHaveTextContent('no-token');
     });
   });
 
@@ -220,7 +183,6 @@ describe('AuthProvider', () => {
       render(
         <AuthProvider initialState={{
           authStatus: AuthStatus.LOGGED_OUT,
-          csrfToken: null,
           user: null,
         }}>
           <ContextTestComponent />
@@ -253,7 +215,6 @@ describe('AuthProvider', () => {
               data-testid="complete-login"
               onClick={() => {
                 actions.setUser(mockUser);
-                actions.setCsrfToken('login-csrf-token');
                 actions.setAuthStatus(AuthStatus.LOGGED_IN);
               }}
             >
@@ -269,7 +230,6 @@ describe('AuthProvider', () => {
               data-testid="complete-logout"
               onClick={() => {
                 actions.setUser(null);
-                actions.setCsrfToken(null);
                 actions.setAuthStatus(AuthStatus.LOGGED_OUT);
               }}
             >
@@ -282,7 +242,6 @@ describe('AuthProvider', () => {
       const { getByTestId } = render(
         <AuthProvider initialState={{
           authStatus: AuthStatus.CHECKING,
-          csrfToken: null,
           user: null,
         }}>
           <TransitionTestComponent />
