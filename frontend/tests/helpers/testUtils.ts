@@ -37,10 +37,10 @@ export const mockApiError = (statusCode: number, error: string, endpoint = '*') 
 export const mockAuthEndpoints = () => {
   // Mock CSRF token endpoint
   fetchMock.route({
-    url: 'path:/auth/csrf', 
+    url: 'path:/auth/csrf-token', 
     response: {
     status: 200,
-    body: { data: { csrfToken: 'mock-csrf-token' } },
+    body: { csrfToken: 'mock-csrf-token'  },
   }});
 
   // Mock profile endpoint
@@ -57,7 +57,7 @@ export const mockAuthEndpoints = () => {
     url: 'path:/auth/login', 
     response: {
       status: 200,
-      response: { data: createMockUser(), message: 'Login successful' },
+      body: { data: createMockUser(), message: 'Login successful' },
     }
   });
 

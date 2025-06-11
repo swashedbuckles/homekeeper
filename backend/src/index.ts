@@ -67,6 +67,14 @@ export const createApp = (): express.Application => {
     });
   });
 
+  app.post('/protected', requireAuth, (req, res) => {
+    res.status(HTTP_STATUS.OK).apiSuccess({
+      message: 'Success posting to protected route!',
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      data: req.body
+    });
+  });
+
   // Root health check for easier debugging
   app.get('/', (_req, res) => {
     res.status(HTTP_STATUS.OK).json({ message: RESPONSE_MESSAGES.SERVER_RUNNING });

@@ -28,6 +28,20 @@ export function Home() {
     }
   };
 
+    const onClickPost = async () => {
+    try {
+      const response = await apiRequest('/protected', {method: 'POST', body: JSON.stringify({test: '1234'})});
+      if(response && response.message) {
+        setMsg(response.message)
+      } else {
+        setMsg('Something went wrong');
+      }
+    } catch (error) {
+      console.error(error);
+      setMsg('What? ' + error);
+    }
+  };
+
   return (
     <>
       <div className='hero-section relative'>
@@ -37,9 +51,13 @@ export function Home() {
         <br />
         <pre>
           {JSON.stringify(context.user, null, 2)}
+
           {msg}
         </pre>
-        <Button type="button" onClick={onClick}>Test Protected Route</Button>
+        
+        <Button className="m-1" type="button" onClick={onClick}>Get Protected Route</Button>
+        <Button className="m-1" type="button" onClick={onClickPost}>Post Protected Route</Button>
+
       </div>
     </>
   )
