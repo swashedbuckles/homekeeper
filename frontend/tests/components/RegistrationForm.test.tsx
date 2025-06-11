@@ -60,7 +60,6 @@ describe('RegistrationForm', () => {
     fireEvent.change(screen.getByTestId('password-input'), { target: { value: 'StrongPass123!' } });
     fireEvent.change(screen.getByTestId('confirm-password-input'), { target: { value: 'StrongPass123!' } });
     
-    console.log('before click');
     fireEvent.click(screen.getByTestId('submit-button'));
     await waitFor(() => {
       expect(onSuccess).toHaveBeenCalledWith(mockUser);
