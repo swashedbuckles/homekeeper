@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { AuthStatus, authIsLoading, authIsKnown } from '../../src/types/authStatus';
+import { AuthStatus, authIsLoading, authIsKnown } from '../../src/lib/types/authStatus';
 
 describe('authStatus utilities', () => {
   describe('authIsLoading', () => {

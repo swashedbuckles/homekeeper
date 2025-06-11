@@ -2,8 +2,8 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { renderHook, act, waitFor } from '@testing-library/react';
 import fetchMock from '@fetch-mock/vitest';
 import { useAuth } from '../../src/hooks/useAuth';
-import { AuthStatus } from '../../src/types/authStatus';
-import { ApiError } from '../../src/types/apiError';
+import { AuthStatus } from '../../src/lib/types/authStatus';
+import { ApiError } from '../../src/lib/types/apiError';
 import { createMockUser } from '../helpers/testUtils';
 import { TestAuthProvider } from '../helpers/testProviderUtils';
 

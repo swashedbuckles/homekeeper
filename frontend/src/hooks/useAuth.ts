@@ -1,8 +1,8 @@
 import { useContext } from "react";
 import { AuthActionsContext, AuthContext } from "../context/authContexts";
-import { authIsKnown, authIsLoading, AuthStatus } from "../types/authStatus";
+import { authIsKnown, authIsLoading, AuthStatus } from "../lib/types/authStatus";
 import * as authRequest from '../lib/api/auth';
-import type { LoginRequest } from "@homekeeper/shared";
+import type { LoginRequest, SafeUser } from "@homekeeper/shared";
 import { API_BASE_URL } from "../lib/apiClient";
 
 const isEmptyObject = (value: unknown): boolean => {
@@ -26,8 +26,10 @@ export function useAuth() {
     try {
       const result = await authRequest.getProfile();
       if(result.data != null && !isEmptyObject(result.data)) {
+        console.log('CheckAuth got a user!');
         actions.setAuthStatus(AuthStatus.LOGGED_IN);
         actions.setUser(result.data);
+        console.log('After setting user');
       } else {
         actions.setAuthStatus(AuthStatus.LOGGED_OUT);
       }
@@ -38,7 +40,7 @@ export function useAuth() {
     }
   };
 
-  const login = async ({email, password}: LoginRequest) => { 
+  const login = async ({email, password}: LoginRequest): Promise<SafeUser | undefined> => { 
     if(!isAuthenticated && !isLoading) {
       actions.setAuthStatus(AuthStatus.LOGGING_IN);
       try {
@@ -49,6 +51,7 @@ export function useAuth() {
           
           const token = await getCsrfToken();
           actions.setCsrfToken(token);  /** @todo retry/error handling for logged-in but no token state */
+          return result.data;
         } else {
           actions.setAuthStatus(AuthStatus.LOGGED_OUT);
         }
