@@ -211,7 +211,7 @@ router.get('/csrf-token', optionalAuth, (_req, res) => {
     .json({ csrfToken: token });
 });
 
-router.get('/logout', (req, res) => {
+router.post('/logout', (req, res) => {
   /** @todo fix typing for request object to have cookies setup correctly */
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   if (req.cookies[JWT_COOKIE_NAME]) {
