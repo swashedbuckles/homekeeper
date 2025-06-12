@@ -2,7 +2,6 @@ import { afterAll, afterEach, beforeAll, beforeEach, vi } from 'vitest';
 import { cleanup } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import fetchMock, { manageFetchMockGlobally } from '@fetch-mock/vitest';
-import loglevel from 'loglevel';
 
 // Mock environment variables
 vi.stubEnv('NODE_ENV', 'test');
