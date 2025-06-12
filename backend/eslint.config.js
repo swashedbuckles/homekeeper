@@ -18,6 +18,7 @@ export default tseslint.config(
       },
     },
     rules: {
+      'semi': 'error',
       '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
       '@typescript-eslint/explicit-function-return-type': 'off',
       '@typescript-eslint/no-explicit-any': 'error',

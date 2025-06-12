@@ -5,9 +5,11 @@
 export const HOUSEHOLD_ROLES = ['owner', 'admin', 'member', 'guest'];
 
 // Authentication & JWT
-export const JWT_EXPIRE_TIME_MS = 10 * 60 * 1000;
+export const JWT_REFRESH_EXPIRE_TIME_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
+export const JWT_EXPIRE_TIME_MS = 10 * 60 * 1000; // 10 minutes
 export const JWT_SECRET = process.env.JWT_SECRET ?? 'DEV_JWT_SECRET';
 export const JWT_COOKIE_NAME = 'jwt';
+export const REFRESH_COOKIE_NAME = 'refresh';
 
 // Rate limiting
 export const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000;
@@ -33,6 +35,7 @@ export const RESPONSE_MESSAGES = {
   SERVER_RUNNING: 'Server is running',
   API_RUNNING: 'API server is running',
   PROTECTED_ROUTE_WELCOME: 'Welcome to the protected route!',
+  REFRESHED: 'Token refresh successful',
 } as const;
 
 export const ERROR_MESSAGES = {
@@ -58,4 +61,6 @@ export const HTTP_STATUS = {
   UNAUTHORIZED: 401,
   FORBIDDEN: 403,
   INTERNAL_SERVER_ERROR: 500,
+  RESET_CONTENT: 205,
+  NOT_ACCEPTABLE: 406,
 } as const;
