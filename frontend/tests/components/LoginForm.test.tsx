@@ -59,6 +59,13 @@ describe('LoginForm', () => {
 
   it('shows error message on login failure', async () => {
       fetchMock.route({
+        url: 'path:/auth/refresh',
+        response: {
+          status: 200,
+        }
+      });
+
+      fetchMock.route({
         url: 'path:/auth/login',
         allowRelativeUrls: true,
         response: {

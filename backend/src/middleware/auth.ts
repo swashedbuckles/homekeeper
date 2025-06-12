@@ -21,12 +21,14 @@ export const requireAuth = (req: Request, res: Response, next: NextFunction): vo
     (err: unknown, user?: SafeUser, info?: { message: string }) => {
       if (err) {
         /** @todo internal vs. external status -- exposing Authentication Error vs. Server Error */
+        // eslint-disable-next-line custom/enforce-api-response
         return res
           .status(HTTP_STATUS.INTERNAL_SERVER_ERROR)
           .json({error: ERROR_MESSAGES.AUTHENTICATION_ERROR});
       }
 
       if (!user) {
+        // eslint-disable-next-line custom/enforce-api-response
         return res.status(HTTP_STATUS.UNAUTHORIZED).json({
           error: ERROR_MESSAGES.UNAUTHORIZED,
           // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing

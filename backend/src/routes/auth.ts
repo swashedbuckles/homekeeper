@@ -1,4 +1,4 @@
-import { Router, Request, Response} from 'express';
+import { Router, Request, Response } from 'express';
 import rateLimit from 'express-rate-limit';
 import { body as validateBody } from 'express-validator';
 import jwt from 'jsonwebtoken';
@@ -13,11 +13,14 @@ import {
   HTTP_STATUS,
   JWT_COOKIE_NAME,
   JWT_EXPIRE_TIME_MS,
+  JWT_REFRESH_EXPIRE_TIME_MS,
+  REFRESH_COOKIE_NAME,
   JWT_SECRET,
   RATE_LIMIT_MAX_REQUESTS,
   RATE_LIMIT_WINDOW_MS,
   RESPONSE_MESSAGES,
 } from '../constants';
+
 import { optionalAuth } from '../middleware/auth';
 import { generateCSRFToken } from '../middleware/csrf';
 import { login, register } from '../services/auth';
@@ -44,7 +47,7 @@ router.post(
   validateBody('email').isEmail(),
   validateBody('password').notEmpty(),
   handleValidation,
-  async (req: Request< object, object, LoginRequest>, res: Response) => {
+  async (req: Request<object, object, LoginRequest>, res: Response) => {
     try {
       const { email, password } = req.body;
       const { user } = await login(email, password);
@@ -53,12 +56,21 @@ router.post(
         email: user.email,
         id: user.id,
         expiration: Date.now() + JWT_EXPIRE_TIME_MS,
+        type: 'user',
+      };
+
+      const refreshPayload: JwtPayload = {
+        id: user.id,
+        expiration: Date.now() + JWT_REFRESH_EXPIRE_TIME_MS,
+        type: 'refresh',
       };
 
       const token = jwt.sign(payload, JWT_SECRET);
-      
+      const refresh = jwt.sign(refreshPayload, JWT_SECRET);
+
       res
         .cookie(JWT_COOKIE_NAME, token, jwtCookie())
+        .cookie(REFRESH_COOKIE_NAME, refresh, jwtCookie())
         .cookie(CSRF_COOKIE_NAME, generateCSRFToken(), csrfCookie())
         .status(HTTP_STATUS.OK)
         .apiSuccess({
@@ -71,7 +83,7 @@ router.post(
       console.log(`[AUTH_FAILED] Login attempt: ${req.body.email || 'unknown'} from ${req.ip}`);
 
       if (error instanceof Error && error.message === 'Invalid credentials') {
-        res.apiError(HTTP_STATUS.UNAUTHORIZED,ERROR_MESSAGES.INVALID_CREDENTIALS);
+        res.apiError(HTTP_STATUS.UNAUTHORIZED, ERROR_MESSAGES.INVALID_CREDENTIALS);
         return;
       }
 
@@ -127,9 +139,73 @@ router.post(
   },
 );
 
+router.post('/refresh', (req, res) => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  const jwtToken = (req.cookies[JWT_COOKIE_NAME] ?? null) as string | null;
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  const refreshToken = (req.cookies[REFRESH_COOKIE_NAME] ?? null) as string | null;
+
+  if (!jwtToken || !refreshToken) {
+    // eslint-disable-next-line custom/enforce-api-response
+    res
+      .status(HTTP_STATUS.BAD_REQUEST)
+      .send();
+    return;
+  }
+
+  const jwtPayload: JwtPayload = decodeJWT(jwtToken);
+  const refreshPayload: JwtPayload = decodeJWT(refreshToken);
+
+  try {
+
+    const jwtIsExpired = jwtPayload.expiration < Date.now();
+    const refreshIsValid = refreshPayload.expiration >= Date.now();
+
+    console.log('Processing: ', {jwtIsExpired, refreshIsValid});
+
+    if (!jwtIsExpired) {
+      res
+        .apiError(HTTP_STATUS.NOT_ACCEPTABLE, 'Token is not expired');
+      return;
+    }
+
+    if (!refreshIsValid) {
+      // eslint-disable-next-line custom/enforce-api-response
+      res
+        .clearCookie(JWT_COOKIE_NAME)
+        .clearCookie(REFRESH_COOKIE_NAME)
+        .clearCookie(CSRF_COOKIE_NAME)
+        .status(HTTP_STATUS.RESET_CONTENT).send();
+      return;
+    }
+
+    jwtPayload.expiration = Date.now() + JWT_EXPIRE_TIME_MS;
+    refreshPayload.expiration = Date.now() + JWT_REFRESH_EXPIRE_TIME_MS;
+    const newToken = jwt.sign(jwtPayload, JWT_SECRET);
+    const newRefresh = jwt.sign(refreshPayload, JWT_SECRET);
+
+    res
+      .status(200)
+      .cookie(JWT_COOKIE_NAME, newToken, jwtCookie())
+      .cookie(REFRESH_COOKIE_NAME, newRefresh, jwtCookie())
+      .apiSuccess({
+        message: RESPONSE_MESSAGES.REFRESHED
+      });
+  } catch (error) {
+    console.error(error);
+    // eslint-disable-next-line custom/enforce-api-response
+    res
+      .clearCookie(JWT_COOKIE_NAME)
+      .clearCookie(REFRESH_COOKIE_NAME)
+      .clearCookie(CSRF_COOKIE_NAME)
+      .status(HTTP_STATUS.RESET_CONTENT).send();
+  }
+});
+
 router.get('/csrf-token', optionalAuth, (_req, res) => {
   const token = generateCSRFToken();
 
+  // eslint-disable-next-line custom/enforce-api-response
   res
     .cookie('csrfToken', token, csrfCookie())
     .json({ csrfToken: token });
@@ -142,6 +218,8 @@ router.get('/logout', (req, res) => {
     console.log(`[AUTH_INFO] Logout from ${req.ip}`);
     res
       .clearCookie(JWT_COOKIE_NAME)
+      .clearCookie(REFRESH_COOKIE_NAME)
+      .clearCookie(CSRF_COOKIE_NAME)
       .status(HTTP_STATUS.OK)
       .apiSuccess({
         message: RESPONSE_MESSAGES.LOGOUT_SUCCESS,
@@ -173,3 +251,12 @@ router.get('/whoami', optionalAuth, (req, res) => {
       data: {},
     });
 });
+
+function decodeJWT(token: string): JwtPayload {
+  const result = jwt.verify(token, JWT_SECRET);
+  if (typeof result === 'string') {
+    return JSON.parse(result) as JwtPayload;
+  }
+
+  return result as JwtPayload;
+}

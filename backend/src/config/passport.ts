@@ -30,8 +30,9 @@ interface asyncVerifyFunction extends VerifyFunction {
  */
 export type JwtPayload = {
   expiration: number;
-  email: string;
   id: string;
+  email?: string;
+  type?: 'user' | 'refresh';
 };
 
 export const jwtFromRequest: JwtFromRequestFunction = (req: Request) => {
