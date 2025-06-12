@@ -114,40 +114,16 @@ describe('apiClient', () => {
       expect(result).toEqual(directData);
     });
 
-    it('should handle 401 unauthorized', async () => {
+    it('should handle response without data wrapper', async () => {
+      const directData = { message: 'Success' };
       fetchMock.route({
-        url: 'path:/unauthorized',
+        url: 'path:/direct',
         allowRelativeUrls: true,
-        response: {
-          status: 401,
-          body: { error: 'Unauthorized' }
-        }
+        response: directData
       });
 
-      try {
-        await apiRequest('/unauthorized');
-      } catch (error) {
-        expect(error).toBeInstanceOf(ApiError);
-        expect((error as ApiError).statusCode).toBe(401);
-      }
-    });
-
-    it('should handle 403 forbidden', async () => {
-      fetchMock.route({
-        url: 'path:/forbidden',
-        allowRelativeUrls: true,
-        response: {
-          status: 403,
-          body: { error: 'Forbidden' }
-        }
-      });
-
-      try {
-        await apiRequest('/forbidden');
-      } catch (error) {
-        expect(error).toBeInstanceOf(ApiError);
-        expect((error as ApiError).statusCode).toBe(403);
-      }
+      const result = await apiRequest('/direct');
+      expect(result).toEqual(directData);
     });
 
     describe('Error handling', () => {
@@ -208,7 +184,7 @@ describe('apiClient', () => {
 
         /** @todo consider which is the correct behavior here */
         // await expect(apiRequest('/bad-json')).rejects.toThrow();
-        const result = await apiRequest('/bad-json')
+        const result = await apiRequest('/bad-json');
         expect(result).toEqual({});
       });
 
@@ -224,6 +200,178 @@ describe('apiClient', () => {
 
         const result = await apiRequest('/empty');
         expect(result).toEqual({});
+      });
+
+      it('should not attempt refresh for non-401 errors', async () => {
+        fetchMock.route({
+          url: 'path:/forbidden',
+          allowRelativeUrls: true,
+          response: { status: 403, body: { error: 'Forbidden' } }
+        });
+
+        fetchMock.route({
+          url: 'path:/auth/refresh',
+          method: 'POST',
+          response: { status: 200, body: { message: 'Token refreshed successfully' } }
+        });
+
+        await expect(apiRequest('/forbidden')).rejects.toThrow(ApiError);
+        expect(fetchMock.callHistory.calls('path:/auth/refresh').length).toBe(0);
+      });
+    });
+
+    describe('JWT Refresh handling', () => {
+      beforeEach(() => {
+        fetchMock.route({
+          url: 'path:/auth/refresh',
+          method: 'POST',
+          response: { status: 200, body: { message: 'Token refreshed successfully' } }
+        });
+      });
+
+      it('should retry request after 401 and successful refresh', async () => {
+        fetchMock.once({
+          url: 'path:/protected',
+          method: 'POST',
+          response: 
+            { status: 401, body: { error: 'Unauthorized' } },
+        });
+
+        fetchMock.once({
+          url: 'path:/protected',
+          method: 'POST',
+          response: 
+            { status: 200, body: { data: 'success' } }
+          
+        });
+
+        fetchMock.route({
+          url: 'path:/auth/csrf-token',
+          response: {
+            status: 200,
+            body: { csrfToken: 'mock-csrf-token' }
+          }
+        });
+
+        const result = await apiRequest('/protected', { method: 'POST' });
+        
+        expect(result).toEqual({ data: 'success' });
+        expect(fetchMock.callHistory.calls('path:/auth/refresh').length).toBe(1);
+        expect(fetchMock.callHistory.calls('path:/protected').length).toBe(2);
+      });
+
+      it('should throw error if refresh fails with server error', async () => {
+        fetchMock.route({
+          url: 'path:/auth/refresh',
+          method: 'POST',
+          response: { status: 500, body: { error: 'Refresh failed' } },
+        });
+
+        fetchMock.route({
+          url: 'path:/protected',
+          method: 'POST',
+          response: { status: 401, body: { error: 'Unauthorized' } }
+        });
+
+        fetchMock.route({
+          url: 'path:/auth/csrf-token',
+          response: {
+            status: 200,
+            body: { csrfToken: 'mock-csrf-token' }
+          }
+        });
+
+        await expect(apiRequest('/protected', { method: 'POST' }))
+          .rejects.toThrow('Unauthorized');
+      });
+
+      it('should throw ApiError when refresh returns 205 (session expired)', async () => {
+        fetchMock.mockReset();
+
+        fetchMock.route({
+          url: 'path:/auth/refresh',
+          method: 'POST',
+          response: {
+            status: 205
+          }
+        });
+
+        fetchMock.route({
+          url: 'path:/protected',
+          method: 'POST',
+          response: { status: 401, body: { error: 'Unauthorized' } }
+        });
+
+        fetchMock.route({
+          url: 'path:/auth/csrf-token',
+          response: {
+            status: 200,
+            body: { csrfToken: 'mock-csrf-token' }
+          }
+        });
+
+        await expect(apiRequest('/protected', { method: 'POST' }))
+          .rejects.toThrow('Session expired, please log in again');
+          
+        try {
+          await apiRequest('/protected', { method: 'POST' });
+        } catch (error) {
+          expect(error).toBeInstanceOf(ApiError);
+          expect((error as ApiError).statusCode).toBe(205);
+        }
+      });
+
+      it('should handle 401 unauthorized with refresh attempt for GET request', async () => {
+        fetchMock.once({
+          url: 'path:/unauthorized',
+          allowRelativeUrls: true,
+          response: 
+            { status: 401, body: { error: 'Unauthorized' } },
+        });
+
+        fetchMock.once({
+          url: 'path:/unauthorized',
+          allowRelativeUrls: true,
+          response: 
+            { status: 200, body: { data: 'success after refresh' } }
+        });
+
+        const result = await apiRequest('/unauthorized');
+        expect(result).toEqual({ data: 'success after refresh' });
+        expect(fetchMock.callHistory.calls('path:/auth/refresh').length).toBe(1);
+        expect(fetchMock.callHistory.calls('path:/unauthorized').length).toBe(2);
+      });
+
+      it('should not call clearCsrfToken on refresh failure', async () => {
+        // CSRF tokens persist across refresh failures since they're session-based
+        fetchMock.route({
+          url: 'path:/auth/refresh',
+          method: 'POST', 
+          response: { status: 205 },
+        });
+
+        fetchMock.route({
+          url: 'path:/protected',
+          method: 'POST',
+          response: { status: 401, body: { error: 'Unauthorized' } }
+        });
+
+        fetchMock.route({
+          url: 'path:/auth/csrf-token',
+          response: {
+            status: 200,
+            body: { csrfToken: 'mock-csrf-token' }
+          }
+        });
+
+        // Set up CSRF token first
+        await apiRequest('/protected', { method: 'POST' }).catch(() => {});
+        
+        // CSRF token should still be cached (verify no additional CSRF fetch on second call)
+        const initialCsrfCalls = fetchMock.callHistory.calls('path:/auth/csrf-token').length;
+        
+        await apiRequest('/protected', { method: 'POST' }).catch(() => {});
+        expect(fetchMock.callHistory.calls('path:/auth/csrf-token').length).toBe(initialCsrfCalls);
       });
     });
 
@@ -296,6 +444,7 @@ describe('apiClient', () => {
           expect.objectContaining({
             'content-type': 'application/json',
           }));
+        expect(options?.headers).not.toHaveProperty('x-csrf-token');
       });
 
       it('should have a way to clear the token', async () => {
@@ -304,6 +453,27 @@ describe('apiClient', () => {
         clearCsrfToken();
         await apiRequest('/protected', { method: 'POST' });
         expect(fetchMock.callHistory.calls('path:/auth/csrf-token').length).toEqual(2);
+      });
+
+      it('should not add CSRF token to GET requests', async () => {
+        fetchMock.route({
+          url: 'path:/protected',
+          method: 'GET',
+          response: {
+            status: 200,
+            body: {
+              data: 'asdf',
+              message: 'qwerty'
+            }
+          }
+        });
+        
+        await apiRequest('/protected', { method: 'GET' });
+        const apiCall = fetchMock.callHistory.calls('path:/protected')[0];
+        const options = apiCall?.options;
+
+        expect(options?.headers).not.toHaveProperty('x-csrf-token');
+        expect(fetchMock.callHistory.calls('path:/auth/csrf-token').length).toBe(0);
       });
 
       it.todo('should handle token fetch errors');

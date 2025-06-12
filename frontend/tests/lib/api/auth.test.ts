@@ -40,14 +40,21 @@ describe('auth API', () => {
         }
       });
 
+      fetchMock.route({
+        url: 'path:/auth/refresh',
+        response: {
+          status: 205,
+        }
+      });
+
       await expect(login('wrong@example.com', 'wrongpass')).rejects.toThrow(ApiError);
       
       try {
         await login('wrong@example.com', 'wrongpass');
       } catch (error) {
         expect(error).toBeInstanceOf(ApiError);
-        expect((error as ApiError).statusCode).toBe(401);
-        expect((error as ApiError).message).toBe('Invalid credentials');
+        expect((error as ApiError).statusCode).toBe(205);
+        expect((error as ApiError).message).toBe('Session expired, please log in again');
       }
     });
 
@@ -190,6 +197,7 @@ describe('auth API', () => {
     });
 
     it('should throw ApiError when not authenticated', async () => {
+      fetchMock.mockReset();
       fetchMock.route({
         url: 'path:/auth/whoami',
         allowRelativeUrls: true,
@@ -199,13 +207,20 @@ describe('auth API', () => {
         }
       });
 
+      fetchMock.route({
+        url: 'path:/auth/refresh',
+        response: {
+          status: 205,
+        }
+      });
+
       await expect(getProfile()).rejects.toThrow(ApiError);
       
       try {
         await getProfile();
       } catch (error) {
         expect(error).toBeInstanceOf(ApiError);
-        expect((error as ApiError).statusCode).toBe(401);
+        expect((error as ApiError).statusCode).toBe(205);
       }
     });
 
