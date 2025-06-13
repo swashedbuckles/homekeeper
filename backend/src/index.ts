@@ -20,6 +20,7 @@ import { requireAuth } from './middleware/auth';
 import { csrfProtection } from './middleware/csrf';
 
 import { router as authRouter } from './routes/auth';
+import { router as householdRouter } from './routes/household';
 
 const isProduction = process.env.NODE_ENV === 'production';
 // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
@@ -57,6 +58,7 @@ export const createApp = (): express.Application => {
   app.use('/protected', csrfProtection);
 
   app.use('/auth', authRouter);
+  app.use('/household', householdRouter);
 
   app.get('/api/health', (_req, res) => {
     res.status(HTTP_STATUS.OK).json({ message: RESPONSE_MESSAGES.API_RUNNING });

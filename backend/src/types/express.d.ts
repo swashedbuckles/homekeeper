@@ -13,7 +13,7 @@ declare global {
     }
     
     interface Request {
-      user?: SafeUser;
+      user: SafeUser;
     }
   }
 }
