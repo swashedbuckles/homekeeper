@@ -4,11 +4,12 @@ import { isEmail } from 'validator';
 
 import { BCRYPT_SALT_ROUNDS } from '../constants';
 
-import type { IUser, IUserMethods, IUserModel, SafeUser, UserDocument } from '../types/user';
+import type { IUserBackend, IUserMethods, IUserModel, UserDocument } from '../types/user';
+import type { HouseholdRoles, SafeUser } from '@homekeeper/shared';
 
 export type * from '../types/user.d'; // so we don't have to go searching for the type file
 
-const userSchema = new Schema<IUser, IUserModel, IUserMethods>(
+const userSchema = new Schema<IUserBackend, IUserModel, IUserMethods>(
   {
     email: {
       type: String,
@@ -49,33 +50,54 @@ const userSchema = new Schema<IUser, IUserModel, IUserMethods>(
     toObject: { virtuals: true },
 
     methods: {
-      async comparePassword(pword): Promise<boolean> {
+      async addHousehold(this: UserDocument, householdId: string, role: HouseholdRoles): Promise<void> {
+        this.householdRoles.set(householdId, role);
+        await this.save();
+      },
+
+      async comparePassword(this: UserDocument, pword: string): Promise<boolean> {
         return bcrypt.compare(pword, this.password);
       },
 
-      toSafeObject(): SafeUser {
-        const me = this.toObject();
+      toSafeObject(this: UserDocument): SafeUser {
+        const obj = this.toObject();
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { password, ...safeUser } = me;
-        return safeUser as SafeUser;
+        const { password, _id, ...rest } = obj;
+        
+        const householdRoles: Record<string, HouseholdRoles> = {};
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        if (this.householdRoles && this.householdRoles.size > 0) {
+          for(const [household, role] of this.householdRoles.entries()) {
+            householdRoles[household] = role;
+          }
+        }
+
+        return {
+          ...rest,
+          id: this.id as string, // Mongoose virtual Id typed as `any` for bwd compat but it's a strin.
+          householdRoles,        // see: https://github.com/Automattic/mongoose/issues/13079 
+        } as SafeUser;
       },
 
-      toJSON(): SafeUser {
+      toJSON(this: UserDocument): SafeUser {
         return this.toSafeObject();
       },
     },
 
     statics: {
-      createUser(userData: {
+      async createUser(userData: {
         email: string;
         password: string;
         name: string;
       }): Promise<UserDocument> {
-        const user = new this(userData);
+        const user = new this({
+          householdRoles: {},
+          ...userData
+        });
         return user.save() as Promise<UserDocument>; // workaround for struggling with mongoose typing.
       },
 
-      findByEmail(email: string): Promise<UserDocument | null> {
+      async findByEmail(email: string): Promise<UserDocument | null> {
         return this.findOne({ email }).exec() as Promise<UserDocument | null>;
       },
     },
@@ -102,4 +124,4 @@ userSchema.pre('save', async function (next) {
   }
 });
 
-export const User = model<IUser, IUserModel>('User', userSchema);
+export const User = model<IUserBackend, IUserModel>('User', userSchema);

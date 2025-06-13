@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest';
-
+import { Types } from 'mongoose';
 import { User } from '../../src/models/user';
 import type { UserDocument } from '../../src/types/user.d';
 
@@ -147,6 +147,103 @@ describe('User Model Tests', () => {
   });
 
   describe('Instance Methods', () => {
+    let user: UserDocument;
+
+    beforeEach(async () => {
+      const userData = {
+        email: 'maptest@example.com',
+        password: 'password123',
+        name: 'Map Test User',
+      };
+      user = await User.createUser(userData);
+    });
+
+    describe('addHousehold method', () => {
+      it('should add household role using Map.set', async () => {
+        const householdId = new Types.ObjectId().toString();
+
+        await user.addHousehold(householdId, 'admin');
+
+        // Verify the Map was updated
+        expect(user.householdRoles.get(householdId)).toBe('admin');
+        expect(user.householdRoles.size).toBe(1);
+
+        // Verify it was persisted
+        const reloadedUser = await User.findById(user._id);
+        expect(reloadedUser?.householdRoles.get(householdId)).toBe('admin');
+      });
+
+      it('should handle multiple household roles', async () => {
+        const household1 = new Types.ObjectId().toString();
+        const household2 = new Types.ObjectId().toString();
+
+        await user.addHousehold(household1, 'owner');
+        await user.addHousehold(household2, 'member');
+
+        expect(user.householdRoles.get(household1)).toBe('owner');
+        expect(user.householdRoles.get(household2)).toBe('member');
+        expect(user.householdRoles.size).toBe(2);
+      });
+
+      it('should update existing household role', async () => {
+        const householdId = new Types.ObjectId().toString();
+
+        await user.addHousehold(householdId, 'member');
+        expect(user.householdRoles.get(householdId)).toBe('member');
+
+        await user.addHousehold(householdId, 'admin');
+        expect(user.householdRoles.get(householdId)).toBe('admin');
+        expect(user.householdRoles.size).toBe(1); // Should still be 1
+      });
+    });
+
+    describe('toSafeObject method', () => {
+      it('should convert Map to plain object', async () => {
+        const household1 = new Types.ObjectId().toString();
+        const household2 = new Types.ObjectId().toString();
+
+        await user.addHousehold(household1, 'owner');
+        await user.addHousehold(household2, 'admin');
+
+        const safeUser = user.toSafeObject();
+
+        // Should be a plain object, not a Map
+        expect(safeUser.householdRoles).toBeTypeOf('object');
+        expect(safeUser.householdRoles).not.toBeInstanceOf(Map);
+
+        // Should contain the right data
+        expect(safeUser.householdRoles[household1]).toBe('owner');
+        expect(safeUser.householdRoles[household2]).toBe('admin');
+
+        // Should not have password
+        expect(safeUser).not.toHaveProperty('password');
+
+        // Should have id instead of _id
+        expect(safeUser.id).toBe(user.id);
+        expect(safeUser).not.toHaveProperty('_id');
+      });
+
+      it('should handle empty household roles', () => {
+        const safeUser = user.toSafeObject();
+
+        expect(safeUser.householdRoles).toEqual({});
+        expect(typeof safeUser.householdRoles).toBe('object');
+      });
+    });
+
+    describe('toJSON method', () => {
+      it('should return same as toSafeObject', async () => {
+        const householdId = new Types.ObjectId().toString();
+        await user.addHousehold(householdId, 'member');
+
+        const jsonResult = user.toJSON();
+        const safeResult = user.toSafeObject();
+
+        expect(jsonResult).toEqual(safeResult);
+        expect(jsonResult.householdRoles[householdId]).toBe('member');
+      });
+    });
+
     describe('comparePassword', () => {
       let user: UserDocument;
 

@@ -2,8 +2,6 @@
  * Application constants
  */
 
-export const HOUSEHOLD_ROLES = ['owner', 'admin', 'member', 'guest'];
-
 // Authentication & JWT
 export const JWT_REFRESH_EXPIRE_TIME_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
 export const JWT_EXPIRE_TIME_MS = 10 * 60 * 1000; // 10 minutes

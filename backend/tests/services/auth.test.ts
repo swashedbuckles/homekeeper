@@ -147,7 +147,7 @@ describe('Authentication Service', () => {
 
     beforeEach(async () => {
       const result = await register(testUser);
-      userId = result.user._id.toString();
+      userId = result.user.id;
     });
 
     it('should successfully change password with correct old password', async () => {
