@@ -1,7 +1,9 @@
+import morgan from 'morgan';
+
+import { removeKeysReducer } from '../utils/removeKeys';
+
 import type { Request, Response } from 'express';
 import type { Options } from 'morgan';
-import morgan from 'morgan';
-import { removeKeysReducer } from '../utils/removeKeys';
 
 /**
  * The `safe-body` token represents the request body

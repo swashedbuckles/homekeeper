@@ -7,10 +7,13 @@
     "frontend",
     "shared"
   ],
+  "type":"module",
   "scripts": {
     "dev": "concurrently \"npm run dev -w shared\" \"npm run dev -w backend\" \"npm run dev -w frontend\"",
     "build": "npm run build -w shared && npm run build -w backend && npm run build -w frontend",
-    "test": "npm run test -w backend && npm run test -w frontend"
+    "test": "npm run test -w backend && npm run test -w frontend",
+    "lint": "npm run lint -w shared && npm run lint -w backend && npm run lint -w frontend",
+    "lint:fix": "npm run lint:fix -w shared && npm run lint:fix -w backend && npm run lint:fix -w frontend"
   },
   "dependencies": {
     "concurrently": "^9.1.2"

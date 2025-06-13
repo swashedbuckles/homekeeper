@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 /** @todo reconcile "misused promises" with typings of passport */
 
-import type { Request } from 'express';
 import passport from 'passport';
 import {
   Strategy as JWTStrategy,
@@ -14,7 +13,9 @@ import { IVerifyOptions, Strategy as LocalStrategy, type VerifyFunction } from '
 import { ERROR_MESSAGES, JWT_COOKIE_NAME, JWT_SECRET } from '../constants';
 import { User } from '../models/user';
 import { login } from '../services/auth';
+
 import type { UserDocument } from '../types/user';
+import type { Request } from 'express';
 
 type asyncVerifyCallback<T> = (payload: T, done: VerifiedCallback) => Promise<void>
 interface asyncVerifyFunction extends VerifyFunction {

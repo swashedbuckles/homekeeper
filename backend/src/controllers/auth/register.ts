@@ -1,11 +1,13 @@
-import type {Request, Response} from 'express';
+import { RegisterRequest } from '@homekeeper/shared';
+
 import { 
   ERROR_MESSAGES,
   HTTP_STATUS, 
   RESPONSE_MESSAGES, 
 } from '../../constants';
-import { RegisterRequest } from '@homekeeper/shared';
 import { register } from '../../services/auth';
+
+import type {Request, Response} from 'express';
 
 
 export function getRegister(_req: Request, res: Response) {

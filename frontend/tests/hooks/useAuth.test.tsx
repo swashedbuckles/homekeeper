@@ -1,11 +1,11 @@
-import { describe, it, expect, beforeEach } from 'vitest';
-import { renderHook, act, waitFor } from '@testing-library/react';
 import fetchMock from '@fetch-mock/vitest';
+import { renderHook, act, waitFor } from '@testing-library/react';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { useAuth } from '../../src/hooks/useAuth';
-import { AuthStatus } from '../../src/lib/types/authStatus';
 import { ApiError } from '../../src/lib/types/apiError';
-import { createMockUser } from '../helpers/testUtils';
+import { AuthStatus } from '../../src/lib/types/authStatus';
 import { TestAuthProvider } from '../helpers/testProviderUtils';
+import { createMockUser } from '../helpers/testUtils';
 
 describe('useAuth', () => {
   beforeEach(() => {

@@ -1,4 +1,5 @@
 import {Request, Response} from 'express';
+
 import { 
   CSRF_COOKIE_NAME,
   HTTP_STATUS, 
@@ -9,7 +10,7 @@ import {
 
 export function postLogout(req: Request, res: Response) {
   /** @todo fix typing for request object to have cookies setup correctly */
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+   
   if (req.cookies[JWT_COOKIE_NAME]) {
     console.log(`[AUTH_INFO] Logout from ${req.ip}`);
     res

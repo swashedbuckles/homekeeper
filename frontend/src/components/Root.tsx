@@ -1,5 +1,5 @@
-import { Outlet } from "react-router";
-import { Header } from "./Header";
+import { Outlet } from 'react-router';
+import { Header } from './Header';
 
 /** @todo header should be its own component */
 /** @todo logo should be its own component */

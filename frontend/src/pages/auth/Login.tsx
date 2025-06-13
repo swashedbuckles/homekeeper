@@ -1,6 +1,6 @@
-import { PageContainer } from "../../components/common/PageContainer";
-import { LoginForm } from "../../components/LoginForm";
-import { useNavigate } from "react-router";
+import { useNavigate } from 'react-router';
+import { PageContainer } from '../../components/common/PageContainer';
+import { LoginForm } from '../../components/LoginForm';
 
 export function Login() {
   const navigate = useNavigate();
@@ -12,5 +12,5 @@ export function Login() {
     <PageContainer>
       <LoginForm onSuccess={handleClick} />
     </PageContainer>
-  )
+  );
 }

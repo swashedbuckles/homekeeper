@@ -1,7 +1,7 @@
-import { Link } from "react-router";
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router';
 import LogoSvg from '../assets/logo.svg';
-import { useAuth } from "../hooks/useAuth";
-import { useEffect, useState } from "react";
+import { useAuth } from '../hooks/useAuth';
 
 function HeaderLogo() {
   return (

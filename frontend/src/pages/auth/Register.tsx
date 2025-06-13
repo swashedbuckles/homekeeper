@@ -1,6 +1,6 @@
-import { useNavigate } from "react-router";
-import { PageContainer } from "../../components/common/PageContainer";
-import { RegistrationForm } from "../../components/RegistrationForm";
+import { useNavigate } from 'react-router';
+import { PageContainer } from '../../components/common/PageContainer';
+import { RegistrationForm } from '../../components/RegistrationForm';
 
 export function Register() {
   const navigate = useNavigate();
@@ -13,5 +13,5 @@ export function Register() {
     <PageContainer>
       <RegistrationForm onSuccess={handleSubmit} />
     </PageContainer>
-  )
+  );
 }

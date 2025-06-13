@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
-import { useAuth } from '../hooks/useAuth';
 import { Button } from '../components/common/Button';
+import { useAuth } from '../hooks/useAuth';
 import { apiRequest } from '../lib/apiClient';
 import { UI as logger } from '../lib/logger';
+
 export function Home() {
   
   logger.log('homepage');
@@ -12,14 +13,14 @@ export function Home() {
   useEffect(() => {
     logger.log('homepage Checking auth');
     context.checkAuth()
-      .then(() => {})
-  }, [])
+      .then(() => {});
+  }, []);
 
   const onClick = async () => {
     try {
       const response = await apiRequest('/protected');
-      if(response && response.message) {
-        setMsg(response.message)
+      if(response?.message) {
+        setMsg(response.message);
       } else {
         setMsg('Something went wrong');
       }
@@ -32,8 +33,8 @@ export function Home() {
     const onClickPost = async () => {
     try {
       const response = await apiRequest('/protected', {method: 'POST', body: JSON.stringify({test: '1234'})});
-      if(response && response.message) {
-        setMsg(response.message)
+      if(response?.message) {
+        setMsg(response.message);
       } else {
         setMsg('Something went wrong');
       }
@@ -61,5 +62,5 @@ export function Home() {
 
       </div>
     </>
-  )
+  );
 }

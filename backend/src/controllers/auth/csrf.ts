@@ -1,6 +1,7 @@
-import type {Request, Response} from 'express';
 import { csrfCookie } from '../../config/cookies';
 import { generateCSRFToken } from '../../middleware/csrf';
+
+import type {Request, Response} from 'express';
 
 export function getCsrfToken(_req: Request, res: Response) {
   const token = generateCSRFToken();

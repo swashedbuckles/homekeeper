@@ -1,6 +1,8 @@
-import type { NextFunction, Request, Response } from 'express';
 import { validationResult } from 'express-validator';
+
 import { HTTP_STATUS } from '../constants';
+
+import type { NextFunction, Request, Response } from 'express';
 
 /**
  * Inspect the request for errors from express-validaiton and 

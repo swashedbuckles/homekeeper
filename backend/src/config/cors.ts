@@ -1,6 +1,6 @@
-import type { CorsOptions } from 'cors';
-
 import { DEV_FRONTEND } from '../constants';
+
+import type { CorsOptions } from 'cors';
 
 export const corsOptions: CorsOptions = {
   origin: process.env.FRONTEND_URI ?? DEV_FRONTEND,

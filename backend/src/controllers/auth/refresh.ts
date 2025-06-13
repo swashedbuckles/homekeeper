@@ -1,9 +1,7 @@
 import jwt from 'jsonwebtoken';
-import type {Request, Response} from 'express';
 
-import { JwtPayload } from '../../config/passport';
 import { jwtCookie } from '../../config/cookies';
-
+import { JwtPayload } from '../../config/passport';
 import { 
   CSRF_COOKIE_NAME, 
   HTTP_STATUS, 
@@ -14,11 +12,10 @@ import {
   REFRESH_COOKIE_NAME, 
   RESPONSE_MESSAGES } from '../../constants';
 
+import type {Request, Response} from 'express';
 
 export function getRefresh(req: Request, res: Response) {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   const jwtToken = (req.cookies[JWT_COOKIE_NAME] ?? null) as string | null;
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   const refreshToken = (req.cookies[REFRESH_COOKIE_NAME] ?? null) as string | null;
 
   if (!jwtToken || !refreshToken) {

@@ -14,10 +14,12 @@ import { helmetConfig } from './config/helmet';
 import { authLogFormat, authMorganConfig, morganConfig, morganFormat } from './config/morgan';
 import { configurePassport } from './config/passport';
 import { DEFAULT_PORT, HTTP_STATUS, RESPONSE_MESSAGES } from './constants';
+
+import { apiResponseMiddleware } from './middleware/apiResponse';
 import { requireAuth } from './middleware/auth';
 import { csrfProtection } from './middleware/csrf';
+
 import { router as authRouter } from './routes/auth';
-import { apiResponseMiddleware } from './middleware/apiResponse';
 
 const isProduction = process.env.NODE_ENV === 'production';
 // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing

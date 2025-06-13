@@ -1,10 +1,8 @@
-import type { Request, Response } from 'express';
-import jwt from 'jsonwebtoken';
 
 import { LoginRequest } from '@homekeeper/shared';
+import jwt from 'jsonwebtoken';
 
 import { csrfCookie, jwtCookie } from '../../config/cookies';
-import type { JwtPayload } from '../../config/passport';
 import {
   CSRF_COOKIE_NAME,
   ERROR_MESSAGES,
@@ -16,9 +14,11 @@ import {
   JWT_SECRET,
   RESPONSE_MESSAGES,
 } from '../../constants';
-
 import { generateCSRFToken } from '../../middleware/csrf';
 import { login } from '../../services/auth';
+
+import type { JwtPayload } from '../../config/passport';
+import type { Request, Response } from 'express';
 
 export function getLogin(_req: Request, res: Response) {
   res

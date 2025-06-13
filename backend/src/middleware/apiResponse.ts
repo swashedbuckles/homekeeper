@@ -1,5 +1,6 @@
-import type { NextFunction, Request, Response } from 'express';
 import { ApiResponse } from '@homekeeper/shared';
+
+import type { NextFunction, Request, Response } from 'express';
 
 const makeResponse = <T>(data: ApiResponse<T>): ApiResponse<T> => data;
 

@@ -1,4 +1,5 @@
 import {Request, Response} from 'express';
+
 import { HTTP_STATUS } from '../../constants';
 
 export function getWhoami(req: Request, res: Response) {
