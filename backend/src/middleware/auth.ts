@@ -6,10 +6,20 @@ import { ERROR_MESSAGES, HTTP_STATUS } from '../constants';
 import type { SafeUser } from '../types/user';
 import type { NextFunction, Request, Response } from 'express';
 
-/** @todo redirect to login */
+/**
+ * Assert that `req.user` exists on the request object -- primarily for 
+ * Typescript to understand mutations occurring in middleware
+ * @param req Request object
+ */
+export function assertHasUser<T extends Request>(req: T): asserts req is T & { user: NonNullable<Express.Request['user']> } {
+  if (!req.user) {
+    throw new Error('User not authenticated');
+  }
+}
 
 /**
  * Middleware to enforce auth requirements on endpoint
+ * @todo redirect to login 
  *
  * @param req request object
  * @param res response

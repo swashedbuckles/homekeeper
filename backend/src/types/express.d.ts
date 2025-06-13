@@ -1,7 +1,7 @@
+import { HouseholdDocument } from '../models/household';
 import type { SafeUser } from './user';
 import type { ApiResponse } from '@homekeeper/shared';
 
-console.log('hey??');
 /**
  * Patch the Express Request object so that we know about our User data
  */
@@ -13,7 +13,8 @@ declare global {
     }
     
     interface Request {
-      user: SafeUser;
+      user?: SafeUser;
+      household?: HouseholdDocument
     }
   }
 }
