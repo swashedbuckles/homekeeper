@@ -3,7 +3,7 @@
  * Custom rules for backend API consistency
  */
 
-import enforceApiResponse from './rules/enforce-api-response.js';
+import enforceApiResponse from './rules/enforce-api-response.mjs';
 
 export default {
   rules: {

@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
-import type { NextFunction, Request, Response } from 'express';
 import passport from 'passport';
 
 import { ERROR_MESSAGES, HTTP_STATUS } from '../constants';
+
 import type { SafeUser } from '../types/user';
+import type { NextFunction, Request, Response } from 'express';
 
 /** @todo redirect to login */
 

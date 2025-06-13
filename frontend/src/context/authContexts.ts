@@ -1,7 +1,7 @@
-import { createContext } from "react";
-import type { Nullable } from "../lib/types/nullable";
-import type { SafeUser } from "@homekeeper/shared";
-import { AuthStatus, type AuthStatusType } from "../lib/types/authStatus";
+import { createContext } from 'react';
+import { AuthStatus, type AuthStatusType } from '../lib/types/authStatus';
+import type { Nullable } from '../lib/types/nullable';
+import type { SafeUser } from '@homekeeper/shared';
 
 export interface IAuthContext {
   authStatus: AuthStatusType;

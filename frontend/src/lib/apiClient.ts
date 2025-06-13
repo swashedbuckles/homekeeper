@@ -1,9 +1,9 @@
 /// <reference types="vite/client" />
-import type { ApiResponse } from "@homekeeper/shared";
 
 import { API as logger } from '../lib/logger';
-import { ApiError } from "./types/apiError";
-import type { Nullable } from "./types/nullable";
+import { ApiError } from './types/apiError';
+import type { Nullable } from './types/nullable';
+import type { ApiResponse } from '@homekeeper/shared';
 
 const CSRF_HEADER            = 'X-CSRF-TOKEN'; /** @todo extract into shared if it's not already */
 const AUTH_ENDPOINTS         = ['/auth/login', '/auth/register', '/auth/refresh', '/auth/csrf-token', '/auth/logout'];

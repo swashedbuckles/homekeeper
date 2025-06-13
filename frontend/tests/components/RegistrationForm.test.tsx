@@ -1,7 +1,7 @@
 // frontend/tests/components/RegistrationForm.test.tsx
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import fetchMock from '@fetch-mock/vitest';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { RegistrationForm } from '../../src/components/RegistrationForm';
 import { TestAuthProvider } from '../helpers/testProviderUtils';
 import { createMockUser, mockAuthEndpoints } from '../helpers/testUtils';

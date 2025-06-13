@@ -7,15 +7,15 @@ import {
   RATE_LIMIT_WINDOW_MS,
 } from '../constants';
 
-import { optionalAuth }     from '../middleware/auth';
-import { handleValidation } from '../middleware/validation';
-
 import { getCsrfToken } from '../controllers/auth/csrf';
 import { getLogin, postLogin } from '../controllers/auth/login';
-import { getRegister, postRegister } from '../controllers/auth/register';
 import { postLogout } from '../controllers/auth/logout';
 import { getRefresh } from '../controllers/auth/refresh';
+import { getRegister, postRegister } from '../controllers/auth/register';
 import { getWhoami } from '../controllers/auth/whoami';
+
+import { optionalAuth }     from '../middleware/auth';
+import { handleValidation } from '../middleware/validation';
 
 export const router = Router();
 

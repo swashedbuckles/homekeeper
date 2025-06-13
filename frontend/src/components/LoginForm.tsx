@@ -1,13 +1,13 @@
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { loginSchema, type LoginRequest, type SafeUser } from "@homekeeper/shared";
+import { loginSchema, type LoginRequest, type SafeUser } from '@homekeeper/shared';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 
-import { TextInput } from "./common/TextInput";
-import { useAuth } from "../hooks/useAuth";
-import { Button } from "./common/Button";
-import { ApiError } from "../lib/types/apiError";
-import { UI as logger } from "../lib/logger";
+import { useAuth } from '../hooks/useAuth';
+import { UI as logger } from '../lib/logger';
+import { ApiError } from '../lib/types/apiError';
+import { Button } from './common/Button';
+import { TextInput } from './common/TextInput';
 
 export interface LoginFormProps {
   onSuccess?: (user: SafeUser) => void;
@@ -33,16 +33,16 @@ export const LoginForm = ({onSuccess}: LoginFormProps) => {
       logger.error(error);
       if (error instanceof ApiError) {
         if (error.statusCode === 401) {
-          setServerError("Invalid email or password.");
+          setServerError('Invalid email or password.');
         } else if (error.statusCode === 429) {
-          setServerError("Too many login attempts. Please try again later.");
+          setServerError('Too many login attempts. Please try again later.');
         } else if (error.statusCode >= 500) {
-          setServerError("Server error. Please try again in a moment.");
+          setServerError('Server error. Please try again in a moment.');
         } else {
-          setServerError("Something went wrong. Please try again.");
+          setServerError('Something went wrong. Please try again.');
         }
       } else {
-        setServerError("Connection error. Please check your internet and try again.");
+        setServerError('Connection error. Please check your internet and try again.');
       }
     }
   };

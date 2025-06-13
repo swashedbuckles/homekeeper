@@ -1,10 +1,10 @@
-import { BrowserRouter, Route, Routes } from 'react-router'
+import { BrowserRouter, Route, Routes } from 'react-router';
+import { Root } from './components/Root';
 import { AuthProvider } from './context/AuthProvider';
 import { AuthStatus } from './lib/types/authStatus';
-import { Root } from './components/Root';
-import { Home } from './pages/Home';
 import { Login } from './pages/auth/Login';
 import { Register } from './pages/auth/Register';
+import { Home } from './pages/Home';
 
 export function App() {
   const initialAuthState = {
@@ -24,5 +24,5 @@ export function App() {
         </Routes>
       </BrowserRouter>
     </AuthProvider>
-  )
+  );
 }

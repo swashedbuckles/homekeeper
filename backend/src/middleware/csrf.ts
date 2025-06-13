@@ -1,14 +1,15 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-condition */
 import crypto from 'node:crypto';
 
-import type { NextFunction, Request, Response } from 'express';
-
 import {
   CSRF_PROTECTED_METHODS,
   CSRF_TOKEN_BYTES,
   ERROR_MESSAGES,
   HTTP_STATUS,
 } from '../constants';
+
+import type { NextFunction, Request, Response } from 'express';
+
 
 /**
  * Use crypto to generate a string for CSRF token -- locking down cross site forgery

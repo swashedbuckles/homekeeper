@@ -1,8 +1,8 @@
-import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { useContext } from 'react';
-import { AuthProvider } from '../../src/context/AuthProvider';
+import { describe, it, expect } from 'vitest';
 import { AuthContext, AuthActionsContext } from '../../src/context/authContexts';
+import { AuthProvider } from '../../src/context/AuthProvider';
 import { AuthStatus } from '../../src/lib/types/authStatus';
 import { createMockUser } from '../helpers/testUtils';
 
@@ -133,8 +133,8 @@ describe('AuthProvider', () => {
           }}
         >
           Clear User
-        </button>)
-      }
+        </button>);
+      };
 
       const { getByTestId } = render(
         <AuthProvider initialState={{

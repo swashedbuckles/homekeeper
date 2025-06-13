@@ -1,17 +1,17 @@
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 
-import type { RegisterRequest, SafeUser } from "@homekeeper/shared";
+import { register as registerUser } from '../lib/api/auth';
+import { UI as logger } from '../lib/logger';
+import { frontendRegisterSchema } from '../lib/schema/Registration';
+import { ApiError } from '../lib/types/apiError';
 
-import { TextInput } from "./common/TextInput";
-import { register as registerUser } from "../lib/api/auth";
-import { PasswordStrengthIndicator } from "./common/PasswordStrengthIndicator";
-import { frontendRegisterSchema } from "../lib/schema/Registration";
-import { Button } from "./common/Button";
-import { ApiError } from "../lib/types/apiError";
-import { UI as logger } from "../lib/logger";
+import { Button } from './common/Button';
+import { PasswordStrengthIndicator } from './common/PasswordStrengthIndicator';
+import { TextInput } from './common/TextInput';
 
+import type { RegisterRequest, SafeUser } from '@homekeeper/shared';
 
 export interface RegistrationFormProps {
   onSuccess?: (user: SafeUser) => void; 
@@ -36,16 +36,16 @@ export const RegistrationForm = ({ onSuccess }: RegistrationFormProps) => {
       logger.error(error);
       if (error instanceof ApiError) {
         if (error.statusCode === 409) {
-          setServerError("An account with this email already exists.");
+          setServerError('An account with this email already exists.');
         } else if (error.statusCode === 400) {
-          setServerError("Please check your information and try again.");
+          setServerError('Please check your information and try again.');
         } else if (error.statusCode >= 500) {
-          setServerError("Server error. Please try again in a moment.");
+          setServerError('Server error. Please try again in a moment.');
         } else {
-          setServerError("Something went wrong. Please try again.");
+          setServerError('Something went wrong. Please try again.');
         }
       } else {
-          setServerError("Connection error. Please check your internet and try again.");
+          setServerError('Connection error. Please check your internet and try again.');
       }
     }
   };

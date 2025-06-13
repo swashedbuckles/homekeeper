@@ -1,8 +1,8 @@
-import { useState } from "react";
-import type { Nullable } from "../lib/types/nullable";
-import type { SafeUser } from "@homekeeper/shared";
-import { AuthStatus, type AuthStatusType } from "../lib/types/authStatus";
-import { AuthActionsContext, AuthContext, type IAuthContext } from "./authContexts";
+import { useState } from 'react';
+import { AuthStatus, type AuthStatusType } from '../lib/types/authStatus';
+import { AuthActionsContext, AuthContext, type IAuthContext } from './authContexts';
+import type { Nullable } from '../lib/types/nullable';
+import type { SafeUser } from '@homekeeper/shared';
 
 type AuthProviderProps = {
    children: React.ReactNode,

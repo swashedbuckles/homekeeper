@@ -1,5 +1,5 @@
-import { beforeEach, describe, expect, it } from 'vitest';
 import fetchMock from '@fetch-mock/vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { login, register, logout, getProfile } from '../../../src/lib/api/auth';
 import { ApiError } from '../../../src/lib/types/apiError';
 import { createMockUser } from '../../helpers/testUtils';

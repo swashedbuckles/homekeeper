@@ -5,5 +5,5 @@ export function Dashboard() {
         <p>Dashboard Page</p>
       </div>
     </>
-  )
+  );
 }

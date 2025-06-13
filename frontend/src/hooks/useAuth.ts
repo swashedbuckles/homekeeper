@@ -1,9 +1,9 @@
-import { useContext } from "react";
-import { AuthActionsContext, AuthContext } from "../context/authContexts";
-import { authIsKnown, authIsLoading, AuthStatus } from "../lib/types/authStatus";
+import { useContext } from 'react';
+import { AuthActionsContext, AuthContext } from '../context/authContexts';
 import * as authRequest from '../lib/api/auth';
-import type { LoginRequest, SafeUser } from "@homekeeper/shared";
-import { STATE as logger } from "../lib/logger";
+import { STATE as logger } from '../lib/logger';
+import { authIsKnown, authIsLoading, AuthStatus } from '../lib/types/authStatus';
+import type { LoginRequest, SafeUser } from '@homekeeper/shared';
 
 const isEmptyObject = (value: unknown): boolean => {
   return typeof value === 'object' 
