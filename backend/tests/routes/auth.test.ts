@@ -89,9 +89,9 @@ describe('Auth Routes', () => {
     });
   });
 
-  describe('GET /auth/logout', () => {
+  describe('POST /auth/logout', () => {
     it('should clear JWT cookie when present', async () => {
-      const response = await request.get('/auth/logout').set('Cookie', ['jwt=some-token']);
+      const response = await request.post('/auth/logout').set('Cookie', ['jwt=some-token']);
 
       expect(response.status).toBe(200);
       expect(response.body.message).toBe('You have logged out');
