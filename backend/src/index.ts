@@ -54,11 +54,11 @@ export const createApp = (): express.Application => {
   app.use(passport.initialize());
   app.use(apiResponseMiddleware);
 
-  app.use('/api', csrfProtection);
+  app.use('/auth', csrfProtection);
   app.use('/protected', csrfProtection);
 
   app.use('/auth', authRouter);
-  app.use('/household', householdRouter);
+  app.use('/households', householdRouter);
 
   app.get('/api/health', (_req, res) => {
     res.status(HTTP_STATUS.OK).json({ message: RESPONSE_MESSAGES.API_RUNNING });

@@ -15,40 +15,48 @@ export const router = Router();
 
 router.get('/', requireAuth, async (req: Request, res: Response) => {
   assertHasUser(req);
-  const {id: userId} = req.user;
+  const { id: userId } = req.user;
 
-  const membership = await Household.findByMember(userId);
-  /** @todo do we want to strip out membership information her? */
-  res
-    .status(HTTP_STATUS.OK)
-    .apiSuccess({
-      data: membership,
-    });
-});
-
-router.post('/', 
-  validateBody('name').isString(),
-  validateBody('description').optional().isString(),
-  handleValidation,
-  requireAuth, 
-  async (req: Request<{}, {}, HouseReqBody>, res: Response) => {
-    assertHasUser<typeof req>(req);
-
-    const {id: userId} = req.user;
-    const {name, description} = req.body;
-
-    const household = await Household.createHousehold(name, userId, description);
-    
+  try {
+    const membership = await Household.findByMember(userId);
+    /** @todo do we want to strip out membership information her? */
     res
       .status(HTTP_STATUS.OK)
       .apiSuccess({
-        data: household
+        data: membership,
       });
+  } catch (e) {
+    res.apiError(HTTP_STATUS.INTERNAL_SERVER_ERROR, JSON.stringify(e));
+  }
 });
 
+router.post('/',
+  validateBody('name').isString(),
+  validateBody('description').optional().isString(),
+  handleValidation,
+  requireAuth,
+  async (req: Request<{}, {}, HouseReqBody>, res: Response) => {
+    assertHasUser<typeof req>(req);
 
-router.get('/:id', 
-  requireAuth, 
+    const { id: userId } = req.user;
+    const { name, description } = req.body;
+
+    try {
+      const household = await Household.createHousehold(name, userId, description);
+
+      res
+        .status(HTTP_STATUS.OK)
+        .apiSuccess({
+          data: household
+        });
+    } catch (e) {
+      res.apiError(HTTP_STATUS.INTERNAL_SERVER_ERROR, JSON.stringify(e));
+    }
+  });
+
+
+router.get('/:id',
+  requireAuth,
   isMemberOf,
   (req: Request<IdParam, {}, {}>, res: Response) => {
     assertHasUser<typeof req>(req);
@@ -59,29 +67,29 @@ router.get('/:id',
       .apiSuccess({
         data: req.household
       });
-});
+  });
 
-router.put('/:id', 
+router.put('/:id',
   validateBody('name').isString(),
   validateBody('description').optional().isString(),
   handleValidation,
-  requireAuth, 
+  requireAuth,
   isMemberOf,
   async (req: Request<IdParam, object, HouseReqBody>, res: Response) => {
     assertHasUser<typeof req>(req);
     assertHasHouse<typeof req>(req);
-    
+
     const userId = req.user.id;
     const isOwner = req.household.ownerId.equals(new Types.ObjectId(userId));
-    
-    if(!isOwner) {
+
+    if (!isOwner) {
       res
         .apiError(HTTP_STATUS.FORBIDDEN, 'User does not have privilege to edit household');
       return;
     }
 
     const update: HouseReqBody = { name: req.body.name };
-    if(req.body.description) {
+    if (req.body.description) {
       update.description = req.body.description;
     }
 
@@ -97,19 +105,19 @@ router.put('/:id',
           description: req.body.description ?? req.household.description,
         }
       });
-});
+  });
 
-router.delete('/:id', 
-    requireAuth, 
-    isMemberOf,
-    async (req: Request<IdParam, object, object>, res: Response) => {
+router.delete('/:id',
+  requireAuth,
+  isMemberOf,
+  async (req: Request<IdParam, object, object>, res: Response) => {
     assertHasUser<typeof req>(req);
     assertHasHouse<typeof req>(req);
 
     const userId = req.user.id;
     const isOwner = req.household.ownerId.equals(new Types.ObjectId(userId));
-    
-    if(!isOwner) {
+
+    if (!isOwner) {
       res
         .apiError(HTTP_STATUS.FORBIDDEN, 'User does not have privilege to edit household');
       return;
@@ -121,4 +129,4 @@ router.delete('/:id',
     res
       .status(HTTP_STATUS.NO_CONTENT)
       .send();
-});
+  });
