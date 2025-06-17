@@ -3,19 +3,19 @@ import passport from 'passport';
 import supertest from 'supertest';
 import { vi } from 'vitest';
 
-import { JWT_COOKIE_NAME } from '../../src/constants';
+import { CSRF_COOKIE_NAME, JWT_COOKIE_NAME } from '../../src/constants';
 import { createApp } from '../../src/index';
 import type { RegistrationParams } from '../../src/services/auth';
 import type { SafeUser } from '../../src/types/user';
 
 // Mock passport globally for tests
-vi.mock('passport', () => ({
-  default: {
-    authenticate: vi.fn(),
-    initialize: vi.fn(() => (_req: Request, _res: Response, next: NextFunction) => next()),
-    use: vi.fn(),
-  },
-}));
+// vi.mock('passport', () => ({
+//   default: {
+//     authenticate: vi.fn(),
+//     initialize: vi.fn(() => (_req: Request, _res: Response, next: NextFunction) => next()),
+//     use: vi.fn(),
+//   },
+// }));
 
 export const app = createApp();
 export const request = supertest(app);
@@ -60,7 +60,7 @@ export const mockAuthenticationError = (error: Error) => {
  * @returns Test Response
  */
 export const loginUser = async (email: string, password: string): Promise<TestRes> =>
-  await request.post('/auth/login').send({ email, password });
+  await request.post('/auth/login').set('Cookie', [`${[CSRF_COOKIE_NAME]}=1234`]).set('x-csrf-token', '1234').send({ email, password });
 
 /**
  * Test helper to register a user
@@ -69,7 +69,7 @@ export const loginUser = async (email: string, password: string): Promise<TestRe
  * @returns Test Response
  */
 export const registerUser = async (userData: RegistrationParams): Promise<TestRes> =>
-  await request.post('/auth/register').send(userData);
+  await request.post('/auth/register').set('Cookie', [`${[CSRF_COOKIE_NAME]}=1234`]).set('x-csrf-token', '1234').send(userData);
 
 /**
  * Test helper to get the authentication cookie
