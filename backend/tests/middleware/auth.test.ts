@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from 'express';
 import passport from 'passport';
-import { type MockedFunction, beforeEach, describe, expect, it, vi } from 'vitest';
+import { type MockedFunction, afterAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { optionalAuth, requireAuth } from '../../src/middleware/auth';
 import type { SafeUser } from '../../src/types/user';
@@ -12,6 +12,9 @@ vi.mock('passport', () => ({
 }));
 
 describe('Authentication Middleware', () => {
+  afterAll(() => {
+    vi.doUnmock('passport');
+  });
   let mockReq: Partial<Request>;
   let mockRes: Partial<Response>;
   let mockNext: typeof vi.fn;

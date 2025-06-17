@@ -2,8 +2,6 @@
  * Application constants
  */
 
-export const HOUSEHOLD_ROLES = ['owner', 'admin', 'member', 'guest'];
-
 // Authentication & JWT
 export const JWT_REFRESH_EXPIRE_TIME_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
 export const JWT_EXPIRE_TIME_MS = 10 * 60 * 1000; // 10 minutes
@@ -60,6 +58,7 @@ export const HTTP_STATUS = {
   BAD_REQUEST: 400,
   UNAUTHORIZED: 401,
   FORBIDDEN: 403,
+  NOT_FOUND: 404,
   INTERNAL_SERVER_ERROR: 500,
   RESET_CONTENT: 205,
   NOT_ACCEPTABLE: 406,

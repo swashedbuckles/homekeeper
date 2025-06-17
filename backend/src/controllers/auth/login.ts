@@ -1,6 +1,5 @@
 
 import { LoginRequest } from '@homekeeper/shared';
-import jwt from 'jsonwebtoken';
 
 import { csrfCookie, jwtCookie } from '../../config/cookies';
 import {
@@ -8,16 +7,13 @@ import {
   ERROR_MESSAGES,
   HTTP_STATUS,
   JWT_COOKIE_NAME,
-  JWT_EXPIRE_TIME_MS,
-  JWT_REFRESH_EXPIRE_TIME_MS,
   REFRESH_COOKIE_NAME,
-  JWT_SECRET,
   RESPONSE_MESSAGES,
 } from '../../constants';
 import { generateCSRFToken } from '../../middleware/csrf';
 import { login } from '../../services/auth';
+import { createAuthToken, createRefreshToken } from '../../utils/createJwt';
 
-import type { JwtPayload } from '../../config/passport';
 import type { Request, Response } from 'express';
 
 export function getLogin(_req: Request, res: Response) {
@@ -33,25 +29,9 @@ export async function postLogin(req: Request<object, object, LoginRequest>, res:
     const { email, password } = req.body;
     const { user } = await login(email, password);
 
-    const payload: JwtPayload = {
-      email: user.email,
-      id: user.id,
-      expiration: Date.now() + JWT_EXPIRE_TIME_MS,
-      type: 'user',
-    };
-
-    const refreshPayload: JwtPayload = {
-      id: user.id,
-      expiration: Date.now() + JWT_REFRESH_EXPIRE_TIME_MS,
-      type: 'refresh',
-    };
-
-    const token = jwt.sign(payload, JWT_SECRET);
-    const refresh = jwt.sign(refreshPayload, JWT_SECRET);
-
     res
-      .cookie(JWT_COOKIE_NAME, token, jwtCookie())
-      .cookie(REFRESH_COOKIE_NAME, refresh, jwtCookie())
+      .cookie(JWT_COOKIE_NAME, createAuthToken(user), jwtCookie())
+      .cookie(REFRESH_COOKIE_NAME, createRefreshToken(user), jwtCookie())
       .cookie(CSRF_COOKIE_NAME, generateCSRFToken(), csrfCookie())
       .status(HTTP_STATUS.OK)
       .apiSuccess({

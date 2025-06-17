@@ -1,4 +1,5 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+/** @TODO split tests up into individual controllers */
+import { afterAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { login, register } from '../../src/services/auth';
 import type { SafeUser } from '../../src/types/user';
@@ -10,18 +11,34 @@ import {
   registerUser,
   request,
 } from '../helpers/app';
+import { CSRF_COOKIE_NAME } from '../../src/constants';
+import type { NextFunction } from 'express';
 
 vi.mock('../../src/services/auth');
+vi.mock('passport', () => ({
+  default: {
+    authenticate: vi.fn(),
+    initialize: vi.fn(() => (_req: Request, _res: Response, next: NextFunction) => next()),
+    use: vi.fn(),
+  },
+}));
 
 describe('Auth Routes', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
+  afterAll(() => {
+    vi.doUnmock('passport');
+  });
+
   describe('POST /auth/login', () => {
     it('should return 400 for invalid email', async () => {
+
       const response = await request
         .post('/auth/login')
+        .set('Cookie', [`${[CSRF_COOKIE_NAME]}=1234`])
+        .set('x-csrf-token', '1234')
         .send({ email: 'invalid-email', password: 'password123' });
 
       expect(response.status).toBe(400);
@@ -91,7 +108,11 @@ describe('Auth Routes', () => {
 
   describe('POST /auth/logout', () => {
     it('should clear JWT cookie when present', async () => {
-      const response = await request.post('/auth/logout').set('Cookie', ['jwt=some-token']);
+      const response = await request
+        .post('/auth/logout')
+        .set('Cookie', ['jwt=some-token'])
+        .set('Cookie', [`${[CSRF_COOKIE_NAME]}=1234`])
+        .set('x-csrf-token', '1234');
 
       expect(response.status).toBe(200);
       expect(response.body.message).toBe('You have logged out');

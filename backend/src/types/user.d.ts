@@ -1,37 +1,53 @@
-import type { IUser as BaseUser } from '@homekeeper/shared';
+// backend/src/types/user.d.ts
+import type { IUser as FrontendUser, HouseholdRoles } from '@homekeeper/shared';
 import type { HydratedDocument, Model, Types } from 'mongoose';
 
 /**
- * Base type for User Model
+ * Backend-specific User interface 
+ * This represents the actual document structure in MongoDB
  */
-export interface IUser extends BaseUser {
+export interface IUserBackend extends Omit<FrontendUser, 'householdRoles' | 'id'> {
   _id: Types.ObjectId;
+  householdRoles: Types.Map<HouseholdRoles>; // Mongoose Map for database efficiency
 }
 
 /**
- * User without Password
+ * Frontend-compatible SafeUser
+ * This is what gets sent to the client via API responses
  */
-export type SafeUser = Omit<IUser, 'password'>;
+export type SafeUser = Omit<FrontendUser, 'password'>;
 
 /**
- * Methods on User instance
+ * Backend SafeUser (for database operatiosn)
+ */
+export type SafeUserBackend = Omit<IUserBackend, 'password'>;
+
+/**
+ * Methods available on User document instances
  */
 export interface IUserMethods {
+  addHousehold(householdId: string, role: HouseholdRoles): Promise<void>;
   comparePassword(password: string): Promise<boolean>;
-  toSafeObject(): SafeUser;
-  toJSON(): SafeUser;
+  toSafeObject(): SafeUser; // Returns frontend-compatible SafeUser
+  toJSON(): SafeUser; // Returns frontend-compatible SafeUser
 }
 
 /**
- * Hydrated Mongoose Documents for User
+ * Hydrated Mongoose Document for User
  */
-export type UserDocument = HydratedDocument<IUser, IUserMethods>;
-export type SafeUserDocument = HydratedDocument<SafeUser, IUserMethods>;
+export type IUserQueryHelpers = object; // placeholder until we have some
+export type IUserVirtuals = {
+  id: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+export type UserDocument = HydratedDocument<IUserBackend, IUserMethods>;
+
 
 /**
- * User model with static methods
+ * User model interface with static methods
  */
-export interface IUserModel extends Model<IUser> {
-  createUser: (userData: Pick<IUser, 'email' | 'password' | 'name'>) => Promise<UserDocument>;
+export interface IUserModel extends Model<IUserBackend, IUserQueryHelpers, IUserMethods, IUserVirtuals> {
+  createUser: (userData: Pick<IUserBackend, 'email' | 'password' | 'name'>) => Promise<UserDocument>;
   findByEmail: (email: string) => Promise<UserDocument | null>;
 }
