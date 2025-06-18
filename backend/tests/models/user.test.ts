@@ -162,7 +162,7 @@ describe('User Model Tests', () => {
       it('should add household role using Map.set', async () => {
         const householdId = new Types.ObjectId().toString();
 
-        await user.addHousehold(householdId, 'admin');
+        await user.addHouseholdRole(householdId, 'admin');
 
         // Verify the Map was updated
         expect(user.householdRoles.get(householdId)).toBe('admin');
@@ -177,8 +177,8 @@ describe('User Model Tests', () => {
         const household1 = new Types.ObjectId().toString();
         const household2 = new Types.ObjectId().toString();
 
-        await user.addHousehold(household1, 'owner');
-        await user.addHousehold(household2, 'member');
+        await user.addHouseholdRole(household1, 'owner');
+        await user.addHouseholdRole(household2, 'member');
 
         expect(user.householdRoles.get(household1)).toBe('owner');
         expect(user.householdRoles.get(household2)).toBe('member');
@@ -188,10 +188,10 @@ describe('User Model Tests', () => {
       it('should update existing household role', async () => {
         const householdId = new Types.ObjectId().toString();
 
-        await user.addHousehold(householdId, 'member');
+        await user.addHouseholdRole(householdId, 'member');
         expect(user.householdRoles.get(householdId)).toBe('member');
 
-        await user.addHousehold(householdId, 'admin');
+        await user.addHouseholdRole(householdId, 'admin');
         expect(user.householdRoles.get(householdId)).toBe('admin');
         expect(user.householdRoles.size).toBe(1); // Should still be 1
       });
@@ -202,8 +202,8 @@ describe('User Model Tests', () => {
         const household1 = new Types.ObjectId().toString();
         const household2 = new Types.ObjectId().toString();
 
-        await user.addHousehold(household1, 'owner');
-        await user.addHousehold(household2, 'admin');
+        await user.addHouseholdRole(household1, 'owner');
+        await user.addHouseholdRole(household2, 'admin');
 
         const safeUser = user.toSafeObject();
 
@@ -234,7 +234,7 @@ describe('User Model Tests', () => {
     describe('toJSON method', () => {
       it('should return same as toSafeObject', async () => {
         const householdId = new Types.ObjectId().toString();
-        await user.addHousehold(householdId, 'member');
+        await user.addHouseholdRole(householdId, 'member');
 
         const jsonResult = user.toJSON();
         const safeResult = user.toSafeObject();

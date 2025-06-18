@@ -50,7 +50,7 @@ const userSchema = new Schema<IUserBackend, IUserModel, IUserMethods>(
     toObject: { virtuals: true },
 
     methods: {
-      async addHousehold(this: UserDocument, householdId: string, role: HouseholdRoles): Promise<void> {
+      async addHouseholdRole(this: UserDocument, householdId: string, role: HouseholdRoles): Promise<void> {
         this.householdRoles.set(householdId, role);
         await this.save();
       },

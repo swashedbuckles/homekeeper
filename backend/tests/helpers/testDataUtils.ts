@@ -2,7 +2,7 @@ import { Types } from 'mongoose';
 import { User } from '../../src/models/user';
 import { Household } from '../../src/models/household';
 import type { SafeUser, UserDocument } from '../../src/types/user';
-import type { HouseholdDocument } from '../../src/models/household';
+import type { HouseholdDocument, IHousehold } from '../../src/models/household';
 import { HouseholdRoles } from '@homekeeper/shared';
 
 // =============================================================================

@@ -36,7 +36,7 @@ const householdSchema = new Schema<IHousehold, IHouseholdModel, IHouseholdMethod
     trim: true,
   },
   ownerId: {
-    type: Schema.Types.ObjectId, 
+    type: Schema.Types.ObjectId,
     ref: 'User',
     required: true
   },
@@ -54,20 +54,30 @@ const householdSchema = new Schema<IHousehold, IHouseholdModel, IHouseholdMethod
     async createHousehold(name: string, owner: string, description?: string): Promise<HouseholdDocument> {
       const ownerId = new Types.ObjectId(owner);
       const household = new this({
-        name, 
+        name,
         description,
         ownerId,
         members: [ownerId]
       });
 
-      return household.save() as Promise<HouseholdDocument>;
+      // Save household first to generate _id
+      const savedHousehold = await household.save();
+
+      const user = await User.findById(ownerId).exec();
+      if (!user) {
+        throw new Error('User somehow not found');
+      }
+
+      await user.addHouseholdRole(savedHousehold._id.toString(), 'owner');
+
+      return savedHousehold as HouseholdDocument;
     },
 
     async findByMember(member: string): Promise<HouseholdDocument[]> {
       const asObjectId = new Types.ObjectId(member);
       return this.find<HouseholdDocument>({ members: asObjectId }).populate('ownerId members').exec();
     },
-    
+
     async findByOwner(owner: string): Promise<HouseholdDocument[]> {
       const asObjectId = new Types.ObjectId(owner);
       return this.find<HouseholdDocument>({ ownerId: asObjectId }).populate('ownerId members').exec();
@@ -82,7 +92,7 @@ const householdSchema = new Schema<IHousehold, IHouseholdModel, IHouseholdMethod
 
     async addMember(this: HouseholdDocument, member: string, role: HouseholdRoles): Promise<HouseholdDocument> {
       const asObjectId = new Types.ObjectId(member);
-      
+
       if (this.hasMember(member)) {
         throw new Error('User is already a member');
       }
@@ -101,7 +111,7 @@ const householdSchema = new Schema<IHousehold, IHouseholdModel, IHouseholdMethod
       }
 
       try {
-        await user.addHousehold(this._id.toString(), role);
+        await user.addHouseholdRole(this._id.toString(), role);
         await user.save();
       } catch (error) {
         console.error('Error adding member info to user ', user, error);
