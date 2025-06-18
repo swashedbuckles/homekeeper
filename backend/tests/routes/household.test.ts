@@ -182,8 +182,6 @@ describe('Household Routes (Integration)', () => {
       expect(response.status).toBe(HTTP_STATUS.UNAUTHORIZED);
       expect(response.body.error).toBe('Unauthorized');
     });
-
-    it.todo('should return household when user is added as non-owner member');
   });
 
   describe('PUT /:id', () => {
@@ -262,8 +260,27 @@ describe('Household Routes (Integration)', () => {
       expect(response.body.error).toBe('Unauthorized');
     });
 
-    it.todo('should return 403 when user is member but not owner');
-    it.todo('should return 403 when user is admin but not owner');
+    it('should return 403 when user is not the owner', async () => {
+      const { user: owner, household } = await createTestUserWithHousehold();
+      const memberUser = await insertTestUser({ email: 'member@example.com' });
+
+      // Add member to household with 'member' role
+      await household.addMember(memberUser._id.toString(), 'member');
+      const token = createAuthToken(memberUser.toSafeObject());
+
+      const updateData = {
+        name: 'Member trying to update',
+        description: 'Should fail'
+      };
+
+      const response = await request
+        .put(`/households/${household._id}`)
+        .set('Cookie', [`${JWT_COOKIE_NAME}=${token}`])
+        .send(updateData);
+
+      expect(response.status).toBe(HTTP_STATUS.FORBIDDEN);
+      expect(response.body.error).toBe('Forbidden');
+    });
   });
 
   describe('DELETE /:id', () => {
@@ -304,8 +321,27 @@ describe('Household Routes (Integration)', () => {
       expect(response.body.error).toBe('Unauthorized');
     });
 
-    it.todo('should return 403 when user is member but not owner');
-    it.todo('should return 403 when user is admin but not owner');
+    it('should return 403 when user is not the owner', async () => {
+      const { user: owner, household } = await createTestUserWithHousehold();
+      const memberUser = await insertTestUser({ email: 'member@example.com' });
+
+      // Add member to household with 'member' role
+      await household.addMember(memberUser._id.toString(), 'member');
+      const token = createAuthToken(memberUser.toSafeObject());
+
+      const updateData = {
+        name: 'Member trying to update',
+        description: 'Should fail'
+      };
+
+      const response = await request
+        .delete(`/households/${household._id}`)
+        .set('Cookie', [`${JWT_COOKIE_NAME}=${token}`])
+        .send(updateData);
+
+      expect(response.status).toBe(HTTP_STATUS.FORBIDDEN);
+      expect(response.body.error).toBe('Forbidden');
+    });
   });
 
   describe('ownership verification', () => {
@@ -340,12 +376,5 @@ describe('Household Routes (Integration)', () => {
 
       expect(response.status).toBe(HTTP_STATUS.NO_CONTENT);
     });
-  });
-
-  describe('member management', () => {
-    it.todo('should handle households with multiple members');
-    it.todo('should respect role-based permissions when roles are implemented');
-    it.todo('should allow admins to perform certain operations');
-    it.todo('should restrict guests to read-only operations');
   });
 });

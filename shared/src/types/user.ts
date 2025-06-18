@@ -16,7 +16,7 @@ export interface IUser {
     defaultHouseholdId?: string;
   };
   householdRoles: {
-    [householdId: string]: 'owner' | 'admin' | 'member' | 'guest';
+    [householdId: string]: HouseholdRoles
   };
 }
 

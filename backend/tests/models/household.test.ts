@@ -61,45 +61,80 @@ describe('Household Model Tests', () => {
   describe('Static Methods', () => {
     describe('createHousehold', () => {
       it('should create household with owner as member', async () => {
-        const ownerId = new Types.ObjectId().toString();
-        const household = await Household.createHousehold('My House', ownerId, 'Test description');
+        // Create a real user first
+        const userData = {
+          email: 'owner@example.com',
+          password: 'password123',
+          name: 'Owner User',
+        };
+        const user = await User.createUser(userData);
+
+        const household = await Household.createHousehold('My House', user._id.toString(), 'Test description');
 
         expect(household.name).toBe('My House');
         expect(household.description).toBe('Test description');
-        expect(household.ownerId.toString()).toBe(ownerId);
+        expect(household.ownerId.toString()).toBe(user._id.toString());
         expect(household.members).toHaveLength(1);
-        expect(household.members[0].toString()).toBe(ownerId);
+        expect(household.members[0].toString()).toBe(user._id.toString());
+
+        // Verify the user has the owner role
+        const updatedUser = await User.findById(user._id);
+        expect(updatedUser?.householdRoles.get(household._id.toString())).toBe('owner');
       });
 
       it('should create household without description', async () => {
-        const ownerId = new Types.ObjectId().toString();
-        const household = await Household.createHousehold('My House', ownerId);
+        // Create a real user first
+        const userData = {
+          email: 'owner2@example.com',
+          password: 'password123',
+          name: 'Owner User 2',
+        };
+        const user = await User.createUser(userData);
+
+        const household = await Household.createHousehold('My House', user._id.toString());
 
         expect(household.name).toBe('My House');
         expect(household.description).toBeUndefined();
-        expect(household.members[0].toString()).toBe(ownerId);
+        expect(household.members[0].toString()).toBe(user._id.toString());
+
+        // Verify the user has the owner role
+        const updatedUser = await User.findById(user._id);
+        expect(updatedUser?.householdRoles.get(household._id.toString())).toBe('owner');
       });
     });
 
     describe('findByMember', () => {
       let household: HouseholdDocument;
-      let memberId: string;
+      let user: UserDocument;
 
       beforeEach(async () => {
-        memberId = new Types.ObjectId().toString();
-        household = await Household.createHousehold('Test House', memberId);
+        // Create a real user first
+        const userData = {
+          email: 'member@example.com',
+          password: 'password123',
+          name: 'Member User',
+        };
+        user = await User.createUser(userData);
+        household = await Household.createHousehold('Test House', user._id.toString());
       });
 
       it('should find households by member ID', async () => {
-        const households = await Household.findByMember(memberId);
+        const households = await Household.findByMember(user._id.toString());
 
         expect(households).toHaveLength(1);
         expect(households[0]._id.toString()).toBe(household._id.toString());
       });
 
       it('should return empty array for non-member', async () => {
-        const nonMemberId = new Types.ObjectId().toString();
-        const households = await Household.findByMember(nonMemberId);
+        // Create another user who is not a member
+        const nonMemberData = {
+          email: 'nonmember@example.com',
+          password: 'password123',
+          name: 'Non Member',
+        };
+        const nonMemberUser = await User.createUser(nonMemberData);
+
+        const households = await Household.findByMember(nonMemberUser._id.toString());
 
         expect(households).toHaveLength(0);
       });
@@ -107,23 +142,36 @@ describe('Household Model Tests', () => {
 
     describe('findByOwner', () => {
       let household: HouseholdDocument;
-      let ownerId: string;
+      let user: UserDocument;
 
       beforeEach(async () => {
-        ownerId = new Types.ObjectId().toString();
-        household = await Household.createHousehold('Owner House', ownerId);
+        // Create a real user first
+        const userData = {
+          email: 'owner3@example.com',
+          password: 'password123',
+          name: 'Owner User 3',
+        };
+        user = await User.createUser(userData);
+        household = await Household.createHousehold('Owner House', user._id.toString());
       });
 
       it('should find households by owner ID', async () => {
-        const households = await Household.findByOwner(ownerId);
+        const households = await Household.findByOwner(user._id.toString());
 
         expect(households).toHaveLength(1);
         expect(households[0]._id.toString()).toBe(household._id.toString());
       });
 
       it('should return empty array for non-owner', async () => {
-        const nonOwnerId = new Types.ObjectId().toString();
-        const households = await Household.findByOwner(nonOwnerId);
+        // Create another user who is not an owner
+        const nonOwnerData = {
+          email: 'nonowner@example.com',
+          password: 'password123',
+          name: 'Non Owner',
+        };
+        const nonOwnerUser = await User.createUser(nonOwnerData);
+
+        const households = await Household.findByOwner(nonOwnerUser._id.toString());
 
         expect(households).toHaveLength(0);
       });
@@ -198,12 +246,18 @@ describe('Household Model Tests', () => {
 
   describe('Type Safety', () => {
     it('should maintain proper typing for static methods', async () => {
-      const ownerId = new Types.ObjectId().toString();
-      
+      // Create a real user first
+      const userData = {
+        email: 'typesafety@example.com',
+        password: 'password123',
+        name: 'Type Safety User',
+      };
+      const user = await User.createUser(userData);
+
       // These should compile without type errors
-      const household = await Household.createHousehold('Type Test', ownerId);
-      const byMember = await Household.findByMember(ownerId);
-      const byOwner = await Household.findByOwner(ownerId);
+      const household = await Household.createHousehold('Type Test', user._id.toString());
+      const byMember = await Household.findByMember(user._id.toString());
+      const byOwner = await Household.findByOwner(user._id.toString());
 
       // Type assertions to ensure return types are correct
       expect(household).toBeInstanceOf(Object);

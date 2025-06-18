@@ -1,11 +1,13 @@
 /* eslint-disable @typescript-eslint/no-empty-object-type */
 import { Router, type Request, type Response } from 'express';
 import { body as validateBody } from 'express-validator';
-
 import { Types } from 'mongoose';
+
+import { HouseholdPermissions } from '../config/permissions';
 import { HTTP_STATUS } from '../constants';
 import { requireAuth, assertHasUser } from '../middleware/auth';
 import { isMemberOf, assertHasHouse } from '../middleware/isMemberOf';
+import { requirePermission } from '../middleware/rbac';
 import { handleValidation } from '../middleware/validation';
 import { Household } from '../models/household';
 
@@ -13,13 +15,19 @@ import type { HouseReqBody, IdParam } from '../types/apiRequests';
 
 export const router = Router();
 
+/**
+ * Returns a list of households of which user is a member. 
+ * Looked up via household and not by User's role-map
+ * @todo we may have to reconcile the household membership in the future. 
+ */
 router.get('/', requireAuth, async (req: Request, res: Response) => {
   assertHasUser(req);
   const { id: userId } = req.user;
 
   try {
     const membership = await Household.findByMember(userId);
-    /** @todo do we want to strip out membership information her? */
+    /** @todo do we want to strip out membership information? */
+    /** @todo currently all roles have household_view, but if we ever have a role that can't view household... */
     res
       .status(HTTP_STATUS.OK)
       .apiSuccess({
@@ -30,6 +38,9 @@ router.get('/', requireAuth, async (req: Request, res: Response) => {
   }
 });
 
+/** 
+ * Household creation doesn't have permissions as... you become the owner once you've created one.
+ */
 router.post('/',
   validateBody('name').isString(),
   validateBody('description').optional().isString(),
@@ -55,6 +66,9 @@ router.post('/',
   });
 
 
+/**
+ * Get details for an individual household
+ */
 router.get('/:id',
   requireAuth,
   isMemberOf,
@@ -69,12 +83,16 @@ router.get('/:id',
       });
   });
 
+/**
+ * Update a household
+ */
 router.put('/:id',
   validateBody('name').isString(),
   validateBody('description').optional().isString(),
   handleValidation,
   requireAuth,
   isMemberOf,
+  requirePermission(HouseholdPermissions.HOUSEHOLD_UPDATE),
   async (req: Request<IdParam, object, HouseReqBody>, res: Response) => {
     assertHasUser<typeof req>(req);
     assertHasHouse<typeof req>(req);
@@ -107,9 +125,13 @@ router.put('/:id',
       });
   });
 
+/**
+ * Remove a household!
+ */
 router.delete('/:id',
   requireAuth,
   isMemberOf,
+  requirePermission(HouseholdPermissions.HOUSEHOLD_DELETE),
   async (req: Request<IdParam, object, object>, res: Response) => {
     assertHasUser<typeof req>(req);
     assertHasHouse<typeof req>(req);
