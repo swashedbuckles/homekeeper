@@ -10,8 +10,10 @@ import { isMemberOf, assertHasHouse } from '../middleware/isMemberOf';
 import { requirePermission } from '../middleware/rbac';
 import { handleValidation } from '../middleware/validation';
 import { Household } from '../models/household';
+import { removeKeysReducer } from '../utils/removeKeys';
 
 import type { HouseReqBody, IdParam } from '../types/apiRequests';
+import type { HouseResponse } from '@homekeeper/shared';
 
 export const router = Router();
 
@@ -26,12 +28,22 @@ router.get('/', requireAuth, async (req: Request, res: Response) => {
 
   try {
     const membership = await Household.findByMember(userId);
-    /** @todo do we want to strip out membership information? */
+    const data = membership.map(house => {
+      
+      const data: HouseResponse = {
+        memberCount: house.members.length,
+        userRole: req.user.householdRoles[house._id.toString()],
+        ...removeKeysReducer(house.serialize(), ['members'])
+      };
+      
+      return data;
+    });
+
     /** @todo currently all roles have household_view, but if we ever have a role that can't view household... */
     res
       .status(HTTP_STATUS.OK)
       .apiSuccess({
-        data: membership,
+        data,
       });
   } catch (e) {
     res.apiError(HTTP_STATUS.INTERNAL_SERVER_ERROR, JSON.stringify(e));
@@ -152,3 +164,14 @@ router.delete('/:id',
       .status(HTTP_STATUS.NO_CONTENT)
       .send();
   });
+
+
+// router.get('/:id/members', () => {
+
+// });
+
+// router.post('/:id/members');
+// router.get('/:id/member/:userId');
+// router.post('/:id/members/invite');
+// router.put('/:id/members/:userId/role');
+// router.delete('/:id/members/:userId/');

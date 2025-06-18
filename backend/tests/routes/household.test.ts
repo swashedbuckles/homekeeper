@@ -20,7 +20,8 @@ describe('Household Routes (Integration)', () => {
 
       expect(response.status).toBe(HTTP_STATUS.OK);
       expect(response.body.data).toHaveLength(1);
-      expect(response.body.data[0]._id.toString()).toBe(household._id.toString());
+      expect(response.body.data[0].id).toBe(household._id.toString());
+      
     });
 
     it('should return 401 when user is not authenticated', async () => {

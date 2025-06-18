@@ -30,6 +30,7 @@ export const Admin = [
   HouseholdPermissions.HOUSEHOLD_VIEW,
   HouseholdPermissions.HOUSEHOLD_UPDATE,
   HouseholdPermissions.HOUSEHOLD_INVITE_MEMBERS,
+  HouseholdPermissions.HOUSEHOLD_VIEW_MEMBERS,
 
   UserPermissions.USER_VIEW_PROFILE,
   UserPermissions.USER_UPDATE_OWN_PROFILE,

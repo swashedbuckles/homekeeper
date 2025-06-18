@@ -1,6 +1,6 @@
 import { Schema, model, Model, Types, HydratedDocument } from 'mongoose';
 import { User, type UserDocument } from './user';
-import type { HouseholdRoles } from '@homekeeper/shared';
+import type { HouseholdRoles, SerializedHousehold } from '@homekeeper/shared';
 
 export interface IHousehold {
   _id: Types.ObjectId;
@@ -12,6 +12,7 @@ export interface IHousehold {
 }
 
 export interface IHouseholdMethods {
+  serialize(this: HouseholdDocument): SerializedHousehold;
   addMember(member: string, role: HouseholdRoles): Promise<HouseholdDocument>;
   hasMember(member: string): boolean;
 }
@@ -85,6 +86,16 @@ const householdSchema = new Schema<IHousehold, IHouseholdModel, IHouseholdMethod
   },
 
   methods: {
+    serialize(this: HouseholdDocument): SerializedHousehold {
+      return {
+        id: this._id.toString(),
+        name: this.name,
+        description: this.description,
+        ownerId: this.ownerId.toString(),
+        members: this.members.map(x => x.toString())
+      };
+    },
+
     hasMember(this: HouseholdDocument, member: string): boolean {
       const asObjectId = new Types.ObjectId(member);
       return this.members.includes(asObjectId);

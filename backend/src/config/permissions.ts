@@ -5,6 +5,7 @@ export const HouseholdPermissions = {
   HOUSEHOLD_UPDATE: 'household:update', 
   HOUSEHOLD_DELETE: 'household:delete',
   
+  HOUSEHOLD_VIEW_MEMBERS:        'household:view_members',
   HOUSEHOLD_INVITE_MEMBERS:      'household:invite_members',
   HOUSEHOLD_REMOVE_MEMBERS:      'household:remove_members',
   HOUSEHOLD_UPDATE_MEMBER_ROLES: 'household:update_member_roles',
