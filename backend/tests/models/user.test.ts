@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { Types } from 'mongoose';
 import { User } from '../../src/models/user';
-import type { UserDocument } from '../../src/types/user.d';
+import type { UserDocument } from '../../src/models/user';
 
 describe('User Model Tests', () => {
   describe('Validation', () => {
@@ -156,6 +156,80 @@ describe('User Model Tests', () => {
         name: 'Map Test User',
       };
       user = await User.createUser(userData);
+    });
+
+    describe('removeHouseholdRole', () => {
+      let user: UserDocument;
+      let householdId: string;
+
+      beforeEach(async () => {
+        const userData = {
+          email: 'roletest@example.com',
+          password: 'password123',
+          name: 'Role Test User',
+        };
+        user = await User.createUser(userData);
+        householdId = new Types.ObjectId().toString();
+
+        // Add a household role to test removal
+        await user.addHouseholdRole(householdId, 'member');
+      });
+
+      it('should remove existing household role', async () => {
+        // Verify the role exists before removal
+        expect(user.householdRoles.get(householdId)).toBe('member');
+        expect(user.householdRoles.has(householdId)).toBe(true);
+
+        await user.removeHouseholdRole(householdId);
+
+        // Verify the role is removed
+        expect(user.householdRoles.get(householdId)).toBeUndefined();
+        expect(user.householdRoles.has(householdId)).toBe(false);
+      });
+
+      it('should persist the removal to the database', async () => {
+        await user.removeHouseholdRole(householdId);
+
+        // Reload the user from the database
+        const reloadedUser = await User.findById(user._id);
+        expect(reloadedUser?.householdRoles.get(householdId)).toBeUndefined();
+        expect(reloadedUser?.householdRoles.has(householdId)).toBe(false);
+      });
+
+      it('should not throw when removing non-existent household role', async () => {
+        const nonExistentHouseholdId = new Types.ObjectId().toString();
+
+        // Verify the role doesn't exist
+        expect(user.householdRoles.has(nonExistentHouseholdId)).toBe(false);
+
+        // Should not throw
+        await expect(user.removeHouseholdRole(nonExistentHouseholdId)).resolves.not.toThrow();
+
+        // User should still be saved successfully
+        const reloadedUser = await User.findById(user._id);
+        expect(reloadedUser).toBeTruthy();
+      });
+
+      it('should preserve other household roles when removing one', async () => {
+        const secondHouseholdId = new Types.ObjectId().toString();
+        await user.addHouseholdRole(secondHouseholdId, 'admin');
+
+        // Verify both roles exist
+        expect(user.householdRoles.get(householdId)).toBe('member');
+        expect(user.householdRoles.get(secondHouseholdId)).toBe('admin');
+
+        // Remove only the first role
+        await user.removeHouseholdRole(householdId);
+
+        // Verify only the targeted role was removed
+        expect(user.householdRoles.get(householdId)).toBeUndefined();
+        expect(user.householdRoles.get(secondHouseholdId)).toBe('admin');
+
+        // Verify persistence
+        const reloadedUser = await User.findById(user._id);
+        expect(reloadedUser?.householdRoles.get(householdId)).toBeUndefined();
+        expect(reloadedUser?.householdRoles.get(secondHouseholdId)).toBe('admin');
+      });
     });
 
     describe('addHousehold method', () => {

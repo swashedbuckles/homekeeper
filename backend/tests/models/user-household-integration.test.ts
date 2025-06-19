@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { Household } from '../../src/models/household';
 import { User } from '../../src/models/user';
 import type { HouseholdDocument } from '../../src/models/household';
-import type { UserDocument } from '../../src/types/user';
+import type { UserDocument } from '../../src/models/user';
 
 describe('User-Household Integration Tests', () => {
   let owner: UserDocument;

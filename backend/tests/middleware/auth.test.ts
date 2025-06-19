@@ -3,7 +3,7 @@ import passport from 'passport';
 import { type MockedFunction, afterAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { optionalAuth, requireAuth } from '../../src/middleware/auth';
-import type { SafeUser } from '../../src/types/user';
+import type { SafeUser } from '../../src/models/user';
 
 vi.mock('passport', () => ({
   default: {

@@ -11,7 +11,7 @@ import {
 } from '../../src/services/permission';
 
 import { createMockUser } from '../helpers/testDataUtils';
-import { SafeUser } from '../../src/types/user';
+import { SafeUser } from '../../src/models/user';
 
 describe('Permissions Management', () => {
   let mockUser: SafeUser;

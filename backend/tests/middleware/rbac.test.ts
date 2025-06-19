@@ -5,7 +5,7 @@ import { createMockHousehold, createMockUser } from '../helpers/testDataUtils';
 import { HouseholdPermissions } from '../../src/config/permissions';
 
 import type { NextFunction, Request, Response } from 'express';
-import { SafeUser } from '../../src/types/user';
+import { SafeUser } from '../../src/models/user';
 import { ApiResponse } from '@homekeeper/shared';
 
 describe('RBAC Middleware', () => {

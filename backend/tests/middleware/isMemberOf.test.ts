@@ -4,7 +4,7 @@ import { HTTP_STATUS } from '../../src/constants';
 import { assertHasHouse, isMemberOf } from '../../src/middleware/isMemberOf';
 import { Household } from '../../src/models/household';
 import { User } from '../../src/models/user';
-import type { SafeUser } from '../../src/types/user';
+import type { SafeUser } from '../../src/models/user';
 import { ApiResponse } from '@homekeeper/shared';
 
 describe('isMemberOf Middleware (Integration)', () => {

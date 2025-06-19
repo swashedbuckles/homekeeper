@@ -9,7 +9,7 @@ import {
 } from '../../src/config/passport';
 import { User } from '../../src/models/user';
 import { login } from '../../src/services/auth';
-import type { SafeUser, UserDocument } from '../../src/types/user';
+import type { SafeUser, UserDocument } from '../../src/models/user';
 
 // Mock dependencies
 vi.mock('../../src/models/user');

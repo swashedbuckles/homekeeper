@@ -1,8 +1,7 @@
-/** @TODO split tests up into individual controllers */
 import { afterAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { login, register } from '../../src/services/auth';
-import type { SafeUser } from '../../src/types/user';
+import type { SafeUser } from '../../src/models/user';
 import {
   getAuthCookie,
   loginUser,

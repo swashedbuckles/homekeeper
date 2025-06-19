@@ -1,6 +1,6 @@
 import { Schema, model, Model, Types, HydratedDocument } from 'mongoose';
 import { User, type UserDocument } from './user';
-import type { HouseholdRoles } from '@homekeeper/shared';
+import type { HouseholdRoles, MemberDetail, SerializedHousehold } from '@homekeeper/shared';
 
 export interface IHousehold {
   _id: Types.ObjectId;
@@ -12,8 +12,11 @@ export interface IHousehold {
 }
 
 export interface IHouseholdMethods {
+  serialize(this: HouseholdDocument): SerializedHousehold;
   addMember(member: string, role: HouseholdRoles): Promise<HouseholdDocument>;
+  removeMember(member: string): Promise<HouseholdDocument>;
   hasMember(member: string): boolean;
+  getMembers(): Promise<MemberDetail[]>;
 }
 
 export interface IHouseholdModel extends Model<IHousehold, object, IHouseholdMethods> {
@@ -85,6 +88,36 @@ const householdSchema = new Schema<IHousehold, IHouseholdModel, IHouseholdMethod
   },
 
   methods: {
+    serialize(this: HouseholdDocument): SerializedHousehold {
+      return {
+        id: this._id.toString(),
+        name: this.name,
+        description: this.description,
+        ownerId: this.ownerId.toString(),
+        members: this.members.map(x => x.toString())
+      };
+    },
+
+    async getMembers() {
+      const memberIds = this.members;
+      const users = await User.find({ _id: { $in: memberIds } }, 'name householdRoles').exec();
+
+      const members = users.map(user => {
+        const role = user.householdRoles.get(this._id.toString());
+        if (!role) {
+          throw new Error('User missing household role');
+        }
+
+        return {
+          id: user._id.toString(),
+          name: user.name,
+          role,
+        };
+      });
+
+      return members;
+    },
+
     hasMember(this: HouseholdDocument, member: string): boolean {
       const asObjectId = new Types.ObjectId(member);
       return this.members.includes(asObjectId);
@@ -119,8 +152,39 @@ const householdSchema = new Schema<IHousehold, IHouseholdModel, IHouseholdMethod
       }
 
       return this;
+    },
+
+    async removeMember(this: HouseholdDocument, member: string): Promise<HouseholdDocument> {
+      const asObjectId = new Types.ObjectId(member);
+
+      if (!this.hasMember(member)) {
+        throw new Error('User is already not a member');
+      }
+
+      const user = await User.findById<UserDocument>(asObjectId);
+      if (!user) {
+        throw new Error('User not found');
+      }
+
+      try {
+        this.members = this.members.filter(member => !member.equals(asObjectId));
+        await this.save();
+      } catch (error) {
+        console.error('Error saving household', error);
+        throw error;
+      }
+
+      try {
+        await user.removeHouseholdRole(this._id.toString());
+      } catch (error) {
+        console.error('Error adding member info to user ', user, error);
+        throw error;
+      }
+
+      return this;
     }
-  }
+  },
+
 });
 
 export const Household = model<IHousehold, IHouseholdModel>('Household', householdSchema);
