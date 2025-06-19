@@ -107,8 +107,8 @@ export const postInvitation = (req: Request<IdParam, object, InviteRequest>, res
   }
 
   console.log('Sending invitation to: ', name, ' ', email);
-
-  res.status(HTTP_STATUS.ACCEPTED);
+  /** @todo stub until email service integration */
+  res.status(HTTP_STATUS.ACCEPTED).send();
 };
 
 /** 
@@ -135,7 +135,6 @@ export const putMemberRole = async (req: Request<RoleChangeParams, object, RoleC
   }
 
   await user.addHouseholdRole(req.household._id.toString(), role);
-  await req.household.addMember(userId, role);
 
   res.apiSuccess({
     data: {

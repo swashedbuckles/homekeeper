@@ -1,4 +1,3 @@
-/** @TODO split tests up into individual controllers */
 import { afterAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { login, register } from '../../src/services/auth';

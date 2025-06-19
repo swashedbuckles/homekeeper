@@ -105,7 +105,7 @@ const householdSchema = new Schema<IHousehold, IHouseholdModel, IHouseholdMethod
       const members = users.map(user => {
         const role = user.householdRoles.get(this._id.toString());
         if (!role) {
-          throw new Error('User missing');
+          throw new Error('User missing household role');
         }
 
         return {
