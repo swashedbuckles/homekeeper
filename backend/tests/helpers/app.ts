@@ -6,16 +6,7 @@ import { vi } from 'vitest';
 import { CSRF_COOKIE_NAME, JWT_COOKIE_NAME } from '../../src/constants';
 import { createApp } from '../../src/index';
 import type { RegistrationParams } from '../../src/services/auth';
-import type { SafeUser } from '../../src/types/user';
-
-// Mock passport globally for tests
-// vi.mock('passport', () => ({
-//   default: {
-//     authenticate: vi.fn(),
-//     initialize: vi.fn(() => (_req: Request, _res: Response, next: NextFunction) => next()),
-//     use: vi.fn(),
-//   },
-// }));
+import type { SafeUser } from '../../src/models/user';
 
 export const app = createApp();
 export const request = supertest(app);

@@ -2,7 +2,7 @@
 import * as roles from '../config/roles';
 
 import type { ALL_PERMISSIONS } from '../config/permissions';
-import type { SafeUser } from '../types/user';
+import type { SafeUser } from '../models/user';
 
 const PERMISSION_SETS = {
   owner:  new Set<ALL_PERMISSIONS>(roles.Owner),

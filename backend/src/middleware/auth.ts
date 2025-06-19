@@ -3,7 +3,7 @@ import passport from 'passport';
 
 import { ERROR_MESSAGES, HTTP_STATUS } from '../constants';
 
-import type { SafeUser } from '../types/user';
+import type { SafeUser } from '../models/user';
 import type { NextFunction, Request, Response } from 'express';
 
 /**

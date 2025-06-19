@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { Types } from 'mongoose';
 import { User } from '../../src/models/user';
-import type { UserDocument } from '../../src/types/user.d';
+import type { UserDocument } from '../../src/models/user.d';
 
 describe('User Model Tests', () => {
   describe('Validation', () => {

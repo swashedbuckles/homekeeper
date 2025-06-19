@@ -1,5 +1,5 @@
 import { HouseholdDocument } from '../models/household';
-import type { SafeUser } from './user';
+import type { SafeUser } from '../models/user';
 import type { ApiResponse } from '@homekeeper/shared';
 
 /**

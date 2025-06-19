@@ -14,7 +14,7 @@ import { ERROR_MESSAGES, JWT_COOKIE_NAME, JWT_SECRET } from '../constants';
 import { User } from '../models/user';
 import { login } from '../services/auth';
 
-import type { UserDocument } from '../types/user';
+import type { UserDocument } from '../models/user';
 import type { Request } from 'express';
 
 type asyncVerifyCallback<T> = (payload: T, done: VerifiedCallback) => Promise<void>
