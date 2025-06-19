@@ -27,6 +27,8 @@ export type SafeUserBackend = Omit<IUserBackend, 'password'>;
  */
 export interface IUserMethods {
   addHouseholdRole(householdId: string, role: HouseholdRoles): Promise<void>;
+  removeHouseholdRole(householdId: string): Promise<void>;
+
   comparePassword(password: string): Promise<boolean>;
   toSafeObject(): SafeUser; // Returns frontend-compatible SafeUser
   toJSON(): SafeUser; // Returns frontend-compatible SafeUser

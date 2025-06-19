@@ -55,6 +55,14 @@ const userSchema = new Schema<IUserBackend, IUserModel, IUserMethods>(
         await this.save();
       },
 
+      async removeHouseholdRole(this: UserDocument, householdId: string): Promise<void> {
+        if(this.householdRoles.has(householdId)) {
+          this.householdRoles.delete(householdId);
+        }
+
+        await this.save();
+      },
+
       async comparePassword(this: UserDocument, pword: string): Promise<boolean> {
         return bcrypt.compare(pword, this.password);
       },

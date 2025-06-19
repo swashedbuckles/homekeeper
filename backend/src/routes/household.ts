@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-empty-object-type */
 import { Router, type Request, type Response } from 'express';
-import { body as validateBody } from 'express-validator';
+import { body as validateBody, param as validateParams } from 'express-validator';
 import { Types } from 'mongoose';
 
 import { HouseholdPermissions } from '../config/permissions';
@@ -10,17 +10,17 @@ import { isMemberOf, assertHasHouse } from '../middleware/isMemberOf';
 import { requirePermission } from '../middleware/rbac';
 import { handleValidation } from '../middleware/validation';
 import { Household } from '../models/household';
+import { User } from '../models/user';
 import { removeKeysReducer } from '../utils/removeKeys';
 
 import type { HouseReqBody, IdParam } from '../types/apiRequests';
-import type { HouseResponse } from '@homekeeper/shared';
+import type { AddMemberRequest, HouseholdRoles, HouseResponse, InviteRequest } from '@homekeeper/shared';
 
 export const router = Router();
 
 /**
  * Returns a list of households of which user is a member. 
  * Looked up via household and not by User's role-map
- * @todo we may have to reconcile the household membership in the future. 
  */
 router.get('/', requireAuth, async (req: Request, res: Response) => {
   assertHasUser(req);
@@ -29,13 +29,13 @@ router.get('/', requireAuth, async (req: Request, res: Response) => {
   try {
     const membership = await Household.findByMember(userId);
     const data = membership.map(house => {
-      
+
       const data: HouseResponse = {
         memberCount: house.members.length,
         userRole: req.user.householdRoles[house._id.toString()],
         ...removeKeysReducer(house.serialize(), ['members'])
       };
-      
+
       return data;
     });
 
@@ -75,7 +75,8 @@ router.post('/',
     } catch (e) {
       res.apiError(HTTP_STATUS.INTERNAL_SERVER_ERROR, JSON.stringify(e));
     }
-  });
+  }
+);
 
 
 /**
@@ -135,7 +136,8 @@ router.put('/:id',
           description: req.body.description ?? req.household.description,
         }
       });
-  });
+  }
+);
 
 /**
  * Remove a household!
@@ -163,15 +165,212 @@ router.delete('/:id',
     res
       .status(HTTP_STATUS.NO_CONTENT)
       .send();
-  });
+  }
+);
 
 
-// router.get('/:id/members', () => {
+/**
+ * Get everyone in a household
+ */
+router.get('/:id/members',
+  requireAuth,
+  isMemberOf,
+  requirePermission(HouseholdPermissions.HOUSEHOLD_VIEW_MEMBERS),
+  async (req: Request<IdParam, object, object>, res: Response) => {
+    assertHasUser<typeof req>(req);
+    assertHasHouse<typeof req>(req);
 
-// });
+    try {
+      const members = await req.household.getMembers();
 
-// router.post('/:id/members');
-// router.get('/:id/member/:userId');
-// router.post('/:id/members/invite');
-// router.put('/:id/members/:userId/role');
-// router.delete('/:id/members/:userId/');
+      res.apiSuccess({
+        data: {
+          memberCount: members.length,
+          members,
+        }
+      });
+    } catch (error) {
+      console.error(error);
+      res.apiError(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to fetch members');
+    }
+  }
+);
+
+/**
+ * Add someone (who exists) to a household
+ */
+router.put('/:id/members',
+  validateBody('userId').isString(),
+  validateBody('role').isString().matches(/owner|admin|member|guest/),
+  handleValidation,
+  requireAuth,
+  isMemberOf,
+  requirePermission(HouseholdPermissions.HOUSEHOLD_INVITE_MEMBERS),
+  async (req: Request<IdParam, object, AddMemberRequest>, res: Response) => {
+    assertHasUser<typeof req>(req);
+    assertHasHouse<typeof req>(req);
+
+    if (!req.params.id) {
+      res.apiError(HTTP_STATUS.BAD_REQUEST, 'Missing Household ID');
+      return;
+    }
+
+    const { userId, role } = req.body;
+
+    if (role === 'owner') {
+      res.apiError(HTTP_STATUS.BAD_REQUEST, 'Role not allowed');
+      return;
+    }
+
+    const id = new Types.ObjectId(userId);
+    const alreadyAdded = req.household.members.some(member => member.equals(id));
+
+    if (alreadyAdded) {
+      res.apiError(HTTP_STATUS.CONFLICT, 'User already part of household');
+      return;
+    }
+
+    await req.household.addMember(userId, role);
+
+    res.apiSuccess({
+      data: (await req.household.getMembers())
+    });
+  }
+);
+
+router.get('/:id/member/:userId',
+  validateParams('id').isString().notEmpty(), 
+  validateParams('userId').isString().notEmpty(),
+  handleValidation,
+  requireAuth,
+  isMemberOf,
+  requirePermission(HouseholdPermissions.HOUSEHOLD_VIEW_MEMBERS),
+  async (req: Request, res: Response) => {
+    assertHasUser<typeof req>(req);
+    assertHasHouse<typeof req>(req);
+
+    const user = await User.findById(req.params.userId);
+    if(!user) {
+      res.apiError(HTTP_STATUS.NOT_FOUND, 'User not found');
+      return;
+    }
+
+    res.apiSuccess({
+      data: {
+        id: user._id.toString(),
+        name: user.name,
+        role: user.householdRoles.get(req.household._id.toString())
+      }
+    });
+  }
+);
+
+/**
+ * Send an invitation to a member
+ */
+router.post('/:id/members/invite',
+  validateBody('name').isString(),
+  validateBody('email').isString().isEmail(),
+  validateBody('role').isString().matches(/owner|admin|member|guest/),
+  handleValidation,
+  requireAuth,
+  isMemberOf,
+  requirePermission(HouseholdPermissions.HOUSEHOLD_INVITE_MEMBERS),
+  (req: Request<IdParam, object, InviteRequest>, res: Response) => {
+    assertHasUser<typeof req>(req);
+    assertHasHouse<typeof req>(req);
+
+    if (!req.params.id) {
+      res.apiError(HTTP_STATUS.BAD_REQUEST, 'Missing Household ID');
+      return;
+    }
+
+    const { email, name, role } = req.body;
+
+    if (role === 'owner') {
+      res.apiError(HTTP_STATUS.BAD_REQUEST, 'Role not allowed');
+      return;
+    }
+
+    console.log('Sending invitation to: ', name, ' ', email);
+
+    res.status(HTTP_STATUS.ACCEPTED);
+  }
+);
+
+/** 
+ * Change a user's role
+ */
+type RoleChangeReqBody = { role: HouseholdRoles };
+type RoleChangeParams = { id: string; userId: string };
+router.put('/:id/members/:userId/role',
+  validateBody('role').isString().matches(/owner|admin|member|guest/),
+  validateParams('id').isString().notEmpty(),
+  validateParams('userId').isString().notEmpty(),
+  handleValidation,
+  requireAuth,
+  isMemberOf,
+  requirePermission(HouseholdPermissions.HOUSEHOLD_UPDATE_MEMBER_ROLES),
+  async (req: Request<RoleChangeParams, object, RoleChangeReqBody>, res: Response) => {
+    assertHasUser<typeof req>(req);
+    assertHasHouse<typeof req>(req);
+
+    const { role } = req.body;
+    const { userId } = req.params;
+
+    if (role === 'owner') {
+      res.apiError(HTTP_STATUS.BAD_REQUEST, 'Role not allowed');
+      return;
+    }
+
+    const user = await User.findById(userId);
+    if(!user) {
+      res.apiError(HTTP_STATUS.NOT_FOUND, 'User not found');
+      return;
+    }
+
+    await user.addHouseholdRole(req.household._id.toString(), role);
+    await req.household.addMember(userId, role);
+
+    res.apiSuccess({
+      data: {
+        id: user._id.toString(),
+        name: user.name,
+        role,
+      }
+    });
+  }
+);
+
+/**
+ * Remove a user from the household
+ */
+router.delete('/:id/members/:userId/', 
+  validateParams('id').isString().notEmpty(),
+  validateParams('userId').isString().notEmpty(),
+  handleValidation,
+  requireAuth,
+  isMemberOf,
+  requirePermission(HouseholdPermissions.HOUSEHOLD_REMOVE_MEMBERS),
+  async (req: Request<RoleChangeParams, object, object>, res: Response) => {
+    assertHasUser<typeof req>(req);
+    assertHasHouse<typeof req>(req);
+    const {userId} = req.params;
+    const user = await User.findById(userId);
+
+    if(!user) {
+      res.apiError(HTTP_STATUS.NOT_FOUND, 'User not found');
+      return;
+    }
+
+    await req.household.removeMember(userId);
+    const members = await req.household.getMembers();
+
+    res.apiSuccess({
+      data: {
+        memberCount: members.length,
+        members
+      }
+    });
+  }
+);
