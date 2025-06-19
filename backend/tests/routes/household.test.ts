@@ -631,6 +631,23 @@ describe('Household Routes (Integration)', () => {
         expect(response.status).toBe(HTTP_STATUS.NOT_FOUND);
         expect(response.body.error).toBe('User not found');
       });
+
+      it('should return 400 when trying to remove the owner', async () => {
+        const { user, household } = await createTestUserWithHousehold();
+        const token = createAuthToken(user.toSafeObject());
+
+        const response = await request
+          .delete(`/households/${household._id}/members/${user._id}`)
+          .set('Cookie', [`${JWT_COOKIE_NAME}=${token}`]);
+
+        expect(response.status).toBe(HTTP_STATUS.BAD_REQUEST);
+        expect(response.body.error).toBe("Can't remove owner -- transfer ownership instead");
+
+        // Verify owner is still in household
+        const unchangedHousehold = await Household.findById(household._id);
+        expect(unchangedHousehold?.hasMember(user._id.toString())).toBe(true);
+        expect(unchangedHousehold?.ownerId.toString()).toBe(user._id.toString());
+      });
     });
 
     describe('POST /:id/members/invite', () => {

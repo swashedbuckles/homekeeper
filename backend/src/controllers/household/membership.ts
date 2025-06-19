@@ -152,12 +152,19 @@ export const deleteMember = async (req: Request<RoleChangeParams, object, object
   assertHasUser<typeof req>(req);
   assertHasHouse<typeof req>(req);
   const { userId } = req.params;
+
+  if(req.household.ownerId.equals(userId)) {
+    res.apiError(HTTP_STATUS.BAD_REQUEST, "Can't remove owner -- transfer ownership instead");
+    return;
+  }
+
   const user = await User.findById(userId);
 
   if (!user) {
     res.apiError(HTTP_STATUS.NOT_FOUND, 'User not found');
     return;
   }
+
 
   await req.household.removeMember(userId);
   const members = await req.household.getMembers();
