@@ -1,11 +1,18 @@
 import { RegisterRequest } from '@homekeeper/shared';
 
+import { jwtCookie, csrfCookie } from '../../config/cookies';
 import { 
+  CSRF_COOKIE_NAME,
   ERROR_MESSAGES,
   HTTP_STATUS, 
+  JWT_COOKIE_NAME, 
+  REFRESH_COOKIE_NAME, 
   RESPONSE_MESSAGES, 
 } from '../../constants';
+
+import { generateCSRFToken } from '../../middleware/csrf';
 import { register } from '../../services/auth';
+import { createAuthToken, createRefreshToken } from '../../utils/createJwt';
 
 import type {Request, Response} from 'express';
 
@@ -22,7 +29,12 @@ export async function postRegister(req: Request<object, object, RegisterRequest>
       const newUser = await register({ email, password, name });
 
       /** @todo send verification email */
-      res.status(HTTP_STATUS.CREATED).apiSuccess({
+      res
+        .status(HTTP_STATUS.CREATED)
+        .cookie(JWT_COOKIE_NAME, createAuthToken(newUser.user), jwtCookie())
+        .cookie(REFRESH_COOKIE_NAME, createRefreshToken(newUser.user), jwtCookie())
+        .cookie(CSRF_COOKIE_NAME, generateCSRFToken(), csrfCookie())
+        .apiSuccess({
         message: RESPONSE_MESSAGES.REGISTRATION_SUCCESS,
         data: newUser.user,
       });
@@ -35,9 +47,11 @@ export async function postRegister(req: Request<object, object, RegisterRequest>
           `[AUTH_INFO] Registration attempt for existing user: ${email} from ${req.ip}`,
         );
 
-        res.status(HTTP_STATUS.CREATED).apiSuccess({
-          message: RESPONSE_MESSAGES.REGISTRATION_SUCCESS,
-        });
+        res
+          .status(HTTP_STATUS.CREATED)
+          .apiSuccess({
+            message: RESPONSE_MESSAGES.REGISTRATION_SUCCESS,
+          });
         return;
       }
 

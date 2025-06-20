@@ -1,4 +1,3 @@
-// src/components/common/Button.tsx
 import type { ReactNode } from 'react';
 
 export interface ButtonProps {
@@ -8,7 +7,7 @@ export interface ButtonProps {
   loadingText?: string;
   type?: 'button' | 'submit' | 'reset';
   children: ReactNode;
-  onClick?: () => void;
+  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
   className?: string;
   full?: boolean;
   testId?: string;
@@ -53,13 +52,13 @@ export const Button = ({
     primary: [
       'bg-primary',
       'text-white',
-      'hover:bg-opacity-90',
+      'hover:opacity-90',
       'focus:ring-primary'
     ],
     secondary: [
       'bg-secondary',
       'text-white',
-      'hover:bg-opacity-90',
+      'hover:opacity-90',
       'focus:ring-secondary'
     ],
     outline: [

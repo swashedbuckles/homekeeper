@@ -41,16 +41,12 @@ export const Card = ({
     className
   ].filter(Boolean).join(' ');
   
-  const Element = onClick ? 'button' : 'div';
-  const type = onClick ? 'button' : undefined;
-  
   return (
-    <Element 
+    <div 
       className={combinedStyles}
       onClick={onClick}
-      type={type}
     >
       {children}
-    </Element>
+    </div>
   );
 };

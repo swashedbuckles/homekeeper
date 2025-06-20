@@ -1,7 +1,11 @@
 import { Check, Plus, FileText, Clock } from 'lucide-react';
+import { useNavigate } from 'react-router';
+
 import { Button } from '../../components/common/Button';
 
 export const OnboardingSuccess = () => {
+  const navigate = useNavigate();
+  
   return (
     <div id="success" className="screen">
       <div className="max-w-md mx-auto px-4 py-8">
@@ -31,7 +35,7 @@ export const OnboardingSuccess = () => {
           </ul>
         </div>
 
-        <Button full variant='primary'>Go to Dashboard</Button>
+        <Button full variant='primary' onClick={() => navigate('/dashboard')}>Go to Dashboard</Button>
       </div>
     </div>
   );

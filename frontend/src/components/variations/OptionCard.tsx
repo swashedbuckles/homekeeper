@@ -1,3 +1,4 @@
+import { Button } from '../common/Button';
 import { Card } from '../common/Card';
 import type { ReactNode } from 'react';
 
@@ -18,10 +19,6 @@ export const OptionCard = ({
   onClick,
   buttonVariant = 'primary'
 }: OptionCardProps) => {
-  const buttonStyles = buttonVariant === 'primary'
-    ? 'bg-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-opacity-90 transition-colors'
-    : 'bg-secondary text-white px-6 py-3 rounded-lg font-semibold hover:bg-opacity-90 transition-colors';
-    
   return (
     <Card clickable onClick={onClick}>
       <div className="flex items-start space-x-4">
@@ -35,15 +32,15 @@ export const OptionCard = ({
           <p className="text-text-secondary text-sm mb-4">
             {description}
           </p>
-          <button 
-            className={buttonStyles}
+          <Button 
+            variant={buttonVariant}
             onClick={(e) => {
               e.stopPropagation(); // Prevent double-click from card
               onClick();
             }}
           >
             {buttonText}
-          </button>
+          </Button>
         </div>
       </div>
     </Card>

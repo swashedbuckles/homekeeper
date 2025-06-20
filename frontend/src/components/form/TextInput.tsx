@@ -10,15 +10,17 @@ export interface TextInputProps {
   register?: UseFormRegisterReturn;
   testId?: string;
   className?: string;
+  grouped?: boolean;
 };
 
 export const TextInput = (props: TextInputProps) => {
+  console.log('text props', props);
   const inputId = `input-${props.label.replace(/\s+/g, '-').toLowerCase()}`;
   const hasFeedback = props.validationFeedback != null;
   const hasError = props.error != null;
 
   const inputStyles = [
-    'w-full',
+    props.grouped ? '' : 'w-full',
     'px-4',
     'py-3',
     'bg-white',
@@ -31,10 +33,10 @@ export const TextInput = (props: TextInputProps) => {
     'focus:ring-primary',
     'focus:border-transparent',
     hasError ? 'border-ui-error' : 'border-ui-border'
-  ].join(' ') + ` ${props.className}`;
-  
+  ].filter(Boolean).join(' ') + ` ${props.className}`;
+  console.log('inputStyles', inputStyles, props.grouped ? true : false);
   return (
-    <div className="mb-4"> 
+    <div className={props.grouped ? '' : 'mb-4'}> 
       <label htmlFor={inputId} className="block text-sm font-semibold text-text-primary mb-2">
         {props.label}
       </label>

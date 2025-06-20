@@ -1,11 +1,14 @@
 import { Plus, KeyRound } from 'lucide-react';
 
+import { useNavigate, Link } from 'react-router';
 import { PageTitle } from '../../components/common/Title';
 import { OptionCard } from '../../components/variations/OptionCard';
 
 export const OnboardingHome = () => {
-  const getStartedClicked = () => {};
-  const joinClicked = () => {};
+  const navigate = useNavigate();
+
+  const getStartedClicked = () => navigate('/onboarding/create');
+  const joinClicked = () => navigate('/onboarding/join');
 
   return (
     <div id="decision" className="screen active">
@@ -34,7 +37,7 @@ export const OnboardingHome = () => {
           />
         </div>
         <div className="text-center">
-          <a href="#" className="text-text-secondary text-sm hover:text-text-primary transition-colors">I'll do this later</a>
+          <Link to="/dashboard" className="text-text-secondary text-sm hover:text-text-primary transition-colors">I'll do this later</Link>
         </div>
       </div>
     </div>

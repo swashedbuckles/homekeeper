@@ -1,11 +1,14 @@
+import { useNavigate } from 'react-router';
 import { Button } from '../common/Button';
 import { TextArea } from '../form/TextArea.tsx';
 import { TextInput } from '../form/TextInput';
 
 export const CreateHouseholdForm = () => {
+  const navigate = useNavigate();
   const handleSubmit = () => {
-
+    navigate('/onboarding/invite');
   };
+  
   return (
     <form onSubmit={handleSubmit}>
 

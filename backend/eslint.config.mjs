@@ -1,11 +1,9 @@
-// backend/eslint.config.mjs
 import { baseConfig, baseConfigs, testRules, commonIgnores } from '../eslint.config.base.mjs';
 import customPlugin from './eslint-plugins/index.mjs';
 
 export default [
   ...baseConfigs,
   {
-    // Configuration for source files
     files: ['src/**/*.ts'],
     ...baseConfig,
     plugins: {
@@ -30,12 +28,10 @@ export default [
     },
     rules: {
       ...baseConfig.rules,
-      // Backend-specific rules
       'custom/enforce-api-response': 'warn',
       'import/no-default-export': 'warn',
       'import/no-unused-modules': 'warn',
       
-      // Backend prefers no newlines between imports for compactness
       'import/order': [
         'error',
         {
@@ -46,7 +42,6 @@ export default [
     },
   },
   {
-    // Configuration for test files
     files: ['tests/**/*.ts', '**/*.test.ts'],
     plugins: {
       'import': baseConfig.plugins.import,

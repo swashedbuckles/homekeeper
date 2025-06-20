@@ -1,9 +1,11 @@
+import { useNavigate } from 'react-router';
 import { Button } from '../common/Button';
 import { CodeInput } from '../variations/CodeInput';
 
 export const JoinHouseholdForm = () => {
+  const navigate = useNavigate();
   const handleSubmit = () => {
-
+    navigate('/onboarding/success');
   };
   return (
     <form onSubmit={handleSubmit}>

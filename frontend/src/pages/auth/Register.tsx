@@ -6,7 +6,7 @@ export function Register() {
   const navigate = useNavigate();
 
   const handleSubmit = async () => {
-    navigate('/');
+    navigate('/dashboard');
   };
 
   return (
