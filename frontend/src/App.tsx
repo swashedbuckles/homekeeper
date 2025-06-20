@@ -21,6 +21,13 @@ export function App() {
             <Route path="login" element={<Login />} />
             <Route path="register" element={<Register />} />
           </Route>
+          <Route path="/onboarding">
+            <Route index />
+            <Route path="create" />
+            <Route path="join" />
+            <Route path="invite" />
+          </Route>
+          <Route path="/dashboard"/>
         </Routes>
       </BrowserRouter>
     </AuthProvider>

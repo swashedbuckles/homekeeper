@@ -1,17 +1,20 @@
-import type { HTMLInputTypeAttribute, ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import type { UseFormRegisterReturn } from 'react-hook-form';
 
-export interface TextInputProps {
+const DEFAULT_ROWS = 3;
+
+export interface TextAreaProps {
   label: string;
-  type: HTMLInputTypeAttribute,
   placeholder?: string;
   error?: string;
-  validationFeedback?: ReactNode; // Custom component (password strength)
+  validationFeedback?: ReactNode; 
   register?: UseFormRegisterReturn;
   testId?: string;
+  className?: string;
+  rows?: number;
 };
 
-export const TextInput = (props: TextInputProps) => {
+export const TextArea = (props: TextAreaProps) => {
   const inputId = `input-${props.label.replace(/\s+/g, '-').toLowerCase()}`;
   const hasFeedback = props.validationFeedback != null;
   const hasError = props.error != null;
@@ -29,8 +32,9 @@ export const TextInput = (props: TextInputProps) => {
     'focus:ring-2',
     'focus:ring-primary',
     'focus:border-transparent',
+    'resize-y',
     hasError ? 'border-ui-error' : 'border-ui-border'
-  ].join(' ');
+  ].join(' ') + ` ${props.className}`;
   
   return (
     <div className="mb-4"> 
@@ -39,14 +43,14 @@ export const TextInput = (props: TextInputProps) => {
       </label>
 
       <div>
-        <input 
+        <textarea 
           id={inputId}
           {...props.register}
           placeholder={props.placeholder}
-          type={props.type}
           className={inputStyles}
+          rows={props.rows ?? DEFAULT_ROWS}
           role="textbox"
-          data-testid={props.testId}        
+          data-testid={props.testId}
         />
         {hasFeedback ? props.validationFeedback : null}
       </div>

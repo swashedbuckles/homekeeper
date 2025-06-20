@@ -2,14 +2,14 @@
 import type { ReactNode } from 'react';
 
 export interface ButtonProps {
-  variant?: 'primary' | 'secondary' | 'outline';
+  variant?: 'primary' | 'secondary' | 'outline' | 'text';
   disabled?: boolean;
   loading?: boolean;
   loadingText?: string;
   type?: 'button' | 'submit' | 'reset';
   children: ReactNode;
   onClick?: () => void;
-  className?: string; 
+  className?: string;
   full?: boolean;
   testId?: string;
 }
@@ -27,10 +27,10 @@ export const Button = ({
   testId
 }: ButtonProps) => {
   const isDisabled = disabled || loading;
-  
+
   const baseStyles = [
     'px-6',
-    'py-3', 
+    'py-3',
     'rounded-lg',
     'font-semibold',
     'transition-colors',
@@ -42,6 +42,14 @@ export const Button = ({
   ];
 
   const variantStyles = {
+    text: [
+      'bg-transparent',
+      'text-primary',
+      'hover:bg-primary/8',
+      'px-3',
+      'py-1',
+      'transition-colors'
+    ],
     primary: [
       'bg-primary',
       'text-white',
@@ -49,7 +57,7 @@ export const Button = ({
       'focus:ring-primary'
     ],
     secondary: [
-      'bg-secondary', 
+      'bg-secondary',
       'text-white',
       'hover:bg-opacity-90',
       'focus:ring-secondary'
@@ -58,7 +66,7 @@ export const Button = ({
       'bg-transparent',
       'text-text-primary',
       'border-2',
-      'border-text-primary', 
+      'border-text-primary',
       'hover:bg-text-primary',
       'hover:text-white',
       'focus:ring-text-primary'
