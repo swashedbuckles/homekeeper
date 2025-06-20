@@ -1,7 +1,7 @@
 // frontend/tests/components/common/TextInput.test.tsx
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
-import { TextInput } from '../../../src/components/common/TextInput';
+import { TextInput } from '../../../src/components/form/TextInput';
 import type { UseFormRegisterReturn } from 'react-hook-form';
 
 describe('TextInput', () => {

@@ -1,9 +1,9 @@
 import fetchMock from '@fetch-mock/vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { LoginForm } from '../../src/components/LoginForm';
-import { TestAuthProvider } from '../helpers/testProviderUtils';
-import { createMockUser } from '../helpers/testUtils';
+import { LoginForm } from '../../../src/components/fragments/LoginForm';
+import { TestAuthProvider } from '../../helpers/testProviderUtils';
+import { createMockUser } from '../../helpers/testUtils';
 
 const renderLoginForm = (onSuccess = vi.fn()) => {
   return render(
