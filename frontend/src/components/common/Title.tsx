@@ -37,7 +37,7 @@ export const PageTitle = ({
         {children}
       </Tag>
       {description && (
-        <p className="text-text-secondary mt-2">
+        <p className="text-text-secondary mt-2 text-left">
           {description}
         </p>
       )}

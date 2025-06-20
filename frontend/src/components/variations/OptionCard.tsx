@@ -25,12 +25,10 @@ export const OptionCard = ({
   return (
     <Card clickable onClick={onClick}>
       <div className="flex items-start space-x-4">
-        <div className={`w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0 ${
-          buttonVariant === 'primary' ? 'bg-primary/10' : 'bg-secondary/10'
-        }`}>
+        <div className={'w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0'}>
           {icon}
         </div>
-        <div className="flex-1">
+        <div className="flex-1 text-left">
           <h3 className="text-lg font-semibold text-text-primary mb-2">
             {title}
           </h3>

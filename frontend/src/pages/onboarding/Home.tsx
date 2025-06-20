@@ -1,0 +1,43 @@
+import { Plus, KeyRound } from 'lucide-react';
+
+import { PageTitle } from '../../components/common/Title';
+import { OptionCard } from '../../components/variations/OptionCard';
+
+export const OnboardingHome = () => {
+  const getStartedClicked = () => {};
+  const joinClicked = () => {};
+
+  return (
+    <div id="decision" className="screen active">
+      <div className="max-w-md mx-auto px-4 py-8">
+        <div className="text-center mb-8">
+          <PageTitle description="Let's get your household organized. How would you like to start?">Welcome to HomeKeeper!</PageTitle>
+        </div>
+
+        <div className="space-y-4 mb-8">
+          <OptionCard
+            title="Create a new household"
+            description="Start fresh and invite family members to join you in organizing your home maintenance."
+            buttonText="Get Started"
+            buttonVariant="primary"
+            onClick={getStartedClicked}
+            icon={<Plus className="text-primary"/>}
+          />
+
+          <OptionCard 
+            title="Join existing household"
+            description="Have an invitation code? Join a household that's already been set up."
+            buttonText="Join with Code"
+            buttonVariant="secondary"
+            onClick={joinClicked}
+            icon={<KeyRound className="text-secondary"/>}
+          />
+        </div>
+        <div className="text-center">
+          <a href="#" className="text-text-secondary text-sm hover:text-text-primary transition-colors">I'll do this later</a>
+        </div>
+      </div>
+    </div>
+
+  );
+};

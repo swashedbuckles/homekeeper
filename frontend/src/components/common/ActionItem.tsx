@@ -22,6 +22,7 @@ export const ActionItem = ({
         <div className="font-mono text-lg font-semibold text-text-primary">{title}</div>
         {subtitle ? <div className="text-text-secondary text-sm">{subtitle}</div> : null }
       </div>
+      
       <Button 
         className="text-sm" 
         onClick={onAction} 
