@@ -1,11 +1,11 @@
 import { Outlet } from 'react-router';
+import { BackgroundCircles } from './BackgroundCircles';
 import { Header } from './Header';
 
-/** @todo header should be its own component */
-/** @todo logo should be its own component */
 export function Root() {
   return (
-    <div className="container mx-auto max-w-screen-xl">
+    <div className="container mx-auto max-w-screen-xl grow relative">
+      <BackgroundCircles />
       <Header />
       <Outlet />
     </div>
