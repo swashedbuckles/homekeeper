@@ -5,10 +5,11 @@ import { Types } from 'mongoose';
 import { HTTP_STATUS } from '../../constants';
 import { assertHasUser } from '../../middleware/auth';
 import { assertHasHouse } from '../../middleware/isMemberOf';
+import { Invitation } from '../../models/invitation';
 import { User } from '../../models/user';
 
 import type { IdParam } from '../../types/apiRequests';
-import type { AddMemberRequest, HouseholdRoles, InviteRequest } from '@homekeeper/shared';
+import type { AddMemberRequest, HouseholdRoles, InvitationResponse, InviteRequest } from '@homekeeper/shared';
 
 export const router = Router();
 
@@ -90,7 +91,7 @@ export const getMemberById = async (req: Request, res: Response) => {
 /**
  * Send an invitation to a member
  */
-export const postInvitation = (req: Request<IdParam, object, InviteRequest>, res: Response) => {
+export const postInvitation = async (req: Request<IdParam, object, InviteRequest>, res: Response) => {
   assertHasUser<typeof req>(req);
   assertHasHouse<typeof req>(req);
 
@@ -106,9 +107,21 @@ export const postInvitation = (req: Request<IdParam, object, InviteRequest>, res
     return;
   }
 
+  const invitation = await Invitation.createInvitation(req.body, req.household._id.toString(), req.user.id);
+  const response: InvitationResponse = {
+    id: invitation._id.toString(),
+    code: invitation.code,
+    email: invitation.email,
+    name: invitation.name,
+    role: invitation.role,
+    status: invitation.status,
+    expiresAt: invitation.expiresAt
+  };
+
   console.log('Sending invitation to: ', name, ' ', email);
-  /** @todo stub until email service integration */
-  res.status(HTTP_STATUS.ACCEPTED).send();
+  res.apiSuccess({
+    data: response
+  });
 };
 
 /** 

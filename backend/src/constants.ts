@@ -2,6 +2,9 @@
  * Application constants
  */
 
+// Invitations
+export const INVITATION_EXPIRE_TIME_MS = 14 * 24 * 60 * 60 * 1000; // 14 days
+
 // Authentication & JWT
 export const JWT_REFRESH_EXPIRE_TIME_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
 export const JWT_EXPIRE_TIME_MS = 10 * 60 * 1000; // 10 minutes

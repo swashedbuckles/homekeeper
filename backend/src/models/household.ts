@@ -1,4 +1,4 @@
-import { Schema, model, Model, Types, HydratedDocument } from 'mongoose';
+import { Schema, model, type Model, Types, type HydratedDocument } from 'mongoose';
 import { User, type UserDocument } from './user';
 import type { HouseholdRoles, MemberDetail, SerializedHousehold } from '@homekeeper/shared';
 
@@ -47,7 +47,7 @@ const householdSchema = new Schema<IHousehold, IHouseholdModel, IHouseholdMethod
     type: [Schema.Types.ObjectId],
     required: true,
     ref: 'User'
-  }
+  },
 }, {
   timestamps: true,
   toJSON: { virtuals: true },
