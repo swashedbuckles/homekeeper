@@ -35,7 +35,7 @@ export const OnboardingSuccess = () => {
           </ul>
         </div>
 
-        <Button full variant='primary' onClick={() => navigate('/dashboard')}>Go to Dashboard</Button>
+        <Button full variant="primary" onClick={() => navigate('/dashboard')}>Go to Dashboard</Button>
       </div>
     </div>
   );

@@ -12,15 +12,15 @@ export const InviteOthers = () => {
     <div id="invite" className="screen">
       <div className="max-w-md mx-auto px-4 py-8">
         <div className="mb-6">
-          <PageTitle description='Generate invitation codes to share with family members.'>Invite Others</PageTitle>
+          <PageTitle description="Generate invitation codes to share with family members.">Invite Others</PageTitle>
         </div>
 
-        <Card variant='default' className='flex-row mb-6'>
+        <Card variant="default" className="flex-row mb-6">
           <div className="flex space-x-2 items-end">
             <div className="flex-1">
               <TextInput label="Invite Someone" placeholder="Enter email address" type="email" grouped />
             </div>
-            <Button variant='primary' className="px-4">Add</Button>
+            <Button variant="primary" className="px-4">Add</Button>
           </div>
         </Card>
 
@@ -55,8 +55,8 @@ export const InviteOthers = () => {
         </div>
 
         <div className="space-y-3">
-          <Button full variant='secondary' onClick={() => navigate('/onboarding/success')}>Continue</Button>
-          <Button full variant='outline' onClick={() => navigate('/dashboard')}>Skip for now</Button>
+          <Button full variant="secondary" onClick={() => navigate('/onboarding/success')}>Continue</Button>
+          <Button full variant="outline" onClick={() => navigate('/dashboard')}>Skip for now</Button>
 
         </div>
       </div>
