@@ -94,6 +94,8 @@ const invitationSchema = new Schema<IInvitation, IInvitationModel, IInvitationMe
         expiresAt: Date.now() + INVITATION_EXPIRE_TIME_MS
       });
 
+      document.$locals.allowStatusChange = true;
+
       const invitation = await document.save();
 
       return invitation as InvitationDocument;

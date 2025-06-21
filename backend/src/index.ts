@@ -57,7 +57,8 @@ export const createApp = (): express.Application => {
 
   app.use('/auth', csrfProtection);
   app.use('/protected', csrfProtection);
-  app.use('/invitations', csrfProtection);
+  // app.use('/households', csrfProtection);
+  // app.use('/invitations', csrfProtection);
 
   app.use('/auth', authRouter);
   app.use('/households', householdRouter);
