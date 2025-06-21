@@ -1,3 +1,5 @@
+import {forwardRef} from 'react';
+
 import type { HTMLInputTypeAttribute, ReactNode } from 'react';
 import type { UseFormRegisterReturn } from 'react-hook-form';
 
@@ -13,7 +15,7 @@ export interface TextInputProps {
   grouped?: boolean;
 };
 
-export const TextInput = (props: TextInputProps) => {
+export const TextInput = forwardRef<HTMLInputElement, TextInputProps>((props, ref) => {
   console.log('text props', props);
   const inputId = `input-${props.label.replace(/\s+/g, '-').toLowerCase()}`;
   const hasFeedback = props.validationFeedback != null;
@@ -43,6 +45,7 @@ export const TextInput = (props: TextInputProps) => {
 
       <div>
         <input 
+          ref={ref}
           id={inputId}
           {...props.register}
           placeholder={props.placeholder}
@@ -59,4 +62,4 @@ export const TextInput = (props: TextInputProps) => {
       )}
     </div>
   );
-};
+});

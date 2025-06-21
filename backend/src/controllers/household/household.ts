@@ -60,7 +60,7 @@ export const postHouseholds = async (req: Request<{}, {}, HouseReqBody>, res: Re
     res
       .status(HTTP_STATUS.OK)
       .apiSuccess({
-        data: household
+        data: household.serialize()
       });
   } catch (e) {
     res.apiError(HTTP_STATUS.INTERNAL_SERVER_ERROR, JSON.stringify(e));

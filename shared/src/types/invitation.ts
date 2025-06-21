@@ -5,6 +5,19 @@ export interface RedeemInvitationRequest {
   code: string;
 }
 
+export interface RedeemResponse {
+  householdId: string;
+  householdName: string;
+  role: HouseholdRoles;
+}
+
+
+export interface CreateInvitationRequest {
+  email: string;
+  name?: string;
+  role: HouseholdRoles;
+}
+
 export interface InvitationResponse {
   id: string;
   code: string;
@@ -13,12 +26,6 @@ export interface InvitationResponse {
   role: HouseholdRoles;
   status: InvitationStatus;
   expiresAt: Date;
-}
-
-export interface RedeemResponse {
-  householdId: string;
-  householdName: string;
-  role: string;
 }
 
 export interface IInvitation {

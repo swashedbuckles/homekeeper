@@ -1,12 +1,36 @@
+import { useRef } from 'react';
 import { useNavigate } from 'react-router';
+
 import { ActionItem } from '../../components/common/ActionItem';
 import { Button } from '../../components/common/Button';
 import { Card } from '../../components/common/Card';
 import { PageTitle } from '../../components/common/Title';
 import { TextInput } from '../../components/form/TextInput';
 import { SectionTitle } from '../../components/variations/SectionTitle';
+import { apiRequest } from '../../lib/apiClient';
+
+import type { InvitationResponse } from '@homekeeper/shared';
 
 export const InviteOthers = () => {
+  const emailRef = useRef<HTMLInputElement>(null);
+
+  const handleAdd = () => {
+    const email = emailRef.current?.value;
+    if (!email) {
+      return;
+    }
+
+    apiRequest<InvitationResponse>('/household/:id/members/invite', {
+      method: 'POST',
+      body: JSON.stringify({email, role: 'guest'})
+    });
+
+
+    if (emailRef.current) {
+      emailRef.current.value = '';
+    }
+  };
+
   const navigate = useNavigate();
   return (
     <div id="invite" className="screen">
@@ -18,9 +42,9 @@ export const InviteOthers = () => {
         <Card variant="default" className="flex-row mb-6">
           <div className="flex space-x-2 items-end">
             <div className="flex-1">
-              <TextInput label="Invite Someone" placeholder="Enter email address" type="email" grouped />
+              <TextInput ref={emailRef} label="Invite Someone" placeholder="Enter email address" type="email" grouped />
             </div>
-            <Button variant="primary" className="px-4">Add</Button>
+            <Button variant="primary" className="px-4" onClick={handleAdd}>Add</Button>
           </div>
         </Card>
 

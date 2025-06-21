@@ -8,6 +8,11 @@ export interface SerializedHousehold {
   members: string[];
 };
 
+export interface HouseholdDescription {
+  name: string;
+  description?: string;
+}
+
 export type AddMemberRequest = {
   userId: string;
   role: HouseholdRoles;
