@@ -1,4 +1,3 @@
- 
 import { Router } from 'express';
 import { body as validateBody, param as validateParams } from 'express-validator';
 
@@ -12,7 +11,9 @@ import {
 } from '../controllers/household/household';
 
 import  { 
+  cancelInvitation,
   deleteMember,
+  getInvitations,
   getMemberById,
   getMembers,
   postInvitation,
@@ -122,7 +123,7 @@ router.get('/:id/member/:userId',
  * Send an invitation to a member
  */
 router.post('/:id/members/invite',
-  validateBody('name').isString(),
+  validateBody('name').isString().optional(),
   validateBody('email').isString().isEmail(),
   validateBody('role').isString().matches(/owner|admin|member|guest/),
   handleValidation,
@@ -157,4 +158,25 @@ router.delete('/:id/members/:userId/',
   isMemberOf,
   requirePermission(HouseholdPermissions.HOUSEHOLD_REMOVE_MEMBERS),
   deleteMember
+);
+
+
+/**
+ * Fetch a list of invitations to a hosuehold
+ */
+router.get('/:id/invitations',
+  requireAuth,
+  isMemberOf,
+  requirePermission(HouseholdPermissions.HOUSEHOLD_INVITE_MEMBERS),
+  getInvitations
+);
+
+/**
+ * Fetch a list of invitations to a hosuehold
+ */
+router.delete('/:id/invitations/:invitationId',
+  requireAuth,
+  isMemberOf,
+  requirePermission(HouseholdPermissions.HOUSEHOLD_INVITE_MEMBERS),
+  cancelInvitation
 );

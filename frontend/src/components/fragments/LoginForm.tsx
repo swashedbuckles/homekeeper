@@ -3,11 +3,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
-import { useAuth } from '../hooks/useAuth';
-import { UI as logger } from '../lib/logger';
-import { ApiError } from '../lib/types/apiError';
-import { Button } from './common/Button';
-import { TextInput } from './common/TextInput';
+import { useAuth } from '../../hooks/useAuth';
+import { UI as logger } from '../../lib/logger';
+import { ApiError } from '../../lib/types/apiError';
+import { Button } from '../common/Button';
+import { TextInput } from '../form/TextInput';
 
 export interface LoginFormProps {
   onSuccess?: (user: SafeUser) => void;

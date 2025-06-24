@@ -56,7 +56,6 @@ expect.extend({
   },
 
   toHaveBeenCalledWithObjectId(received, expected) {
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     const pass = received.mock.calls.some((call: any[]) =>
       call.some(
         (arg) => mongoose.Types.ObjectId.isValid(arg) && arg.toString() === expected.toString(),
@@ -72,16 +71,12 @@ expect.extend({
 
 // Type declarations for custom matchers
 declare module 'vitest' {
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   interface Assertion<T = any> {
     toBeValidObjectId(): T;
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     toHaveBeenCalledWithObjectId(expected: any): T;
   }
   interface AsymmetricMatchersContaining {
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     toBeValidObjectId(): any;
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     toHaveBeenCalledWithObjectId(expected: any): any;
   }
 }

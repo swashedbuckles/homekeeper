@@ -1,9 +1,7 @@
-// eslint.config.base.js (in your project root)
 import js from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import importPlugin from 'eslint-plugin-import';
 
-// Base configuration shared across all packages
 export const baseConfig = {
   plugins: {
     'import': importPlugin,
@@ -12,7 +10,6 @@ export const baseConfig = {
     'import/resolver': {
       typescript: {
         alwaysTryTypes: true,
-        // Will be overridden in each package
       },
       node: true,
     },
@@ -21,12 +18,11 @@ export const baseConfig = {
     },
   },
   rules: {
-    // Common formatting rules
     'quotes': ['error', 'single', { 'avoidEscape': true }],
+    'jsx-quotes': ['error', 'prefer-double'],
     'semi': 'error',
     'no-unused-vars': 'off',
     
-    // TypeScript rules
     '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/no-explicit-any': 'error',
@@ -34,7 +30,6 @@ export const baseConfig = {
     '@typescript-eslint/prefer-optional-chain': 'error',
     '@typescript-eslint/restrict-template-expressions': 'off',
     
-    // Import rules
     'import/order': ['error', {
       'groups': [
         'builtin',
@@ -67,7 +62,6 @@ export const baseConfig = {
   },
 };
 
-// Base configs for different environments
 export const baseConfigs = [
   js.configs.recommended,
   ...tseslint.configs.strictTypeChecked,
@@ -91,7 +85,6 @@ export const testRules = {
 
 };
 
-// Common ignores
 export const commonIgnores = [
   'dist/',
   'node_modules/',

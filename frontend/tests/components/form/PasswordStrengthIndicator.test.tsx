@@ -1,7 +1,7 @@
 // frontend/tests/components/common/PasswordStrengthIndicator.test.tsx
 import { render } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
-import { PasswordStrengthIndicator } from '../../../src/components/common/PasswordStrengthIndicator';
+import { PasswordStrengthIndicator } from '../../../src/components/form/PasswordStrengthIndicator';
 
 describe('PasswordStrengthIndicator', () => {
   it('renders three segments', () => {

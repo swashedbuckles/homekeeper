@@ -2,9 +2,9 @@
 import fetchMock from '@fetch-mock/vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { RegistrationForm } from '../../src/components/RegistrationForm';
-import { TestAuthProvider } from '../helpers/testProviderUtils';
-import { createMockUser, mockAuthEndpoints } from '../helpers/testUtils';
+import { RegistrationForm } from '../../../src/components/fragments/RegistrationForm';
+import { TestAuthProvider } from '../../helpers/testProviderUtils';
+import { createMockUser, mockAuthEndpoints } from '../../helpers/testUtils';
 
 const renderRegistrationForm = (onSuccess = vi.fn()) => {
   return render(

@@ -1,3 +1,5 @@
+import { HouseholdRoles } from '../constants/roles';
+
 /**
  * Base User interface for frontend/API
  * This represents how the user data looks when serialized to JSON
@@ -24,4 +26,3 @@ export interface IUser {
  * User without Password
  */
 export type SafeUser = Omit<IUser, 'password'>;
-export type HouseholdRoles = 'owner' | 'admin' | 'member' | 'guest';

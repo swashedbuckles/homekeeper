@@ -1,4 +1,4 @@
-import { ApiResponse } from '@homekeeper/shared';
+import { type ApiResponse } from '@homekeeper/shared';
 
 import type { NextFunction, Request, Response } from 'express';
 

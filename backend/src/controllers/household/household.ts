@@ -5,13 +5,23 @@ import { Types } from 'mongoose';
 import { HTTP_STATUS } from '../../constants';
 import { assertHasUser } from '../../middleware/auth';
 import { assertHasHouse } from '../../middleware/isMemberOf';
-import { Household } from '../../models/household';
+import { Household, HouseholdDocument } from '../../models/household';
 import { removeKeysReducer } from '../../utils/removeKeys';
 
 import type { HouseReqBody, IdParam } from '../../types/apiRequests';
-import type { HouseResponse } from '@homekeeper/shared';
+import type { HouseholdRoles, HouseResponse } from '@homekeeper/shared';
 
 export const router = Router();
+
+export const transformHousehold = (userRoles: { [key: string]: HouseholdRoles }) => (house: HouseholdDocument) => {
+  const data: HouseResponse = {
+    memberCount: house.members.length,
+    userRole: userRoles[house._id.toString()],
+    ...removeKeysReducer(house.serialize(), ['members'])
+  };
+
+  return data;
+};
 
 /**
  * Returns a list of households of which user is a member. 
@@ -23,16 +33,7 @@ export const getHouseholds = async (req: Request, res: Response) => {
 
   try {
     const membership = await Household.findByMember(userId);
-    const data = membership.map(house => {
-
-      const data: HouseResponse = {
-        memberCount: house.members.length,
-        userRole: req.user.householdRoles[house._id.toString()],
-        ...removeKeysReducer(house.serialize(), ['members'])
-      };
-
-      return data;
-    });
+    const data = membership.map(transformHousehold(req.user.householdRoles));
 
     /** @todo currently all roles have household_view, but if we ever have a role that can't view household... */
     res
@@ -60,7 +61,7 @@ export const postHouseholds = async (req: Request<{}, {}, HouseReqBody>, res: Re
     res
       .status(HTTP_STATUS.OK)
       .apiSuccess({
-        data: household
+        data: household.serialize()
       });
   } catch (e) {
     res.apiError(HTTP_STATUS.INTERNAL_SERVER_ERROR, JSON.stringify(e));
@@ -77,7 +78,7 @@ export const getHouseholdById = (req: Request<IdParam, {}, {}>, res: Response) =
   res
     .status(HTTP_STATUS.OK)
     .apiSuccess({
-      data: req.household
+      data: transformHousehold(req.user.householdRoles)(req.household)
     });
 };
 

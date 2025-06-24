@@ -1,15 +1,14 @@
-// src/components/common/Button.tsx
 import type { ReactNode } from 'react';
 
 export interface ButtonProps {
-  variant?: 'primary' | 'secondary' | 'outline';
+  variant?: 'primary' | 'secondary' | 'outline' | 'text';
   disabled?: boolean;
   loading?: boolean;
   loadingText?: string;
   type?: 'button' | 'submit' | 'reset';
   children: ReactNode;
-  onClick?: () => void;
-  className?: string; 
+  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  className?: string;
   full?: boolean;
   testId?: string;
 }
@@ -27,10 +26,10 @@ export const Button = ({
   testId
 }: ButtonProps) => {
   const isDisabled = disabled || loading;
-  
+
   const baseStyles = [
     'px-6',
-    'py-3', 
+    'py-3',
     'rounded-lg',
     'font-semibold',
     'transition-colors',
@@ -42,23 +41,31 @@ export const Button = ({
   ];
 
   const variantStyles = {
+    text: [
+      'bg-transparent',
+      'text-primary',
+      'hover:bg-primary/8',
+      'px-3',
+      'py-1',
+      'transition-colors'
+    ],
     primary: [
       'bg-primary',
       'text-white',
-      'hover:bg-opacity-90',
+      'hover:opacity-90',
       'focus:ring-primary'
     ],
     secondary: [
-      'bg-secondary', 
+      'bg-secondary',
       'text-white',
-      'hover:bg-opacity-90',
+      'hover:opacity-90',
       'focus:ring-secondary'
     ],
     outline: [
       'bg-transparent',
       'text-text-primary',
       'border-2',
-      'border-text-primary', 
+      'border-text-primary',
       'hover:bg-text-primary',
       'hover:text-white',
       'focus:ring-text-primary'

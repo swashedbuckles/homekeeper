@@ -1,4 +1,3 @@
-
 import { LoginRequest } from '@homekeeper/shared';
 
 import { csrfCookie, jwtCookie } from '../../config/cookies';
@@ -10,6 +9,7 @@ import {
   REFRESH_COOKIE_NAME,
   RESPONSE_MESSAGES,
 } from '../../constants';
+
 import { generateCSRFToken } from '../../middleware/csrf';
 import { login } from '../../services/auth';
 import { createAuthToken, createRefreshToken } from '../../utils/createJwt';

@@ -26,12 +26,10 @@ export default {
     function isRouteHandler(node) {
       const params = node.params;
       
-      // Must have at least 2 parameters (req, res) or 3 (req, res, next)
       if (params.length < 2 || params.length > 3) {
         return false;
       }
 
-      // Check parameter names (common Express patterns)
       const firstParam = params[0];
       const secondParam = params[1];
       
@@ -42,7 +40,6 @@ export default {
       const firstParamName = firstParam.name.toLowerCase();
       const secondParamName = secondParam.name.toLowerCase();
 
-      // Look for req/request and res/response patterns (including underscore prefixed)
       const reqPatterns = ['req', 'request', '_req', '_request'];
       const resPatterns = ['res', 'response', '_res', '_response'];
 
@@ -82,7 +79,6 @@ export default {
       let current = node;
       let methodChain = [];
 
-      // Build the method chain (e.g., res.status().json())
       while (current && current.type === 'CallExpression') {
         if (current.callee.type === 'MemberExpression') {
           methodChain.unshift(current.callee.property.name);
@@ -92,16 +88,13 @@ export default {
         }
       }
 
-      // Now check if we found a response object at the root
       if (current && current.type === 'MemberExpression' && current.object.type === 'Identifier') {
         const objectName = current.object.name.toLowerCase();
         const firstMethod = current.property.name;
         
-        // Check if this looks like a response object (including underscore prefixed)
         if (['res', 'response', '_res', '_response'].includes(objectName)) {
           methodChain.unshift(firstMethod);
           
-          // Check for problematic patterns
           const problematicMethods = ['json', 'send', 'end'];
           const lastMethod = methodChain[methodChain.length - 1];
           
@@ -110,12 +103,9 @@ export default {
           }
         }
       } else if (current && current.type === 'Identifier') {
-        // Handle direct calls like res.json() (no chaining)
         const objectName = current.name.toLowerCase();
         
-        // Check if this looks like a response object (including underscore prefixed)
         if (['res', 'response', '_res', '_response'].includes(objectName)) {
-          // Check for problematic patterns
           const problematicMethods = ['json', 'send', 'end'];
           const lastMethod = methodChain[methodChain.length - 1];
           
@@ -130,7 +120,6 @@ export default {
 
     return {
       CallExpression(node) {
-        // Only check if we're inside a route handler
         if (!isInsideRouteHandler(node)) {
           return;
         }

@@ -1,14 +1,15 @@
 
+import { INVITATION_STATUS, type AddMemberRequest, type HouseholdRoles, type InvitationResponse, type InviteRequest } from '@homekeeper/shared';
 import { Router, type Request, type Response } from 'express';
 import { Types } from 'mongoose';
 
 import { HTTP_STATUS } from '../../constants';
 import { assertHasUser } from '../../middleware/auth';
 import { assertHasHouse } from '../../middleware/isMemberOf';
+import { Invitation } from '../../models/invitation';
 import { User } from '../../models/user';
 
 import type { IdParam } from '../../types/apiRequests';
-import type { AddMemberRequest, HouseholdRoles, InviteRequest } from '@homekeeper/shared';
 
 export const router = Router();
 
@@ -87,30 +88,6 @@ export const getMemberById = async (req: Request, res: Response) => {
   });
 };
 
-/**
- * Send an invitation to a member
- */
-export const postInvitation = (req: Request<IdParam, object, InviteRequest>, res: Response) => {
-  assertHasUser<typeof req>(req);
-  assertHasHouse<typeof req>(req);
-
-  if (!req.params.id) {
-    res.apiError(HTTP_STATUS.BAD_REQUEST, 'Missing Household ID');
-    return;
-  }
-
-  const { email, name, role } = req.body;
-
-  if (role === 'owner') {
-    res.apiError(HTTP_STATUS.BAD_REQUEST, 'Role not allowed');
-    return;
-  }
-
-  console.log('Sending invitation to: ', name, ' ', email);
-  /** @todo stub until email service integration */
-  res.status(HTTP_STATUS.ACCEPTED).send();
-};
-
 /** 
  * Change a user's role
  */
@@ -175,4 +152,119 @@ export const deleteMember = async (req: Request<RoleChangeParams, object, object
       members
     }
   });
+};
+
+export const getInvitations = async (req: Request, res: Response) => {
+  assertHasUser<typeof req>(req);
+  assertHasHouse<typeof req>(req);
+
+  if (!req.params.id) {
+    res.apiError(HTTP_STATUS.BAD_REQUEST, 'Missing Household ID');
+    return;
+  }
+
+  const invitations = await Invitation.find({householdId: req.household.id}).exec();
+  const data = invitations.map(invitation => {
+     const response: InvitationResponse = {
+      id: invitation._id.toString(),
+      code: invitation.code,
+      email: invitation.email,
+      name: invitation.name,
+      role: invitation.role,
+      status: invitation.status,
+      expiresAt: invitation.expiresAt
+    };
+
+    return response;
+  });
+
+  res
+    .apiSuccess({
+      data,
+    });
+};
+
+export const cancelInvitation = async (req: Request, res: Response) => {
+  assertHasUser<typeof req>(req);
+  assertHasHouse<typeof req>(req);
+
+  if (!req.params.id) {
+    res.apiError(HTTP_STATUS.BAD_REQUEST, 'Missing Household ID');
+    return;
+  }
+
+  if (!req.params.invitationId) {
+    res.apiError(HTTP_STATUS.BAD_REQUEST, 'Missing Invitation ID');
+    return;
+  }
+
+  const invitation = await Invitation.findById(req.params.invitationId);
+  
+  if(!invitation) {
+    res.apiError(HTTP_STATUS.NOT_FOUND, 'Missing or invalid Invitation');
+    return;
+  }
+
+  const updated = await invitation.cancel();
+
+  if(updated.status !== INVITATION_STATUS.CANCELLED) {
+    res.apiError(HTTP_STATUS.CONFLICT, 'Missing or invalid Invitation');
+    return;
+  }
+
+  const response: InvitationResponse = {
+    id: invitation._id.toString(),
+    code: invitation.code,
+    email: invitation.email,
+    name: invitation.name,
+    role: invitation.role,
+    status: invitation.status,
+    expiresAt: invitation.expiresAt
+  };
+
+
+  res.apiSuccess({
+    data: response
+  });
+};
+
+/**
+ * Send an invitation to a member
+ */
+export const postInvitation = async (req: Request<IdParam, object, InviteRequest>, res: Response) => {
+  assertHasUser<typeof req>(req);
+  assertHasHouse<typeof req>(req);
+
+  if (!req.params.id) {
+    res.apiError(HTTP_STATUS.BAD_REQUEST, 'Missing Household ID');
+    return;
+  }
+
+  const { email, name, role } = req.body;
+
+  if (role === 'owner') {
+    res.apiError(HTTP_STATUS.BAD_REQUEST, 'Role not allowed');
+    return;
+  }
+
+  try {
+    const invitation = await Invitation.createInvitation(req.body, req.household._id.toString(), req.user.id);
+    const response: InvitationResponse = {
+      id: invitation._id.toString(),
+      code: invitation.code,
+      email: invitation.email,
+      name: invitation.name,
+      role: invitation.role,
+      status: invitation.status,
+      expiresAt: invitation.expiresAt
+    };
+  
+    console.log('Sending invitation to: ', name, ' ', email);
+    res.apiSuccess({
+      data: response
+    });
+  } catch (e) {
+    console.error(e);
+    res.sendStatus(999);
+  }
 };
