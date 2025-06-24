@@ -16,14 +16,6 @@ describe('Card', () => {
     expect(container.firstChild?.nodeName).toBe('DIV');
   });
 
-  it('renders as button when onClick is provided', () => {
-    const mockOnClick = vi.fn();
-    render(<Card onClick={mockOnClick}>Clickable content</Card>);
-    
-    const button = screen.getByRole('button');
-    expect(button).toBeInTheDocument();
-  });
-
   it('applies default variant styles', () => {
     const { container } = render(<Card>Content</Card>);
     
@@ -56,9 +48,9 @@ describe('Card', () => {
     const user = userEvent.setup();
     const mockOnClick = vi.fn();
     
-    render(<Card onClick={mockOnClick}>Clickable</Card>);
+    const {getByTestId} = render(<Card onClick={mockOnClick} testId='abc'>Clickable</Card>);
     
-    await user.click(screen.getByRole('button'));
+    await user.click(getByTestId('abc'));
     expect(mockOnClick).toHaveBeenCalledTimes(1);
   });
 

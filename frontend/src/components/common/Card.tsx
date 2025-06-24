@@ -7,6 +7,7 @@ export interface CardProps {
   className?: string;
   onClick?: () => void;
   clickable?: boolean;
+  testId?: string;
 }
 
 const variantStyles = {
@@ -26,7 +27,8 @@ export const Card = ({
   padding = 'md',
   className = '',
   onClick,
-  clickable = false
+  clickable = false,
+  testId='card',
 }: CardProps) => {
   const baseStyles = 'rounded-xl border';
   const interactiveStyles = (onClick || clickable) 
@@ -45,6 +47,7 @@ export const Card = ({
     <div 
       className={combinedStyles}
       onClick={onClick}
+      data-testid={testId}
     >
       {children}
     </div>
