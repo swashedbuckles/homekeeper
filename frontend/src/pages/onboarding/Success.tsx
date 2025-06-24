@@ -2,9 +2,11 @@ import { Check, Plus, FileText, Clock } from 'lucide-react';
 import { useNavigate } from 'react-router';
 
 import { Button } from '../../components/common/Button';
+import { useHousehold } from '../../hooks/useHousehold';
 
 export const OnboardingSuccess = () => {
   const navigate = useNavigate();
+  const hContext = useHousehold();
   
   return (
     <div id="success" className="screen">
@@ -13,7 +15,7 @@ export const OnboardingSuccess = () => {
           <div className="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
             <Check className="text-green-800" size="48" />
           </div>
-          <h1 className="text-2xl font-bold text-text-primary mb-2">Welcome to The Smith Family Home!</h1>
+          <h1 className="text-2xl font-bold text-text-primary mb-2">Welcome to The {hContext.activeHousehold?.name} Home!</h1>
           <p className="text-text-secondary">You're all set up and ready to start organizing your household maintenance.</p>
         </div>
 

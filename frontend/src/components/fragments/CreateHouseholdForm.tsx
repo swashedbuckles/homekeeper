@@ -1,19 +1,23 @@
 import { householdSchema } from '@homekeeper/shared';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router';
 
-import { apiRequest } from '../../lib/apiClient';
+import { useHousehold } from '../../hooks/useHousehold.ts';
+import { createHousehold } from '../../lib/api/household.ts';
 import { UI as logger } from '../../lib/logger.ts';
 import { ApiError } from '../../lib/types/apiError.ts';
 import { Button } from '../common/Button';
 import { TextArea } from '../form/TextArea.tsx';
 import { TextInput } from '../form/TextInput';
 
-import type { HouseholdDescription, SerializedHousehold } from '@homekeeper/shared';
+import type { HouseholdDescription } from '@homekeeper/shared';
 
 export const CreateHouseholdForm = () => {
+  const queryClient = useQueryClient();
+  const hContext = useHousehold();
   const [serverError, setServerError] = useState<string | null>(null);
 
   const navigate = useNavigate();
@@ -23,11 +27,12 @@ export const CreateHouseholdForm = () => {
 
   const onSubmit = async (formData: HouseholdDescription) => {
     try {
-      const response = await apiRequest<SerializedHousehold>('/households', {
-        method: 'POST',
-        body: JSON.stringify(formData)
-      });
+      const response = await createHousehold(formData.name, formData.description);
       logger.log('Result!', response);
+      if (response.data) {
+        queryClient.setQueryData(['household', response.data.id], response.data);
+        hContext.switchHousehold(response.data.id);
+      }
 
     } catch (error) {
       logger.error(error);

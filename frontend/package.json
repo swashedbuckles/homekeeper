@@ -19,6 +19,7 @@
     "@homekeeper/shared": "*",
     "@hookform/resolvers": "^5.1.1",
     "@tailwindcss/vite": "^4.1.8",
+    "@tanstack/react-query": "^5.80.10",
     "loglevel": "^1.9.2",
     "loglevel-plugin-prefix": "^0.8.4",
     "lucide-react": "^0.518.0",

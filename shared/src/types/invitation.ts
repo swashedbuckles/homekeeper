@@ -1,5 +1,5 @@
+import { HouseholdRoles } from '../constants/roles';
 import { InvitationStatus } from '../constants/status';
-import { HouseholdRoles } from './user';
 
 export interface RedeemInvitationRequest {
   code: string;
@@ -10,7 +10,6 @@ export interface RedeemResponse {
   householdName: string;
   role: HouseholdRoles;
 }
-
 
 export interface CreateInvitationRequest {
   email: string;

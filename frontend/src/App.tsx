@@ -1,3 +1,4 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter, Route, Routes } from 'react-router';
 
 import { Root } from './components/Root';
@@ -15,31 +16,51 @@ import { InviteOthers } from './pages/onboarding/Invite';
 import { JoinHousehold } from './pages/onboarding/Join';
 import { OnboardingSuccess } from './pages/onboarding/Success';
 
+/** @todo setup constants file for front-end */
+const FIVE_MINUTES = 5 * 60 * 1000;
+const QUERY_RETRIES = 1;
+
 export function App() {
   const initialAuthState = {
     authStatus: AuthStatus.CHECKING,
     user: null,
   };
 
+  const queryClient = new QueryClient({
+    defaultOptions: { /** @todo feels like this config should be elsewhere */
+      queries: {
+        staleTime: FIVE_MINUTES,
+        retry: QUERY_RETRIES,
+        refetchOnWindowFocus: false,
+      },
+      mutations: {
+        retry: QUERY_RETRIES,
+      },
+    },
+  });
+
+
   return (
-    <AuthProvider initialState={initialAuthState}>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Root />}>
-            <Route index element={<Home />} />
-            <Route path="login" element={<Login />} />
-            <Route path="register" element={<Register />} />
-          </Route>
-          <Route path="/onboarding">
-            <Route index element={<OnboardingHome />}/>
-            <Route path="create" element={<CreateHousehold />}/>
-            <Route path="join" element={<JoinHousehold />}/>
-            <Route path="invite" element={<InviteOthers />}/>
-            <Route path="success" element={<OnboardingSuccess />} />
-          </Route>
-          <Route path="/dashboard" element={<Dashboard />}/>
-        </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider initialState={initialAuthState}>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Root />}>
+              <Route index element={<Home />} />
+              <Route path="login" element={<Login />} />
+              <Route path="register" element={<Register />} />
+            </Route>
+            <Route path="/onboarding">
+              <Route index element={<OnboardingHome />} />
+              <Route path="create" element={<CreateHousehold />} />
+              <Route path="join" element={<JoinHousehold />} />
+              <Route path="invite" element={<InviteOthers />} />
+              <Route path="success" element={<OnboardingSuccess />} />
+            </Route>
+            <Route path="/dashboard" element={<Dashboard />} />
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
+    </QueryClientProvider>
   );
 }

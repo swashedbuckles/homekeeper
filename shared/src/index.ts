@@ -6,5 +6,5 @@ export type * from './types/invitation';
 export {registerRequestSchema, loginSchema} from './schemas/auth';
 export {invitationCodeSchema} from './schemas/invitation';
 export {householdSchema, inviteSchema} from './schemas/household';
-export {HOUSEHOLD_ROLES} from './constants/roles';
+export {HOUSEHOLD_ROLES, HOUSEHOLD_ROLE, HouseholdRoles} from './constants/roles';
 export {INVITATION_STATUSES, INVITATION_STATUS, type InvitationStatus} from './constants/status';
