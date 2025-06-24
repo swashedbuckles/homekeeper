@@ -75,7 +75,7 @@ export const BackgroundCircles = () => {
       {circles.map((circle) => (
         <div
           key={circle.id}
-          className={`absolute ${circle.size} rounded-full bg-${circle.color} opacity-${circle.opacity} pointer-events-none -z-10`}
+          className={`absolute ${circle.size} rounded-full bg-${circle.color} opacity-5 pointer-events-none -z-10`}
           style={circle.position}
         />
       ))}

@@ -11,7 +11,7 @@ import { PageTitle } from '../../components/common/Title';
 import { TextInput } from '../../components/form/TextInput';
 import { SectionTitle } from '../../components/variations/SectionTitle';
 import { useHousehold } from '../../hooks/useHousehold';
-import { createInvitation } from '../../lib/api/invitations';
+import { cancelInvitation, createInvitation } from '../../lib/api/invitations';
 
 const handleCopy = async (code: string) => {
   try {
@@ -37,10 +37,32 @@ export const InviteOthers = () => {
   const emailRef = useRef<HTMLInputElement>(null);
   const { activeHouseholdId } = useHousehold();
 
+  const cancelInviteMutation = useMutation({
+    mutationFn: async (invitationId: string) => {
+      if (activeHouseholdId) {
+        const { data } = await cancelInvitation(activeHouseholdId, invitationId);
+        return data ? data : Promise.reject('Missing invitation data');
+      }
+
+      return Promise.reject('No active household');
+    }, 
+
+    onSuccess: (data) => {
+      if(data.id) {
+        setInvitations(invitations.filter(invite => invite.id !== data.id));
+      }
+    },
+
+    onError: (error) => {
+      console.error('Failed to cancel invitation', error);
+    }
+  });
+
   const inviteMutation = useMutation({
     mutationFn: async (email: string) => {
       if (activeHouseholdId) {
-        const { data } = await createInvitation(activeHouseholdId, { email, role: HOUSEHOLD_ROLE.GUEST });
+        const payload = { email, role: HOUSEHOLD_ROLE.GUEST };
+        const { data } = await createInvitation(activeHouseholdId, payload);
         return data ? data : Promise.reject('Missing invitation data');
       }
 
@@ -93,7 +115,7 @@ export const InviteOthers = () => {
         actions={
           <div className="flex space-x-3">
             <button onClick={() => handleCopy(invitation.code)} className="text-primary hover:text-text-primary text-sm font-medium">Copy</button>
-            <button className="text-red-600 hover:text-red-800 text-sm font-medium">Delete</button>
+            <button onClick={() => cancelInviteMutation.mutate(invitation.id)} className="text-red-600 hover:text-red-800 text-sm font-medium">Delete</button>
           </div>
         }
       />

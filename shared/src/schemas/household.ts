@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { HOUSEHOLD_ROLES } from '../constants/roles';
+import { HOUSEHOLD_ROLES } from '../constants/roles.js';
 
 export const inviteSchema = z.object({
   name: z.string().min(1, 'Name is required'),

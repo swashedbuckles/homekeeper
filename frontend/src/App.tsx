@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes } from 'react-router';
 
 import { Root } from './components/Root';
 import { AuthProvider } from './context/AuthProvider';
+import { HouseholdProvider } from './context/HouseholdProvider';
 import { AuthStatus } from './lib/types/authStatus';
 
 import { Login } from './pages/auth/Login';
@@ -43,23 +44,25 @@ export function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider initialState={initialAuthState}>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Root />}>
-              <Route index element={<Home />} />
-              <Route path="login" element={<Login />} />
-              <Route path="register" element={<Register />} />
-            </Route>
-            <Route path="/onboarding">
-              <Route index element={<OnboardingHome />} />
-              <Route path="create" element={<CreateHousehold />} />
-              <Route path="join" element={<JoinHousehold />} />
-              <Route path="invite" element={<InviteOthers />} />
-              <Route path="success" element={<OnboardingSuccess />} />
-            </Route>
-            <Route path="/dashboard" element={<Dashboard />} />
-          </Routes>
-        </BrowserRouter>
+        <HouseholdProvider>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Root />}>
+                <Route index element={<Home />} />
+                <Route path="login" element={<Login />} />
+                <Route path="register" element={<Register />} />
+              </Route>
+              <Route path="/onboarding">
+                <Route index element={<OnboardingHome />} />
+                <Route path="create" element={<CreateHousehold />} />
+                <Route path="join" element={<JoinHousehold />} />
+                <Route path="invite" element={<InviteOthers />} />
+                <Route path="success" element={<OnboardingSuccess />} />
+              </Route>
+              <Route path="/dashboard" element={<Dashboard />} />
+            </Routes>
+          </BrowserRouter>
+        </HouseholdProvider>
       </AuthProvider>
     </QueryClientProvider>
   );

@@ -123,7 +123,7 @@ router.get('/:id/member/:userId',
  * Send an invitation to a member
  */
 router.post('/:id/members/invite',
-  validateBody('name').isString(),
+  validateBody('name').isString().optional(),
   validateBody('email').isString().isEmail(),
   validateBody('role').isString().matches(/owner|admin|member|guest/),
   handleValidation,

@@ -1,4 +1,4 @@
-import { HouseholdRoles } from '../constants/roles';
+import type { HouseholdRoles } from '../constants/roles';
 
 export interface SerializedHousehold {
   id: string;

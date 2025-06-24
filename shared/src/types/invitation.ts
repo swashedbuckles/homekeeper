@@ -1,5 +1,5 @@
-import { HouseholdRoles } from '../constants/roles';
-import { InvitationStatus } from '../constants/status';
+import type { HouseholdRoles } from '../constants/roles';
+import type { InvitationStatus } from '../constants/status';
 
 export interface RedeemInvitationRequest {
   code: string;

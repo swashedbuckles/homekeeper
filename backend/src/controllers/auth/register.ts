@@ -1,4 +1,4 @@
-import { RegisterRequest } from '@homekeeper/shared';
+import { type RegisterRequest } from '@homekeeper/shared';
 
 import { jwtCookie, csrfCookie } from '../../config/cookies';
 import { 
