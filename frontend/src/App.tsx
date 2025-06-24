@@ -9,8 +9,8 @@ import { AuthStatus } from './lib/types/authStatus';
 import { Login } from './pages/auth/Login';
 import { Register } from './pages/auth/Register';
 import { Dashboard } from './pages/Dashboard';
-import { Home } from './pages/Home';
 
+import { LandingPage } from './pages/Landing';
 import { CreateHousehold } from './pages/onboarding/Create';
 import { OnboardingHome } from './pages/onboarding/Home';
 import { InviteOthers } from './pages/onboarding/Invite';
@@ -48,7 +48,7 @@ export function App() {
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<Root />}>
-                <Route index element={<Home />} />
+                <Route index element={<LandingPage />} />
                 <Route path="login" element={<Login />} />
                 <Route path="register" element={<Register />} />
               </Route>
