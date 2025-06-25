@@ -1,0 +1,219 @@
+/* styles/brutal-utilities.css */
+@import 'tailwindcss';
+
+/* === BASE LAYER - Global styles === */
+@layer base {
+  :root {
+    font-family: var(--font-family-mono);
+  }
+  
+  body {
+    font-family: var(--font-family-mono);
+    color: var(--color-text-primary);
+    background-color: var(--color-background);
+  }
+  
+  /* Brutal text defaults */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-family-mono);
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+  
+  button {
+    font-family: var(--font-family-mono);
+  }
+  
+  input, textarea, select {
+    font-family: var(--font-family-mono);
+  }
+}
+
+/* === UTILITIES LAYER - Custom utilities === */
+@layer utilities {
+  /* Shadow utilities */
+  .brutal-shadow-primary {
+    box-shadow: var(--shadow-brutal-lg) var(--shadow-primary);
+  }
+  
+  .brutal-shadow-secondary {
+    box-shadow: var(--shadow-brutal-lg) var(--shadow-secondary);
+  }
+  
+  .brutal-shadow-accent {
+    box-shadow: var(--shadow-brutal-lg) var(--shadow-accent);
+  }
+  
+  .brutal-shadow-dark {
+    box-shadow: var(--shadow-brutal-lg) var(--shadow-dark);
+  }
+  
+  .brutal-shadow-error {
+    box-shadow: var(--shadow-brutal-lg) var(--shadow-error);
+  }
+  
+  .brutal-shadow-double {
+    box-shadow: var(--shadow-brutal-double);
+  }
+  
+  .brutal-shadow-triple {
+    box-shadow: var(--shadow-brutal-triple);
+  }
+  
+  .brutal-shadow-mega {
+    box-shadow: var(--shadow-brutal-mega);
+  }
+  
+  /* Text shadow utilities */
+  .brutal-text-shadow {
+    text-shadow: var(--text-shadow-brutal);
+  }
+  
+  .brutal-text-shadow-mega {
+    text-shadow: var(--text-shadow-brutal-mega);
+  }
+  
+  /* Rotation utilities */
+  .brutal-rotate-left {
+    transform: var(--transform-brutal-rotate-left);
+  }
+  
+  .brutal-rotate-right {
+    transform: var(--transform-brutal-rotate-right);
+  }
+  
+  .brutal-rotate-slight-left {
+    transform: var(--transform-brutal-rotate-slight-left);
+  }
+  
+  .brutal-rotate-slight-right {
+    transform: var(--transform-brutal-rotate-slight-right);
+  }
+  
+  .brutal-rotate-tiny-left {
+    transform: var(--transform-brutal-rotate-tiny-left);
+  }
+  
+  .brutal-rotate-tiny-right {
+    transform: var(--transform-brutal-rotate-tiny-right);
+  }
+  
+  /* Transition utilities */
+  .brutal-transition {
+    transition: var(--transition-brutal);
+  }
+  
+  .brutal-transition-slow {
+    transition: var(--transition-brutal-slow);
+  }
+  
+  /* Hover effect utilities - ALL in @layer utilities */
+  .brutal-hover-lift {
+    transition: var(--transition-brutal);
+  }
+  
+  .brutal-hover-lift:hover {
+    transform: translate(-3px, -3px);
+    box-shadow: 
+      calc(var(--spacing-brutal-offset-lg) + 3px) calc(var(--spacing-brutal-offset-lg) + 3px) 0 currentColor,
+      calc(var(--spacing-brutal-offset-xl) + 3px) calc(var(--spacing-brutal-offset-xl) + 3px) 0 var(--shadow-dark);
+  }
+  
+  .brutal-hover-press {
+    transition: var(--transition-brutal);
+  }
+  
+  .brutal-hover-press:hover {
+    transform: translate(4px, 4px);
+    box-shadow: none;
+  }
+  
+  .brutal-hover-press-small {
+    transition: var(--transition-brutal);
+  }
+  
+  .brutal-hover-press-small:hover {
+    transform: translate(3px, 3px);
+    box-shadow: none;
+  }
+  
+  /* Border utilities */
+  .border-brutal-sm {
+    border-width: var(--border-brutal-sm);
+  }
+  
+  .border-brutal-md {
+    border-width: var(--border-brutal-md);
+  }
+  
+  .border-brutal-lg {
+    border-width: var(--border-brutal-lg);
+  }
+  
+  .border-brutal-xl {
+    border-width: var(--border-brutal-xl);
+  }
+  
+  /* Special border combinations */
+  .border-l-brutal-xl {
+    border-left-width: var(--border-brutal-xl);
+  }
+  
+  /* Typography utilities */
+  .text-brutal-header {
+    font-family: var(--font-family-mono);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  
+  .text-brutal-button {
+    font-family: var(--font-family-mono);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  
+  .text-brutal-small {
+    font-family: var(--font-family-mono);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+}
+
+/* === COMPONENTS LAYER - Only complex, reusable patterns === */
+@layer components {
+  /* Button base that can be extended with utilities */
+  .btn-brutal {
+    @apply font-mono font-black uppercase tracking-wider brutal-transition;
+    @apply border-brutal-lg border-text-primary;
+    padding: 1.5rem 3rem;
+    font-size: 1.25rem;
+    letter-spacing: 0.1em;
+    box-shadow: var(--shadow-brutal-lg) var(--shadow-dark);
+  }
+  
+  /* Input base */
+  .input-brutal {
+    @apply font-mono font-bold uppercase;
+    @apply border-brutal-md border-text-primary bg-white;
+    @apply brutal-transition;
+    padding: 1rem 1.5rem;
+  }
+  
+  .input-brutal:focus {
+    @apply outline-none;
+    box-shadow: var(--shadow-brutal-md) var(--shadow-primary);
+    transform: translate(-3px, -3px);
+  }
+  
+  .input-brutal::placeholder {
+    @apply text-text-secondary uppercase;
+  }
+  
+  /* Card base */
+  .card-brutal {
+    @apply bg-white border-brutal-lg border-text-primary p-8;
+  }
+}
