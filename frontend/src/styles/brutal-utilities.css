@@ -172,9 +172,10 @@
 
   &:focus {
     outline: none;
-    box-shadow: var(--shadow-brutal-md) var(--shadow-primary);
-    transform: translate(-3px, -3px);
+    border-color: var(--color-primary); /* Orange border */
+    transform: translate(-3px, -3px);   /* Keep the transform */
   }
+  
   &::placeholder {
     color: var(--color-text-secondary);
     text-transform: uppercase;
