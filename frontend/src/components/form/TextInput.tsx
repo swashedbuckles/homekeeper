@@ -104,10 +104,10 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>((props, re
   ].filter(Boolean).join(' ');
 
   return (
-    <div className={props.grouped ? '' : 'w-full'}>
+    <div className={props.grouped ? 'mb-4' : 'w-full mb-4'}>
       <label
         htmlFor={inputId}
-        className="block font-mono font-black text-text-primary uppercase mb-4 text-lg tracking-wide"
+        className="block font-mono font-black text-text-primary uppercase mb-2 text-lg tracking-wide"
       >
         {props.label}
         {props.register?.required && (
@@ -126,7 +126,7 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>((props, re
       />
 
       {hasError && (
-        <div className="mt-3 p-3 bg-error border-brutal-sm border-text-primary text-white">
+        <div className="mt-1 mb-2 p-3 bg-error border-brutal-sm border-text-primary text-white">
           <div className="font-mono font-bold uppercase text-sm">
             ⚠ {props.error}
           </div>
@@ -134,7 +134,7 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>((props, re
       )}
 
       {hasFeedback && (
-        <div className="mt-3 p-3 bg-accent border-brutal-sm border-text-primary text-white">
+        <div className="mt-1 mb-2 p-3 bg-accent border-brutal-sm border-text-primary text-white">
           <div className="font-mono font-bold uppercase text-sm">
             {props.validationFeedback}
           </div>

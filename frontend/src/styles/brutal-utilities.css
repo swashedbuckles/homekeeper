@@ -39,6 +39,14 @@
   text-shadow: var(--text-shadow-brutal);
 }
 
+@utility brutal-text-shadow-small {
+  text-shadow: 2px 2px 0 var(--color-primary);
+}
+
+@utility brutal-text-shadow-tiny {
+  text-shadow: 1px 1px 0 var(--color-primary);
+}
+
 @utility brutal-text-shadow-mega {
   text-shadow: var(--text-shadow-brutal-mega);
 }

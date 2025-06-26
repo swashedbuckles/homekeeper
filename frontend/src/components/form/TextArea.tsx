@@ -106,7 +106,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>((props, r
     <div className={props.grouped ? '' : 'w-full'}>
       <label
         htmlFor={inputId}
-        className="block font-mono font-black text-text-primary uppercase mb-4 text-lg tracking-wide"
+        className="block font-mono font-black text-text-primary uppercase mb-2 text-lg tracking-wide"
       >
         {props.label}
         {props.register?.required && (

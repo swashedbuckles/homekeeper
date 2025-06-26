@@ -12,7 +12,7 @@ export function Root() {
     <div className="grow relative">
       {/* Background layer */}
       <div className="absolute inset-0 overflow-hidden">
-        <BackgroundLines />
+        <BackgroundSquares />
       </div>
       
       {/* Content layer */}

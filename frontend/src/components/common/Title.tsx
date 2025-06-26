@@ -66,8 +66,8 @@ const variantStyles = {
 
 const textShadowStyles = {
   page: 'brutal-text-shadow-mega',
-  section: 'brutal-text-shadow',
-  subsection: ''
+  section: 'brutal-text-shadow-small',
+  subsection: 'brutal-text-shadow-tiny'
 };
 
 const rotationStyles = {

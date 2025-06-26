@@ -163,10 +163,10 @@ export function KitchenSink() {
                 label="Error State" 
                 type="text" 
                 error="This field is required"
-                className="mb-6"
+                className=""
               />
 
-              <SubSectionTitle className="mb-6">Code Input</SubSectionTitle>
+              <SubSectionTitle className="mb-4">Code Input</SubSectionTitle>
               <CodeInput 
                 label="Invitation Code"
                 placeholder="ABC123"
@@ -194,10 +194,10 @@ export function KitchenSink() {
                 size="large"
                 placeholder="Larger text area example"
                 rows={6}
-                className="mb-6"
+                className="mb-4"
               />
 
-              <SubSectionTitle className="mb-6">Password Strength</SubSectionTitle>
+              <SubSectionTitle className="mb-4">Password Strength</SubSectionTitle>
               <TextInput 
                 label="Test Password" 
                 type="password" 

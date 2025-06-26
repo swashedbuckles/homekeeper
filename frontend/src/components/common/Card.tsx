@@ -36,7 +36,7 @@ export const Card = ({
   children,
   variant = 'default',
   padding = 'md',
-  shadow = 'triple',
+  shadow = 'dark',
   rotation = 'none',
   hover = false,
   onClick,
