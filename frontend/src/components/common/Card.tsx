@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 /**
  * Base Card Component.
  * 
- * Provides consistent brutal theming with thick borders, bold shadows, and optional interactions.
+ * Provides consistent theming with thick borders, bold shadows, and optional interactions.
  * All specialized card components should build on top of this base.
  * 
  * @example

@@ -1,17 +1,41 @@
 import { useState, useEffect } from 'react';
 
+/**
+ * PasswordStrengthIndicator Component.
+ * 
+ * Visual indicator showing password strength with thick borders and bold colors.
+ * Uses system colors for consistent theming.
+ * 
+ * @example
+ * ```tsx
+ * <PasswordStrengthIndicator password={passwordValue} />
+ * ```
+ */
 interface PasswordStrengthIndicatorProps {
   password: string;
+  className?: string;
+  testId?: string;
 }
 
 const getStrengthColor = (strength: number) => {
-  if (strength === 0) return 'bg-gray-300';
-  if (strength <= 2) return 'bg-red-500';
-  if (strength <= 4) return 'bg-yellow-500';
-  return 'bg-green-500';
+  if (strength === 0) return 'bg-ui-border';
+  if (strength <= 2) return 'bg-error';
+  if (strength <= 4) return 'bg-warning';
+  return 'bg-success';
 };
 
-export const PasswordStrengthIndicator = ({ password }: PasswordStrengthIndicatorProps) => {
+const getStrengthText = (strength: number) => {
+  if (strength === 0) return '';
+  if (strength <= 2) return 'Weak';
+  if (strength <= 4) return 'Good';
+  return 'Strong';
+};
+
+export const PasswordStrengthIndicator = ({ 
+  password, 
+  className = '',
+  testId = 'password-strength'
+}: PasswordStrengthIndicatorProps) => {
   const [strength, setStrength] = useState(0);
   
   useEffect(() => {
@@ -28,18 +52,26 @@ export const PasswordStrengthIndicator = ({ password }: PasswordStrengthIndicato
   }, [password]);
 
   const color = getStrengthColor(strength);
+  const strengthText = getStrengthText(strength);
   const thresholds = [2, 4, 5];
+  
   return (
-    <div className="flex gap-1 mt-2">
-      {thresholds.map((threshold, index) => (
-        <div
-          key={index}
-          className={`h-2 flex-1 rounded-sm transition-all duration-300 ${
-            strength >= threshold ? color : 'bg-gray-200'
-          }`}
-        />
-      ))}
-      {/* <span>{color} {strength}</span> */}
+    <div className={`mt-3 ${className}`} data-testid={testId}>
+      <div className="flex gap-2">
+        {thresholds.map((threshold, index) => (
+          <div
+            key={index}
+            className={`h-3 flex-1 border-brutal-sm border-text-primary brutal-transition ${
+              strength >= threshold ? color : 'bg-background'
+            }`}
+          />
+        ))}
+      </div>
+      {strengthText && (
+        <div className="mt-2 font-mono font-bold uppercase text-sm tracking-wide text-text-secondary">
+          Strength: <span className={`${color.replace('bg-', 'text-')}`}>{strengthText}</span>
+        </div>
+      )}
     </div>
   );
 };

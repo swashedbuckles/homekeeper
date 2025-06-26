@@ -48,7 +48,7 @@ const variantIcons = {
 
 
 /**
- * Alert component for displaying important messages with brutal neo-brutalist styling.
+ * Alert component for displaying important messages with bold styling.
  * 
  * Provides prominent user feedback with colored backgrounds, bold typography, and
  * rotated icon containers. Supports different variants for various message types

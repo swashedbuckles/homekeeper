@@ -67,7 +67,7 @@ const variantStyles = {
 /**
  * Text Input with support for errors, feedback (e.g. password indicator), and more.
  * 
- * @example Basic input - gets brutal styling automatically
+ * @example Basic input - gets bold styling automatically
  *  ```
  * <TextInput label="Email Address"type="email"placeholder="Enter your email"/>
  * ```

@@ -22,12 +22,12 @@ interface HeaderButtonsProps {
 function HeaderButtons({ isMobile, setMenuState }: HeaderButtonsProps) {
   const {isAuthenticated, logout} = useAuth();
 
-  const buttonBaseClasses = 'text-center rounded-2xl border hover:text-white transition-colors';
-  const buttonPrimary = 'border-primary text-primary hover:bg-primary';
-  const buttonSecondary = 'border-secondary text-secondary hover:bg-secondary';
+  const buttonBaseClasses = 'text-center font-mono font-bold uppercase tracking-wide border-brutal-md brutal-transition focus:outline-none';
+  const buttonPrimary = 'border-primary text-primary hover:bg-primary hover:text-white brutal-hover-press';
+  const buttonSecondary = 'border-secondary text-secondary hover:bg-secondary hover:text-white brutal-hover-press';
 
-  const mobile = 'block px-3 py-2 w-full';
-  const desktop = 'px-3 py-1.5';
+  const mobile = 'block px-4 py-3 w-full text-sm';
+  const desktop = 'px-4 py-2 text-sm';
 
   const loginLogout = [buttonBaseClasses, buttonPrimary, isMobile ? mobile : desktop].join(' ');
   const register = [buttonBaseClasses, buttonSecondary, isMobile ? mobile : desktop].join(' ');
