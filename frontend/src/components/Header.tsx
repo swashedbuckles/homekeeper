@@ -1,13 +1,16 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router';
-import LogoSvg from '../assets/logo.svg';
+// import LogoSvg from '../assets/logo.svg';
 import { useAuth } from '../hooks/useAuth';
+import { Logo } from './common/Logo';
 
 function HeaderLogo() {
   return (
     <div className="flex items-center gap-2">
-      <img src={LogoSvg} className="w-12 h-12 sm:w-20 sm:h-20" />
-      <Link to="/" className="text-primary text-2xl sm:text-4xl font-bold">
+      <div className="w-16 h-16 bg-primary border-2 border-text-primary brutal-rotate-left brutal-shadow-primary flex items-center justify-center">
+        <Logo size={64} className="text-white" />
+      </div>
+      <Link to="/" className="text-primary ml-1 text-2xl sm:text-4xl font-bold">
         HomeKeeper
       </Link>
     </div>
