@@ -606,4 +606,631 @@ export const Settings = () => {
 
 ---
 
+## Appendix: Tailwind Spacing & Layout Consistency Guide
+
+### Understanding Tailwind's Spacing Scale
+
+Tailwind uses a **consistent spacing scale** based on `0.25rem` (4px) increments. This isn't arbitrary - it creates visual harmony and makes layouts predictable.
+
+#### The Spacing Scale
+```css
+/* Tailwind spacing values */
+1 = 0.25rem = 4px
+2 = 0.5rem  = 8px
+3 = 0.75rem = 12px
+4 = 1rem    = 16px
+5 = 1.25rem = 20px
+6 = 1.5rem  = 24px
+8 = 2rem    = 32px
+10 = 2.5rem = 40px
+12 = 3rem   = 48px
+16 = 4rem   = 64px
+20 = 5rem   = 80px
+```
+
+### HomeKeeper Spacing Standards
+
+#### Component Internal Spacing (Padding)
+
+**Small Components** (buttons, badges, pills):
+```tsx
+className="px-4 py-2"     // 16px horizontal, 8px vertical
+className="px-6 py-3"     // 24px horizontal, 12px vertical  
+```
+
+**Medium Components** (cards, inputs):
+```tsx
+className="p-4"           // 16px all around
+className="p-6"           // 24px all around
+className="px-6 py-4"     // 24px horizontal, 16px vertical
+```
+
+**Large Components** (sections, major cards):
+```tsx
+className="p-8"           // 32px all around
+className="px-8 py-6"     // 32px horizontal, 24px vertical
+```
+
+#### Component External Spacing (Margins)
+
+**Between Related Elements**:
+```tsx
+className="mb-4"          // 16px bottom margin
+className="gap-4"         // 16px gap in flex/grid
+```
+
+**Between Component Groups**:
+```tsx
+className="mb-6"          // 24px bottom margin
+className="gap-6"         // 24px gap in flex/grid
+```
+
+**Between Major Sections**:
+```tsx
+className="mb-8"          // 32px bottom margin
+className="mb-12"         // 48px bottom margin
+className="gap-8"         // 32px gap in flex/grid
+```
+
+#### Page Layout Spacing
+
+**Container Padding** (consistent across all pages):
+```tsx
+className="px-5"          // 20px horizontal padding on mobile
+className="px-5 md:px-8"  // 20px mobile, 32px desktop
+```
+
+**Section Spacing** (use SectionContainer instead):
+```tsx
+// Use these in SectionContainer component:
+spacing="tight"    // py-8  (32px top/bottom)
+spacing="default"  // py-10 (40px top/bottom)  
+spacing="loose"    // py-16 (64px top/bottom)
+```
+
+### Common Layout Patterns
+
+#### Card Layouts
+```tsx
+// Standard card with consistent spacing
+<Card className="p-6">          {/* Internal padding */}
+  <h3 className="mb-4">Title</h3>  {/* Title to content */}
+  <p className="mb-6">Content</p>  {/* Content to actions */}
+  <div className="flex gap-4">     {/* Button spacing */}
+    <Button>Action</Button>
+    <Button>Cancel</Button>
+  </div>
+</Card>
+```
+
+#### Form Layouts
+```tsx
+// Consistent form field spacing
+<form className="space-y-6">        {/* 24px between fields */}
+  <TextInput label="Name" />
+  <TextInput label="Email" />
+  <div className="flex gap-4 pt-4">  {/* Button area spacing */}
+    <Button type="submit">Save</Button>
+    <Button variant="secondary">Cancel</Button>
+  </div>
+</form>
+```
+
+#### Grid Layouts
+```tsx
+// Consistent grid spacing
+<div className="grid grid-cols-1 md:grid-cols-3 gap-6">  {/* 24px gaps */}
+  <Card>...</Card>
+  <Card>...</Card>
+  <Card>...</Card>
+</div>
+
+// Large feature grids
+<div className="grid grid-cols-1 lg:grid-cols-2 gap-16"> {/* 64px gaps */}
+  <div>Large content block</div>
+  <div>Large content block</div>
+</div>
+```
+
+### Responsive Spacing Patterns
+
+#### Mobile-First Approach
+Always start with mobile spacing, then increase for larger screens:
+
+```tsx
+// Good: Mobile-first spacing
+className="mb-6 md:mb-8 lg:mb-12"    // 24px → 32px → 48px
+className="px-4 md:px-6 lg:px-8"     // 16px → 24px → 32px
+
+// Good: Container responsive padding
+className="px-5 md:px-8 lg:px-12"    // 20px → 32px → 48px
+```
+
+#### Responsive Grid Gaps
+```tsx
+// Smaller gaps on mobile, larger on desktop
+className="gap-4 md:gap-6 lg:gap-8"  // 16px → 24px → 32px
+className="gap-6 lg:gap-16"          // 24px → 64px (skip medium)
+```
+
+### When to Use Which Spacing
+
+#### Use `4` (16px) for:
+- ✅ Default padding inside components
+- ✅ Gaps between closely related elements
+- ✅ Default margins between similar components
+- ✅ Form field internal padding
+
+#### Use `6` (24px) for:
+- ✅ Padding in medium-sized cards
+- ✅ Gaps between component groups
+- ✅ Margins between different content types
+- ✅ Form field spacing (`space-y-6`)
+
+#### Use `8` (32px) for:
+- ✅ Large component padding
+- ✅ Major section spacing
+- ✅ Hero area padding
+- ✅ Grid gaps for card layouts
+
+#### Use `12` (48px) or `16` (64px) for:
+- ✅ Major section separation
+- ✅ Hero section spacing
+- ✅ Page-level margins
+- ✅ Large feature grid gaps
+
+### HomeKeeper-Specific Guidelines
+
+#### Container System Usage
+Instead of manual spacing, use the container components:
+
+```tsx
+// ❌ Don't do manual spacing
+<div className="max-w-7xl mx-auto px-5 py-16">
+
+// ✅ Use SectionContainer
+<SectionContainer spacing="loose">
+  {/* Content automatically gets proper spacing */}
+</SectionContainer>
+```
+
+#### Consistent Element Spacing
+Follow the established patterns in existing components:
+
+```tsx
+// Button spacing (from Button component)
+className="px-6 py-3"        // Default buttons
+className="px-8 py-4"        // Large buttons  
+className="px-4 py-2"        // Small buttons
+
+// Card spacing (from Card component)
+padding="sm"   // p-4  (16px)
+padding="md"   // p-6  (24px)
+padding="lg"   // p-8  (32px)
+```
+
+#### Statistical Cards
+```tsx
+// StatCard positioning (from Landing page)
+className="absolute -top-16 -right-8"   // Overlap with large offset
+className="absolute -bottom-24 -left-16" // Overlap with large offset
+```
+
+### Common Mistakes to Avoid
+
+#### ❌ Don't Use Arbitrary Values
+```tsx
+// Bad: Inconsistent, arbitrary spacing
+className="mb-5 px-7 gap-9"
+className="p-[15px] m-[25px]"
+```
+
+#### ❌ Don't Mix Spacing Systems
+```tsx
+// Bad: Mixing different spacing scales
+className="mb-4 gap-6 p-5"  // Different scales
+```
+
+#### ❌ Don't Over-Complicate Responsive Spacing
+```tsx
+// Bad: Too many breakpoints
+className="mb-2 sm:mb-3 md:mb-4 lg:mb-5 xl:mb-6"
+
+// Good: Simplified responsive
+className="mb-4 lg:mb-8"
+```
+
+### Quick Reference
+
+#### Most Common Spacing Combinations
+```tsx
+// Standard component spacing
+"p-6"                    // Standard card padding
+"mb-6"                   // Standard bottom margin
+"gap-6"                  // Standard flex/grid gap
+"space-y-6"             // Standard vertical form spacing
+
+// Large section spacing  
+"p-8"                    // Large container padding
+"mb-12"                  // Large section separation
+"gap-8"                  // Large grid gaps
+
+// Page-level spacing
+"px-5"                   // Standard page padding
+"py-16"                  // Section vertical spacing
+"gap-16"                 // Hero/feature grid gaps
+```
+
+#### Brutal Design Spacing
+For HomeKeeper's brutal design, prefer **bold, obvious spacing** over subtle differences:
+
+```tsx
+// ✅ Good: Clear spacing differences
+className="mb-4"         // Small spacing
+className="mb-8"         // Medium spacing  
+className="mb-16"        // Large spacing
+
+// ❌ Avoid: Subtle differences that are hard to notice
+className="mb-5 md:mb-6 lg:mb-7"
+```
+
+---
+
+## Appendix: Component Style Overrides with className
+
+### Understanding the className Prop
+
+Most HomeKeeper components include a `className` prop that allows you to **extend or override** the component's default styling. This provides flexibility while maintaining the core design system.
+
+### How className Works
+
+#### CSS Class Precedence
+Tailwind applies classes in **source order**, so later classes can override earlier ones:
+
+```tsx
+// Component internal classes are applied first
+<Button className="bg-red-500">  // Your className can override defaults
+```
+
+#### Component Implementation Pattern
+```tsx
+// Typical component structure
+export const Button = ({ className = '', ...props }) => {
+  const baseStyles = ['font-mono', 'font-bold', 'px-6', 'py-3'];
+  const variantStyles = ['bg-primary', 'text-white'];
+  
+  return (
+    <button 
+      className={[...baseStyles, ...variantStyles, className].join(' ')}
+    >
+      {children}
+    </button>
+  );
+};
+```
+
+Your `className` is applied **last**, giving it highest precedence.
+
+### When to Use className Overrides
+
+#### ✅ Appropriate Use Cases
+
+**1. Layout and Positioning**
+```tsx
+// Position components in layouts
+<Card className="absolute top-4 right-4">
+<Button className="ml-auto">           // Push button to right
+<StatCard className="col-span-2">      // Span multiple grid columns
+```
+
+**2. Responsive Behavior** 
+```tsx
+// Add responsive visibility or sizing
+<Button className="hidden md:block">   // Hide on mobile
+<Card className="md:col-span-2">       // Different grid behavior
+<Title className="text-4xl lg:text-6xl"> // Override responsive sizing
+```
+
+**3. Context-Specific Spacing**
+```tsx
+// Adjust spacing for specific contexts
+<Button className="mb-8">              // Extra bottom margin
+<Card className="mt-0">                // Remove default top margin
+<TextInput className="w-full md:w-auto"> // Full width on mobile
+```
+
+**4. State-Based Styling**
+```tsx
+// Conditional styling based on application state
+<Card className={isSelected ? "ring-4 ring-primary" : ""}>
+<Button className={isLoading ? "opacity-50" : ""}>
+<StatCard className={isHighlighted ? "scale-105" : ""}>
+```
+
+**5. Animation and Transitions**
+```tsx
+// Add animations to components
+<Card className="transition-transform hover:scale-105">
+<Button className="animate-pulse">     // Loading state
+<Title className="transition-colors"> // Smooth color changes
+```
+
+#### ❌ Inappropriate Use Cases
+
+**1. Don't Override Core Design Tokens**
+```tsx
+// ❌ Bad: Changes core brutal design
+<Button className="rounded-lg">        // Removes sharp corners
+<Card className="border-thin">         // Uses thin borders
+<Title className="font-sans">          // Changes to sans-serif
+```
+
+**2. Don't Replicate Existing Variants**
+```tsx
+// ❌ Bad: Should use variant prop instead
+<Button className="bg-red-500 text-white"> // Use variant="danger"
+<Card className="bg-primary">              // Use variant="primary"  
+<Title className="text-2xl">               // Use variant="section"
+```
+
+**3. Don't Break Accessibility**
+```tsx
+// ❌ Bad: Reduces contrast
+<Button className="text-gray-300">     // Poor contrast
+<Card className="cursor-none">         // Breaks interactions
+```
+
+**4. Don't Use for Complex Layout Changes**
+```tsx
+// ❌ Bad: Complex layout should be a new component
+<Card className="flex items-center justify-between p-2 border-dashed">
+// ✅ Good: Create a SpecialCard component instead
+```
+
+### Common className Patterns
+
+#### Layout and Grid Positioning
+```tsx
+// Grid layout positioning
+<div className="grid grid-cols-4 gap-6">
+  <StatCard className="col-span-2" />      // Spans 2 columns
+  <StatCard />                             // Default 1 column
+  <StatCard />                             // Default 1 column
+</div>
+
+// Absolute positioning for overlays
+<div className="relative">
+  <Card>Main content</Card>
+  <StatCard className="absolute -top-4 -right-4" rotation="slight-right" />
+</div>
+```
+
+#### Responsive Visibility and Sizing
+```tsx
+// Progressive disclosure
+<Button className="hidden sm:block">Desktop Action</Button>
+<Button className="sm:hidden" size="small">Mobile Action</Button>
+
+// Responsive component sizing
+<Title className="text-4xl md:text-6xl lg:text-8xl">
+  Responsive Heading
+</Title>
+```
+
+#### Conditional State Classes
+```tsx
+// Selection states
+const CardWithSelection = ({ isSelected, children }) => (
+  <Card className={isSelected ? "ring-4 ring-primary scale-105" : ""}>
+    {children}
+  </Card>
+);
+
+// Loading states  
+const ButtonWithLoading = ({ isLoading, children, ...props }) => (
+  <Button 
+    className={isLoading ? "opacity-60 pointer-events-none" : ""} 
+    {...props}
+  >
+    {children}
+  </Button>
+);
+```
+
+#### Animation and Interaction Enhancements
+```tsx
+// Enhanced hover effects
+<Card className="transition-all duration-200 hover:shadow-2xl">
+  
+// Entrance animations
+<StatCard className="animate-fade-in delay-100">
+
+// Interactive transforms
+<Button className="active:scale-95 transition-transform">
+```
+
+### Best Practices for className Usage
+
+#### 1. Prefer Component Props Over className
+```tsx
+// ✅ Good: Use component props when available
+<Button variant="primary" size="large">
+<Card variant="dark" shadow="mega">
+
+// ❌ Avoid: Replicating variant functionality
+<Button className="bg-primary text-white px-8 py-4">
+<Card className="bg-text-primary text-white brutal-shadow-mega">
+```
+
+#### 2. Use Descriptive Class Combinations
+```tsx
+// ✅ Good: Clear, purposeful classes
+<Card className="sticky top-4">              // Sticky positioning
+<Button className="w-full md:w-auto">         // Responsive width
+<StatCard className="transform rotate-3">     // Specific rotation
+
+// ❌ Avoid: Random styling combinations
+<Card className="mt-3 mr-2 rotate-1 scale-98"> // Unclear purpose
+```
+
+#### 3. Consider Component Composition
+```tsx
+// If you're using complex className overrides frequently...
+
+// ❌ Repeated complex overrides
+<Card className="flex items-center gap-4 p-4 bg-white border-l-4 border-l-primary">
+<Card className="flex items-center gap-4 p-4 bg-white border-l-4 border-l-accent">
+
+// ✅ Create a specialized component
+export const StatusCard = ({ status, children, ...props }) => {
+  const statusStyles = {
+    active: 'border-l-primary',
+    completed: 'border-l-accent',
+    pending: 'border-l-secondary'
+  };
+  
+  return (
+    <Card 
+      className={`flex items-center gap-4 border-l-4 ${statusStyles[status]}`}
+      {...props}
+    >
+      {children}
+    </Card>
+  );
+};
+```
+
+#### 4. Document Complex Overrides
+```tsx
+// For complex className usage, add comments
+<StatCard 
+  className="absolute -top-8 -right-8 z-10" // Overlays main content
+  variant="primary" 
+  size="sm"
+/>
+
+<Card 
+  className="md:sticky md:top-8"  // Sticky sidebar on desktop only
+  variant="subtle"
+>
+  Sidebar content
+</Card>
+```
+
+### Common Scenarios and Solutions
+
+#### Scenario 1: Custom Spacing for Specific Layout
+```tsx
+// Context: Landing page hero section needs tighter spacing
+<Title 
+  variant="page" 
+  className="mb-4 lg:mb-6"  // Tighter spacing than default
+>
+  Hero Title
+</Title>
+```
+
+#### Scenario 2: Responsive Component Visibility
+```tsx
+// Context: Show different CTAs based on screen size
+<div className="flex gap-4">
+  <Button variant="primary" className="hidden md:block">
+    Desktop Action
+  </Button>
+  <Button variant="primary" size="small" className="md:hidden">
+    Mobile Action
+  </Button>
+</div>
+```
+
+#### Scenario 3: Dynamic State Styling
+```tsx
+// Context: Show validation state on form inputs
+const InputWithValidation = ({ isValid, error, ...props }) => (
+  <div>
+    <TextInput 
+      className={cn(
+        isValid === false && "border-error focus:ring-error",
+        isValid === true && "border-accent focus:ring-accent"
+      )}
+      {...props}
+    />
+    {error && <p className="text-error text-sm mt-2">{error}</p>}
+  </div>
+);
+```
+
+#### Scenario 4: Layout-Specific Positioning
+```tsx
+// Context: Statistical overlays on hero cards
+<div className="relative">
+  <Card variant="default" padding="lg">
+    Main feature content
+  </Card>
+  
+  {/* Positioned overlays using className */}
+  <StatCard 
+    className="absolute -top-6 -right-6" 
+    size="sm" 
+    variant="primary"
+    label="Active Users" 
+    value="2.4K" 
+  />
+  <StatCard 
+    className="absolute -bottom-6 -left-6" 
+    size="sm" 
+    variant="accent"
+    label="Success Rate" 
+    value="94%" 
+  />
+</div>
+```
+
+### Quick Reference
+
+#### Safe className Overrides
+```tsx
+// Layout and positioning
+"absolute top-4 right-4"
+"sticky top-8"
+"col-span-2"
+"row-span-3"
+
+// Spacing adjustments
+"mt-8"
+"mb-0" 
+"mx-auto"
+"space-y-8"
+
+// Responsive behavior
+"hidden md:block"
+"w-full md:w-auto"
+"text-sm lg:text-base"
+
+// State-based styling
+"opacity-50"
+"ring-4 ring-primary"
+"scale-105"
+
+// Animation and transitions
+"transition-all duration-200"
+"hover:scale-105"
+"animate-pulse"
+```
+
+#### Avoid These Overrides
+```tsx
+// Don't change core design tokens
+"rounded-lg"          // Breaks brutal aesthetic
+"border-thin"         // Inconsistent with thick borders
+"font-sans"           // Should stay monospace
+
+// Don't replicate variants
+"bg-primary"          // Use variant="primary"
+"text-white"          // Handled by variants
+"p-8"                 // Use padding="lg"
+```
+
+---
+
 This guide should be referenced when creating any new components or layouts to ensure consistency with the HomeKeeper neo-brutalist design system.
