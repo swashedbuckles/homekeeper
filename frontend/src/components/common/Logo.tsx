@@ -1,3 +1,5 @@
+import { Link } from 'react-router';
+
 export const Logo = ({ 
   size = 48, 
   className = 'text-text-primary' 
@@ -19,3 +21,30 @@ export const Logo = ({
     <line x1="64" y1="95" x2="82" y2="95" stroke="currentColor" strokeWidth="2"/>
   </svg>
 );
+
+export function HeaderLogo() {
+  return (
+    <div className="flex items-center gap-2">
+      <div className="w-16 h-16 bg-primary border-2 border-text-primary brutal-rotate-left brutal-shadow-primary flex items-center justify-center">
+        <Logo size={64} className="text-white" />
+      </div>
+      <Link to="/" className="text-primary ml-1 text-2xl sm:text-4xl font-bold">
+        HomeKeeper
+      </Link>
+    </div>
+  );
+}
+
+
+export function FooterLogo() {
+  return (
+    <div className="flex items-center gap-2">
+      <div className="w-16 h-16 bg-primary border-2 border-text-primary brutal-rotate-left brutal-shadow-primary flex items-center justify-center">
+        <Logo size={64} className="text-white" />
+      </div>
+      <Link to="/" className="text-white ml-1 text-2xl sm:text-4xl font-bold">
+        HomeKeeper
+      </Link>
+    </div>
+  );
+}

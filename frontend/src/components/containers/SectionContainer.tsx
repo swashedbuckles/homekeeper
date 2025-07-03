@@ -19,16 +19,17 @@ const SPACING_CLASSES = {
 export const SectionContainer = ({
   children,
   className = '',
-  spacing = 'default'
+  spacing = 'default',
+  hero = false,
 }: {
   children: ReactNode;
   className?: string;
   spacing?: ContainerSpacing
+  hero?: boolean;
 }) => {
 
-
   return (
-    <ContentContainer className={`${SPACING_CLASSES[spacing]} ${className}`}>
+    <ContentContainer className={`${SPACING_CLASSES[spacing]} ${className}`} maxWidth={hero ? 'none' : '7xl'}>
       {children}
     </ContentContainer>
   );

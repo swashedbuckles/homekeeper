@@ -33,6 +33,7 @@ export interface StatCardProps {
   subtitle?:  string;
   variant?:   'primary' | 'secondary' | 'accent' | 'dark';
   rotation?:  'left' | 'right' | 'slight-left' | 'slight-right';
+  size?:      'sm' | 'md' | 'lg';
   onClick?:   () => void;
   className?: string;
 }
@@ -42,7 +43,8 @@ export const StatCard = ({
   value,
   subtitle,
   variant = 'dark',
-  rotation = 'slight-left', 
+  rotation = 'slight-left',
+  size = 'lg',
   onClick,
   className = ''
 }: StatCardProps) => {
@@ -71,6 +73,12 @@ export const StatCard = ({
 
   const config = variantConfig[variant];
 
+  const sizeStyles = {
+    sm: 'text-4xl',
+    md: 'text-5xl', 
+    lg: 'text-7xl'
+  };
+
   return (
     <Card
       variant={config.cardVariant}
@@ -79,11 +87,12 @@ export const StatCard = ({
       hover={!!onClick}
       onClick={onClick}
       className={className}
+      padding={size}
     >
       <div className="text-white font-bold text-lg uppercase mb-4">
         {label}
       </div>
-      <div className={`text-7xl font-black ${config.valueColor} leading-none mb-3`}>
+      <div className={`${sizeStyles[size]} font-black ${config.valueColor} leading-none mb-3`}>
         {value}
       </div>
       {subtitle && (
