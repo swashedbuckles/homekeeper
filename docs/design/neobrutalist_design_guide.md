@@ -75,7 +75,6 @@ Apply consistent brutal shadows to elements:
 .brutal-shadow-accent     /* Green shadow, 8px offset */
 .brutal-shadow-dark       /* Dark shadow, 8px offset */
 .brutal-shadow-error      /* Red shadow, 8px offset */
-.brutal-shadow-double     /* Two-layer shadow effect */
 .brutal-shadow-triple     /* Three-layer shadow effect */
 .brutal-shadow-mega       /* Four-layer shadow effect */
 ```
@@ -84,8 +83,11 @@ Apply consistent brutal shadows to elements:
 For large headings and emphasis:
 
 ```css
-.brutal-text-shadow       /* Dual-layer text shadow */
+.brutal-text-shadow       /* Standard text shadow */
+.brutal-text-shadow-small /* Small text shadow */
+.brutal-text-shadow-tiny  /* Minimal text shadow */
 .brutal-text-shadow-mega  /* Four-layer text shadow */
+.brutal-text-shadow-white /* White text shadow for dark backgrounds */
 ```
 
 ### Rotation Utilities
@@ -128,6 +130,15 @@ Consistent animation timing:
 .brutal-transition-slow /* Slower 0.2s transitions */
 ```
 
+### Interactive Utilities
+Hover and interaction effects:
+
+```css
+.brutal-hover-press       /* Press-down effect on hover */
+.brutal-hover-press-small /* Smaller press effect */
+.brutal-hover-lift        /* Lift effect on hover */
+```
+
 ## Shadows and Borders
 
 ### Shadow Hierarchy
@@ -135,9 +146,8 @@ Use shadows to establish visual hierarchy and interaction states:
 
 1. **No Shadow** - Background elements, subtle content
 2. **Single Shadow** (`brutal-shadow-primary`) - Standard interactive elements
-3. **Double Shadow** (`brutal-shadow-double`) - Important content
-4. **Triple Shadow** (`brutal-shadow-triple`) - Major page sections
-5. **Mega Shadow** (`brutal-shadow-mega`) - Hero elements, critical UI
+3. **Triple Shadow** (`brutal-shadow-triple`) - Major page sections
+4. **Mega Shadow** (`brutal-shadow-mega`) - Hero elements, critical UI
 
 ### Border Guidelines
 
@@ -239,13 +249,95 @@ All components follow a consistent variant naming convention:
 - **`default`** - Standard sizing and borders
 - **`large`** - Expanded sizing, thicker borders
 
-### Component-Specific Variants
+### Current Component Library
+
+#### Core Components
+
+**Button Component:**
+- **Variants:** `primary`, `secondary`, `outline`, `text`, `danger`
+- **Sizes:** `small`, `default`, `large`
+- **States:** `loading`, `disabled`, `full` (full-width)
+- **Props:** `loadingText`, `type`, `onClick`
+
+**Card Component:**
+- **Variants:** `default`, `subtle`, `primary`, `secondary`, `accent`, `danger`, `dark`
+- **Padding:** `sm`, `md`, `lg`
+- **Shadows:** `none`, `primary`, `secondary`, `accent`, `dark`, `error`, `triple`, `mega`
+- **Rotation:** `none`, `left`, `right`, `slight-left`, `slight-right`
+- **Props:** `hover`, `onClick`, `testId`
+
+**Title Component:**
+- **Variants:** `page` (h1), `section` (h2), `subsection` (h3)
+- **Props:** `textShadow`, `rotation`, `description`, `className`
+- **Features:** Semantic HTML tags, optional descriptions
+
+**StatCard Component:**
+- **Sizes:** `sm` (text-4xl), `md` (text-5xl), `lg` (text-7xl)
+- **Variants:** `primary`, `secondary`, `accent`, `dark`
+- **Props:** `label`, `value`, `subtitle`, `rotation`, `onClick`
+- **Built on:** Card component with statistical display
+
+#### Form Components
+
+**TextInput Component:**
+- **Variants:** `default`, `search`
+- **Sizes:** `small`, `default`, `large`
+- **States:** `error`, `disabled`
+- **Props:** `label`, `description`, `placeholder`, `validation`
+
+**TextArea Component:**
+- **Props:** `rows`, `label`, `description`, `error`, `validation`
+- **Features:** Auto-resize, character counting
+
+**CodeInput Component:**
+- **Features:** Centered, uppercase, monospace styling
+- **Use case:** Verification codes, short inputs
+
+#### Container Components
+
+**SectionContainer:**
+- **Spacing:** `tight` (py-8), `default` (py-10), `loose` (py-16)
+- **Props:** `hero` (removes max-width), `className`
+- **Built on:** ContentContainer with vertical spacing
+
+**ContentContainer:**
+- **Max-width:** `4xl`, `5xl`, `6xl`, `7xl`, `none`
+- **Features:** Horizontal centering, responsive padding
+
+#### Specialized Components
+
+**TaskCard Component:**
+- **Status:** `urgent`, `normal`, `future`, `completed`
+- **Features:** Status-based left border, action buttons
+- **Built on:** Card component
+
+**OptionCard Component:**
+- **Features:** Icon + content layout, selection states
+- **Use case:** Choice selection, feature cards
+
+**ActionItem Component:**
+- **Features:** Horizontal layout, status indicators
+- **Use case:** Task lists, action items
+
+#### Brand Components
+
+**HeaderLogo Component:**
+- **Features:** Logo with text, responsive sizing
+- **Use case:** Header navigation
+
+**FooterLogo Component:**
+- **Features:** Logo for footer areas
+- **Use case:** Footer branding
+
+### Component Variant Examples
 
 #### Button Variants
 ```tsx
-<Button variant="primary" size="default">    // Orange, standard size
-<Button variant="outline" size="small">      // Transparent, small
-<Button variant="danger" size="large">       // Red, large
+<Button variant="primary" size="default">     // Orange, standard size
+<Button variant="outline" size="small">       // Transparent, small
+<Button variant="danger" size="large">        // Red, large
+<Button variant="text" disabled>              // Text-only, disabled
+<Button loading loadingText="Saving...">      // Loading state
 ```
 
 #### Card Variants
@@ -253,13 +345,22 @@ All components follow a consistent variant naming convention:
 <Card variant="default" shadow="triple">     // White card, triple shadow
 <Card variant="primary" shadow="primary">    // Orange card, orange shadow
 <Card variant="subtle" shadow="none">        // Subtle card, no shadow
+<Card rotation="slight-left" hover>          // Rotated card with hover
+<Card padding="lg" onClick={() => {}}>        // Large padding, clickable
 ```
 
-#### Alert Variants
+#### Title Variants
 ```tsx
-<Alert variant="error" size="default">       // Red alert, standard size
-<Alert variant="success" size="large">       // Green alert, large size
-<Alert variant="info" size="small">          // Blue alert, small size
+<Title variant="page" textShadow>             // Page heading with shadow
+<Title variant="section" rotation="slight-left"> // Section heading, rotated
+<Title variant="subsection" description="Sub info"> // With description
+```
+
+#### StatCard Variants
+```tsx
+<StatCard size="lg" variant="primary" value={47} label="Total Items" />
+<StatCard size="sm" variant="accent" value={12} rotation="slight-right" />
+<StatCard size="md" variant="dark" value={3} subtitle="+2 This Week" />
 ```
 
 ## Neo-Brutalist Principles
@@ -349,54 +450,102 @@ const sizeConfig = {
 const rotationClass = rotation ? `brutal-rotate-${rotation}` : '';
 ```
 
-### Toast Component Example
+### Real Component Example - StatCard
 ```tsx
-export const Toast = ({
-  variant = 'info',
-  size = 'default',
-  dismissible = true
-}) => {
-  const styles = [
-    'font-mono', 'font-bold', 'uppercase',
-    'border-brutal-md', 'p-4',
-    'brutal-shadow-primary',
-    'brutal-rotate-slight-right',
-    variantStyles[variant],
-    sizeStyles[size]
-  ].join(' ');
-  
+export interface StatCardProps {
+  label: string;
+  value: string | number;
+  subtitle?: string;
+  variant?: 'primary' | 'secondary' | 'accent' | 'dark';
+  rotation?: 'left' | 'right' | 'slight-left' | 'slight-right';
+  size?: 'sm' | 'md' | 'lg';
+  onClick?: () => void;
+  className?: string;
+}
+
+export const StatCard = ({
+  label,
+  value,
+  subtitle,
+  variant = 'dark',
+  rotation = 'slight-left',
+  size = 'lg',
+  onClick,
+  className = ''
+}: StatCardProps) => {
+  const sizeStyles = {
+    sm: 'text-4xl',
+    md: 'text-5xl',
+    lg: 'text-7xl'
+  };
+
   return (
-    <div className={styles}>
-      {/* Toast content */}
-    </div>
+    <Card
+      variant={config.cardVariant}
+      shadow={config.shadow}
+      rotation={rotation}
+      hover={!!onClick}
+      onClick={onClick}
+      padding={size}
+      className={className}
+    >
+      <div className="text-white font-bold text-lg uppercase mb-4">
+        {label}
+      </div>
+      <div className={`${sizeStyles[size]} font-black ${config.valueColor} leading-none mb-3`}>
+        {value}
+      </div>
+      {subtitle && (
+        <div className="text-white font-bold uppercase">
+          {subtitle}
+        </div>
+      )}
+    </Card>
   );
 };
 ```
 
-### Page Layout Example
+### Page Layout Example - Using Container System
 ```tsx
-// Dashboard page with brutal styling
-export const Dashboard = () => {
+// Landing page with container system
+export const LandingPage = () => {
   return (
-    <div className="bg-background min-h-screen">
-      {/* Page title with brutal text shadow */}
-      <h1 className="text-6xl font-black uppercase text-text-primary brutal-text-shadow-mega mb-8">
-        Dashboard
-      </h1>
+    <>
+      {/* Hero section with full-width background */}
+      <SectionContainer className="relative min-h-screen flex items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          <div>
+            <Title variant="page" textShadow className="uppercase text-6xl md:text-8xl lg:text-9xl">
+              Organize<br />Your<br />Home
+            </Title>
+            
+            <div className="flex flex-col sm:flex-row gap-6">
+              <Button size="large" variant="primary">Get Started</Button>
+              <Button size="large" variant="secondary">Learn More</Button>
+            </div>
+          </div>
+          
+          <div className="relative">
+            <Card variant="default" shadow="dark" padding="lg">
+              {/* Feature content */}
+            </Card>
+            
+            <StatCard size="sm" variant="primary" 
+              label="Manuals Stored" value={47} 
+              rotation="slight-right" 
+              className="absolute -top-16 -right-8" />
+          </div>
+        </div>
+      </SectionContainer>
       
-      {/* Stats grid with varied rotations */}
-      <div className="grid grid-cols-4 gap-8 mb-12">
-        <StatCard variant="dark" rotation="slight-left" />
-        <StatCard variant="primary" rotation="slight-right" />
-        <StatCard variant="secondary" rotation="slight-left" />
-        <StatCard variant="accent" rotation="slight-right" />
-      </div>
-      
-      {/* Main content area */}
-      <Card variant="default" shadow="triple" className="p-8">
-        {/* Dashboard content */}
-      </Card>
-    </div>
+      {/* Features section with hero container */}
+      <SectionContainer className="bg-text-primary border-t-8 border-primary" 
+                       spacing="loose" hero>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {/* Feature cards */}
+        </div>
+      </SectionContainer>
+    </>
   );
 };
 ```
