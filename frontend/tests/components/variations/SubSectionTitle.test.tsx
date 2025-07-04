@@ -1,10 +1,10 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
-import { SubsectionTitle } from '../../../src/components/variations/SubSectionTitle';
+import { SubSectionTitle } from '../../../src/components/variations/SubSectionTitle';
 
-describe('SubsectionTitle', () => {
+describe('SubSectionTitle', () => {
   it('renders as h3 (subsection variant)', () => {
-    render(<SubsectionTitle>Subsection Title</SubsectionTitle>);
+    render(<SubSectionTitle>Subsection Title</SubSectionTitle>);
     
     const heading = screen.getByRole('heading', { level: 3 });
     expect(heading).toBeInTheDocument();
@@ -12,14 +12,14 @@ describe('SubsectionTitle', () => {
   });
 
   it('applies subsection variant styles', () => {
-    render(<SubsectionTitle>Subsection Title</SubsectionTitle>);
+    render(<SubSectionTitle>Subsection Title</SubSectionTitle>);
     
     const heading = screen.getByRole('heading');
-    expect(heading).toHaveClass('text-base', 'md:text-lg', 'font-semibold', 'text-text-primary');
+    expect(heading).toHaveClass('font-mono', 'font-black', 'uppercase', 'text-text-primary', 'text-xl', 'md:text-2xl');
   });
 
   it('accepts PageTitle props except variant', () => {
-    render(<SubsectionTitle className="custom-class" description="Subsection description">Subsection</SubsectionTitle>);
+    render(<SubSectionTitle className="custom-class" description="Subsection description">Subsection</SubSectionTitle>);
     
     const heading = screen.getByRole('heading');
     expect(heading).toHaveClass('custom-class');

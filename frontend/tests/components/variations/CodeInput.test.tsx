@@ -14,7 +14,7 @@ describe('CodeInput', () => {
     render(<CodeInput label="Code" />);
     
     const input = screen.getByRole('textbox');
-    expect(input).toHaveClass('text-center', 'text-lg', 'tracking-wider', 'font-mono');
+    expect(input).toHaveClass('text-center', 'tracking-widest', 'uppercase', 'font-black', 'text-2xl', 'font-mono');
   });
 
   it('accepts TextInput props', () => {

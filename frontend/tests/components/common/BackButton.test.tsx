@@ -62,6 +62,6 @@ describe('BackButton', () => {
     renderWithRouter(<BackButton />);
     
     const button = screen.getByRole('button');
-    expect(button).toHaveClass('text-secondary', 'hover:text-text-primary', 'transition-colors', 'mb-4');
+    expect(button).toHaveClass('font-mono', 'font-bold', 'uppercase', 'brutal-transition', 'mb-4');
   });
 });

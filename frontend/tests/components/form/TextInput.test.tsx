@@ -16,7 +16,8 @@ describe('TextInput', () => {
   it('renders input with correct type', () => {
     render(<TextInput label="Password" type="password" />);
     
-    const input = screen.getByRole('textbox');
+    // Password input won't have role="textbox", use a different query
+    const input = screen.getByLabelText('Password');
     expect(input).toHaveAttribute('type', 'password');
   });
 
@@ -30,22 +31,22 @@ describe('TextInput', () => {
   it('displays error message when provided', () => {
     render(<TextInput label="Email" type="email" error="Email is required" />);
     
-    expect(screen.getByText('Email is required')).toBeInTheDocument();
+    expect(screen.getByText(/Email is required/)).toBeInTheDocument();
   });
 
   it('applies error styling when error is present', () => {
     render(<TextInput label="Email" type="email" error="Email is required" />);
     
     const input = screen.getByRole('textbox');
-    expect(input).toHaveClass('border-ui-error');
+    expect(input).toHaveClass('border-error');
   });
 
   it('applies normal styling when no error', () => {
     render(<TextInput label="Email" type="email" />);
     
     const input = screen.getByRole('textbox');
-    expect(input).toHaveClass('border-ui-border');
-    expect(input).not.toHaveClass('border-ui-error');
+    expect(input).toHaveClass('border-text-primary');
+    expect(input).not.toHaveClass('border-error');
   });
 
   it('renders validation feedback when provided', () => {
@@ -83,16 +84,16 @@ describe('TextInput', () => {
     const input = screen.getByRole('textbox');
     expect(input).toHaveClass(
       'w-full',
+      'input-brutal',
+      'font-mono',
+      'font-bold',
+      'uppercase',
+      'brutal-transition',
       'px-4',
-      'py-3', 
+      'py-3',
       'bg-white',
-      'rounded-lg',
-      'text-text-primary',
-      'placeholder-text-secondary',
-      'focus:outline-none',
-      'focus:ring-2',
-      'focus:ring-primary',
-      'focus:border-transparent'
+      'border-text-primary',
+      'text-text-primary'
     );
   });
 
@@ -102,17 +103,21 @@ describe('TextInput', () => {
     const label = screen.getByText('Email');
     expect(label).toHaveClass(
       'block',
-      'text-sm',
-      'font-semibold',
+      'font-mono',
+      'font-black',
       'text-text-primary',
-      'mb-2'
+      'uppercase',
+      'mb-2',
+      'text-lg',
+      'tracking-wide'
     );
   });
 
   it('shows error with red text', () => {
     render(<TextInput label="Email" type="email" error="Email is required" />);
     
-    const errorElement = screen.getByText('Email is required');
-    expect(errorElement).toHaveClass('text-ui-error', 'text-sm', 'mt-1');
+    // Error text is now inside a div with warning symbol
+    const errorElement = screen.getByText(/Email is required/);
+    expect(errorElement).toHaveClass('font-mono', 'font-bold', 'uppercase', 'text-sm');
   });
 });

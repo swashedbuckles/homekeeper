@@ -20,7 +20,7 @@ describe('Card', () => {
     const { container } = render(<Card>Content</Card>);
     
     const card = container.firstChild;
-    expect(card).toHaveClass('bg-white', 'border-ui-border', 'shadow-sm');
+    expect(card).toHaveClass('bg-white', 'border-text-primary', 'brutal-shadow-dark');
   });
 
   it('applies subtle variant styles', () => {
@@ -38,10 +38,10 @@ describe('Card', () => {
   });
 
   it('applies hover styles when clickable', () => {
-    const { container } = render(<Card clickable>Content</Card>);
+    const { container } = render(<Card onClick={() => {}}>Content</Card>);
     
     const card = container.firstChild;
-    expect(card).toHaveClass('hover:shadow-sm', 'transition-shadow', 'cursor-pointer');
+    expect(card).toHaveClass('cursor-pointer', 'brutal-transition');
   });
 
   it('calls onClick when clicked', async () => {
