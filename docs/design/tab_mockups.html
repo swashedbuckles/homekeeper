@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HomeKeeper Tab Component Final Comparison</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#e67e22',
+                        'secondary': '#4A6FA5', 
+                        'accent': '#5d9c59',
+                        'background': '#f5f0e8',
+                        'text-primary': '#2c3e50',
+                        'text-secondary': '#7f8c8d',
+                        'error': '#e74c3c'
+                    },
+                    fontFamily: {
+                        'mono': ['JetBrains Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .brutal-shadow-primary { box-shadow: 6px 6px 0 #e67e22; }
+        .brutal-shadow-secondary { box-shadow: 6px 6px 0 #4A6FA5; }
+        .brutal-shadow-accent { box-shadow: 6px 6px 0 #5d9c59; }
+        .brutal-shadow-dark { box-shadow: 6px 6px 0 #2c3e50; }
+        .brutal-transition { transition: all 0.1s ease; }
+        .brutal-rotate-left { transform: rotate(-1deg); }
+        .brutal-hover-press:hover { transform: translate(3px, 3px); box-shadow: none; }
+        
+        /* Original Tab Variation */
+        .original-tab-active {
+            background: #e67e22;
+            color: white;
+            border: 4px solid white;
+            box-shadow: 6px 6px 0 #2c3e50;
+        }
+        
+        .original-tab-inactive {
+            background: transparent;
+            color: white;
+            border: 4px solid transparent;
+            box-shadow: 4px 4px 0 #5d9c59;
+        }
+        
+        .original-tab-inactive:hover {
+            background: white;
+            color: #2c3e50;
+            border: 4px solid #2c3e50;
+            transform: translate(2px, 2px);
+            box-shadow: none;
+        }
+        
+        /* Connected Tabs (No Gaps) */
+        .connected-tab-active {
+            background: #e67e22;
+            color: white;
+            border: 4px solid white;
+            border-right: 2px solid white;
+            box-shadow: 0 6px 0 #2c3e50;
+            z-index: 10;
+            position: relative;
+        }
+        
+        .connected-tab-inactive {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border: 4px solid rgba(255,255,255,0.3);
+            border-right: 2px solid rgba(255,255,255,0.3);
+            box-shadow: 0 4px 0 #5d9c59;
+        }
+        
+        .connected-tab-inactive:hover {
+            background: rgba(255,255,255,0.9);
+            color: #2c3e50;
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #5d9c59;
+        }
+        
+        .connected-tab-last {
+            border-right: 4px solid white !important;
+        }
+        
+        /* Header-Integrated */
+        .integrated-tab-active {
+            background: #e67e22;
+            color: white;
+            border-top: 4px solid white;
+            border-left: 4px solid white;
+            border-right: 4px solid white;
+            border-bottom: none;
+            box-shadow: 4px 0 0 #2c3e50, -4px 0 0 #2c3e50;
+            margin-bottom: -4px;
+            z-index: 10;
+            position: relative;
+        }
+        
+        .integrated-tab-inactive {
+            background: rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.8);
+            border-top: 4px solid rgba(255,255,255,0.3);
+            border-left: 4px solid rgba(255,255,255,0.3);
+            border-right: 4px solid rgba(255,255,255,0.3);
+            border-bottom: none;
+        }
+        
+        .integrated-tab-inactive:hover {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+        
+        /* Brutal Underline Style */
+        .underline-tab-active {
+            background: transparent;
+            color: white;
+            border: none;
+            border-bottom: 6px solid #e67e22;
+            box-shadow: 0 6px 0 #2c3e50;
+            margin-bottom: -6px;
+        }
+        
+        .underline-tab-inactive {
+            background: transparent;
+            color: rgba(255,255,255,0.7);
+            border: none;
+            border-bottom: 6px solid transparent;
+        }
+        
+        .underline-tab-inactive:hover {
+            color: white;
+            border-bottom: 6px solid rgba(230, 126, 34, 0.5);
+        }
+        
+        /* Layered/Stacked */
+        .layered-tab-active {
+            background: #e67e22;
+            color: white;
+            border: 4px solid white;
+            box-shadow: 
+                4px 4px 0 #4A6FA5,
+                8px 8px 0 #2c3e50;
+            transform: translateY(-8px);
+            z-index: 10;
+            position: relative;
+        }
+        
+        .layered-tab-inactive {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border: 4px solid rgba(255,255,255,0.3);
+            box-shadow: 4px 4px 0 #5d9c59;
+            transform: translateY(-4px);
+        }
+        
+        .layered-tab-inactive:hover {
+            transform: translateY(-6px);
+            box-shadow: 
+                4px 4px 0 #e67e22,
+                6px 6px 0 #2c3e50;
+        }
+        
+        /* Minimal (Light Background) */
+        .minimal-tab-active {
+            background: transparent;
+            color: #e67e22;
+            border: none;
+            border-bottom: 4px solid #e67e22;
+            font-weight: 800;
+        }
+        
+        .minimal-tab-inactive {
+            background: transparent;
+            color: #7f8c8d;
+            border: none;
+            border-bottom: 4px solid transparent;
+        }
+        
+        .minimal-tab-inactive:hover {
+            color: #2c3e50;
+            border-bottom: 4px solid rgba(230, 126, 34, 0.3);
+        }
+        
+        .tab-base {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 0.75rem 1.5rem;
+            transition: all 0.1s ease;
+            cursor: pointer;
+        }
+        
+        /* Header specific styling to match app */
+        .app-header {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+    </style>
+</head>
+<body class="font-mono bg-background min-h-screen">
+    
+    <main class="max-w-7xl mx-auto p-8">
+        <h1 class="text-5xl font-black text-text-primary uppercase mb-12 brutal-shadow-primary bg-primary text-white p-6 border-4 border-text-primary">
+            Tab Component Final Comparison
+        </h1>
+        
+        <!-- Standalone Tab Variations -->
+        <section class="mb-20">
+            <h2 class="text-4xl font-bold text-text-primary uppercase mb-8">Standalone Tab Components</h2>
+            
+            <!-- Original Variation -->
+            <div class="mb-12">
+                <h3 class="text-2xl font-bold text-text-primary uppercase mb-4">1. Original (With Gaps)</h3>
+                <div class="bg-text-primary p-6 border-4 border-text-primary">
+                    <nav class="flex gap-2">
+                        <button class="tab-base original-tab-active">Dashboard</button>
+                        <button class="tab-base original-tab-inactive">Manuals</button>
+                        <button class="tab-base original-tab-inactive">Maintenance</button>
+                        <button class="tab-base original-tab-inactive">Analytics</button>
+                        <button class="tab-base original-tab-inactive">Settings</button>
+                    </nav>
+                </div>
+            </div>
+            
+            <!-- Connected Tabs -->
+            <div class="mb-12">
+                <h3 class="text-2xl font-bold text-text-primary uppercase mb-4">2. Connected (No Gaps)</h3>
+                <div class="bg-text-primary p-6 border-4 border-text-primary">
+                    <nav class="flex">
+                        <button class="tab-base connected-tab-active">Dashboard</button>
+                        <button class="tab-base connected-tab-inactive">Manuals</button>
+                        <button class="tab-base connected-tab-inactive">Maintenance</button>
+                        <button class="tab-base connected-tab-inactive">Analytics</button>
+                        <button class="tab-base connected-tab-inactive connected-tab-last">Settings</button>
+                    </nav>
+                </div>
+            </div>
+            
+            <!-- Header-Integrated -->
+            <div class="mb-12">
+                <h3 class="text-2xl font-bold text-text-primary uppercase mb-4">3. Header-Integrated</h3>
+                <div class="bg-text-primary border-4 border-text-primary">
+                    <nav class="flex px-6 pt-6">
+                        <button class="tab-base integrated-tab-active">Dashboard</button>
+                        <button class="tab-base integrated-tab-inactive">Manuals</button>
+                        <button class="tab-base integrated-tab-inactive">Maintenance</button>
+                        <button class="tab-base integrated-tab-inactive">Analytics</button>
+                        <button class="tab-base integrated-tab-inactive">Settings</button>
+                    </nav>
+                    <div class="p-6 bg-text-primary text-white border-t-4 border-white">
+                        <p class="font-bold uppercase text-sm">Content area below tabs</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Brutal Underline Style -->
+            <div class="mb-12">
+                <h3 class="text-2xl font-bold text-text-primary uppercase mb-4">4. Brutal Underline Style</h3>
+                <div class="bg-text-primary border-4 border-text-primary">
+                    <nav class="flex px-6 pt-6">
+                        <button class="tab-base underline-tab-active">Dashboard</button>
+                        <button class="tab-base underline-tab-inactive">Manuals</button>
+                        <button class="tab-base underline-tab-inactive">Maintenance</button>
+                        <button class="tab-base underline-tab-inactive">Analytics</button>
+                        <button class="tab-base underline-tab-inactive">Settings</button>
+                    </nav>
+                    <div class="p-6 bg-text-primary text-white border-t-4 border-primary">
+                        <p class="font-bold uppercase text-sm">Content area with brutal underline</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Layered/Stacked -->
+            <div class="mb-12">
+                <h3 class="text-2xl font-bold text-text-primary uppercase mb-4">5. Layered/Stacked</h3>
+                <div class="bg-text-primary border-4 border-text-primary pt-12">
+                    <nav class="flex px-6 gap-4">
+                        <button class="tab-base layered-tab-active">Dashboard</button>
+                        <button class="tab-base layered-tab-inactive">Manuals</button>
+                        <button class="tab-base layered-tab-inactive">Maintenance</button>
+                        <button class="tab-base layered-tab-inactive">Analytics</button>
+                        <button class="tab-base layered-tab-inactive">Settings</button>
+                    </nav>
+                    <div class="p-6 bg-text-primary text-white mt-4">
+                        <p class="font-bold uppercase text-sm">Multiple shadow layers create 3D stacking effect</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Minimal (Light Background) -->
+            <div class="mb-12">
+                <h3 class="text-2xl font-bold text-text-primary uppercase mb-4">6. Minimal (Light Background)</h3>
+                <div class="bg-background border-4 border-text-primary">
+                    <nav class="flex px-6 pt-6">
+                        <button class="tab-base minimal-tab-active">Dashboard</button>
+                        <button class="tab-base minimal-tab-inactive">Manuals</button>
+                        <button class="tab-base minimal-tab-inactive">Maintenance</button>
+                        <button class="tab-base minimal-tab-inactive">Analytics</button>
+                        <button class="tab-base minimal-tab-inactive">Settings</button>
+                    </nav>
+                    <div class="p-6 bg-background text-text-primary border-t-4 border-primary">
+                        <p class="font-bold uppercase text-sm">Clean underline style for content areas</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Header Integration Examples -->
+        <section class="mb-20">
+            <h2 class="text-4xl font-bold text-text-primary uppercase mb-8">Full Header Integration</h2>
+            
+            <!-- 1. Original in Header -->
+            <div class="mb-12">
+                <h3 class="text-2xl font-bold text-text-primary uppercase mb-4">1. Original Tabs in Header</h3>
+                <header class="app-header bg-background relative">
+                    <nav class="flex items-center justify-between p-4">
+                        <!-- Logo -->
+                        <div class="flex items-center gap-2">
+                            <div class="w-12 h-12 bg-primary border-2 border-text-primary brutal-rotate-left brutal-shadow-primary flex items-center justify-center">
+                                <svg width="48" height="48" viewBox="0 0 128 128" class="text-white">
+                                    <polygon points="20,70 60,35 100,70" fill="currentColor"/>
+                                    <line x1="21" y1="70" x2="99" y2="70" stroke="currentColor" strokeWidth="1"/>
+                                    <rect x="20" y="70" width="80" height="36" fill="currentColor"/>
+                                    <rect x="76" y="40" width="18" height="26" fill="currentColor"/>
+                                    <rect x="60" y="74" width="36" height="28" fill="#e67e22"/>
+                                    <line x1="64" y1="80" x2="90" y2="80" stroke="currentColor" strokeWidth="2"/>
+                                    <line x1="64" y1="85" x2="87" y2="85" stroke="currentColor" strokeWidth="2"/>
+                                    <line x1="64" y1="90" x2="90" y2="90" stroke="currentColor" strokeWidth="2"/>
+                                    <line x1="64" y1="95" x2="82" y2="95" stroke="currentColor" strokeWidth="2"/>
+                                </svg>
+                            </div>
+                            <span class="text-primary ml-1 text-xl font-bold">HomeKeeper</span>
+                        </div>
+                        
+                        <!-- Tabs -->
+                        <nav class="flex gap-2 bg-text-primary p-2 border-4 border-text-primary">
+                            <button class="tab-base original-tab-active text-sm px-4 py-2">Dashboard</button>
+                            <button class="tab-base original-tab-inactive text-sm px-4 py-2">Manuals</button>
+                            <button class="tab-base original-tab-inactive text-sm px-4 py-2">Maintenance</button>
+                            <button class="tab-base original-tab-inactive text-sm px-4 py-2">Settings</button>
+                        </nav>
+                        
+                        <!-- Search & Profile -->
+                        <div class="flex items-center gap-3">
+                            <input 
+                                type="text" 
+                                placeholder="SEARCH..." 
+                                class="px-3 py-2 bg-background text-text-primary border-4 border-text-primary font-bold placeholder-text-secondary focus:outline-none text-xs w-32"
+                            >
+                            <div class="w-10 h-10 bg-accent border-4 border-text-primary flex items-center justify-center text-lg font-black text-white">
+                                A
+                            </div>
+                        </div>
+                    </nav>
+                </header>
+            </div>
+            
+            <!-- 2. Connected in Header -->
+            <div class="mb-12">
+                <h3 class="text-2xl font-bold text-text-primary uppercase mb-4">2. Connected Tabs in Header</h3>
+                <header class="app-header bg-background relative">
+                    <nav class="flex items-center justify-between p-4">
+                        <!-- Logo -->
+                        <div class="flex items-center gap-2">
+                            <div class="w-12 h-12 bg-primary border-2 border-text-primary brutal-rotate-left brutal-shadow-primary flex items-center justify-center">
+                                <svg width="48" height="48" viewBox="0 0 128 128" class="text-white">
+                                    <polygon points="20,70 60,35 100,70" fill="currentColor"/>
+                                    <line x1="21" y1="70" x2="99" y2="70" stroke="currentColor" strokeWidth="1"/>
+                                    <rect x="20" y="70" width="80" height="36" fill="currentColor"/>
+                                    <rect x="76" y="40" width="18" height="26" fill="currentColor"/>
+                                    <rect x="60" y="74" width="36" height="28" fill="#e67e22"/>
+                                    <line x1="64" y1="80" x2="90" y2="80" stroke="currentColor" strokeWidth="2"/>
+                                    <line x1="64" y1="85" x2="87" y2="85" stroke="currentColor" strokeWidth="2"/>
+                                    <line x1="64" y1="90" x2="90" y2="90" stroke="currentColor" strokeWidth="2"/>
+                                    <line x1="64" y1="95" x2="82" y2="95" stroke="currentColor" strokeWidth="2"/>
+                                </svg>
+                            </div>
+                            <span class="text-primary ml-1 text-xl font-bold">HomeKeeper</span>
+                        </div>
+                        
+                        <!-- Tabs -->
+                        <nav class="flex bg-text-primary border-4 border-text-primary">
+                            <button class="tab-base connected-tab-active text-sm px-4 py-2">Dashboard</button>
+                            <button class="tab-base connected-tab-inactive text-sm px-4 py-2">Manuals</button>
+                            <button class="tab-base connected-tab-inactive text-sm px-4 py-2">Maintenance</button>
+                            <button class="tab-base connected-tab-inactive connected-tab-last text-sm px-4 py-2">Settings</button>
+                        </nav>
+                        
+                        <!-- Search & Profile -->
+                        <div class="flex items-center gap-3">
+                            <input 
+                                type="text" 
+                                placeholder="SEARCH..." 
+                                class="px-3 py-2 bg-background text-text-primary border-4 border-text-primary font-bold placeholder-text-secondary focus:outline-none text-xs w-32"
+                            >
+                            <div class="w-10 h-10 bg-accent border-4 border-text-primary flex items-center justify-center text-lg font-black text-white">
+                                A
+                            </div>
+                        </div>
+                    </nav>
+                </header>
+            </div>
+            
+            <!-- 3. Header-Integrated -->
+            <div class="mb-12">
+                <h3 class="text-2xl font-bold text-text-primary uppercase mb-4">3. Header-Integrated</h3>
+                <header class="app-header bg-text-primary border-4 border-text-primary">
+                    <nav class="flex items-center justify-between px-6 py-4">
+                        <!-- Logo -->
+                        <div class="flex items-center gap-2">
+                            <div class="w-12 h-12 bg-primary border-2 border-white brutal-rotate-left flex items-center justify-center">
+                                <svg width="48" height="48" viewBox="0 0 128 128" class="text-white">
+                                    <polygon points="20,70 60,35 100,70" fill="currentColor"/>
+                                    <line x1="21" y1="70" x2="99" y2="70" stroke="currentColor" strokeWidth="1"/>
+                                    <rect x="20" y="70" width="80" height="36" fill="currentColor"/>
+                                    <rect x="76" y="40" width="18" height="26" fill="currentColor"/>
+                                    <rect x="60" y="74" width="36" height="28" fill="#e67e22"/>
+                                    <line x1="64" y1="80" x2="90" y2="80" stroke="currentColor" strokeWidth="2"/>
+                                    <line x1="64" y1="85" x2="87" y2="85" stroke="currentColor" strokeWidth="2"/>
+                                    <line x1="64" y1="90" x2="90" y2="90" stroke="currentColor" strokeWidth="2"/>
+                                    <line x1="64" y1="95" x2="82" y2="95" stroke="currentColor" strokeWidth="2"/>
+                                </svg>
+                            </div>
+                            <span class="text-white ml-1 text-xl font-bold">HomeKeeper</span>
+                        </div>
+                        
+                        <!-- Tabs -->
+                        <nav class="flex">
+                            <button class="tab-base integrated-tab-active text-sm px-4 py-2">Dashboard</button>
+                            <button class="tab-base integrated-tab-inactive text-sm px-4 py-2">Manuals</button>
+                            <button class="tab-base integrated-tab-inactive text-sm px-4 py-2">Maintenance</button>
+                            <button class="tab-base integrated-tab-inactive text-sm px-4 py-2">Settings</button>
+                        </nav>
+                        
+                        <!-- Search & Profile -->
+                        <div class="flex items-center gap-3">
+                            <input 
+                                type="text" 
+                                placeholder="SEARCH..." 
+                                class="px-3 py-2 bg-transparent text-white border-4 border-white font-bold placeholder-text-secondary focus:outline-none focus:bg-background focus:text-text-primary text-xs w-32"
+                            >
+                            <div class="w-10 h-10 bg-accent border-4 border-white flex items-center justify-center text-lg font-black text-white">
+                                A
+                            </div>
+                        </div>
+                    </nav>
+                </header>
+            </div>
+            
+            <!-- 4. Brutal Underline -->
+            <div class="mb-12">
+                <h3 class="text-2xl font-bold text-text-primary uppercase mb-4">4. Brutal Underline</h3>
+                <header class="app-header bg-text-primary border-4 border-text-primary">
+                    <nav class="flex items-center justify-between px-6 py-4">
+                        <!-- Logo -->
+                        <div class="flex items-center gap-2">
+                            <div class="w-12 h-12 bg-primary border-2 border-white brutal-rotate-left flex items-center justify-center">
+                                <svg width="48" height="48" viewBox="0 0 128 128" class="text-white">
+                                    <polygon points="20,70 60,35 100,70" fill="currentColor"/>
+                                    <line x1="21" y1="70" x2="99" y2="70" stroke="currentColor" strokeWidth="1"/>
+                                    <rect x="20" y="70" width="80" height="36" fill="currentColor"/>
+                                    <rect x="76" y="40" width="18" height="26" fill="currentColor"/>
+                                    <rect x="60" y="74" width="36" height="28" fill="#e67e22"/>
+                                    <line x1="64" y1="80" x2="90" y2="80" stroke="currentColor" strokeWidth="2"/>
+                                    <line x1="64" y1="85" x2="87" y2="85" stroke="currentColor" strokeWidth="2"/>
+                                    <line x1="64" y1="90" x2="90" y2="90" stroke="currentColor" strokeWidth="2"/>
+                                    <line x1="64" y1="95" x2="82" y2="95" stroke="currentColor" strokeWidth="2"/>
+                                </svg>
+                            </div>
+                            <span class="text-white ml-1 text-xl font-bold">HomeKeeper</span>
+                        </div>
+                        
+                        <!-- Tabs -->
+                        <nav class="flex">
+                            <button class="tab-base underline-tab-active text-sm px-4 py-2">Dashboard</button>
+                            <button class="tab-base underline-tab-inactive text-sm px-4 py-2">Manuals</button>
+                            <button class="tab-base underline-tab-inactive text-sm px-4 py-2">Maintenance</button>
+                            <button class="tab-base underline-tab-inactive text-sm px-4 py-2">Settings</button>
+                        </nav>
+                        
+                        <!-- Search & Profile -->
+                        <div class="flex items-center gap-3">
+                            <input 
+                                type="text" 
+                                placeholder="SEARCH..." 
+                                class="px-3 py-2 bg-transparent text-white border-4 border-white font-bold placeholder-text-secondary focus:outline-none focus:bg-background focus:text-text-primary text-xs w-32"
+                            >
+                            <div class="w-10 h-10 bg-accent border-4 border-white flex items-center justify-center text-lg font-black text-white">
+                                A
+                            </div>
+                        </div>
+                    </nav>
+                </header>
+            </div>
+            
+            <!-- 5. Layered/Stacked -->
+            <div class="mb-12">
+                <h3 class="text-2xl font-bold text-text-primary uppercase mb-4">5. Layered/Stacked</h3>
+                <header class="app-header bg-text-primary border-4 border-text-primary pt-8">
+                    <nav class="flex items-center justify-between px-6 pb-4">
+                        <!-- Logo -->
+                        <div class="flex items-center gap-2">
+                            <div class="w-12 h-12 bg-primary border-2 border-white brutal-rotate-left flex items-center justify-center">
+                                <svg width="48" height="48" viewBox="0 0 128 128" class="text-white">
+                                    <polygon points="20,70 60,35 100,70" fill="currentColor"/>
+                                    <line x1="21" y1="70" x2="99" y2="70" stroke="currentColor" strokeWidth="1"/>
+                                    <rect x="20" y="70" width="80" height="36" fill="currentColor"/>
+                                    <rect x="76" y="40" width="18" height="26" fill="currentColor"/>
+                                    <rect x="60" y="74" width="36" height="28" fill="#e67e22"/>
+                                    <line x1="64" y1="80" x2="90" y2="80" stroke="currentColor" strokeWidth="2"/>
+                                    <line x1="64" y1="85" x2="87" y2="85" stroke="currentColor" strokeWidth="2"/>
+                                    <line x1="64" y1="90" x2="90" y2="90" stroke="currentColor" strokeWidth="2"/>
+                                    <line x1="64" y1="95" x2="82" y2="95" stroke="currentColor" strokeWidth="2"/>
+                                </svg>
+                            </div>
+                            <span class="text-white ml-1 text-xl font-bold">HomeKeeper</span>
+                        </div>
+                        
+                        <!-- Tabs -->
+                        <nav class="flex gap-2">
+                            <button class="tab-base layered-tab-active text-sm px-4 py-2">Dashboard</button>
+                            <button class="tab-base layered-tab-inactive text-sm px-4 py-2">Manuals</button>
+                            <button class="tab-base layered-tab-inactive text-sm px-4 py-2">Maintenance</button>
+                            <button class="tab-base layered-tab-inactive text-sm px-4 py-2">Settings</button>
+                        </nav>
+                        
+                        <!-- Search & Profile -->
+                        <div class="flex items-center gap-3">
+                            <input 
+                                type="text" 
+                                placeholder="SEARCH..." 
+                                class="px-3 py-2 bg-transparent text-white border-4 border-white font-bold placeholder-text-secondary focus:outline-none focus:bg-background focus:text-text-primary text-xs w-32"
+                            >
+                            <div class="w-10 h-10 bg-accent border-4 border-white flex items-center justify-center text-lg font-black text-white">
+                                A
+                            </div>
+                        </div>
+                    </nav>
+                </header>
+            </div>
+            
+            <!-- 6. Minimal -->
+            <div class="mb-12">
+                <h3 class="text-2xl font-bold text-text-primary uppercase mb-4">6. Minimal</h3>
+                <header class="app-header bg-background border-4 border-text-primary">
+                    <nav class="flex items-center justify-between px-6 py-4">
+                        <!-- Logo -->
+                        <div class="flex items-center gap-2">
+                            <div class="w-12 h-12 bg-primary border-2 border-text-primary brutal-rotate-left brutal-shadow-primary flex items-center justify-center">
+                                <svg width="48" height="48" viewBox="0 0 128 128" class="text-white">
+                                    <polygon points="20,70 60,35 100,70" fill="currentColor"/>
+                                    <line x1="21" y1="70" x2="99" y2="70" stroke="currentColor" strokeWidth="1"/>
+                                    <rect x="20" y="70" width="80" height="36" fill="currentColor"/>
+                                    <rect x="76" y="40" width="18" height="26" fill="currentColor"/>
+                                    <rect x="60" y="74" width="36" height="28" fill="#e67e22"/>
+                                    <line x1="64" y1="80" x2="90" y2="80" stroke="currentColor" strokeWidth="2"/>
+                                    <line x1="64" y1="85" x2="87" y2="85" stroke="currentColor" strokeWidth="2"/>
+                                    <line x1="64" y1="90" x2="90" y2="90" stroke="currentColor" strokeWidth="2"/>
+                                    <line x1="64" y1="95" x2="82" y2="95" stroke="currentColor" strokeWidth="2"/>
+                                </svg>
+                            </div>
+                            <span class="text-primary ml-1 text-xl font-bold">HomeKeeper</span>
+                        </div>
+                        
+                        <!-- Tabs -->
+                        <nav class="flex">
+                            <button class="tab-base minimal-tab-active text-sm px-4 py-2">Dashboard</button>
+                            <button class="tab-base minimal-tab-inactive text-sm px-4 py-2">Manuals</button>
+                            <button class="tab-base minimal-tab-inactive text-sm px-4 py-2">Maintenance</button>
+                            <button class="tab-base minimal-tab-inactive text-sm px-4 py-2">Settings</button>
+                        </nav>
+                        
+                        <!-- Search & Profile -->
+                        <div class="flex items-center gap-3">
+                            <input 
+                                type="text" 
+                                placeholder="SEARCH..." 
+                                class="px-3 py-2 bg-background text-text-primary border-4 border-text-primary font-bold placeholder-text-secondary focus:outline-none text-xs w-32"
+                            >
+                            <div class="w-10 h-10 bg-accent border-4 border-text-primary flex items-center justify-center text-lg font-black text-white">
+                                A
+                            </div>
+                        </div>
+                    </nav>
+                </header>
+            </div>
+        </section>
+        
+        <!-- Summary -->
+        <section class="bg-primary border-4 border-text-primary p-8 brutal-shadow-dark">
+            <h2 class="text-3xl font-bold text-white uppercase mb-6">Summary & Recommendations</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-white">
+                <div>
+                    <h3 class="text-xl font-bold uppercase mb-4">Visual Impact</h3>
+                    <ul class="space-y-2 font-bold uppercase text-sm">
+                        <li>• <strong>Original:</strong> Classic, balanced</li>
+                        <li>• <strong>Connected:</strong> Unified, seamless</li>
+                        <li>• <strong>Integrated:</strong> Breaks boundaries</li>
+                        <li>• <strong>Underline:</strong> Clean, minimal</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold uppercase mb-4">Best Use Cases</h3>
+                    <ul class="space-y-2 font-bold uppercase text-sm">
+                        <li>• <strong>Dashboard:</strong> Integrated or Connected</li>
+                        <li>• <strong>Content Pages:</strong> Underline</li>
+                        <li>• <strong>Mobile:</strong> Connected (space efficient)</li>
+                        <li>• <strong>Secondary Nav:</strong> Original</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <script>
+        // Tab switching functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const sections = document.querySelectorAll('nav');
+            
+            sections.forEach((nav, sectionIndex) => {
+                const tabs = nav.querySelectorAll('button');
+                
+                tabs.forEach((tab, tabIndex) => {
+                    tab.addEventListener('click', function() {
+                        // Determine which tab style this is based on existing classes
+                        let activeClass, inactiveClass, lastClass;
+                        
+                        if (tab.classList.contains('original-tab-active') || tab.classList.contains('original-tab-inactive')) {
+                            activeClass = 'original-tab-active';
+                            inactiveClass = 'original-tab-inactive';
+                        } else if (tab.classList.contains('connected-tab-active') || tab.classList.contains('connected-tab-inactive')) {
+                            activeClass = 'connected-tab-active';
+                            inactiveClass = 'connected-tab-inactive';
+                            lastClass = 'connected-tab-last';
+                        } else if (tab.classList.contains('integrated-tab-active') || tab.classList.contains('integrated-tab-inactive')) {
+                            activeClass = 'integrated-tab-active';
+                            inactiveClass = 'integrated-tab-inactive';
+                        } else if (tab.classList.contains('underline-tab-active') || tab.classList.contains('underline-tab-inactive')) {
+                            activeClass = 'underline-tab-active';
+                            inactiveClass = 'underline-tab-inactive';
+                        } else if (tab.classList.contains('layered-tab-active') || tab.classList.contains('layered-tab-inactive')) {
+                            activeClass = 'layered-tab-active';
+                            inactiveClass = 'layered-tab-inactive';
+                        } else if (tab.classList.contains('minimal-tab-active') || tab.classList.contains('minimal-tab-inactive')) {
+                            activeClass = 'minimal-tab-active';
+                            inactiveClass = 'minimal-tab-inactive';
+                        }
+                        
+                        if (activeClass && inactiveClass) {
+                            // Remove active from all tabs in this nav
+                            tabs.forEach((t, i) => {
+                                t.classList.remove(activeClass);
+                                t.classList.add(inactiveClass);
+                                
+                                // Handle special classes like connected-tab-last
+                                if (lastClass && i === tabs.length - 1) {
+                                    t.classList.add(lastClass);
+                                }
+                            });
+                            
+                            // Add active to clicked tab
+                            this.classList.remove(inactiveClass);
+                            this.classList.add(activeClass);
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>

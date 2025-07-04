@@ -1,12 +1,14 @@
+/* styles/theme.css - Tailwind v4 */
 @import 'tailwindcss';
 
 @theme {
+  /* === COLORS === */
   /* Primary/brand colors */
   --color-primary: #e67e22;
   --color-secondary: #4a6fa5;
-  --color-accent: '#5d9c59';
+  --color-accent: #5d9c59;
 
-  /* Bg and text */
+  /* Background and text */
   --color-background: #f5f0e8;
   --color-text-primary: #2c3e50;
   --color-text-secondary: #7f8c8d;
@@ -21,4 +23,70 @@
   --color-warning: #e67e22;
   --color-error: #e74c3c;
   --color-info: #4a6fa5;
+
+  /* === FONTS === */
+  --font-family-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+  --font-family-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  /* === SPACING === */
+  --spacing-brutal-offset-sm: 3px;
+  --spacing-brutal-offset-md: 6px;
+  --spacing-brutal-offset-lg: 8px;
+  --spacing-brutal-offset-xl: 12px;
+
+  /* === BORDERS === */
+  --border-brutal-sm: 3px;
+  --border-brutal-md: 4px;
+  --border-brutal-lg: 6px;
+  --border-brutal-xl: 8px;
+
+  /* === SHADOWS === */
+  /* Base shadow colors */
+  --shadow-primary: var(--color-primary);
+  --shadow-secondary: var(--color-secondary);
+  --shadow-accent: var(--color-accent);
+  --shadow-dark: var(--color-text-primary);
+  --shadow-error: var(--color-error);
+
+  /* Shadow combinations */
+  --shadow-brutal-sm: var(--spacing-brutal-offset-sm) var(--spacing-brutal-offset-sm) 0;
+  --shadow-brutal-md: var(--spacing-brutal-offset-md) var(--spacing-brutal-offset-md) 0;
+  --shadow-brutal-lg: var(--spacing-brutal-offset-lg) var(--spacing-brutal-offset-lg) 0;
+  --shadow-brutal-xl: var(--spacing-brutal-offset-xl) var(--spacing-brutal-offset-xl) 0;
+
+  /* Complex shadows */
+  --shadow-brutal-double: 
+    var(--spacing-brutal-offset-md) var(--spacing-brutal-offset-md) 0 var(--shadow-primary),
+    calc(var(--spacing-brutal-offset-md) * 2) calc(var(--spacing-brutal-offset-md) * 2) 0 var(--shadow-dark);
+  
+  --shadow-brutal-triple: 
+    4px 4px 0 var(--shadow-primary),
+    8px 8px 0 var(--shadow-secondary),
+    12px 12px 0 var(--shadow-dark);
+
+  --shadow-brutal-mega:
+    6px 6px 0 var(--shadow-primary),
+    12px 12px 0 var(--shadow-secondary),
+    18px 18px 0 var(--shadow-accent),
+    24px 24px 0 var(--shadow-dark);
+
+  /* === TRANSFORMS === */
+  --transform-brutal-rotate-left: rotate(-2deg);
+  --transform-brutal-rotate-right: rotate(2deg);
+  --transform-brutal-rotate-slight-left: rotate(-1deg);
+  --transform-brutal-rotate-slight-right: rotate(1deg);
+  --transform-brutal-rotate-tiny-left: rotate(-0.5deg);
+  --transform-brutal-rotate-tiny-right: rotate(0.5deg);
+
+  /* === TRANSITIONS === */
+  --transition-brutal: all 0.1s ease;
+  --transition-brutal-slow: all 0.2s ease;
+
+  /* === TEXT SHADOWS === */
+  --text-shadow-brutal: 4px 4px 0 var(--shadow-primary), 8px 8px 0 var(--shadow-dark);
+  --text-shadow-brutal-mega: 
+    3px 3px 0 var(--shadow-primary),
+    6px 6px 0 var(--shadow-secondary),
+    9px 9px 0 var(--shadow-accent),
+    12px 12px 0 var(--shadow-dark);
 }

@@ -34,21 +34,21 @@ describe('PageTitle', () => {
     render(<PageTitle variant="page">Page Title</PageTitle>);
     
     const heading = screen.getByRole('heading');
-    expect(heading).toHaveClass('text-2xl', 'md:text-3xl', 'font-bold', 'text-text-primary');
+    expect(heading).toHaveClass('font-mono', 'font-black', 'uppercase', 'text-text-primary', 'text-4xl', 'md:text-6xl');
   });
 
   it('applies correct styles for section variant', () => {
     render(<PageTitle variant="section">Section Title</PageTitle>);
     
     const heading = screen.getByRole('heading');
-    expect(heading).toHaveClass('text-lg', 'md:text-xl', 'font-semibold', 'text-text-primary');
+    expect(heading).toHaveClass('font-mono', 'font-black', 'uppercase', 'text-text-primary', 'text-2xl', 'md:text-4xl');
   });
 
   it('applies correct styles for subsection variant', () => {
     render(<PageTitle variant="subsection">Subsection Title</PageTitle>);
     
     const heading = screen.getByRole('heading');
-    expect(heading).toHaveClass('text-base', 'md:text-lg', 'font-semibold', 'text-text-primary');
+    expect(heading).toHaveClass('font-mono', 'font-black', 'uppercase', 'text-text-primary', 'text-xl', 'md:text-2xl');
   });
 
   it('renders description when provided', () => {

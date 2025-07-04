@@ -9,13 +9,16 @@ import { AuthStatus } from './lib/types/authStatus';
 import { Login } from './pages/auth/Login';
 import { Register } from './pages/auth/Register';
 import { Dashboard } from './pages/Dashboard';
-import { Home } from './pages/Home';
 
+import { Home } from './pages/Home';
+import { KitchenSink } from './pages/KitchenSink';
+import { LandingPage } from './pages/Landing';
 import { CreateHousehold } from './pages/onboarding/Create';
 import { OnboardingHome } from './pages/onboarding/Home';
 import { InviteOthers } from './pages/onboarding/Invite';
 import { JoinHousehold } from './pages/onboarding/Join';
 import { OnboardingSuccess } from './pages/onboarding/Success';
+import { Test } from './pages/Test';
 
 /** @todo setup constants file for front-end */
 const FIVE_MINUTES = 5 * 60 * 1000;
@@ -48,9 +51,14 @@ export function App() {
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<Root />}>
-                <Route index element={<Home />} />
+                <Route index element={<LandingPage />} />
                 <Route path="login" element={<Login />} />
                 <Route path="register" element={<Register />} />
+              </Route>
+              <Route path="/debug" element={<Root />}>
+                <Route path="home" element={<Home />} />
+                <Route path="test" element={<Test />} />
+                <Route path="kitchen-sink" element={<KitchenSink />} />
               </Route>
               <Route path="/onboarding">
                 <Route index element={<OnboardingHome />} />

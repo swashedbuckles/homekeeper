@@ -68,14 +68,14 @@ describe('ActionItem', () => {
     const { container } = render(<ActionItem {...defaultProps} />);
     
     const wrapper = container.firstChild as HTMLElement;
-    expect(wrapper).toHaveClass('flex', 'items-center', 'justify-between', 'p-2', 'bg-background', 'rounded-lg');
+    expect(wrapper).toHaveClass('flex', 'items-center', 'justify-between', 'p-6', 'bg-white', 'border-brutal-lg', 'border-text-primary', 'font-mono');
   });
 
   it('applies correct title styling', () => {
     render(<ActionItem {...defaultProps} />);
     
     const title = screen.getByText('Test Action');
-    expect(title).toHaveClass('font-mono', 'text-lg', 'font-semibold', 'text-text-primary');
+    expect(title).toHaveClass('font-bold', 'text-xl', 'text-text-primary', 'uppercase', 'tracking-wide', 'mb-2');
   });
 
   it('applies correct subtitle styling when provided', () => {

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HomeKeeper Neo-Brutalist Onboarding</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#e67e22',
+                        'secondary': '#4A6FA5', 
+                        'accent': '#5d9c59',
+                        'background': '#f5f0e8',
+                        'text-primary': '#2c3e50',
+                        'text-secondary': '#7f8c8d',
+                        'error': '#e74c3c'
+                    },
+                    fontFamily: {
+                        'mono': ['JetBrains Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .brutal-shadow-primary {
+            box-shadow: 8px 8px 0 #e67e22;
+        }
+        
+        .brutal-shadow-secondary {
+            box-shadow: 8px 8px 0 #4A6FA5;
+        }
+        
+        .brutal-shadow-accent {
+            box-shadow: 8px 8px 0 #5d9c59;
+        }
+        
+        .brutal-shadow-dark {
+            box-shadow: 8px 8px 0 #2c3e50;
+        }
+        
+        .brutal-hover:hover {
+            transform: translate(-3px, -3px);
+            box-shadow: 9px 9px 0 currentColor;
+        }
+        
+        .brutal-text-shadow {
+            text-shadow: 4px 4px 0 #e67e22;
+        }
+        
+        .brutal-rotate-left {
+            transform: rotate(-2deg);
+        }
+        
+        .brutal-rotate-right {
+            transform: rotate(2deg);
+        }
+        
+        .brutal-rotate-slight-left {
+            transform: rotate(-1deg);
+        }
+        
+        .brutal-rotate-slight-right {
+            transform: rotate(1deg);
+        }
+        
+        .brutal-input {
+            border: 4px solid #2c3e50;
+            background: white;
+            font-weight: bold;
+            text-transform: uppercase;
+            padding: 1rem 1.5rem;
+        }
+        
+        .brutal-input:focus {
+            outline: none;
+            box-shadow: 6px 6px 0 #e67e22;
+            transform: translate(-3px, -3px);
+        }
+        
+        /* Aligned button styles matching landing page */
+        .brutal-btn-primary {
+            background: #e67e22;
+            color: white;
+            border: 6px solid #2c3e50;
+            font-weight: 800;
+            text-transform: uppercase;
+            padding: 1.5rem 3rem;
+            font-size: 1.25rem;
+            letter-spacing: 0.1em;
+            transition: all 0.1s ease;
+            box-shadow: 8px 8px 0 #2c3e50;
+        }
+        
+        .brutal-btn-primary:hover {
+            transform: translate(4px, 4px);
+            box-shadow: none;
+        }
+        
+        .brutal-btn-secondary {
+            background: #4A6FA5;
+            color: white;
+            border: 6px solid #2c3e50;
+            font-weight: 800;
+            text-transform: uppercase;
+            padding: 1.5rem 3rem;
+            font-size: 1.25rem;
+            letter-spacing: 0.1em;
+            transition: all 0.1s ease;
+            box-shadow: 8px 8px 0 #2c3e50;
+        }
+        
+        .brutal-btn-secondary:hover {
+            transform: translate(4px, 4px);
+            box-shadow: none;
+        }
+        
+        .brutal-btn-outline {
+            background: transparent;
+            color: #2c3e50;
+            border: 6px solid #2c3e50;
+            font-weight: 800;
+            text-transform: uppercase;
+            padding: 1.5rem 3rem;
+            font-size: 1.25rem;
+            letter-spacing: 0.1em;
+            transition: all 0.1s ease;
+            box-shadow: 8px 8px 0 #2c3e50;
+        }
+        
+        .brutal-btn-outline:hover {
+            background: #2c3e50;
+            color: white;
+            transform: translate(4px, 4px);
+            box-shadow: none;
+        }
+        
+        .brutal-btn-small {
+            background: #5d9c59;
+            color: white;
+            border: 4px solid #2c3e50;
+            font-weight: 800;
+            text-transform: uppercase;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            letter-spacing: 0.05em;
+            transition: all 0.1s ease;
+            box-shadow: 6px 6px 0 #2c3e50;
+        }
+        
+        .brutal-btn-small:hover {
+            transform: translate(3px, 3px);
+            box-shadow: none;
+        }
+        
+        .screen { 
+            min-height: 100vh; 
+            display: none; 
+        }
+        .screen.active { 
+            display: block; 
+        }
+    </style>
+</head>
+<body class="font-mono bg-background">
+    <!-- Navigation for demo -->
+    <div class="fixed top-4 left-4 z-50 bg-text-primary border-4 border-white p-4 brutal-rotate-left">
+        <div class="text-sm font-bold mb-3 text-white uppercase">Demo Screens:</div>
+        <div class="flex flex-col gap-2">
+            <button class="bg-primary text-white border-2 border-white px-3 py-2 font-bold text-xs uppercase brutal-hover" onclick="showScreen('decision')">Decision</button>
+            <button class="bg-secondary text-white border-2 border-white px-3 py-2 font-bold text-xs uppercase brutal-hover" onclick="showScreen('create')">Create</button>
+            <button class="bg-accent text-white border-2 border-white px-3 py-2 font-bold text-xs uppercase brutal-hover" onclick="showScreen('join')">Join</button>
+            <button class="bg-primary text-white border-2 border-white px-3 py-2 font-bold text-xs uppercase brutal-hover" onclick="showScreen('invite')">Invite</button>
+            <button class="bg-secondary text-white border-2 border-white px-3 py-2 font-bold text-xs uppercase brutal-hover" onclick="showScreen('success')">Success</button>
+        </div>
+    </div>
+
+    <!-- Screen 1: Decision Page (/onboarding) -->
+    <div id="decision" class="screen active">
+        <div class="max-w-lg mx-auto px-6 py-12">
+            <!-- Header -->
+            <div class="text-center mb-12">
+                <div class="w-24 h-24 bg-primary border-6 border-text-primary flex items-center justify-center text-4xl font-black text-white mx-auto mb-8">
+                    🏠
+                </div>
+                <h1 class="text-5xl md:text-6xl font-black uppercase leading-none mb-6 text-text-primary brutal-text-shadow">
+                    Welcome to<br>HomeKeeper!
+                </h1>
+                <p class="text-xl font-bold text-text-primary uppercase tracking-wide">
+                    Let's get your household organized.<br>How would you like to start?
+                </p>
+            </div>
+            
+            <div class="space-y-8 mb-12">
+                <!-- Create Household Option -->
+                <div class="bg-white border-6 border-text-primary p-8 brutal-hover cursor-pointer">

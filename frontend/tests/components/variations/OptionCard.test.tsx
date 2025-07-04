@@ -9,7 +9,7 @@ describe('OptionCard', () => {
     description: 'Test description',
     icon: <div data-testid="test-icon">Icon</div>,
     buttonText: 'Select',
-    onClick: vi.fn()
+    onButtonClick: vi.fn()
   };
 
   it('renders title, description, and button text', () => {
@@ -26,44 +26,48 @@ describe('OptionCard', () => {
     expect(screen.getByTestId('test-icon')).toBeInTheDocument();
   });
 
-  it('calls onClick when card is clicked', async () => {
+  it('calls onClick when card is clicked (without button)', async () => {
     const user = userEvent.setup();
     const mockOnClick = vi.fn();
     
-    render(<OptionCard {...defaultProps} onClick={mockOnClick} />);
+    // Remove buttonText and onButtonClick so card becomes clickable
+    const propsWithoutButton = {
+      title: 'Test Option',
+      description: 'Test description',
+      icon: <div data-testid="test-icon">Icon</div>,
+      onClick: mockOnClick
+    };
     
-    // Click on the card (Card component should be clickable)
-    const card = screen.getByText('Test Option').closest('[role="button"]') || 
-                 screen.getByText('Test Option').parentElement;
+    render(<OptionCard {...propsWithoutButton} />);
     
-    if (card) {
-      await user.click(card);
-      expect(mockOnClick).toHaveBeenCalledTimes(1);
-    }
+    // Click on the card
+    const card = screen.getByTestId('option-card');
+    await user.click(card);
+    expect(mockOnClick).toHaveBeenCalledTimes(1);
   });
 
   it('calls onClick when button is clicked', async () => {
     const user = userEvent.setup();
-    const mockOnClick = vi.fn();
+    const mockOnButtonClick = vi.fn();
     
-    render(<OptionCard {...defaultProps} onClick={mockOnClick} />);
+    render(<OptionCard {...defaultProps} onButtonClick={mockOnButtonClick} />);
     
     await user.click(screen.getByText('Select'));
-    expect(mockOnClick).toHaveBeenCalledTimes(1);
+    expect(mockOnButtonClick).toHaveBeenCalledTimes(1);
   });
 
-  it('applies primary button variant by default', () => {
+  it('applies outline button variant by default (not selected)', () => {
     render(<OptionCard {...defaultProps} />);
     
     const button = screen.getByText('Select');
-    expect(button).toHaveClass('bg-primary');
+    expect(button).toHaveClass('bg-transparent', 'border-text-primary');
   });
 
-  it('applies secondary button variant when specified', () => {
-    render(<OptionCard {...defaultProps} buttonVariant="secondary" />);
+  it('applies primary button variant when selected', () => {
+    render(<OptionCard {...defaultProps} selected={true} />);
     
     const button = screen.getByText('Select');
-    expect(button).toHaveClass('bg-secondary');
+    expect(button).toHaveClass('bg-primary');
   });
 
   it.skip('applies correct icon background based on button variant', () => {

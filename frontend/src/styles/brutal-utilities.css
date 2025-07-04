@@ -1,0 +1,197 @@
+/* styles/brutal-utilities.css - Tailwind v4 */
+@import 'tailwindcss';
+
+/* === SHADOW UTILITIES === */
+@utility brutal-shadow-primary {
+  box-shadow: var(--shadow-brutal-lg) var(--shadow-primary);
+}
+
+@utility brutal-shadow-secondary {
+  box-shadow: var(--shadow-brutal-lg) var(--shadow-secondary);
+}
+
+@utility brutal-shadow-accent {
+  box-shadow: var(--shadow-brutal-lg) var(--shadow-accent);
+}
+
+@utility brutal-shadow-dark {
+  box-shadow: var(--shadow-brutal-lg) var(--shadow-dark);
+}
+
+@utility brutal-shadow-error {
+  box-shadow: var(--shadow-brutal-lg) var(--shadow-error);
+}
+
+@utility brutal-shadow-double {
+  box-shadow: var(--shadow-brutal-double);
+}
+
+@utility brutal-shadow-triple {
+  box-shadow: var(--shadow-brutal-triple);
+}
+
+@utility brutal-shadow-mega {
+  box-shadow: var(--shadow-brutal-mega);
+}
+
+/* === TEXT SHADOW UTILITIES === */
+@utility brutal-text-shadow {
+  text-shadow: var(--text-shadow-brutal);
+}
+
+@utility brutal-text-shadow-small {
+  text-shadow: 2px 2px 0 var(--color-primary);
+}
+
+@utility brutal-text-shadow-tiny {
+  text-shadow: 1px 1px 0 var(--color-primary);
+}
+
+@utility brutal-text-shadow-mega {
+  text-shadow: var(--text-shadow-brutal-mega);
+}
+
+/* === ROTATION UTILITIES === */
+@utility brutal-rotate-left {
+  transform: var(--transform-brutal-rotate-left);
+}
+
+@utility brutal-rotate-right {
+  transform: var(--transform-brutal-rotate-right);
+}
+
+@utility brutal-rotate-slight-left {
+  transform: var(--transform-brutal-rotate-slight-left);
+}
+
+@utility brutal-rotate-slight-right {
+  transform: var(--transform-brutal-rotate-slight-right);
+}
+
+@utility brutal-rotate-tiny-left {
+  transform: var(--transform-brutal-rotate-tiny-left);
+}
+
+@utility brutal-rotate-tiny-right {
+  transform: var(--transform-brutal-rotate-tiny-right);
+}
+
+/* === TRANSITION UTILITIES === */
+@utility brutal-transition {
+  transition: var(--transition-brutal);
+}
+
+@utility brutal-transition-slow {
+  transition: var(--transition-brutal-slow);
+}
+
+/* === HOVER EFFECT UTILITIES === */
+/* Note: v4 @utility can handle pseudo-selectors */
+@utility brutal-hover-lift {
+  transition: var(--transition-brutal);
+  &:hover {
+    transform: translate(-3px, -3px);
+    box-shadow: 
+      calc(var(--spacing-brutal-offset-lg) + 3px) calc(var(--spacing-brutal-offset-lg) + 3px) 0 currentColor,
+      calc(var(--spacing-brutal-offset-xl) + 3px) calc(var(--spacing-brutal-offset-xl) + 3px) 0 var(--shadow-dark);
+  }
+}
+
+@utility brutal-hover-press {
+  transition: var(--transition-brutal);
+  &:hover {
+    transform: translate(4px, 4px);
+    box-shadow: none;
+  }
+}
+
+
+@utility brutal-hover-press-small {
+  transition: var(--transition-brutal);
+  &:hover {
+    transform: translate(3px, 3px);
+    box-shadow: none;
+  }
+}
+
+/* === BORDER UTILITIES === */
+@utility border-brutal-sm {
+  border-width: var(--border-brutal-sm);
+}
+
+@utility border-brutal-md {
+  border-width: var(--border-brutal-md);
+}
+
+@utility border-brutal-lg {
+  border-width: var(--border-brutal-lg);
+}
+
+@utility border-brutal-xl {
+  border-width: var(--border-brutal-xl);
+}
+
+@utility border-l-brutal-xl {
+  border-left-width: var(--border-brutal-xl);
+}
+
+/* === TYPOGRAPHY UTILITIES === */
+@utility text-brutal-header {
+  font-family: var(--font-family-mono);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+@utility text-brutal-button {
+  font-family: var(--font-family-mono);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+@utility text-brutal-small {
+  font-family: var(--font-family-mono);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* === COMPONENT UTILITIES === */
+@utility btn-brutal {
+  font-family: var(--font-family-mono);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  transition: var(--transition-brutal);
+  padding: 1.5rem 3rem;
+  font-size: 1.25rem;
+  box-shadow: var(--shadow-brutal-lg) var(--shadow-dark);
+}
+
+@utility input-brutal {
+  border: var(--border-brutal-md) solid var(--color-text-primary);
+  background: white;
+  font-weight: bold;
+  text-transform: uppercase;
+  padding: 1rem 1.5rem;
+  font-family: var(--font-family-mono);
+  transition: var(--transition-brutal);
+
+  &:focus {
+    outline: none;
+    border-color: var(--color-primary); /* Orange border */
+    transform: translate(-3px, -3px);   /* Keep the transform */
+  }
+  
+  &::placeholder {
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+  }
+}
+
+@utility card-brutal {
+  background: white;
+  border: var(--border-brutal-lg) solid var(--color-text-primary);
+  padding: 2rem;
+}
