@@ -35,6 +35,9 @@ jobs:
       - name: Run frontend tests
         run: npm run test:run -w frontend
 
+      - name: Run frontend checks
+        run: npm run type-check -w frontend && npm run lint -w frontend
+
   # Option 2: Parallel approach (faster, but more complex)
   # Uncomment this section and comment out the above if you prefer parallel execution
   
