@@ -1,9 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Outlet } from 'react-router';
-import { BackgroundCircles } from './BackgroundCircles';
-import { BackgroundGrid } from './BackgroundGrid';
-import { BackgroundLines } from './BackgroundLines';
-import { BackgroundRectangles } from './BackgroundRectangles';
+// import { BackgroundCircles } from './BackgroundCircles';
+// import { BackgroundGrid } from './BackgroundGrid';
+// import { BackgroundLines } from './BackgroundLines';
+// import { BackgroundRectangles } from './BackgroundRectangles';
 import { BackgroundSquares } from './BackgroundSquares';
 import { Header } from './Header';
 

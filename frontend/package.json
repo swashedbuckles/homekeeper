@@ -13,7 +13,7 @@
     "test:run": "vitest run",
     "test:coverage": "vitest --coverage",
     "test:watch": "vitest --watch",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc -b --noEmit"
   },
   "dependencies": {
     "@homekeeper/shared": "*",
