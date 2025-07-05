@@ -1,8 +1,8 @@
 import { forwardRef } from 'react';
-import type { HTMLInputTypeAttribute, ReactNode } from 'react';
+import type { HTMLInputTypeAttribute, ReactNode, InputHTMLAttributes } from 'react';
 import type { UseFormRegisterReturn } from 'react-hook-form';
 
-export interface TextInputProps {
+export interface TextInputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'className' | 'size'> {
   label: string;
   type: HTMLInputTypeAttribute;
   placeholder?: string;
@@ -85,9 +85,24 @@ const variantStyles = {
  * ```
  */
 export const TextInput = forwardRef<HTMLInputElement, TextInputProps>((props, ref) => {
-  const inputId = `input-${props.label.replace(/\s+/g, '-').toLowerCase()}`;
-  const hasFeedback = props.validationFeedback != null;
-  const hasError = props.error != null;
+  const { 
+    label, 
+    type, 
+    placeholder, 
+    error, 
+    validationFeedback, 
+    register, 
+    testId, 
+    className, 
+    grouped, 
+    size, 
+    variant,
+    ...inputProps 
+  } = props;
+  
+  const inputId = `input-${label.replace(/\s+/g, '-').toLowerCase()}`;
+  const hasFeedback = validationFeedback != null;
+  const hasError = error != null;
 
   const errorStyles = hasError ? [
     'border-error',
@@ -95,22 +110,22 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>((props, re
   ] : [];
 
   const inputStyles = [
-    ...(props.grouped ? [] : ['w-full']),
+    ...(grouped ? [] : ['w-full']),
     ...baseStyles,
-    ...sizeStyles[props.size || 'default'],
-    ...variantStyles[props.variant || 'default'],
+    ...sizeStyles[size || 'default'],
+    ...variantStyles[variant || 'default'],
     ...errorStyles,
-    props.className
+    className
   ].filter(Boolean).join(' ');
 
   return (
-    <div className={props.grouped ? 'mb-4' : 'w-full mb-4'}>
+    <div className={grouped ? 'mb-4' : 'w-full mb-4'}>
       <label
         htmlFor={inputId}
         className="block font-mono font-black text-text-primary uppercase mb-2 text-lg tracking-wide"
       >
-        {props.label}
-        {props.register?.required && (
+        {label}
+        {register?.required && (
           <span className="text-error ml-1">*</span>
         )}
       </label>
@@ -118,11 +133,12 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>((props, re
       <input
         ref={ref}
         id={inputId}
-        type={props.type}
-        placeholder={props.placeholder}
+        type={type}
+        placeholder={placeholder}
         className={inputStyles}
-        data-testid={props.testId}
-        {...props.register}
+        data-testid={testId}
+        {...inputProps}
+        {...register}
       />
 
       {hasError && (

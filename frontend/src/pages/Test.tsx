@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { BackgroundCircles } from '../components/BackgroundCircles';
+import { BackgroundGrid } from '../components/BackgroundGrid';
 import { BackgroundLines } from '../components/BackgroundLines';
 import { BackgroundRectangles } from '../components/BackgroundRectangles';
-import { BackgroundGrid } from '../components/BackgroundGrid';
 import { BackgroundSquares } from '../components/BackgroundSquares';
 import { Button } from '../components/common/Button';
-import { Title } from '../components/common/Title';
 import { Card } from '../components/common/Card';
+import { Title } from '../components/common/Title';
 import { ContentContainer } from '../components/containers/ContentContainer';
 
 type BackgroundType = 'circles' | 'lines' | 'rectangles' | 'grid' | 'squares' | 'none';

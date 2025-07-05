@@ -204,7 +204,9 @@ export function KitchenSink() {
                 placeholder="Type to see strength"
                 value={password}
                 register={{
-                  onChange: (e) => setPassword(e.target.value),
+                  onChange: async (e) => setPassword(e.target.value),
+                  onBlur: async () => {},
+                  ref: () => {},
                   name: 'password'
                 }}
               />
