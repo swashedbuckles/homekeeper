@@ -58,7 +58,7 @@ export function Header() {
     return () => document.removeEventListener('click', handleClickOutside);
   }, [isMobileMenuOpen]);
 
-  return (<header className="font-sans relative">
+  return (<header className="relative">
     <nav className="flex items-center justify-between p-4 w">
       <HeaderLogo />
 
