@@ -9,6 +9,12 @@ interface HeaderButtonsProps {
   setMenuState?: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
+/**
+ * HeaderButtons component that renders authentication buttons (login/logout/register)
+ * @param isMobile - Whether the buttons are displayed in mobile view
+ * @param setMenuState - Function to control mobile menu visibility
+ * @returns JSX element containing authentication buttons
+ */
 function HeaderButtons({ isMobile, setMenuState }: HeaderButtonsProps) {
   const {isAuthenticated, logout} = useAuth();
 
@@ -42,6 +48,13 @@ function HeaderButtons({ isMobile, setMenuState }: HeaderButtonsProps) {
   );
 }
 
+/**
+ * Header component that renders the main navigation header with logo and authentication buttons
+ * Includes responsive mobile menu functionality
+ * @returns JSX element containing the complete header navigation
+ * @example
+ * <Header />
+ */
 export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
