@@ -1,9 +1,5 @@
 import { Outlet } from 'react-router';
-// import { BackgroundCircles } from './BackgroundCircles';
-// import { BackgroundGrid } from './BackgroundGrid';
-// import { BackgroundLines } from './BackgroundLines';
-// import { BackgroundRectangles } from './BackgroundRectangles';
-import { BackgroundSquares } from './BackgroundSquares';
+import { BackgroundSquares } from './backgrounds/BackgroundSquares';
 import { Header } from './Header';
 
 export function Root() {
