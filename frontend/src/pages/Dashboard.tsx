@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router';
 
+import { PageContainer } from '../components/containers/PageContainer';
 import { useAuth } from '../hooks/useAuth';
 
 export function Dashboard() {
@@ -10,7 +11,8 @@ export function Dashboard() {
   const householdRoles = context.user?.householdRoles;
 
   useEffect(() => {
-    if(!householdRoles || Object.keys(householdRoles).length === 0) {
+    const IS_DEV = !import.meta.env.PROD;
+    if(!IS_DEV && (!householdRoles || Object.keys(householdRoles).length === 0)) {
       navigate('/onboarding');
     }
   }, [context, householdRoles, navigate]);
@@ -18,9 +20,9 @@ export function Dashboard() {
 
   return (
     <>
-      <div>
+      <PageContainer>
         <p>Dashboard Page</p>
-      </div>
+      </PageContainer>
     </>
   );
 }

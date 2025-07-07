@@ -1,8 +1,8 @@
 import { useLocation } from 'react-router';
 import { useAuth } from '../hooks/useAuth';
 
-import { UnauthenticatedHeader } from './UnauthenticatedHeader';
-
+import { MainHeader } from './headers/MainHeader';
+import { UnauthenticatedHeader } from './headers/UnauthenticatedHeader';
 
 /**
  * Header component that renders the main navigation header with logo and authentication buttons
@@ -14,6 +14,7 @@ import { UnauthenticatedHeader } from './UnauthenticatedHeader';
 export function Header() {
   const location = useLocation();
   const { isAuthenticated } = useAuth();
+  console.log('location pathname', location.pathname);
 
   if(location.pathname.startsWith('/onboarding')) {
     return null;
@@ -23,8 +24,8 @@ export function Header() {
     // return minimal header 
   }
 
-  if(isAuthenticated) {
-    // return "main" header
+  if(isAuthenticated || location.pathname.startsWith('/dashboard')) {
+    return <MainHeader />;
   }
 
   return <UnauthenticatedHeader />;

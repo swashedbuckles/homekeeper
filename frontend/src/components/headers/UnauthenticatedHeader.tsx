@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
-import { Z_INDEX_CLASSES } from '../lib/constants/zIndex';
-import { Button } from './common/Button';
-import { HeaderLogo } from './common/Logo';
-import { MobileMenu } from './containers/MobileMenu';
+import { Z_INDEX_CLASSES } from '../../lib/constants/zIndex';
+import { Button } from '../common/Button';
+import { LightBgHeader } from '../common/Logo';
+import { MobileMenu } from '../containers/MobileMenu';
 
 /**
  * AuthButtons component that renders authentication buttons for unauthenticated users
@@ -74,7 +74,7 @@ export function UnauthenticatedHeader() {
       <div className="max-w-7xl mx-auto px-4 md:px-5 py-4 md:py-8">
         <div className="flex justify-between items-center">
           {/* Logo */}
-          <HeaderLogo />
+          <LightBgHeader />
           
           {/* Desktop Auth Buttons */}
           <AuthButtons />
