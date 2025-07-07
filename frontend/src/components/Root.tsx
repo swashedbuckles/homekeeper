@@ -1,7 +1,7 @@
 import { Outlet } from 'react-router';
+import { Z_INDEX_CLASSES } from '../lib/constants/zIndex';
 import { BackgroundSquares } from './backgrounds/BackgroundSquares';
 import { Header } from './Header';
-import { Z_INDEX_CLASSES } from '../lib/constants/zIndex';
 
 export function Root() {
   return (

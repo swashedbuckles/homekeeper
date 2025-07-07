@@ -83,7 +83,7 @@ export function LogoAndName({ variant = 'dark' }: { variant?: 'light' | 'dark' }
  * HeaderLogo component that renders the logo and name in light variant for use in headers
  * @returns JSX element containing the logo and name in light variant
  */
-export function HeaderLogo() {
+export function LightBgHeader() {
   return (<LogoAndName variant="light" />);
 }
 
@@ -92,6 +92,6 @@ export function HeaderLogo() {
  * FooterLogo component that renders the logo and name in dark variant for use in footers
  * @returns JSX element containing the logo and name in dark variant
  */
-export function FooterLogo() {
+export function DarkBgHeader() {
   return (<LogoAndName variant="dark" />);
 }

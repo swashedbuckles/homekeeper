@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router';
-import { PageContainer } from '../../components/common/PageContainer';
+import { PageContainer } from '../../components/containers/PageContainer';
 import { RegistrationForm } from '../../components/fragments/RegistrationForm';
 
 export function Register() {
@@ -10,7 +10,7 @@ export function Register() {
   };
 
   return (
-    <PageContainer>
+    <PageContainer maxWidth="md">
       <RegistrationForm onSuccess={handleSubmit} />
     </PageContainer>
   );

@@ -2,7 +2,7 @@ import { Smartphone, LockKeyhole, Rocket, BookText, AlarmClock, Users } from 'lu
 
 import { Button } from '../components/common/Button';
 import { Card } from '../components/common/Card';
-import { FooterLogo } from '../components/common/Logo';
+import { DarkBgHeader } from '../components/common/Logo';
 import { Title } from '../components/common/Title';
 import { SectionContainer } from '../components/containers/SectionContainer';
 import { StatCard } from '../components/variations/StatCard';
@@ -116,7 +116,7 @@ export const LandingPage = () => {
 
       <SectionContainer className="bg-text-primary border-t-8 border-primary" hero>
         <div className="flex flex-col md:flex-row justify-between items-center">
-          <FooterLogo />
+          <DarkBgHeader />
 
           <div className="flex gap-8">
             <a href="#" className="text-white font-bold uppercase hover:text-primary transition-colors">Privacy</a>

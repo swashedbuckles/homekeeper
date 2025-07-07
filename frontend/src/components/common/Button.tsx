@@ -73,7 +73,6 @@ const variantStyles = {
     'text-text-primary',
     'border-text-primary',
     'brutal-shadow-primary',
-    'hover:bg-background'
   ],
   outline: [
     'bg-transparent',
