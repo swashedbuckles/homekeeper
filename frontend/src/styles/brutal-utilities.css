@@ -18,8 +18,69 @@
   box-shadow: var(--shadow-brutal-lg) var(--shadow-dark);
 }
 
+@utility brutal-shadow-dark-sm {
+  box-shadow: var(--shadow-brutal-sm) var(--shadow-dark);
+}
+
 @utility brutal-shadow-error {
   box-shadow: var(--shadow-brutal-lg) var(--shadow-error);
+}
+
+@utility brutal-shadow-white {
+  box-shadow: var(--shadow-brutal-lg) white;
+}
+
+@utility brutal-shadow-black {
+  box-shadow: var(--shadow-brutal-lg) black;
+}
+
+/* Size modifiers for all shadow colors */
+@utility brutal-shadow-primary-sm {
+  box-shadow: var(--shadow-brutal-sm) var(--shadow-primary);
+}
+
+@utility brutal-shadow-primary-md {
+  box-shadow: var(--shadow-brutal-md) var(--shadow-primary);
+}
+
+@utility brutal-shadow-secondary-sm {
+  box-shadow: var(--shadow-brutal-sm) var(--shadow-secondary);
+}
+
+@utility brutal-shadow-secondary-md {
+  box-shadow: var(--shadow-brutal-md) var(--shadow-secondary);
+}
+
+@utility brutal-shadow-accent-sm {
+  box-shadow: var(--shadow-brutal-sm) var(--shadow-accent);
+}
+
+@utility brutal-shadow-accent-md {
+  box-shadow: var(--shadow-brutal-md) var(--shadow-accent);
+}
+
+@utility brutal-shadow-error-sm {
+  box-shadow: var(--shadow-brutal-sm) var(--shadow-error);
+}
+
+@utility brutal-shadow-error-md {
+  box-shadow: var(--shadow-brutal-md) var(--shadow-error);
+}
+
+@utility brutal-shadow-white-sm {
+  box-shadow: var(--shadow-brutal-sm) white;
+}
+
+@utility brutal-shadow-white-md {
+  box-shadow: var(--shadow-brutal-md) white;
+}
+
+@utility brutal-shadow-black-sm {
+  box-shadow: var(--shadow-brutal-sm) black;
+}
+
+@utility brutal-shadow-black-md {
+  box-shadow: var(--shadow-brutal-md) black;
 }
 
 @utility brutal-shadow-double {
@@ -213,17 +274,6 @@
   letter-spacing: 0.05em;
 }
 
-/* === COMPONENT UTILITIES === */
-@utility btn-brutal {
-  font-family: var(--font-family-mono);
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  transition: var(--transition-brutal);
-  padding: 1.5rem 3rem;
-  font-size: 1.25rem;
-  box-shadow: var(--shadow-brutal-lg) var(--shadow-dark);
-}
 
 @utility input-brutal {
   border: var(--border-brutal-md) solid var(--color-text-primary);
@@ -244,10 +294,4 @@
     color: var(--color-text-secondary);
     text-transform: uppercase;
   }
-}
-
-@utility card-brutal {
-  background: white;
-  border: var(--border-brutal-lg) solid var(--color-text-primary);
-  padding: 2rem;
 }

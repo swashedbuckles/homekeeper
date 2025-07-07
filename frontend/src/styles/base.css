@@ -2,6 +2,6 @@
 
 @layer base {
   html {
-    scrollbar-gutter: stable;
+    /* scrollbar-gutter: stable; */
   }
 }

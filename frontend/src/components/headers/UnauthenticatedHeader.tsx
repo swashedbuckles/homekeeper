@@ -4,7 +4,7 @@ import { Z_INDEX_CLASSES } from '../../lib/constants/zIndex';
 import { Button } from '../common/Button';
 import { LightBgHeader } from '../common/Logo';
 import { MobileMenu } from '../containers/MobileMenu';
-
+import { MobileMenuToggle } from './MobileMenuToggle';
 /**
  * AuthButtons component that renders authentication buttons for unauthenticated users
  * @param isMobile - Whether the buttons are displayed in mobile view
@@ -80,16 +80,7 @@ export function UnauthenticatedHeader() {
           <AuthButtons />
           
           {/* Mobile Menu Toggle */}
-          <button 
-            className="md:hidden w-10 h-10 bg-primary border-3 border-text-primary flex flex-col items-center justify-center gap-1 p-2 transition-all duration-300"
-            style={{ boxShadow: '4px 4px 0 #2c3e50' }}
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            aria-label="Toggle menu"
-          >
-            <div className="w-full h-0.5 bg-white transition-all duration-300"></div>
-            <div className="w-full h-0.5 bg-white transition-all duration-300"></div>
-            <div className="w-full h-0.5 bg-white transition-all duration-300"></div>
-          </button>
+          <MobileMenuToggle isOpen={isMobileMenuOpen} setIsOpen={setIsMobileMenuOpen} />
         </div>
       </div>
 
