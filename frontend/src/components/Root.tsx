@@ -1,17 +1,18 @@
 import { Outlet } from 'react-router';
 import { BackgroundSquares } from './backgrounds/BackgroundSquares';
 import { Header } from './Header';
+import { Z_INDEX_CLASSES } from '../lib/constants/zIndex';
 
 export function Root() {
   return (
     <div className="grow relative">
       {/* Background layer */}
-      <div className="absolute inset-0 overflow-hidden">
+      <div className={`absolute inset-0 overflow-hidden ${Z_INDEX_CLASSES.BACKGROUND}`}>
         <BackgroundSquares />
       </div>
       
       {/* Content layer */}
-      <div className="relative z-10">
+      <div className={`relative ${Z_INDEX_CLASSES.CONTENT}`}>
         <Header />
         <Outlet />
       </div>

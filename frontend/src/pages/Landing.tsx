@@ -65,8 +65,8 @@ export const LandingPage = () => {
                 </div>
               </Card>
 
-              <StatCard size="sm" className="absolute -top-16 -right-8" label="Manuals Stored" value={47} variant="primary" rotation="slight-right" />
-              <StatCard size="sm" className="absolute -bottom-24 -left-16" label="Tasks Completed" value={12} variant="accent" rotation="left" />
+              <StatCard size="sm" className="absolute -top-16 -right-8 hidden lg:block" label="Manuals Stored" value={47} variant="primary" rotation="slight-right" />
+              <StatCard size="sm" className="absolute -bottom-24 -left-16 hidden lg:block" label="Tasks Completed" value={12} variant="accent" rotation="left" />
             </div>
           </div>
         </div>

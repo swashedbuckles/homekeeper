@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 
 export interface ButtonProps {
-  variant?: 'primary' | 'secondary' | 'outline' | 'text' | 'danger';
+  variant?: 'primary' | 'secondary' | 'tertiary' | 'outline' | 'text' | 'danger';
   size?: 'small' | 'default' | 'large';
   disabled?: boolean;
   /** whether to display loading text / spinner */
@@ -17,7 +17,6 @@ export interface ButtonProps {
   className?: string;
   children: ReactNode;
 }
-
 
 const baseStyles = [
   'font-mono',
@@ -37,7 +36,6 @@ const sizeStyles = {
     'py-2',
     'text-sm',
     'border-brutal-sm',
-    'brutal-shadow-primary',
     'brutal-hover-press-small'
   ],
   default: [
@@ -45,7 +43,6 @@ const sizeStyles = {
     'py-3',
     'text-base',
     'border-brutal-md',
-    'brutal-shadow-dark',
     'brutal-hover-press'
   ],
   large: [
@@ -53,7 +50,6 @@ const sizeStyles = {
     'py-4',
     'text-lg',
     'border-brutal-lg',
-    'brutal-shadow-dark',
     'brutal-hover-press'
   ]
 };
@@ -63,24 +59,35 @@ const variantStyles = {
   primary: [
     'bg-primary',
     'text-white',
-    'border-text-primary'
+    'border-text-primary',
+    'brutal-shadow-dark'
   ],
   secondary: [
     'bg-secondary',
     'text-white',
-    'border-text-primary'
+    'border-text-primary',
+    'brutal-shadow-dark'
+  ],
+  tertiary: [
+    'bg-white',
+    'text-text-primary',
+    'border-text-primary',
+    'brutal-shadow-primary',
+    'hover:bg-background'
   ],
   outline: [
     'bg-transparent',
     'text-text-primary',
     'border-text-primary',
+    'brutal-shadow-dark',
     'hover:bg-text-primary',
     'hover:text-white'
   ],
   danger: [
     'bg-error',
     'text-white',
-    'border-text-primary'
+    'border-text-primary',
+    'brutal-shadow-dark'
   ],
   text: [
     'bg-transparent',

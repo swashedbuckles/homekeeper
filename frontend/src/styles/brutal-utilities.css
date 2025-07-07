@@ -34,9 +34,44 @@
   box-shadow: var(--shadow-brutal-mega);
 }
 
+/* White border shadows for dashboard cards */
+@utility brutal-shadow-double-white {
+  box-shadow: 
+    0 0 0 var(--border-brutal-lg) white,
+    var(--shadow-brutal-double);
+}
+
+@utility brutal-shadow-primary-white {
+  box-shadow: 
+    0 0 0 var(--border-brutal-lg) white,
+    var(--shadow-brutal-lg) var(--shadow-primary);
+}
+
+@utility brutal-shadow-secondary-white {
+  box-shadow: 
+    0 0 0 var(--border-brutal-lg) white,
+    var(--shadow-brutal-lg) var(--shadow-secondary);
+}
+
+@utility brutal-shadow-accent-white {
+  box-shadow: 
+    0 0 0 var(--border-brutal-lg) white,
+    var(--shadow-brutal-lg) var(--shadow-accent);
+}
+
+@utility brutal-shadow-error-white {
+  box-shadow: 
+    0 0 0 var(--border-brutal-lg) white,
+    var(--shadow-brutal-lg) var(--shadow-error);
+}
+
 /* === TEXT SHADOW UTILITIES === */
 @utility brutal-text-shadow {
   text-shadow: var(--text-shadow-brutal);
+}
+
+@utility brutal-text-shadow-double {
+  text-shadow: var(--text-shadow-brutal-double);
 }
 
 @utility brutal-text-shadow-small {
@@ -49,6 +84,15 @@
 
 @utility brutal-text-shadow-mega {
   text-shadow: var(--text-shadow-brutal-mega);
+}
+
+/* Simple text shadows for headings */
+@utility brutal-text-shadow-simple {
+  text-shadow: 2px 2px 0 var(--color-text-primary);
+}
+
+@utility brutal-text-shadow-primary-simple {
+  text-shadow: 2px 2px 0 var(--color-primary);
 }
 
 /* === ROTATION UTILITIES === */
@@ -111,6 +155,18 @@
   &:hover {
     transform: translate(3px, 3px);
     box-shadow: none;
+  }
+}
+
+/* Hover effects for dashboard cards */
+@utility brutal-hover {
+  transition: var(--transition-brutal);
+  cursor: pointer;
+  &:hover {
+    transform: translate(-4px, -4px);
+    box-shadow: 
+      calc(var(--spacing-brutal-offset-lg) + 4px) calc(var(--spacing-brutal-offset-lg) + 4px) 0 var(--shadow-primary),
+      calc(var(--spacing-brutal-offset-xl) + 4px) calc(var(--spacing-brutal-offset-xl) + 4px) 0 var(--shadow-dark);
   }
 }
 

@@ -83,7 +83,8 @@
   --transition-brutal-slow: all 0.2s ease;
 
   /* === TEXT SHADOWS === */
-  --text-shadow-brutal: 4px 4px 0 var(--shadow-primary), 8px 8px 0 var(--shadow-dark);
+  --text-shadow-brutal: 4px 4px 0 var(--shadow-primary);
+  --text-shadow-brutal-double: 4px 4px 0 var(--shadow-primary), 8px 8px 0 var(--shadow-dark);
   --text-shadow-brutal-mega: 
     3px 3px 0 var(--shadow-primary),
     6px 6px 0 var(--shadow-secondary),

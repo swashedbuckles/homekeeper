@@ -67,10 +67,11 @@ export interface LogoProps {
 export function LogoAndName({ variant = 'dark' }: { variant?: 'light' | 'dark' }) {
   const titleClass = variant === 'dark' ? 'text-white brutal-text-shadow' : 'text-primary';
   const shadow = variant === 'dark' ? 'secondary' : 'primary';
+  const border = variant === 'dark' ? 'light' : 'dark';
   
   return (
     <div className="flex items-center gap-4">
-      <Logo size={64} border="light" shadow={shadow} />
+      <Logo size={64} border={border} shadow={shadow} />
       <Link to="/" className={`${titleClass} font-black text-3xl lg:text-5xl uppercase tracking-tight`}>
         HomeKeeper
       </Link>
