@@ -18,7 +18,6 @@ import { OnboardingHome } from './pages/onboarding/Home';
 import { InviteOthers } from './pages/onboarding/Invite';
 import { JoinHousehold } from './pages/onboarding/Join';
 import { OnboardingSuccess } from './pages/onboarding/Success';
-import { Test } from './pages/Test';
 
 /** @todo setup constants file for front-end */
 const FIVE_MINUTES = 5 * 60 * 1000;
@@ -57,7 +56,6 @@ export function App() {
               </Route>
               <Route path="/debug" element={<Root />}>
                 <Route path="home" element={<Home />} />
-                <Route path="test" element={<Test />} />
                 <Route path="kitchen-sink" element={<KitchenSink />} />
               </Route>
               <Route path="/onboarding">

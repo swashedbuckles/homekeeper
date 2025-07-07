@@ -1,7 +1,12 @@
+import { Home, Key } from 'lucide-react';
 import { useState } from 'react';
+import { BackgroundCircles } from '../components/backgrounds/BackgroundCircles';
+import { BackgroundGrid } from '../components/backgrounds/BackgroundGrid';
+import { BackgroundLines } from '../components/backgrounds/BackgroundLines';
 import { BackgroundRectangles } from '../components/backgrounds/BackgroundRectangles';
 
 // Common Components
+import { BackgroundSquares } from '../components/backgrounds/BackgroundSquares';
 import { ActionItem } from '../components/common/ActionItem';
 import { Alert } from '../components/common/Alert';
 import { BackButton } from '../components/common/BackButton';
@@ -53,9 +58,10 @@ export function KitchenSink() {
         <SectionTitle className="mb-8">Buttons</SectionTitle>
         <Card variant="default" shadow="triple" className="p-8 mb-12">
           <SubSectionTitle className="mb-6">Button Variants</SubSectionTitle>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
+          <div className="grid grid-cols-2 md:grid-cols-6 gap-4 mb-8">
             <Button variant="primary">Primary</Button>
             <Button variant="secondary">Secondary</Button>
+            <Button variant="tertiary">Tertiary</Button>
             <Button variant="outline">Outline</Button>
             <Button variant="text">Text</Button>
             <Button variant="danger">Danger</Button>
@@ -244,14 +250,14 @@ export function KitchenSink() {
             <OptionCard
               title="Create New Household"
               description="Start fresh and invite family members"
-              icon="🏠"
+              icon={<Home size={24} />}
               selected={selectedOption === 'create'}
               onClick={() => setSelectedOption('create')}
             />
             <OptionCard
               title="Join Existing Household"
               description="Use an invitation code to join"
-              icon="🔑"
+              icon={<Key size={24} />}
               buttonText="Join with Code"
               onButtonClick={() => alert('Join clicked')}
             />
@@ -341,6 +347,105 @@ export function KitchenSink() {
             />
           </div>
         </Card>
+
+        {/* Background Components */}
+        <section>
+          <Title variant="section" className="mb-6">
+            Background Components
+          </Title>
+          
+          <Title variant="subsection" className="mb-4">
+            Individual Background Patterns
+          </Title>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div className="relative h-64 bg-background border-4 border-text-primary">
+              <BackgroundCircles />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <Card variant="primary" className="px-6 py-3">
+                  <p className="font-mono text-white font-bold">Circles</p>
+                </Card>
+              </div>
+            </div>
+            
+            <div className="relative h-64 bg-background border-4 border-text-primary">
+              <BackgroundGrid />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <Card variant="secondary" className="px-6 py-3">
+                  <p className="font-mono text-white font-bold">Grid</p>
+                </Card>
+              </div>
+            </div>
+            
+            <div className="relative h-64 bg-background border-4 border-text-primary">
+              <BackgroundLines />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <Card variant="accent" className="px-6 py-3">
+                  <p className="font-mono text-white font-bold">Lines</p>
+                </Card>
+              </div>
+            </div>
+            
+            <div className="relative h-64 bg-background border-4 border-text-primary">
+              <BackgroundSquares />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <Card variant="danger" className="px-6 py-3">
+                  <p className="font-mono text-white font-bold">Squares</p>
+                </Card>
+              </div>
+            </div>
+          </div>
+
+          <Title variant="subsection" className="mb-4">
+            Layered Background Patterns
+          </Title>
+          <div className="space-y-6 mb-8">
+            <div className="relative h-96 bg-background border-4 border-text-primary">
+              <BackgroundCircles />
+              <BackgroundGrid />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <Card variant="dark" shadow="triple" className="p-8">
+                  <Title variant="section" className="mb-4 text-white">
+                    Layered Backgrounds
+                  </Title>
+                  <p className="font-mono text-white">
+                    Testing multiple background patterns stacked together.
+                    Circles + Grid combination creates interesting depth.
+                  </p>
+                </Card>
+              </div>
+            </div>
+            
+            <div className="relative h-96 bg-secondary border-4 border-text-primary">
+              <BackgroundLines />
+              <BackgroundSquares />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <Card variant="primary" className="p-8">
+                  <Title variant="section" className="mb-4 text-white">
+                    Different Background Color
+                  </Title>
+                  <p className="font-mono text-white">
+                    Testing patterns on different colored backgrounds.
+                    Lines + Squares on secondary background.
+                  </p>
+                </Card>
+              </div>
+            </div>
+          </div>
+
+          <Card variant="dark" shadow="triple" className="p-8">
+            <Title variant="section" className="mb-4 text-white">
+              Background Pattern Notes
+            </Title>
+            <ul className="font-mono text-white space-y-2 text-sm">
+              <li><strong>Circles:</strong> Original soft circles (not brutalist)</li>
+              <li><strong>Grid:</strong> Sharp grid lines with brutal aesthetic</li>
+              <li><strong>Lines:</strong> Diagonal lines for dynamic movement</li>
+              <li><strong>Squares:</strong> Geometric shapes for structure</li>
+              <li><strong>Layering:</strong> Multiple patterns can be combined</li>
+              <li><strong>Colors:</strong> Patterns work on different backgrounds</li>
+            </ul>
+          </Card>
+        </section>
 
         {/* Footer */}
         <Card variant="dark" shadow="triple" className="p-8">
