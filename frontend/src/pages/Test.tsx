@@ -86,7 +86,7 @@ export function Test() {
           </Card>
         </div>
         
-        <Card variant="dark" shadow="mega" className="p-8 mt-8">
+        <Card variant="dark" shadow="triple" className="p-8 mt-8">
           <Title variant="section" className="mb-4 text-white">
             Background Notes
           </Title>

@@ -91,9 +91,6 @@
   box-shadow: var(--shadow-brutal-triple);
 }
 
-@utility brutal-shadow-mega {
-  box-shadow: var(--shadow-brutal-mega);
-}
 
 /* White border shadows for dashboard cards */
 @utility brutal-shadow-double-white {
@@ -143,9 +140,6 @@
   text-shadow: 1px 1px 0 var(--color-primary);
 }
 
-@utility brutal-text-shadow-mega {
-  text-shadow: var(--text-shadow-brutal-mega);
-}
 
 /* Simple text shadows for headings */
 @utility brutal-text-shadow-simple {

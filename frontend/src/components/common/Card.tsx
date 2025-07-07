@@ -24,7 +24,7 @@ export interface CardProps {
   children: ReactNode;
   variant?: 'default' | 'subtle' | 'primary' | 'secondary' | 'accent' | 'danger' | 'dark';
   padding?: 'sm' | 'md' | 'lg';
-  shadow?: 'none' | 'primary' | 'secondary' | 'accent' | 'dark' | 'error' | 'triple' | 'mega';
+  shadow?: 'none' | 'primary' | 'secondary' | 'accent' | 'dark' | 'error' | 'triple';
   rotation?: 'none' | 'left' | 'right' | 'slight-left' | 'slight-right';
   hover?: boolean;
   onClick?: () => void;
@@ -105,8 +105,7 @@ export const Card = ({
     accent: 'brutal-shadow-accent',
     dark: 'brutal-shadow-dark',
     error: 'brutal-shadow-error',
-    triple: 'brutal-shadow-triple',
-    mega: 'brutal-shadow-mega'
+    triple: 'brutal-shadow-triple'
   };
 
   // Rotation variations

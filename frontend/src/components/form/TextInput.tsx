@@ -60,7 +60,7 @@ const variantStyles = {
     // Override default focus for search
     'focus:bg-background',
     'focus:text-text-primary',
-    'focus:brutal-shadow-mega'
+    'focus:brutal-shadow-triple'
   ]
 };
 

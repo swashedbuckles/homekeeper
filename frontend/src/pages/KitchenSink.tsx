@@ -117,8 +117,8 @@ export function KitchenSink() {
             <Card variant="default" shadow="triple" rotation="slight-right" className="p-4">
               <p className="font-mono">Triple Shadow + Rotation</p>
             </Card>
-            <Card variant="default" shadow="mega" className="p-4">
-              <p className="font-mono">Mega Shadow</p>
+            <Card variant="default" shadow="triple" className="p-4">
+              <p className="font-mono">Triple Shadow</p>
             </Card>
             <Card variant="default" shadow="none" className="p-4">
               <p className="font-mono">No Shadow</p>
@@ -343,7 +343,7 @@ export function KitchenSink() {
         </Card>
 
         {/* Footer */}
-        <Card variant="dark" shadow="mega" className="p-8">
+        <Card variant="dark" shadow="triple" className="p-8">
           <Title variant="section" className="mb-4 text-white">
             Kitchen Sink Complete
           </Title>
