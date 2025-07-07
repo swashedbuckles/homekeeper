@@ -67,7 +67,7 @@ export const StatCard = ({
     dark: {
       cardVariant: 'dark' as const,
       valueColor:  'text-primary',
-      shadow:      'mega' as const
+      shadow:      'dark' as const
     }
   };
 

@@ -68,7 +68,7 @@ export const Card = ({
     subtle: [
       'bg-background',
       'text-text-primary',
-      'border-ui-border'
+      'border-text-primary'
     ],
     primary: [
       'bg-primary',

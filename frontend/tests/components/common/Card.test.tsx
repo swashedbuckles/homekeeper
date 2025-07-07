@@ -27,7 +27,7 @@ describe('Card', () => {
     const { container } = render(<Card variant="subtle">Content</Card>);
     
     const card = container.firstChild;
-    expect(card).toHaveClass('bg-background', 'border-ui-border');
+    expect(card).toHaveClass('bg-background', 'border-text-primary');
   });
 
   it('applies correct padding styles', () => {
