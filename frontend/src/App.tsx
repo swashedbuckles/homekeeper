@@ -67,7 +67,9 @@ export function App() {
                 <Route path="invite" element={<InviteOthers />} />
                 <Route path="success" element={<OnboardingSuccess />} />
               </Route>
-              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/dashboard" element={<Root />}>
+                <Route index element={<Dashboard />} />
+              </Route>
             </Routes>
           </BrowserRouter>
         </HouseholdProvider>

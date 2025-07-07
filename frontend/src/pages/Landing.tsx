@@ -2,7 +2,7 @@ import { Smartphone, LockKeyhole, Rocket, BookText, AlarmClock, Users } from 'lu
 
 import { Button } from '../components/common/Button';
 import { Card } from '../components/common/Card';
-import { FooterLogo } from '../components/common/Logo';
+import { DarkBgHeader } from '../components/common/Logo';
 import { Title } from '../components/common/Title';
 import { SectionContainer } from '../components/containers/SectionContainer';
 import { StatCard } from '../components/variations/StatCard';
@@ -65,8 +65,8 @@ export const LandingPage = () => {
                 </div>
               </Card>
 
-              <StatCard size="sm" className="absolute -top-16 -right-8" label="Manuals Stored" value={47} variant="primary" rotation="slight-right" />
-              <StatCard size="sm" className="absolute -bottom-24 -left-16" label="Tasks Completed" value={12} variant="accent" rotation="left" />
+              <StatCard size="sm" className="absolute -top-16 -right-8 hidden lg:block" label="Manuals Stored" value={47} variant="primary" rotation="slight-right" />
+              <StatCard size="sm" className="absolute -bottom-24 -left-16 hidden lg:block" label="Tasks Completed" value={12} variant="accent" rotation="left" />
             </div>
           </div>
         </div>
@@ -116,7 +116,7 @@ export const LandingPage = () => {
 
       <SectionContainer className="bg-text-primary border-t-8 border-primary" hero>
         <div className="flex flex-col md:flex-row justify-between items-center">
-          <FooterLogo />
+          <DarkBgHeader />
 
           <div className="flex gap-8">
             <a href="#" className="text-white font-bold uppercase hover:text-primary transition-colors">Privacy</a>

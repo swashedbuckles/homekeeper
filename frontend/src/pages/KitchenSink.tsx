@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { BackgroundRectangles } from '../components/BackgroundRectangles';
+import { BackgroundRectangles } from '../components/backgrounds/BackgroundRectangles';
 
 // Common Components
 import { ActionItem } from '../components/common/ActionItem';

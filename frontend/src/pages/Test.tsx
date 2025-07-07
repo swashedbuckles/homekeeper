@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { BackgroundCircles } from '../components/BackgroundCircles';
-import { BackgroundGrid } from '../components/BackgroundGrid';
-import { BackgroundLines } from '../components/BackgroundLines';
-import { BackgroundRectangles } from '../components/BackgroundRectangles';
-import { BackgroundSquares } from '../components/BackgroundSquares';
+import { BackgroundCircles } from '../components/backgrounds/BackgroundCircles';
+import { BackgroundGrid } from '../components/backgrounds/BackgroundGrid';
+import { BackgroundLines } from '../components/backgrounds/BackgroundLines';
+import { BackgroundRectangles } from '../components/backgrounds/BackgroundRectangles';
+import { BackgroundSquares } from '../components/backgrounds/BackgroundSquares';
 import { Button } from '../components/common/Button';
 import { Card } from '../components/common/Card';
 import { Title } from '../components/common/Title';

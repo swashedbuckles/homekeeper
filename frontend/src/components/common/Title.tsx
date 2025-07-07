@@ -65,7 +65,7 @@ const variantStyles = {
 };
 
 const textShadowStyles = {
-  page: 'brutal-text-shadow-mega',
+  page: 'brutal-text-shadow md:brutal-text-shadow-double',
   section: 'brutal-text-shadow-small',
   subsection: 'brutal-text-shadow-tiny'
 };
