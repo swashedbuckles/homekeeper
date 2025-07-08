@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HomeKeeper - User Flow Diagram</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#e67e22',
+                        'secondary': '#4A6FA5', 
+                        'accent': '#5d9c59',
+                        'background': '#f5f0e8',
+                        'text-primary': '#2c3e50',
+                        'text-secondary': '#7f8c8d',
+                        'error': '#e74c3c'
+                    },
+                    fontFamily: {
+                        'mono': ['JetBrains Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .brutal-shadow-primary {
+            box-shadow: 8px 8px 0 #e67e22;
+        }
+        
+        .brutal-shadow-secondary {
+            box-shadow: 8px 8px 0 #4A6FA5;
+        }
+        
+        .brutal-shadow-accent {
+            box-shadow: 8px 8px 0 #5d9c59;
+        }
+        
+        .brutal-shadow-dark {
+            box-shadow: 8px 8px 0 #2c3e50;
+        }
+        
+        .brutal-text-shadow {
+            text-shadow: 
+                4px 4px 0 #e67e22,
+                8px 8px 0 #2c3e50;
+        }
+        
+        .hero-bg {
+            background: linear-gradient(135deg, #f5f0e8 0%, #e8ddd4 100%);
+        }
+        
+        .flow-container {
+            background: white;
+            border: 6px solid #2c3e50;
+            padding: 2rem;
+            margin: 2rem 0;
+            position: relative;
+            overflow: auto;
+        }
+        
+        .page-node {
+            background: white;
+            border: 4px solid #2c3e50;
+            padding: 1rem;
+            text-align: center;
+            min-width: 180px;
+            cursor: pointer;
+            transition: all 0.1s ease;
+            position: relative;
+        }
+        
+        .page-node:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0 #e67e22;
+        }
+        
+        .page-node.dashboard {
+            background: #2c3e50;
+            color: white;
+            box-shadow: 6px 6px 0 #e67e22;
+        }
+        
+        .page-node.manuals {
+            background: #e67e22;
+            color: white;
+        }
+        
+        .page-node.maintenance {
+            background: #4A6FA5;
+            color: white;
+        }
+        
+        .page-node.documents {
+            background: #5d9c59;
+            color: white;
+        }
+        
+        .page-node.notifications {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .flow-arrow {
+            position: absolute;
+            font-size: 2rem;
+            font-weight: 800;
+            color: #2c3e50;
+            z-index: 10;
+            pointer-events: none;
+        }
+        
+        .flow-line {
+            position: absolute;
+            background: #2c3e50;
+            z-index: 1;
+        }
+        
+        .flow-line.horizontal {
+            height: 4px;
+        }
+        
+        .flow-line.vertical {
+            width: 4px;
+        }
+        
+        .flow-label {
+            background: #f5f0e8;
+            border: 3px solid #2c3e50;
+            padding: 0.25rem 0.5rem;
+            font-weight: 700;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            position: absolute;
+            z-index: 10;
+            white-space: nowrap;
+        }
+        
+        .legend {
+            background: white;
+            border: 4px solid #2c3e50;
+            padding: 1.5rem;
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            z-index: 20;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .legend-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .legend-color {
+            width: 1.5rem;
+            height: 1.5rem;
+            border: 3px solid #2c3e50;
+        }
+        
+        .section-header {
+            background: #2c3e50;
+            color: white;
+            padding: 1rem 2rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            text-align: center;
+            border: 4px solid #2c3e50;
+            margin: 2rem 0 1rem 0;
+        }
+        
+        .flow-description {
+            background: white;
+            border: 4px solid #2c3e50;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+        
+        .user-journey {
+            background: rgba(230, 126, 34, 0.1);
+            border: 4px dashed #e67e22;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .journey-step {
+            background: white;
+            border: 3px solid #e67e22;
+            padding: 0.75rem;
+            margin: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .journey-number {
+            background: #e67e22;
+            color: white;
+            width: 2rem;
+            height: 2rem;
+            border: 2px solid #2c3e50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            flex-shrink: 0;
+        }
+        
+        .connection-type {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #7f8c8d;
+            background: white;
+            padding: 0.25rem 0.5rem;
+            border: 2px solid #7f8c8d;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .flow-container {
+                padding: 1rem;
+            }
+            
+            .legend {
+                position: relative;
+                top: auto;
+                right: auto;
+                margin: 1rem 0;
+            }
+            
+            .page-node {
+                min-width: 140px;
+                font-size: 0.875rem;
+            }
+        }
+    </style>
+</head>
+<body class="font-mono bg-background hero-bg">
+    <!-- Header -->
+    <header class="bg-text-primary border-b-8 border-primary">
+        <div class="max-w-7xl mx-auto px-5 py-4">
+            <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+                <!-- Logo -->
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-primary border-4 border-white brutal-rotate-slight-left brutal-shadow-secondary flex items-center justify-center">
+                        <svg width="48" height="48" viewBox="0 0 128 128" class="text-white">
+                            <polygon points="20,70 60,35 100,70" fill="currentColor"/>
+                            <rect x="20" y="70" width="80" height="36" fill="currentColor"/>
+                            <rect x="60" y="74" width="36" height="28" fill="#e67e22"/>
+                        </svg>
+                    </div>
+                    <h1 class="text-2xl md:text-3xl font-black text-white uppercase tracking-tight">
+                        HomeKeeper
+                    </h1>
+                </div>
+                
+                <!-- Navigation -->
+                <nav class="flex flex-wrap gap-2 md:gap-4">
+                    <button class="text-white font-bold uppercase px-3 py-2 text-sm md:text-base hover:text-primary">Dashboard</button>
+                    <button class="text-white font-bold uppercase px-3 py-2 text-sm md:text-base hover:text-primary">Manuals</button>
+                    <button class="text-white font-bold uppercase px-3 py-2 text-sm md:text-base hover:text-primary">Maintenance</button>
+                    <button class="text-primary font-bold uppercase px-3 py-2 text-sm md:text-base">Flow Diagram</button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-5 py-8">
+        <!-- Page Header -->
+        <section class="mb-8">
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-black uppercase leading-tight mb-4 text-text-primary brutal-text-shadow">
+                HomeKeeper<br>
+                User Flow<br>
+                Diagram
+            </h1>
+            <p class="text-lg md:text-xl font-bold text-text-secondary uppercase tracking-wide">
+                Application architecture and user journey mapping
+            </p>
+        </section>
+
+        <!-- Overview -->
+        <div class="flow-description">
+            <h2 class="text-2xl font-black uppercase text-text-primary mb-4">Overview</h2>
+            <p class="text-text-primary font-bold mb-4">
+                This diagram shows the relationships between all major pages and workflows in the HomeKeeper application. 
+                Each section represents a core functionality area with interconnected user flows.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div class="text-center">
+                    <div class="text-3xl mb-2">📊</div>
+                    <h3 class="font-black uppercase text-text-primary mb-1">Dashboard Hub</h3>
+                    <p class="text-text-secondary font-bold text-sm">Central command center</p>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl mb-2">📚</div>
+                    <h3 class="font-black uppercase text-text-primary mb-1">Manual Management</h3>
+                    <p class="text-text-secondary font-bold text-sm">Document organization</p>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl mb-2">🔧</div>
+                    <h3 class="font-black uppercase text-text-primary mb-1">Maintenance System</h3>
+                    <p class="text-text-secondary font-bold text-sm">Task scheduling & tracking</p>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl mb-2">📝</div>
+                    <h3 class="font-black uppercase text-text-primary mb-1">Document Creation</h3>
+                    <p class="text-text-secondary font-bold text-sm">Custom content authoring</p>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl mb-2">🔔</div>
+                    <h3 class="font-black uppercase text-text-primary mb-1">Notifications</h3>
+                    <p class="text-text-secondary font-bold text-sm">Alert management</p>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl mb-2">⚙️</div>
+                    <h3 class="font-black uppercase text-text-primary mb-1">Settings</h3>
+                    <p class="text-text-secondary font-bold text-sm">Configuration & preferences</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Flow Diagram -->
+        <div class="section-header">
+            Main Application Flow
+        </div>
+
+        <div class="flow-container relative" style="min-height: 800px;">
+            <!-- Legend -->
+            <div class="legend">
+                <h3 class="font-black uppercase text-text-primary mb-3 text-sm">Page Types</h3>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #2c3e50;"></div>
+                    <span class="text-text-primary font-bold text-sm">Dashboard/Hub</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #e67e22;"></div>
+                    <span class="text-text-primary font-bold text-sm">Manual Management</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #4A6FA5;"></div>
+                    <span class="text-text-primary font-bold text-sm">Maintenance</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #5d9c59;"></div>
+                    <span class="text-text-primary font-bold text-sm">Document Creation</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #e74c3c;"></div>
+                    <span class="text-text-primary font-bold text-sm">Notifications</span>
+                </div>
+            </div>
+
+            <!-- Top Level: Dashboard -->
+            <div class="absolute top-8 left-1/2 transform -translate-x-1/2">
+                <div class="page-node dashboard">
+                    <div class="font-black text-lg mb-1">📊 MAIN DASHBOARD</div>
+                    <div class="text-sm">Central hub & overview</div>
+                </div>
+            </div>
+
+            <!-- Second Level: Main Sections -->
+            <div class="absolute top-40 left-8">
+                <div class="page-node manuals">
+                    <div class="font-black text-base mb-1">📚 MANUALS LIST</div>
+                    <div class="text-xs">Browse & manage manuals</div>
+                </div>
+            </div>
+
+            <div class="absolute top-40 left-1/2 transform -translate-x-1/2">
+                <div class="page-node maintenance">
+                    <div class="font-black text-base mb-1">🔧 MAINTENANCE DASHBOARD</div>
+                    <div class="text-xs">Active tasks & scheduling</div>
+                </div>
+            </div>
+
+            <div class="absolute top-40 right-8">
+                <div class="page-node notifications">
+                    <div class="font-black text-base mb-1">🔔 NOTIFICATIONS</div>
+                    <div class="text-xs">Alerts & reminders</div>
+                </div>
+            </div>
+
+            <!-- Third Level: Detail Pages -->
+            <div class="absolute top-72 left-8">
+                <div class="page-node manuals">
+                    <div class="font-black text-sm mb-1">📄 MANUAL DETAIL</div>
+                    <div class="text-xs">View manual & specs</div>
+                </div>
+            </div>
+
+            <div class="absolute top-72 left-64">
+                <div class="page-node manuals">
+                    <div class="font-black text-sm mb-1">➕ ADD MANUAL</div>
+                    <div class="text-xs">Upload new manual</div>
+                </div>
+            </div>
+
+            <div class="absolute top-72 left-1/2 transform -translate-x-16">
+                <div class="page-node maintenance">
+                    <div class="font-black text-sm mb-1">➕ CREATE TASK</div>
+                    <div class="text-xs">Schedule maintenance</div>
+                </div>
+            </div>
+
+            <div class="absolute top-72 left-1/2 transform translate-x-16">
+                <div class="page-node maintenance">
+                    <div class="font-black text-sm mb-1">📊 HISTORY</div>
+                    <div class="text-xs">Completed tasks</div>
+                </div>
+            </div>
+
+            <div class="absolute top-72 right-8">
+                <div class="page-node documents">
+                    <div class="font-black text-sm mb-1">📝 DOCUMENT EDITOR</div>
+                    <div class="text-xs">Create custom docs</div>
+                </div>
+            </div>
+
+            <!-- Connection Lines and Arrows -->
+            <!-- Dashboard to main sections -->
+            <div class="flow-line vertical" style="top: 120px; left: 50%; height: 40px;"></div>
+            <div class="flow-line horizontal" style="top: 160px; left: 20%; width: 60%;"></div>
+            <div class="flow-line vertical" style="top: 160px; left: 20%; height: 20px;"></div>
+            <div class="flow-line vertical" style="top: 160px; left: 50%; height: 20px;"></div>
+            <div class="flow-line vertical" style="top: 160px; left: 80%; height: 20px;"></div>
+
+            <!-- Arrows -->
+            <div class="flow-arrow" style="top: 115px; left: calc(50% - 10px);">↓</div>
+            <div class="flow-arrow" style="top: 155px; left: calc(20% - 10px);">↓</div>
+            <div class="flow-arrow" style="top: 155px; left: calc(50% - 10px);">↓</div>
+            <div class="flow-arrow" style="top: 155px; left: calc(80% - 10px);">↓</div>
+
+            <!-- Sub-page connections -->
+            <div class="flow-line vertical" style="top: 260px; left: 20%; height: 40px;"></div>
+            <div class="flow-line horizontal" style="top: 300px; left: 20%; width: 25%;"></div>
+            <div class="flow-line vertical" style="top: 300px; left: 45%; height: 20px;"></div>
+
+            <div class="flow-line vertical" style="top: 260px; left: 50%; height: 40px;"></div>
+            <div class="flow-line horizontal" style="top: 300px; left: 40%; width: 20%;"></div>
+            <div class="flow-line vertical" style="top: 300px; left: 40%; height: 20px;"></div>
+            <div class="flow-line vertical" style="top: 300px; left: 60%; height: 20px;"></div>
+
+            <!-- Labels -->
+            <div class="flow-label" style="top: 200px; left: 15%;">Browse & Upload</div>
+            <div class="flow-label" style="top: 200px; left: 45%;">Schedule & Track</div>
+            <div class="flow-label" style="top: 200px; left: 75%;">Alert Management</div>
+
+            <!-- Interconnections (dotted lines) -->
+            <div style="position: absolute; top: 220px; left: 30%; width: 25%; height: 2px; background: repeating-linear-gradient(to right, #2c3e50 0, #2c3e50 8px, transparent 8px, transparent 16px);"></div>
+            <div style="position: absolute; top: 220px; left: 55%; width: 20%; height: 2px; background: repeating-linear-gradient(to right, #2c3e50 0, #2c3e50 8px, transparent 8px, transparent 16px);"></div>
+
+            <div class="connection-type" style="top: 210px; left: 35%;">Links Equipment</div>
+            <div class="connection-type" style="top: 210px; left: 60%;">Sends Alerts</div>
+        </div>
+
+        <!-- User Journey Examples -->
+        <div class="section-header">
+            Common User Journeys
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Journey 1: Adding a Manual -->
+            <div class="user-journey">
+                <h3 class="font-black uppercase text-text-primary mb-4">Journey 1: Adding Equipment Manual</h3>
+                <div class="journey-step">
+                    <div class="journey-number">1</div>
+                    <div>
+                        <div class="font-black text-text-primary text-sm">Start at Dashboard</div>
+                        <div class="text-text-secondary text-xs">User sees "Add Manual" quick action</div>
+                    </div>
+                </div>
+                <div class="journey-step">
+                    <div class="journey-number">2</div>
+                    <div>
+                        <div class="font-black text-text-primary text-sm">Navigate to Manuals → Add Manual</div>
+                        <div class="text-text-secondary text-xs">Multi-step form with file upload</div>
+                    </div>
+                </div>
+                <div class="journey-step">
+                    <div class="journey-number">3</div>
+                    <div>
+                        <div class="font-black text-text-primary text-sm">Upload PDF & Add Metadata</div>
+                        <div class="text-text-secondary text-xs">Equipment details, category, location</div>
+                    </div>
+                </div>
+                <div class="journey-step">
+                    <div class="journey-number">4</div>
+                    <div>
+                        <div class="font-black text-text-primary text-sm">Auto-generate Maintenance Tasks</div>
+                        <div class="text-text-secondary text-xs">System creates recurring reminders</div>
+                    </div>
+                </div>
+                <div class="journey-step">
+                    <div class="journey-number">5</div>
+                    <div>
+                        <div class="font-black text-text-primary text-sm">View in Manual Detail Page</div>
+                        <div class="text-text-secondary text-xs">Complete manual with maintenance tab</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Journey 2: Completing Maintenance -->
+            <div class="user-journey">
+                <h3 class="font-black uppercase text-text-primary mb-4">Journey 2: Completing Maintenance Task</h3>
+                <div class="journey-step">
+                    <div class="journey-number">1</div>
+                    <div>
+                        <div class="font-black text-text-primary text-sm">Receive Notification</div>
+                        <div class="text-text-secondary text-xs">Push/email reminder about due task</div>
+                    </div>
+                </div>
+                <div class="journey-step">
+                    <div class="journey-number">2</div>
+                    <div>
+                        <div class="font-black text-text-primary text-sm">View Task in Maintenance Dashboard</div>
+                        <div class="text-text-secondary text-xs">See overdue/due soon tasks</div>
+                    </div>
+                </div>
+                <div class="journey-step">
+                    <div class="journey-number">3</div>
+                    <div>
+                        <div class="font-black text-text-primary text-sm">Access Equipment Manual</div>
+                        <div class="text-text-secondary text-xs">Quick link to related manual/instructions</div>
+                    </div>
+                </div>
+                <div class="journey-step">
+                    <div class="journey-number">4</div>
+                    <div>
+                        <div class="font-black text-text-primary text-sm">Mark Task Complete</div>
+                        <div class="text-text-secondary text-xs">Add notes, photos, actual cost/time</div>
+                    </div>
+                </div>
+                <div class="journey-step">
+                    <div class="journey-number">5</div>
+                    <div>
+                        <div class="font-black text-text-primary text-sm">View in Maintenance History</div>
+                        <div class="text-text-secondary text-xs">Track completion and schedule next</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Journey 3: Creating Custom Documentation -->
+            <div class="user-journey">
+                <h3 class="font-black uppercase text-text-primary mb-4">Journey 3: Creating Custom Guide</h3>
+                <div class="journey-step">
+                    <div class="journey-number">1</div>
+                    <div>
+                        <div class="font-black text-text-primary text-sm">Need Custom Documentation</div>
+                        <div class="text-text-secondary text-xs">User wants to create renovation guide</div>
+                    </div>
+                </div>
+                <div class="journey-step">
+                    <div class="journey-number">2</div>
+                    <div>
+                        <div class="font-black text-text-primary text-sm">Open Document Editor</div>
+                        <div class="text-text-secondary text-xs">Rich text editor with templates</div>
+                    </div>
+                </div>
+                <div class="journey-step">
+                    <div class="journey-number">3</div>
+                    <div>
+                        <div class="font-black text-text-primary text-sm">Link Related Equipment</div>
+                        <div class="text-text-secondary text-xs">Connect doc to existing manuals</div>
+                    </div>
+                </div>
+                <div class="journey-step">
+                    <div class="journey-number">4</div>
+                    <div>
+                        <div class="font-black text-text-primary text-sm">Export & Share</div>
+                        <div class="text-text-secondary text-xs">PDF export for contractors/family</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Journey 4: Notification Management -->
+            <div class="user-journey">
+                <h3 class="font-black uppercase text-text-primary mb-4">Journey 4: Managing Notifications</h3>
+                <div class="journey-step">
+                    <div class="journey-number">1</div>
+                    <div>
+                        <div class="font-black text-text-primary text-sm">Receive Multiple Alerts</div>
+                        <div class="text-text-secondary text-xs">Several maintenance reminders pile up</div>
+                    </div>
+                </div>
+                <div class="journey-step">
+                    <div class="journey-number">2</div>
+                    <div>
+                        <div class="font-black text-text-primary text-sm">Open Notification Center</div>
+                        <div class="text-text-secondary text-xs">Central place to manage all alerts</div>
+                    </div>
+                </div>
+                <div class="journey-step">
+                    <div class="journey-number">3</div>
+                    <div>
+                        <div class="font-black text-text-primary text-sm">Bulk Actions & Filtering</div>
+                        <div class="text-text-secondary text-xs">Mark multiple as read, filter by type</div>
+                    </div>
+                </div>
+                <div class="journey-step">
+                    <div class="journey-number">4</div>
+                    <div>
+                        <div class="font-black text-text-primary text-sm">Adjust Preferences</div>
+                        <div class="text-text-secondary text-xs">Fine-tune notification settings</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Technical Flow Details -->
+        <div class="section-header">
+            Technical Integration Points
+        </div>
+
+        <div class="flow-description">
+            <h2 class="text-2xl font-black uppercase text-text-primary mb-4">Data Flow & Integrations</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="text-lg font-black uppercase text-text-primary mb-3">Cross-Page Data Sharing</h3>
+                    <ul class="space-y-2">
+                        <li class="flex items-start gap-2">
+                            <span class="text-primary font-black">•</span>
+                            <span class="text-text-primary font-bold text-sm">Equipment data flows from Manual Detail to Maintenance Task Creation</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-primary font-black">•</span>
+                            <span class="text-text-primary font-bold text-sm">Maintenance tasks trigger notifications automatically</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-primary font-black">•</span>
+                            <span class="text-text-primary font-bold text-sm">Completed tasks update History and Dashboard stats</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-primary font-black">•</span>
+                            <span class="text-text-primary font-bold text-sm">Document Editor can reference existing equipment and manuals</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-black uppercase text-text-primary mb-3">Notification Triggers</h3>
+                    <ul class="space-y-2">
+                        <li class="flex items-start gap-2">
+                            <span class="text-error font-black">•</span>
+                            <span class="text-text-primary font-bold text-sm">Task overdue → Urgent notification</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-primary font-black">•</span>
+                            <span class="text-text-primary font-bold text-sm">Task due soon → Reminder notification</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-accent font-black">•</span>
+                            <span class="text-text-primary font-bold text-sm">Task completed → Success notification</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-secondary font-black">•</span>
+                            <span class="text-text-primary font-bold text-sm">Manual processed → System notification</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Implementation Notes -->
+        <div class="flow-description">
+            <h2 class="text-2xl font-black uppercase text-text-primary mb-4">Implementation Notes</h2>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="bg-background border-4 border-text-primary p-4">
+                    <h3 class="text-lg font-black uppercase text-text-primary mb-3">🔄 State Management</h3>
+                    <ul class="space-y-1 text-sm">
+                        <li class="text-text-primary font-bold">• Global equipment list</li>
+                        <li class="text-text-primary font-bold">• Active maintenance tasks</li>
+                        <li class="text-text-primary font-bold">• Notification queue</li>
+                        <li class="text-text-primary font-bold">• User preferences</li>
+                    </ul>
+                </div>
+                
+                <div class="bg-background border-4 border-text-primary p-4">
+                    <h3 class="text-lg font-black uppercase text-text-primary mb-3">🔗 API Endpoints</h3>
+                    <ul class="space-y-1 text-sm">
+                        <li class="text-text-primary font-bold">• /api/manuals/*</li>
+                        <li class="text-text-primary font-bold">• /api/maintenance/*</li>
+                        <li class="text-text-primary font-bold">• /api/notifications/*</li>
+                        <li class="text-text-primary font-bold">• /api/documents/*</li>
+                    </ul>
+                </div>
+                
+                <div class="bg-background border-4 border-text-primary p-4">
+                    <h3 class="text-lg font-black uppercase text-text-primary mb-3">📱 Responsive Patterns</h3>
+                    <ul class="space-y-1 text-sm">
+                        <li class="text-text-primary font-bold">• Mobile-first design</li>
+                        <li class="text-text-primary font-bold">• Collapsible sidebars</li>
+                        <li class="text-text-primary font-bold">• Touch-friendly interactions</li>
+                        <li class="text-text-primary font-bold">• Progressive disclosure</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Interactive flow diagram
+        document.addEventListener('DOMContentLoaded', function() {
+            const pageNodes = document.querySelectorAll('.page-node');
+            
+            // Add click interactions to page nodes
+            pageNodes.forEach(node => {
+                node.addEventListener('click', function() {
+                    const pageTitle = this.querySelector('.font-black').textContent;
+                    console.log('Navigating to:', pageTitle);
+                    
+                    // Highlight connected nodes
+                    pageNodes.forEach(n => n.style.opacity = '0.5');
+                    this.style.opacity = '1';
+                    
+                    // Reset after 2 seconds
+                    setTimeout(() => {
+                        pageNodes.forEach(n => n.style.opacity = '1');
+                    }, 2000);
+                });
+            });
+            
+            // Add hover effects for journey steps
+            const journeySteps = document.querySelectorAll('.journey-step');
+            journeySteps.forEach(step => {
+                step.addEventListener('mouseenter', function() {
+                    this.style.backgroundColor = 'rgba(230, 126, 34, 0.1)';
+                });
+                
+                step.addEventListener('mouseleave', function() {
+                    this.style.backgroundColor = 'white';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HomeKeeper Manuals - List/Overview Mockup</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#e67e22',
+                        'secondary': '#4A6FA5', 
+                        'accent': '#5d9c59',
+                        'background': '#f5f0e8',
+                        'text-primary': '#2c3e50',
+                        'text-secondary': '#7f8c8d',
+                        'error': '#e74c3c'
+                    },
+                    fontFamily: {
+                        'mono': ['JetBrains Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .brutal-shadow-primary {
+            box-shadow: 8px 8px 0 #e67e22;
+        }
+        
+        .brutal-shadow-secondary {
+            box-shadow: 8px 8px 0 #4A6FA5;
+        }
+        
+        .brutal-shadow-accent {
+            box-shadow: 8px 8px 0 #5d9c59;
+        }
+        
+        .brutal-shadow-dark {
+            box-shadow: 8px 8px 0 #2c3e50;
+        }
+        
+        .brutal-shadow-error {
+            box-shadow: 8px 8px 0 #e74c3c;
+        }
+        
+        .brutal-shadow-triple {
+            box-shadow: 
+                4px 4px 0 #e67e22,
+                8px 8px 0 #4A6FA5,
+                12px 12px 0 #2c3e50;
+        }
+        
+        .brutal-hover-press {
+            transition: all 0.1s ease;
+        }
+        
+        .brutal-hover-press:hover {
+            transform: translate(4px, 4px);
+            box-shadow: none;
+        }
+        
+        .brutal-hover-lift {
+            transition: all 0.1s ease;
+        }
+        
+        .brutal-hover-lift:hover {
+            transform: translate(-3px, -3px);
+            box-shadow: 
+                6px 6px 0 #e67e22,
+                12px 12px 0 #4A6FA5,
+                18px 18px 0 #2c3e50;
+        }
+        
+        .brutal-text-shadow {
+            text-shadow: 
+                4px 4px 0 #e67e22,
+                8px 8px 0 #2c3e50;
+        }
+        
+        .brutal-rotate-left {
+            transform: rotate(-2deg);
+        }
+        
+        .brutal-rotate-right {
+            transform: rotate(2deg);
+        }
+        
+        .brutal-rotate-slight-left {
+            transform: rotate(-0.5deg);
+        }
+        
+        .brutal-rotate-slight-right {
+            transform: rotate(0.5deg);
+        }
+        
+        /* Tab styles */
+        .tab-active {
+            background: #e67e22;
+            color: white;
+            border: 4px solid #2c3e50;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 0.75rem 1.5rem;
+            box-shadow: 4px 4px 0 #2c3e50;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        .tab-inactive {
+            background: transparent;
+            color: #7f8c8d;
+            border: 4px solid #7f8c8d;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 0.75rem 1.5rem;
+            transition: all 0.1s ease;
+            cursor: pointer;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        .tab-inactive:hover {
+            background: #e67e22;
+            color: white;
+            border: 4px solid #2c3e50;
+            box-shadow: 4px 4px 0 #2c3e50;
+        }
+        
+        .filter-button-active {
+            background: #4A6FA5;
+            color: white;
+            border: 4px solid #2c3e50;
+            box-shadow: 4px 4px 0 #2c3e50;
+        }
+        
+        .filter-button-inactive {
+            background: transparent;
+            color: #2c3e50;
+            border: 4px solid #2c3e50;
+        }
+        
+        .filter-button-inactive:hover {
+            background: #4A6FA5;
+            color: white;
+            box-shadow: 4px 4px 0 #2c3e50;
+        }
+        
+        .manual-card {
+            background: white;
+            border: 6px solid #2c3e50;
+            transition: all 0.1s ease;
+            cursor: pointer;
+        }
+        
+        .manual-card:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 8px 8px 0 #e67e22;
+        }
+        
+        .hero-bg {
+            background: linear-gradient(135deg, #f5f0e8 0%, #e8ddd4 100%);
+        }
+        
+        .category-badge {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.75rem;
+            border: 3px solid #2c3e50;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .category-kitchen {
+            background: #e67e22;
+            color: white;
+        }
+        
+        .category-hvac {
+            background: #4A6FA5;
+            color: white;
+        }
+        
+        .category-appliances {
+            background: #5d9c59;
+            color: white;
+        }
+        
+        .category-electronics {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .category-plumbing {
+            background: #2c3e50;
+            color: white;
+        }
+        
+        .search-input {
+            background: white;
+            border: 4px solid #2c3e50;
+            padding: 0.75rem 1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            box-shadow: 4px 4px 0 #2c3e50;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            box-shadow: 4px 4px 0 #e67e22;
+        }
+        
+        .search-input::placeholder {
+            color: #7f8c8d;
+        }
+        
+        .grid-view-toggle {
+            background: #e67e22;
+            color: white;
+            border: 4px solid #2c3e50;
+            box-shadow: 4px 4px 0 #2c3e50;
+        }
+        
+        .list-view-toggle {
+            background: transparent;
+            color: #2c3e50;
+            border: 4px solid #2c3e50;
+        }
+        
+        .list-view-toggle:hover {
+            background: #e67e22;
+            color: white;
+            box-shadow: 4px 4px 0 #2c3e50;
+        }
+    </style>
+</head>
+<body class="font-mono bg-background hero-bg">
+    <!-- Header -->
+    <header class="bg-text-primary border-b-8 border-primary">
+        <div class="max-w-7xl mx-auto px-5 py-4">
+            <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+                <!-- Logo -->
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-primary border-4 border-white brutal-rotate-left brutal-shadow-secondary flex items-center justify-center">
+                        <svg width="48" height="48" viewBox="0 0 128 128" class="text-white">
+                            <polygon points="20,70 60,35 100,70" fill="currentColor"/>
+                            <rect x="20" y="70" width="80" height="36" fill="currentColor"/>
+                            <rect x="60" y="74" width="36" height="28" fill="#e67e22"/>
+                        </svg>
+                    </div>
+                    <h1 class="text-2xl md:text-3xl font-black text-white uppercase tracking-tight">
+                        HomeKeeper
+                    </h1>
+                </div>
+                
+                <!-- Navigation -->
+                <nav class="flex flex-wrap gap-2 md:gap-4">
+                    <button class="tab-inactive text-sm md:text-base">Dashboard</button>
+                    <button class="tab-active text-sm md:text-base">Manuals</button>
+                    <button class="tab-inactive text-sm md:text-base">Maintenance</button>
+                    <button class="tab-inactive text-sm md:text-base">Settings</button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-5 py-8">
+        <!-- Page Header -->
+        <section class="mb-12">
+            <div class="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-6">
+                <div>
+                    <h1 class="text-4xl md:text-6xl lg:text-7xl font-black uppercase leading-none mb-4 text-text-primary brutal-text-shadow">
+                        Equipment<br>
+                        Manuals
+                    </h1>
+                    <p class="text-lg md:text-xl font-bold text-text-secondary uppercase tracking-wide">
+                        47 manuals • 12 categories • Last updated today
+                    </p>
+                </div>
+                
+                <!-- Add Manual Button -->
+                <div class="flex gap-4">
+                    <button class="bg-primary text-white border-4 border-text-primary px-6 py-3 font-bold uppercase brutal-shadow-dark brutal-hover-press">
+                        + Add Manual
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Search & Filters -->
+        <section class="mb-8">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Search -->
+                <div class="lg:col-span-2">
+                    <input 
+                        type="text" 
+                        placeholder="Search manuals by name, model, or brand..."
+                        class="w-full search-input font-mono"
+                    />
+                </div>
+                
+                <!-- View Toggle -->
+                <div class="flex justify-end items-center gap-2">
+                    <button class="grid-view-toggle px-4 py-3 font-bold uppercase text-sm">
+                        Grid
+                    </button>
+                    <button class="list-view-toggle px-4 py-3 font-bold uppercase text-sm">
+                        List
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Category Filters -->
+        <section class="mb-8">
+            <div class="flex flex-wrap gap-3">
+                <button class="filter-button-active px-4 py-2 font-bold uppercase text-sm">
+                    All Categories
+                </button>
+                <button class="filter-button-inactive px-4 py-2 font-bold uppercase text-sm">
+                    Kitchen
+                </button>
+                <button class="filter-button-inactive px-4 py-2 font-bold uppercase text-sm">
+                    HVAC
+                </button>
+                <button class="filter-button-inactive px-4 py-2 font-bold uppercase text-sm">
+                    Appliances
+                </button>
+                <button class="filter-button-inactive px-4 py-2 font-bold uppercase text-sm">
+                    Electronics
+                </button>
+                <button class="filter-button-inactive px-4 py-2 font-bold uppercase text-sm">
+                    Plumbing
+                </button>
+            </div>
+        </section>
+
+        <!-- Stats Overview -->
+        <section class="mb-12">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Total Manuals -->
+                <div class="bg-text-primary border-6 border-white p-6 brutal-rotate-slight-left brutal-shadow-primary">
+                    <div class="text-white font-bold text-sm uppercase mb-2">Total Manuals</div>
+                    <div class="text-4xl font-black text-primary leading-none mb-2">47</div>
+                    <div class="text-white font-bold uppercase text-xs">+3 This Month</div>
+                </div>
+                
+                <!-- Categories -->
+                <div class="bg-secondary border-6 border-white p-6 brutal-rotate-slight-right brutal-shadow-accent">
+                    <div class="text-white font-bold text-sm uppercase mb-2">Categories</div>
+                    <div class="text-4xl font-black text-background leading-none mb-2">12</div>
+                    <div class="text-white font-bold uppercase text-xs">Organized</div>
+                </div>
+                
+                <!-- Recently Added -->
+                <div class="bg-accent border-6 border-white p-6 brutal-rotate-slight-left brutal-shadow-secondary">
+                    <div class="text-white font-bold text-sm uppercase mb-2">Recent</div>
+                    <div class="text-4xl font-black text-background leading-none mb-2">5</div>
+                    <div class="text-white font-bold uppercase text-xs">This Week</div>
+                </div>
+                
+                <!-- Storage Used -->
+                <div class="bg-primary border-6 border-white p-6 brutal-rotate-slight-right brutal-shadow-dark">
+                    <div class="text-white font-bold text-sm uppercase mb-2">Storage</div>
+                    <div class="text-4xl font-black text-background leading-none mb-2">2.1GB</div>
+                    <div class="text-white font-bold uppercase text-xs">Used</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Manual Cards Grid -->
+        <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Manual Card 1 -->
+            <div class="manual-card p-6 brutal-shadow-dark">
+                <div class="flex justify-between items-start mb-4">
+                    <span class="category-badge category-kitchen">Kitchen</span>
+                    <span class="text-xs text-text-secondary font-bold uppercase">2 hours ago</span>
+                </div>
+                <h3 class="text-xl font-black uppercase text-text-primary mb-2">
+                    Samsung Refrigerator
+                </h3>
+                <p class="text-text-secondary font-bold mb-2">Model: RF28T5001SR</p>
+                <p class="text-text-secondary font-bold text-sm mb-4">
+                    28 cu. ft. French Door with Twin Cooling Plus
+                </p>
+                <div class="flex justify-between items-center">
+                    <span class="text-xs text-text-secondary font-bold uppercase">PDF • 2.4 MB</span>
+                    <button class="bg-primary text-white border-3 border-text-primary px-3 py-1 font-bold uppercase text-xs">
+                        View
+                    </button>
+                </div>
+            </div>
+
+            <!-- Manual Card 2 -->
+            <div class="manual-card p-6 brutal-shadow-secondary brutal-rotate-slight-left">
+                <div class="flex justify-between items-start mb-4">
+                    <span class="category-badge category-hvac">HVAC</span>
+                    <span class="text-xs text-text-secondary font-bold uppercase">1 day ago</span>
+                </div>
+                <h3 class="text-xl font-black uppercase text-text-primary mb-2">
+                    Carrier Air Handler
+                </h3>
+                <p class="text-text-secondary font-bold mb-2">Model: FV4CNF006</p>
+                <p class="text-text-secondary font-bold text-sm mb-4">
+                    Variable Speed Fan Coil Unit
+                </p>
+                <div class="flex justify-between items-center">
+                    <span class="text-xs text-text-secondary font-bold uppercase">PDF • 1.8 MB</span>
+                    <button class="bg-primary text-white border-3 border-text-primary px-3 py-1 font-bold uppercase text-xs">
+                        View
+                    </button>
+                </div>
+            </div>
+
+            <!-- Manual Card 3 -->
+            <div class="manual-card p-6 brutal-shadow-accent brutal-rotate-slight-right">
+                <div class="flex justify-between items-start mb-4">
+                    <span class="category-badge category-appliances">Appliances</span>
+                    <span class="text-xs text-text-secondary font-bold uppercase">3 days ago</span>
+                </div>
+                <h3 class="text-xl font-black uppercase text-text-primary mb-2">
+                    Bosch Dishwasher
+                </h3>
+                <p class="text-text-secondary font-bold mb-2">Model: SHPM78Z54N</p>
+                <p class="text-text-secondary font-bold text-sm mb-4">
+                    800 Series 24" Built-in Dishwasher
+                </p>
+                <div class="flex justify-between items-center">
+                    <span class="text-xs text-text-secondary font-bold uppercase">PDF • 3.2 MB</span>
+                    <button class="bg-primary text-white border-3 border-text-primary px-3 py-1 font-bold uppercase text-xs">
+                        View
+                    </button>
+                </div>
+            </div>
+
+            <!-- Manual Card 4 -->
+            <div class="manual-card p-6 brutal-shadow-error">
+                <div class="flex justify-between items-start mb-4">
+                    <span class="category-badge category-electronics">Electronics</span>
+                    <span class="text-xs text-text-secondary font-bold uppercase">1 week ago</span>
+                </div>
+                <h3 class="text-xl font-black uppercase text-text-primary mb-2">
+                    Nest Thermostat
+                </h3>
+                <p class="text-text-secondary font-bold mb-2">Model: T3007ES</p>
+                <p class="text-text-secondary font-bold text-sm mb-4">
+                    Learning Thermostat 3rd Generation
+                </p>
+                <div class="flex justify-between items-center">
+                    <span class="text-xs text-text-secondary font-bold uppercase">PDF • 856 KB</span>
+                    <button class="bg-primary text-white border-3 border-text-primary px-3 py-1 font-bold uppercase text-xs">
+                        View
+                    </button>
+                </div>
+            </div>
+
+            <!-- Manual Card 5 -->
+            <div class="manual-card p-6 brutal-shadow-primary brutal-rotate-slight-left">
+                <div class="flex justify-between items-start mb-4">
+                    <span class="category-badge category-plumbing">Plumbing</span>
+                    <span class="text-xs text-text-secondary font-bold uppercase">2 weeks ago</span>
+                </div>
+                <h3 class="text-xl font-black uppercase text-text-primary mb-2">
+                    Rheem Water Heater
+                </h3>
+                <p class="text-text-secondary font-bold mb-2">Model: XE50T10HD50U0</p>
+                <p class="text-text-secondary font-bold text-sm mb-4">
+                    50-Gallon Electric Water Heater
+                </p>
+                <div class="flex justify-between items-center">
+                    <span class="text-xs text-text-secondary font-bold uppercase">PDF • 2.7 MB</span>
+                    <button class="bg-primary text-white border-3 border-text-primary px-3 py-1 font-bold uppercase text-xs">
+                        View
+                    </button>
+                </div>
+            </div>
+
+            <!-- Manual Card 6 -->
+            <div class="manual-card p-6 brutal-shadow-secondary brutal-rotate-slight-right">
+                <div class="flex justify-between items-start mb-4">
+                    <span class="category-badge category-kitchen">Kitchen</span>
+                    <span class="text-xs text-text-secondary font-bold uppercase">3 weeks ago</span>
+                </div>
+                <h3 class="text-xl font-black uppercase text-text-primary mb-2">
+                    KitchenAid Mixer
+                </h3>
+                <p class="text-text-secondary font-bold mb-2">Model: KSM150PSER</p>
+                <p class="text-text-secondary font-bold text-sm mb-4">
+                    Artisan Series 5-Quart Stand Mixer
+                </p>
+                <div class="flex justify-between items-center">
+                    <span class="text-xs text-text-secondary font-bold uppercase">PDF • 1.4 MB</span>
+                    <button class="bg-primary text-white border-3 border-text-primary px-3 py-1 font-bold uppercase text-xs">
+                        View
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Load More -->
+        <section class="text-center mt-12">
+            <button class="bg-secondary text-white border-4 border-text-primary px-8 py-4 font-bold uppercase brutal-shadow-dark brutal-hover-press">
+                Load More Manuals
+            </button>
+        </section>
+    </main>
+
+    <!-- Floating Action Button -->
+    <div class="fixed bottom-6 right-6 md:bottom-8 md:right-8">
+        <button class="w-16 h-16 bg-primary border-4 border-text-primary text-white text-2xl font-black brutal-shadow-dark brutal-rotate-slight-left hover:brutal-rotate-right transition-all duration-200">
+            +
+        </button>
+    </div>
+
+    <script>
+        // Filter functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const filterButtons = document.querySelectorAll('.filter-button-active, .filter-button-inactive');
+            const viewToggleButtons = document.querySelectorAll('.grid-view-toggle, .list-view-toggle');
+            
+            // Category filter switching
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    filterButtons.forEach(btn => {
+                        btn.classList.remove('filter-button-active');
+                        btn.classList.add('filter-button-inactive');
+                    });
+                    
+                    this.classList.remove('filter-button-inactive');
+                    this.classList.add('filter-button-active');
+                });
+            });
+            
+            // View toggle switching
+            viewToggleButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    viewToggleButtons.forEach(btn => {
+                        btn.classList.remove('grid-view-toggle');
+                        btn.classList.add('list-view-toggle');
+                    });
+                    
+                    this.classList.remove('list-view-toggle');
+                    this.classList.add('grid-view-toggle');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HomeKeeper - Notification Center</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#e67e22',
+                        'secondary': '#4A6FA5', 
+                        'accent': '#5d9c59',
+                        'background': '#f5f0e8',
+                        'text-primary': '#2c3e50',
+                        'text-secondary': '#7f8c8d',
+                        'error': '#e74c3c'
+                    },
+                    fontFamily: {
+                        'mono': ['JetBrains Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .brutal-shadow-primary {
+            box-shadow: 8px 8px 0 #e67e22;
+        }
+        
+        .brutal-shadow-secondary {
+            box-shadow: 8px 8px 0 #4A6FA5;
+        }
+        
+        .brutal-shadow-accent {
+            box-shadow: 8px 8px 0 #5d9c59;
+        }
+        
+        .brutal-shadow-dark {
+            box-shadow: 8px 8px 0 #2c3e50;
+        }
+        
+        .brutal-shadow-error {
+            box-shadow: 8px 8px 0 #e74c3c;
+        }
+        
+        .brutal-hover-press {
+            transition: all 0.1s ease;
+        }
+        
+        .brutal-hover-press:hover {
+            transform: translate(4px, 4px);
+            box-shadow: none;
+        }
+        
+        .brutal-hover-lift {
+            transition: all 0.1s ease;
+        }
+        
+        .brutal-hover-lift:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 
+                6px 6px 0 #e67e22,
+                12px 12px 0 #2c3e50;
+        }
+        
+        .brutal-text-shadow {
+            text-shadow: 
+                4px 4px 0 #e67e22,
+                8px 8px 0 #2c3e50;
+        }
+        
+        .brutal-rotate-slight-left {
+            transform: rotate(-0.5deg);
+        }
+        
+        .brutal-rotate-slight-right {
+            transform: rotate(0.5deg);
+        }
+        
+        .hero-bg {
+            background: linear-gradient(135deg, #f5f0e8 0%, #e8ddd4 100%);
+        }
+        
+        .notification-card {
+            background: white;
+            border: 4px solid #2c3e50;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.1s ease;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .notification-card:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0 #e67e22;
+        }
+        
+        .notification-card.unread {
+            border-left: 8px solid #e67e22;
+        }
+        
+        .notification-card.urgent {
+            border-left: 8px solid #e74c3c;
+            background: rgba(231, 76, 60, 0.05);
+        }
+        
+        .notification-card.info {
+            border-left: 8px solid #4A6FA5;
+        }
+        
+        .notification-card.success {
+            border-left: 8px solid #5d9c59;
+        }
+        
+        .notification-card.read {
+            opacity: 0.7;
+            border-color: #7f8c8d;
+        }
+        
+        .notification-icon {
+            width: 3rem;
+            height: 3rem;
+            border: 3px solid #2c3e50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            font-weight: 800;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+        
+        .notification-icon.overdue {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .notification-icon.due-soon {
+            background: #e67e22;
+            color: white;
+        }
+        
+        .notification-icon.info {
+            background: #4A6FA5;
+            color: white;
+        }
+        
+        .notification-icon.success {
+            background: #5d9c59;
+            color: white;
+        }
+        
+        .notification-icon.system {
+            background: #2c3e50;
+            color: white;
+        }
+        
+        .filter-button {
+            background: white;
+            color: #2c3e50;
+            border: 4px solid #2c3e50;
+            padding: 0.75rem 1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.1s ease;
+        }
+        
+        .filter-button.active {
+            background: #e67e22;
+            color: white;
+            box-shadow: 4px 4px 0 #2c3e50;
+        }
+        
+        .filter-button:hover {
+            box-shadow: 4px 4px 0 #e67e22;
+        }
+        
+        .search-input {
+            background: white;
+            border: 4px solid #2c3e50;
+            padding: 0.75rem 1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            box-shadow: 4px 4px 0 #2c3e50;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            box-shadow: 4px 4px 0 #e67e22;
+        }
+        
+        .search-input::placeholder {
+            color: #7f8c8d;
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #e74c3c;
+            color: white;
+            border: 3px solid #2c3e50;
+            border-radius: 50%;
+            width: 2rem;
+            height: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 0.75rem;
+        }
+        
+        .notification-time {
+            color: #7f8c8d;
+            font-weight: 700;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+        }
+        
+        .notification-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .notification-action {
+            background: transparent;
+            color: #2c3e50;
+            border: 3px solid #2c3e50;
+            padding: 0.5rem 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.1s ease;
+        }
+        
+        .notification-action:hover {
+            background: #2c3e50;
+            color: white;
+        }
+        
+        .notification-action.primary {
+            background: #e67e22;
+            color: white;
+            border-color: #2c3e50;
+        }
+        
+        .notification-action.primary:hover {
+            background: #2c3e50;
+        }
+        
+        .notification-settings {
+            background: white;
+            border: 4px solid #2c3e50;
+            padding: 1.5rem;
+        }
+        
+        .settings-section {
+            margin-bottom: 2rem;
+        }
+        
+        .settings-section:last-child {
+            margin-bottom: 0;
+        }
+        
+        .checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+            margin-bottom: 0.75rem;
+        }
+        
+        .checkbox {
+            width: 1.5rem;
+            height: 1.5rem;
+            border: 4px solid #2c3e50;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            font-weight: 800;
+            color: white;
+        }
+        
+        .checkbox.checked {
+            background: #5d9c59;
+        }
+        
+        .form-select {
+            background: white;
+            border: 4px solid #2c3e50;
+            padding: 0.5rem 0.75rem;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+            cursor: pointer;
+            font-size: 0.875rem;
+        }
+        
+        .form-select:focus {
+            outline: none;
+            box-shadow: 4px 4px 0 #e67e22;
+            border-color: #e67e22;
+        }
+        
+        .form-label {
+            color: #2c3e50;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        
+        .notification-preview {
+            background: #f8f9fa;
+            border: 3px solid #2c3e50;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .bulk-actions {
+            background: white;
+            border: 4px solid #2c3e50;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            display: none;
+        }
+        
+        .bulk-actions.visible {
+            display: block;
+        }
+        
+        .unread-indicator {
+            width: 0.75rem;
+            height: 0.75rem;
+            background: #e67e22;
+            border: 2px solid #2c3e50;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body class="font-mono bg-background hero-bg">
+    <!-- Header -->
+    <header class="bg-text-primary border-b-8 border-primary">
+        <div class="max-w-7xl mx-auto px-5 py-4">
+            <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+                <!-- Logo -->
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-primary border-4 border-white brutal-rotate-slight-left brutal-shadow-secondary flex items-center justify-center relative">
+                        <svg width="48" height="48" viewBox="0 0 128 128" class="text-white">
+                            <polygon points="20,70 60,35 100,70" fill="currentColor"/>
+                            <rect x="20" y="70" width="80" height="36" fill="currentColor"/>
+                            <rect x="60" y="74" width="36" height="28" fill="#e67e22"/>
+                        </svg>
+                        <div class="notification-badge">5</div>
+                    </div>
+                    <h1 class="text-2xl md:text-3xl font-black text-white uppercase tracking-tight">
+                        HomeKeeper
+                    </h1>
+                </div>
+                
+                <!-- Navigation -->
+                <nav class="flex flex-wrap gap-2 md:gap-4">
+                    <button class="text-white font-bold uppercase px-3 py-2 text-sm md:text-base hover:text-primary">Dashboard</button>
+                    <button class="text-white font-bold uppercase px-3 py-2 text-sm md:text-base hover:text-primary">Manuals</button>
+                    <button class="text-white font-bold uppercase px-3 py-2 text-sm md:text-base hover:text-primary">Maintenance</button>
+                    <button class="text-primary font-bold uppercase px-3 py-2 text-sm md:text-base">🔔 Notifications</button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-6xl mx-auto px-5 py-8">
+        <!-- Page Header -->
+        <section class="mb-8">
+            <div class="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-6">
+                <div>
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-black uppercase leading-tight mb-4 text-text-primary brutal-text-shadow">
+                        Notification<br>
+                        Center
+                    </h1>
+                    <p class="text-lg md:text-xl font-bold text-text-secondary uppercase tracking-wide">
+                        5 unread • 3 urgent • Last updated 2 minutes ago
+                    </p>
+                </div>
+                
+                <!-- Quick Actions -->
+                <div class="flex flex-wrap gap-3">
+                    <button class="bg-primary text-white border-4 border-text-primary px-4 py-3 font-bold uppercase brutal-shadow-dark brutal-hover-press">
+                        Mark All Read
+                    </button>
+                    <button class="bg-secondary text-white border-4 border-text-primary px-4 py-3 font-bold uppercase brutal-shadow-dark brutal-hover-press">
+                        ⚙️ Settings
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats Overview -->
+        <section class="mb-8">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Urgent Notifications -->
+                <div class="bg-error border-6 border-white p-6 brutal-rotate-slight-left brutal-shadow-dark">
+                    <div class="text-white font-bold text-sm uppercase mb-2">Urgent</div>
+                    <div class="text-4xl font-black text-white leading-none mb-2">3</div>
+                    <div class="text-white font-bold uppercase text-xs">Need Immediate Action</div>
+                </div>
+                
+                <!-- Maintenance Reminders -->
+                <div class="bg-primary border-6 border-white p-6 brutal-rotate-slight-right brutal-shadow-accent">
+                    <div class="text-white font-bold text-sm uppercase mb-2">Maintenance</div>
+                    <div class="text-4xl font-black text-white leading-none mb-2">7</div>
+                    <div class="text-white font-bold uppercase text-xs">Due Soon</div>
+                </div>
+                
+                <!-- System Updates -->
+                <div class="bg-secondary border-6 border-white p-6 brutal-rotate-slight-left brutal-shadow-secondary">
+                    <div class="text-white font-bold text-sm uppercase mb-2">Updates</div>
+                    <div class="text-4xl font-black text-white leading-none mb-2">2</div>
+                    <div class="text-white font-bold uppercase text-xs">Available</div>
+                </div>
+                
+                <!-- Total This Week -->
+                <div class="bg-text-primary border-6 border-white p-6 brutal-rotate-slight-right brutal-shadow-primary">
+                    <div class="text-white font-bold text-sm uppercase mb-2">This Week</div>
+                    <div class="text-4xl font-black text-primary leading-none mb-2">24</div>
+                    <div class="text-white font-bold uppercase text-xs">Total Notifications</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Content Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Left Column: Notifications -->
+            <div class="lg:col-span-2">
+                <!-- Filters and Search -->
+                <section class="mb-6">
+                    <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6">
+                        <!-- Search -->
+                        <div class="flex-1 max-w-md">
+                            <input 
+                                type="text" 
+                                placeholder="Search notifications..."
+                                class="search-input w-full font-mono"
+                            />
+                        </div>
+                        
+                        <!-- Select All -->
+                        <div class="flex items-center gap-3">
+                            <label class="checkbox-wrapper">
+                                <div class="checkbox" id="selectAll">✓</div>
+                                <span class="text-text-primary font-bold text-sm">Select All</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Filter Buttons -->
+                    <div class="flex flex-wrap gap-2">
+                        <button class="filter-button active">All</button>
+                        <button class="filter-button">Unread (5)</button>
+                        <button class="filter-button">Urgent (3)</button>
+                        <button class="filter-button">Maintenance</button>
+                        <button class="filter-button">System</button>
+                        <button class="filter-button">Completed</button>
+                    </div>
+                </section>
+
+                <!-- Bulk Actions -->
+                <div class="bulk-actions" id="bulkActions">
+                    <div class="flex flex-wrap gap-3">
+                        <button class="bg-primary text-white border-3 border-text-primary px-4 py-2 font-bold uppercase text-sm">
+                            Mark as Read
+                        </button>
+                        <button class="bg-secondary text-white border-3 border-text-primary px-4 py-2 font-bold uppercase text-sm">
+                            Archive
+                        </button>
+                        <button class="bg-error text-white border-3 border-text-primary px-4 py-2 font-bold uppercase text-sm">
+                            Delete
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Notification List -->
+                <section class="space-y-4">
+                    <!-- Urgent Overdue Task -->
+                    <div class="notification-card urgent unread">
+                        <div class="flex items-start gap-4">
+                            <div class="notification-icon overdue">⚠️</div>
+                            <div class="flex-1">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h3 class="text-lg font-black uppercase text-text-primary">
+                                        HVAC Filter Replacement Overdue
+                                    </h3>
+                                    <div class="flex items-center gap-2">
+                                        <div class="unread-indicator"></div>
+                                        <span class="notification-time">5 minutes ago</span>
+                                    </div>
+                                </div>
+                                <p class="text-text-primary font-bold mb-2">
+                                    Carrier Air Handler filter is 5 days overdue. System efficiency may be compromised.
+                                </p>
+                                <div class="text-text-secondary font-bold text-sm mb-3">
+                                    Equipment: FV4CNF006 • Location: Basement • Priority: High
+                                </div>
+                                <div class="notification-actions">
+                                    <button class="notification-action primary">Mark Complete</button>
+                                    <button class="notification-action">Reschedule</button>
+                                    <button class="notification-action">View Equipment</button>
+                                    <button class="notification-action">Dismiss</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Due Soon Task -->
+                    <div class="notification-card unread">
+                        <div class="flex items-start gap-4">
+                            <div class="notification-icon due-soon">🔔</div>
+                            <div class="flex-1">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h3 class="text-lg font-black uppercase text-text-primary">
+                                        Water Filter Due in 2 Days
+                                    </h3>
+                                    <div class="flex items-center gap-2">
+                                        <div class="unread-indicator"></div>
+                                        <span class="notification-time">1 hour ago</span>
+                                    </div>
+                                </div>
+                                <p class="text-text-primary font-bold mb-2">
+                                    Samsung Refrigerator water filter replacement is due December 22, 2023.
+                                </p>
+                                <div class="text-text-secondary font-bold text-sm mb-3">
+                                    Equipment: RF28T5001SR • Location: Kitchen • Cost: $45
+                                </div>
+                                <div class="notification-actions">
+                                    <button class="notification-action primary">Schedule Now</button>
+                                    <button class="notification-action">View Manual</button>
+                                    <button class="notification-action">Mark Read</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- System Update -->
+                    <div class="notification-card info unread">
+                        <div class="flex items-start gap-4">
+                            <div class="notification-icon system">🔄</div>
+                            <div class="flex-1">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h3 class="text-lg font-black uppercase text-text-primary">
+                                        HomeKeeper Update Available
+                                    </h3>
+                                    <div class="flex items-center gap-2">
+                                        <div class="unread-indicator"></div>
+                                        <span class="notification-time">3 hours ago</span>
+                                    </div>
+                                </div>
+                                <p class="text-text-primary font-bold mb-2">
+                                    Version 2.4.1 includes improved maintenance scheduling and bug fixes.
+                                </p>
+                                <div class="text-text-secondary font-bold text-sm mb-3">
+                                    Size: 15 MB • Estimated time: 5 minutes • Auto-restart required
+                                </div>
+                                <div class="notification-actions">
+                                    <button class="notification-action primary">Update Now</button>
+                                    <button class="notification-action">Schedule Later</button>
+                                    <button class="notification-action">Release Notes</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Equipment Added -->
+                    <div class="notification-card success unread">
+                        <div class="flex items-start gap-4">
+                            <div class="notification-icon success">✅</div>
+                            <div class="flex-1">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h3 class="text-lg font-black uppercase text-text-primary">
+                                        Manual Successfully Added
+                                    </h3>
+                                    <div class="flex items-center gap-2">
+                                        <div class="unread-indicator"></div>
+                                        <span class="notification-time">6 hours ago</span>
+                                    </div>
+                                </div>
+                                <p class="text-text-primary font-bold mb-2">
+                                    Samsung Refrigerator manual has been processed and maintenance schedule created.
+                                </p>
+                                <div class="text-text-secondary font-bold text-sm mb-3">
+                                    3 maintenance tasks created • OCR processing complete • Ready for use
+                                </div>
+                                <div class="notification-actions">
+                                    <button class="notification-action primary">View Manual</button>
+                                    <button class="notification-action">Review Tasks</button>
+                                    <button class="notification-action">Mark Read</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Task Completed -->
+                    <div class="notification-card read">
+                        <div class="flex items-start gap-4">
+                            <div class="notification-icon success">🎉</div>
+                            <div class="flex-1">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h3 class="text-lg font-black uppercase text-text-primary">
+                                        Furnace Inspection Completed
+                                    </h3>
+                                    <span class="notification-time">Yesterday</span>
+                                </div>
+                                <p class="text-text-primary font-bold mb-2">
+                                    Annual safety inspection completed successfully. Next inspection scheduled for December 2024.
+                                </p>
+                                <div class="text-text-secondary font-bold text-sm mb-3">
+                                    Duration: 2 hours • Cost: $150 • Status: All systems operational
+                                </div>
+                                <div class="notification-actions">
+                                    <button class="notification-action">View Report</button>
+                                    <button class="notification-action">Archive</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Low Priority Reminder -->
+                    <div class="notification-card read">
+                        <div class="flex items-start gap-4">
+                            <div class="notification-icon info">💡</div>
+                            <div class="flex-1">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h3 class="text-lg font-black uppercase text-text-primary">
+                                        Monthly Dishwasher Cleaning
+                                    </h3>
+                                    <span class="notification-time">2 days ago</span>
+                                </div>
+                                <p class="text-text-primary font-bold mb-2">
+                                    Scheduled monthly deep clean for your Bosch dishwasher is coming up next week.
+                                </p>
+                                <div class="text-text-secondary font-bold text-sm mb-3">
+                                    Due: January 5, 2024 • Estimated time: 45 minutes • No parts needed
+                                </div>
+                                <div class="notification-actions">
+                                    <button class="notification-action">Schedule</button>
+                                    <button class="notification-action">Skip This Month</button>
+                                    <button class="notification-action">Archive</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Load More -->
+                <section class="text-center mt-8">
+                    <button class="bg-secondary text-white border-4 border-text-primary px-8 py-4 font-bold uppercase brutal-shadow-dark brutal-hover-press">
+                        Load Older Notifications
+                    </button>
+                </section>
+            </div>
+
+            <!-- Right Column: Settings & Quick Actions -->
+            <div class="space-y-6">
+                <!-- Quick Stats -->
+                <div class="notification-settings brutal-shadow-primary">
+                    <h3 class="text-lg font-black uppercase text-text-primary mb-4">
+                        Quick Stats
+                    </h3>
+                    
+                    <div class="space-y-3">
+                        <div class="flex justify-between">
+                            <span class="text-text-secondary font-bold text-sm">Today</span>
+                            <span class="text-text-primary font-black">8 notifications</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-text-secondary font-bold text-sm">This Week</span>
+                            <span class="text-text-primary font-black">24 notifications</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-text-secondary font-bold text-sm">Avg Response Time</span>
+                            <span class="text-text-primary font-black">2.5 hours</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-text-secondary font-bold text-sm">Completion Rate</span>
+                            <span class="text-accent font-black">94%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notification Preferences -->
+                <div class="notification-settings brutal-shadow-secondary">
+                    <h3 class="text-lg font-black uppercase text-text-primary mb-4">
+                        Notification Preferences
+                    </h3>
+                    
+                    <div class="settings-section">
+                        <h4 class="form-label">Delivery Methods</h4>
+                        <div class="space-y-2">
+                            <label class="checkbox-wrapper">
+                                <div class="checkbox checked">✓</div>
+                                <span class="text-text-primary font-bold text-sm">Push Notifications</span>
+                            </label>
+                            <label class="checkbox-wrapper">
+                                <div class="checkbox checked">✓</div>
+                                <span class="text-text-primary font-bold text-sm">Email Digest</span>
+                            </label>
+                            <label class="checkbox-wrapper">
+                                <div class="checkbox">✓</div>
+                                <span class="text-text-primary font-bold text-sm">SMS for Urgent</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-section">
+                        <h4 class="form-label">Email Frequency</h4>
+                        <select class="form-select w-full">
+                            <option value="immediate">Immediate</option>
+                            <option value="daily" selected>Daily Digest</option>
+                            <option value="weekly">Weekly Summary</option>
+                            <option value="never">Never</option>
+                        </select>
+                    </div>
+                    
+                    <div class="settings-section">
+                        <h4 class="form-label">Notification Types</h4>
+                        <div class="space-y-2">
+                            <label class="checkbox-wrapper">
+                                <div class="checkbox checked">✓</div>
+                                <span class="text-text-primary font-bold text-sm">Maintenance Reminders</span>
+                            </label>
+                            <label class="checkbox-wrapper">
+                                <div class="checkbox checked">✓</div>
+                                <span class="text-text-primary font-bold text-sm">Overdue Tasks</span>
+                            </label>
+                            <label class="checkbox-wrapper">
+                                <div class="checkbox checked">✓</div>
+                                <span class="text-text-primary font-bold text-sm">System Updates</span>
+                            </label>
+                            <label class="checkbox-wrapper">
+                                <div class="checkbox">✓</div>
+                                <span class="text-text-primary font-bold text-sm">Equipment Alerts</span>
+                            </label>
+                            <label class="checkbox-wrapper">
+                                <div class="checkbox">✓</div>
+                                <span class="text-text-primary font-bold text-sm">Manual Processing</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="space-y-3">
+                    <button class="w-full bg-primary text-white border-4 border-text-primary px-4 py-3 font-bold uppercase brutal-shadow-dark brutal-hover-press">
+                        📊 Notification Report
+                    </button>
+                    <button class="w-full bg-secondary text-white border-4 border-text-primary px-4 py-3 font-bold uppercase brutal-shadow-dark brutal-hover-press">
+                        🔕 Snooze All
+                    </button>
+                    <button class="w-full bg-accent text-white border-4 border-text-primary px-4 py-3 font-bold uppercase brutal-shadow-dark brutal-hover-press">
+                        ⚙️ Advanced Settings
+                    </button>
+                    <button class="w-full bg-text-primary text-white border-4 border-text-primary px-4 py-3 font-bold uppercase brutal-shadow-dark brutal-hover-press">
+                        🗑️ Clear All Read
+                    </button>
+                </div>
+
+                <!-- Notification Preview -->
+                <div class="notification-settings brutal-shadow-accent">
+                    <h3 class="text-lg font-black uppercase text-text-primary mb-4">
+                        Preview
+                    </h3>
+                    
+                    <div class="notification-preview">
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="w-8 h-8 bg-primary text-white font-bold text-xs flex items-center justify-center">🔔</div>
+                            <div>
+                                <div class="font-bold text-sm text-text-primary">HomeKeeper</div>
+                                <div class="text-xs text-text-secondary">Water filter due in 2 days</div>
+                            </div>
+                        </div>
+                        <div class="text-xs text-text-secondary">
+                            This is how notifications will appear on your device.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Notification functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const selectAllCheckbox = document.getElementById('selectAll');
+            const bulkActions = document.getElementById('bulkActions');
+            const filterButtons = document.querySelectorAll('.filter-button');
+            const notificationCards = document.querySelectorAll('.notification-card');
+            
+            // Filter functionality
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    console.log('Filtering by:', this.textContent);
+                });
+            });
+            
+            // Select all functionality
+            selectAllCheckbox.addEventListener('click', function() {
+                this.classList.toggle('checked');
+                bulkActions.classList.toggle('visible');
+            });
+            
+            // Notification card interactions
+            notificationCards.forEach(card => {
+                card.addEventListener('click', function(e) {
+                    // Don't trigger if clicking on buttons
+                    if (e.target.tagName === 'BUTTON') return;
+                    
+                    // Mark as read if unread
+                    if (this.classList.contains('unread')) {
+                        this.classList.remove('unread');
+                        this.classList.add('read');
+                        this.querySelector('.unread-indicator')?.remove();
+                        
+                        // Update header count
+                        console.log('Marked as read');
+                    }
+                });
+            });
+            
+            // Notification action buttons
+            document.querySelectorAll('.notification-action').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    
+                    const action = this.textContent.trim();
+                    console.log('Notification action:', action);
+                    
+                    // Handle specific actions
+                    if (action === 'Mark Complete' || action === 'Mark Read') {
+                        const card = this.closest('.notification-card');
+                        card.classList.remove('unread');
+                        card.classList.add('read');
+                        card.querySelector('.unread-indicator')?.remove();
+                    }
+                    
+                    if (action === 'Dismiss') {
+                        const card = this.closest('.notification-card');
+                        card.style.opacity = '0.5';
+                        setTimeout(() => {
+                            card.remove();
+                        }, 300);
+                    }
+                });
+            });
+            
+            // Checkbox functionality in settings
+            const checkboxes = document.querySelectorAll('.checkbox-wrapper');
+            checkboxes.forEach(wrapper => {
+                wrapper.addEventListener('click', function() {
+                    const checkbox = this.querySelector('.checkbox');
+                    checkbox.classList.toggle('checked');
+                });
+            });
+            
+            // Quick action buttons
+            document.querySelectorAll('[data-action]').forEach(button => {
+                button.addEventListener('click', function() {
+                    const action = this.getAttribute('data-action');
+                    console.log('Quick action:', action);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

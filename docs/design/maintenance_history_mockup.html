@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HomeKeeper - Maintenance History</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#e67e22',
+                        'secondary': '#4A6FA5', 
+                        'accent': '#5d9c59',
+                        'background': '#f5f0e8',
+                        'text-primary': '#2c3e50',
+                        'text-secondary': '#7f8c8d',
+                        'error': '#e74c3c'
+                    },
+                    fontFamily: {
+                        'mono': ['JetBrains Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .brutal-shadow-primary {
+            box-shadow: 8px 8px 0 #e67e22;
+        }
+        
+        .brutal-shadow-secondary {
+            box-shadow: 8px 8px 0 #4A6FA5;
+        }
+        
+        .brutal-shadow-accent {
+            box-shadow: 8px 8px 0 #5d9c59;
+        }
+        
+        .brutal-shadow-dark {
+            box-shadow: 8px 8px 0 #2c3e50;
+        }
+        
+        .brutal-hover-press {
+            transition: all 0.1s ease;
+        }
+        
+        .brutal-hover-press:hover {
+            transform: translate(4px, 4px);
+            box-shadow: none;
+        }
+        
+        .brutal-hover-lift {
+            transition: all 0.1s ease;
+        }
+        
+        .brutal-hover-lift:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 
+                6px 6px 0 #e67e22,
+                12px 12px 0 #2c3e50;
+        }
+        
+        .brutal-text-shadow {
+            text-shadow: 
+                4px 4px 0 #e67e22,
+                8px 8px 0 #2c3e50;
+        }
+        
+        .brutal-rotate-slight-left {
+            transform: rotate(-0.5deg);
+        }
+        
+        .brutal-rotate-slight-right {
+            transform: rotate(0.5deg);
+        }
+        
+        .hero-bg {
+            background: linear-gradient(135deg, #f5f0e8 0%, #e8ddd4 100%);
+        }
+        
+        .history-card {
+            background: white;
+            border: 4px solid #2c3e50;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.1s ease;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .history-card:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0 #e67e22;
+        }
+        
+        .history-card.completed {
+            border-left: 8px solid #5d9c59;
+        }
+        
+        .history-card.overdue-completed {
+            border-left: 8px solid #e67e22;
+        }
+        
+        .history-card.emergency {
+            border-left: 8px solid #e74c3c;
+        }
+        
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border: 3px solid #2c3e50;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+        }
+        
+        .status-completed {
+            background: #5d9c59;
+            color: white;
+        }
+        
+        .status-overdue {
+            background: #e67e22;
+            color: white;
+        }
+        
+        .status-emergency {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .filter-button {
+            background: white;
+            color: #2c3e50;
+            border: 4px solid #2c3e50;
+            padding: 0.75rem 1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.1s ease;
+        }
+        
+        .filter-button.active {
+            background: #e67e22;
+            color: white;
+            box-shadow: 4px 4px 0 #2c3e50;
+        }
+        
+        .filter-button:hover {
+            box-shadow: 4px 4px 0 #e67e22;
+        }
+        
+        .search-input {
+            background: white;
+            border: 4px solid #2c3e50;
+            padding: 0.75rem 1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            box-shadow: 4px 4px 0 #2c3e50;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            box-shadow: 4px 4px 0 #e67e22;
+        }
+        
+        .search-input::placeholder {
+            color: #7f8c8d;
+        }
+        
+        .date-range-input {
+            background: white;
+            border: 4px solid #2c3e50;
+            padding: 0.5rem 0.75rem;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+        }
+        
+        .date-range-input:focus {
+            outline: none;
+            box-shadow: 4px 4px 0 #e67e22;
+            border-color: #e67e22;
+        }
+        
+        .timeline-container {
+            position: relative;
+            padding-left: 2rem;
+        }
+        
+        .timeline-line {
+            position: absolute;
+            left: 0.75rem;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: #2c3e50;
+        }
+        
+        .timeline-dot {
+            position: absolute;
+            left: -0.5rem;
+            top: 1.5rem;
+            width: 2rem;
+            height: 2rem;
+            border: 4px solid #2c3e50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 0.875rem;
+            z-index: 1;
+        }
+        
+        .timeline-dot.completed {
+            background: #5d9c59;
+            color: white;
+        }
+        
+        .timeline-dot.overdue {
+            background: #e67e22;
+            color: white;
+        }
+        
+        .timeline-dot.emergency {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .cost-indicator {
+            background: #f8f9fa;
+            border: 3px solid #2c3e50;
+            padding: 0.5rem 0.75rem;
+            font-weight: 700;
+            font-size: 0.875rem;
+            display: inline-block;
+        }
+        
+        .cost-high {
+            border-color: #e74c3c;
+            color: #e74c3c;
+        }
+        
+        .cost-medium {
+            border-color: #e67e22;
+            color: #e67e22;
+        }
+        
+        .cost-low {
+            border-color: #5d9c59;
+            color: #5d9c59;
+        }
+        
+        .duration-badge {
+            background: #4A6FA5;
+            color: white;
+            border: 2px solid #2c3e50;
+            padding: 0.25rem 0.5rem;
+            font-weight: 700;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+        }
+        
+        .equipment-icon {
+            width: 2.5rem;
+            height: 2.5rem;
+            border: 3px solid #2c3e50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            font-weight: 800;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+        
+        .equipment-icon.kitchen {
+            background: #e67e22;
+            color: white;
+        }
+        
+        .equipment-icon.hvac {
+            background: #4A6FA5;
+            color: white;
+        }
+        
+        .equipment-icon.plumbing {
+            background: #5d9c59;
+            color: white;
+        }
+        
+        .equipment-icon.electrical {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .report-card {
+            background: white;
+            border: 4px solid #2c3e50;
+            padding: 1.5rem;
+            transition: all 0.1s ease;
+            cursor: pointer;
+        }
+        
+        .report-card:hover {
+            box-shadow: 4px 4px 0 #e67e22;
+        }
+        
+        .chart-placeholder {
+            background: #f8f9fa;
+            border: 4px solid #2c3e50;
+            padding: 2rem;
+            text-align: center;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .breadcrumb {
+            color: #7f8c8d;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.875rem;
+        }
+        
+        .breadcrumb a {
+            color: #e67e22;
+            text-decoration: none;
+        }
+        
+        .breadcrumb a:hover {
+            color: #2c3e50;
+        }
+        
+        .back-button {
+            color: #e67e22;
+            font-weight: 700;
+            text-transform: uppercase;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .back-button:hover {
+            color: #2c3e50;
+        }
+        
+        .export-menu {
+            background: white;
+            border: 4px solid #2c3e50;
+            padding: 1rem;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            min-width: 200px;
+            z-index: 10;
+            display: none;
+        }
+        
+        .export-menu.visible {
+            display: block;
+        }
+        
+        .export-option {
+            background: transparent;
+            color: #2c3e50;
+            border: 3px solid #2c3e50;
+            padding: 0.75rem 1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.1s ease;
+            width: 100%;
+            margin-bottom: 0.5rem;
+            text-align: left;
+        }
+        
+        .export-option:hover {
+            background: #e67e22;
+            color: white;
+        }
+        
+        .export-option:last-child {
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+<body class="font-mono bg-background hero-bg">
+    <!-- Header -->
+    <header class="bg-text-primary border-b-8 border-primary">
+        <div class="max-w-7xl mx-auto px-5 py-4">
+            <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+                <!-- Logo -->
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-primary border-4 border-white brutal-rotate-slight-left brutal-shadow-secondary flex items-center justify-center">
+                        <svg width="48" height="48" viewBox="0 0 128 128" class="text-white">
+                            <polygon points="20,70 60,35 100,70" fill="currentColor"/>
+                            <rect x="20" y="70" width="80" height="36" fill="currentColor"/>
+                            <rect x="60" y="74" width="36" height="28" fill="#e67e22"/>
+                        </svg>
+                    </div>
+                    <h1 class="text-2xl md:text-3xl font-black text-white uppercase tracking-tight">
+                        HomeKeeper
+                    </h1>
+                </div>
+                
+                <!-- Navigation -->
+                <nav class="flex flex-wrap gap-2 md:gap-4">
+                    <button class="text-white font-bold uppercase px-3 py-2 text-sm md:text-base hover:text-primary">Dashboard</button>
+                    <button class="text-white font-bold uppercase px-3 py-2 text-sm md:text-base hover:text-primary">Manuals</button>
+                    <button class="text-primary font-bold uppercase px-3 py-2 text-sm md:text-base">Maintenance</button>
+                    <button class="text-white font-bold uppercase px-3 py-2 text-sm md:text-base hover:text-primary">Settings</button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-5 py-8">
+        <!-- Breadcrumb -->
+        <nav class="mb-6">
+            <div class="breadcrumb">
+                <a href="#" class="back-button">
+                    ← Back to Maintenance
+                </a>
+                <span class="mx-2">•</span>
+                <span>History & Reports</span>
+            </div>
+        </nav>
+
+        <!-- Page Header -->
+        <section class="mb-8">
+            <div class="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-6">
+                <div>
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-black uppercase leading-tight mb-4 text-text-primary brutal-text-shadow">
+                        Maintenance<br>
+                        History
+                    </h1>
+                    <p class="text-lg md:text-xl font-bold text-text-secondary uppercase tracking-wide">
+                        156 completed tasks • $2,847 saved • 94% on-time completion
+                    </p>
+                </div>
+                
+                <!-- Quick Actions -->
+                <div class="flex flex-wrap gap-3 relative">
+                    <button class="bg-primary text-white border-4 border-text-primary px-4 py-3 font-bold uppercase brutal-shadow-dark brutal-hover-press" id="exportButton">
+                        📊 Export Report
+                    </button>
+                    <button class="bg-secondary text-white border-4 border-text-primary px-4 py-3 font-bold uppercase brutal-shadow-dark brutal-hover-press">
+                        📈 Analytics
+                    </button>
+                    
+                    <!-- Export Menu -->
+                    <div class="export-menu" id="exportMenu">
+                        <button class="export-option">📄 Export as PDF</button>
+                        <button class="export-option">📊 Export as Excel</button>
+                        <button class="export-option">📝 Export as CSV</button>
+                        <button class="export-option">📧 Email Report</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats Overview -->
+        <section class="mb-8">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Total Completed -->
+                <div class="bg-accent border-6 border-white p-6 brutal-rotate-slight-left brutal-shadow-dark">
+                    <div class="text-white font-bold text-sm uppercase mb-2">Total Completed</div>
+                    <div class="text-4xl font-black text-white leading-none mb-2">156</div>
+                    <div class="text-white font-bold uppercase text-xs">This Year</div>
+                </div>
+                
+                <!-- Money Saved -->
+                <div class="bg-primary border-6 border-white p-6 brutal-rotate-slight-right brutal-shadow-accent">
+                    <div class="text-white font-bold text-sm uppercase mb-2">Money Saved</div>
+                    <div class="text-4xl font-black text-white leading-none mb-2">$2,847</div>
+                    <div class="text-white font-bold uppercase text-xs">vs. Professional Service</div>
+                </div>
+                
+                <!-- Average Completion Time -->
+                <div class="bg-secondary border-6 border-white p-6 brutal-rotate-slight-left brutal-shadow-secondary">
+                    <div class="text-white font-bold text-sm uppercase mb-2">Avg Completion</div>
+                    <div class="text-4xl font-black text-white leading-none mb-2">2.3</div>
+                    <div class="text-white font-bold uppercase text-xs">Days vs. Scheduled</div>
+                </div>
+                
+                <!-- Equipment Health -->
+                <div class="bg-text-primary border-6 border-white p-6 brutal-rotate-slight-right brutal-shadow-primary">
+                    <div class="text-white font-bold text-sm uppercase mb-2">Health Score</div>
+                    <div class="text-4xl font-black text-primary leading-none mb-2">94%</div>
+                    <div class="text-white font-bold uppercase text-xs">Equipment Uptime</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Content Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Left Column: History -->
+            <div class="lg:col-span-2">
+                <!-- Filters and Search -->
+                <section class="mb-6">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                        <!-- Search -->
+                        <input 
+                            type="text" 
+                            placeholder="Search history..."
+                            class="search-input font-mono"
+                        />
+                        
+                        <!-- Date Range -->
+                        <input 
+                            type="date" 
+                            class="date-range-input"
+                            value="2023-01-01"
+                        />
+                        <input 
+                            type="date" 
+                            class="date-range-input"
+                            value="2023-12-31"
+                        />
+                    </div>
+                    
+                    <!-- Filter Buttons -->
+                    <div class="flex flex-wrap gap-2">
+                        <button class="filter-button active">All History</button>
+                        <button class="filter-button">This Month</button>
+                        <button class="filter-button">Last 3 Months</button>
+                        <button class="filter-button">Emergency Repairs</button>
+                        <button class="filter-button">Preventive</button>
+                        <button class="filter-button">High Cost ($100+)</button>
+                    </div>
+                </section>
+
+                <!-- Timeline View Toggle -->
+                <section class="mb-6">
+                    <div class="flex gap-2">
+                        <button class="filter-button active" id="listView">📋 List View</button>
+                        <button class="filter-button" id="timelineView">📅 Timeline View</button>
+                    </div>
+                </section>
+
+                <!-- History List -->
+                <section class="space-y-4" id="historyList">
+                    <!-- Recent Completion -->
+                    <div class="history-card completed">
+                        <div class="flex items-start gap-4">
+                            <div class="equipment-icon hvac">🔥</div>
+                            <div class="flex-1">
+                                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-3 gap-2">
+                                    <div>
+                                        <h3 class="text-lg font-black uppercase text-text-primary mb-1">
+                                            Furnace Annual Inspection
+                                        </h3>
+                                        <p class="text-text-secondary font-bold text-sm">
+                                            Rheem Furnace • R801TA075417MSA • Basement
+                                        </p>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="status-badge status-completed">Completed</span>
+                                        <span class="duration-badge">2h 15m</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-3">
+                                    <div>
+                                        <div class="text-text-secondary font-bold text-xs uppercase mb-1">Completed Date</div>
+                                        <div class="text-text-primary font-black text-sm">Dec 18, 2023</div>
+                                    </div>
+                                    <div>
+                                        <div class="text-text-secondary font-bold text-xs uppercase mb-1">Total Cost</div>
+                                        <div class="cost-indicator cost-medium">$150.00</div>
+                                    </div>
+                                    <div>
+                                        <div class="text-text-secondary font-bold text-xs uppercase mb-1">Performed By</div>
+                                        <div class="text-text-primary font-black text-sm">Professional Service</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <div class="text-text-secondary font-bold text-xs uppercase mb-1">Summary</div>
+                                    <p class="text-text-primary font-bold text-sm">
+                                        Annual safety inspection completed. All systems operational. Heat exchanger checked, gas connections verified, filter replaced. Next inspection due December 2024.
+                                    </p>
+                                </div>
+                                
+                                <div class="flex flex-wrap gap-2">
+                                    <button class="bg-secondary text-white border-3 border-text-primary px-3 py-1 font-bold uppercase text-xs">
+                                        View Report
+                                    </button>
+                                    <button class="bg-transparent text-text-primary border-3 border-text-primary px-3 py-1 font-bold uppercase text-xs">
+                                        Schedule Next
+                                    </button>
+                                    <button class="bg-transparent text-text-primary border-3 border-text-primary px-3 py-1 font-bold uppercase text-xs">
+                                        View Photos
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Overdue Completion -->
+                    <div class="history-card overdue-completed">
+                        <div class="flex items-start gap-4">
+                            <div class="equipment-icon hvac">❄️</div>
+                            <div class="flex-1">
+                                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-3 gap-2">
+                                    <div>
+                                        <h3 class="text-lg font-black uppercase text-text-primary mb-1">
+                                            HVAC Filter Replacement
+                                        </h3>
+                                        <p class="text-text-secondary font-bold text-sm">
+                                            Carrier Air Handler • FV4CNF006 • Basement
+                                        </p>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="status-badge status-overdue">Completed Late</span>
+                                        <span class="duration-badge">30m</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-3">
+                                    <div>
+                                        <div class="text-text-secondary font-bold text-xs uppercase mb-1">Completed Date</div>
+                                        <div class="text-text-primary font-black text-sm">Dec 15, 2023</div>
+                                        <div class="text-error font-bold text-xs">5 days overdue</div>
+                                    </div>
+                                    <div>
+                                        <div class="text-text-secondary font-bold text-xs uppercase mb-1">Total Cost</div>
+                                        <div class="cost-indicator cost-low">$25.00</div>
+                                    </div>
+                                    <div>
+                                        <div class="text-text-secondary font-bold text-xs uppercase mb-1">Performed By</div>
+                                        <div class="text-text-primary font-black text-sm">Homeowner</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <div class="text-text-secondary font-bold text-xs uppercase mb-1">Summary</div>
+                                    <p class="text-text-primary font-bold text-sm">
+                                        Replaced dirty air filter with new MERV 13 filter. Filter was significantly clogged, reducing system efficiency. Next replacement due in 3 months.
+                                    </p>
+                                </div>
+                                
+                                <div class="flex flex-wrap gap-2">
+                                    <button class="bg-secondary text-white border-3 border-text-primary px-3 py-1 font-bold uppercase text-xs">
+                                        View Details
+                                    </button>
+                                    <button class="bg-transparent text-text-primary border-3 border-text-primary px-3 py-1 font-bold uppercase text-xs">
+                                        Schedule Next
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Emergency Repair -->
+                    <div class="history-card emergency">
+                        <div class="flex items-start gap-4">
+                            <div class="equipment-icon plumbing">🚿</div>
+                            <div class="flex-1">
+                                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-3 gap-2">
+                                    <div>
+                                        <h3 class="text-lg font-black uppercase text-text-primary mb-1">
+                                            Emergency Water Heater Repair
+                                        </h3>
+                                        <p class="text-text-secondary font-bold text-sm">
+                                            Rheem Water Heater • XE50T10HD50U0 • Utility Room
+                                        </p>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="status-badge status-emergency">Emergency</span>
+                                        <span class="duration-badge">4h 30m</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-3">
+                                    <div>
+                                        <div class="text-text-secondary font-bold text-xs uppercase mb-1">Completed Date</div>
+                                        <div class="text-text-primary font-black text-sm">Nov 28, 2023</div>
+                                        <div class="text-error font-bold text-xs">Same-day service</div>
+                                    </div>
+                                    <div>
+                                        <div class="text-text-secondary font-bold text-xs uppercase mb-1">Total Cost</div>
+                                        <div class="cost-indicator cost-high">$485.00</div>
+                                    </div>
+                                    <div>
+                                        <div class="text-text-secondary font-bold text-xs uppercase mb-1">Performed By</div>
+                                        <div class="text-text-primary font-black text-sm">Emergency Plumber</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <div class="text-text-secondary font-bold text-xs uppercase mb-1">Summary</div>
+                                    <p class="text-text-primary font-bold text-sm">
+                                        Emergency repair: heating element failure causing no hot water. Replaced both heating elements and thermostats. System tested and operational. Includes 1-year warranty on parts.
+                                    </p>
+                                </div>
+                                
+                                <div class="flex flex-wrap gap-2">
+                                    <button class="bg-secondary text-white border-3 border-text-primary px-3 py-1 font-bold uppercase text-xs">
+                                        View Invoice
+                                    </button>
+                                    <button class="bg-transparent text-text-primary border-3 border-text-primary px-3 py-1 font-bold uppercase text-xs">
+                                        Warranty Info
+                                    </button>
+                                    <button class="bg-transparent text-text-primary border-3 border-text-primary px-3 py-1 font-bold uppercase text-xs">
+                                        Contact Service
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Routine Maintenance -->
+                    <div class="history-card completed">
+                        <div class="flex items-start gap-4">
+                            <div class="equipment-icon kitchen">❄️</div>
+                            <div class="flex-1">
+                                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-3 gap-2">
+                                    <div>
+                                        <h3 class="text-lg font-black uppercase text-text-primary mb-1">
+                                            Refrigerator Coil Cleaning
+                                        </h3>
+                                        <p class="text-text-secondary font-bold text-sm">
+                                            Samsung Refrigerator • RF28T5001SR • Kitchen
+                                        </p>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="status-badge status-completed">Completed</span>
+                                        <span class="duration-badge">45m</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-3">
+                                    <div>
+                                        <div class="text-text-secondary font-bold text-xs uppercase mb-1">Completed Date</div>
+                                        <div class="text-text-primary font-black text-sm">Nov 15, 2023</div>
+                                    </div>
+                                    <div>
+                                        <div class="text-text-secondary font-bold text-xs uppercase mb-1">Total Cost</div>
+                                        <div class="cost-indicator cost-low">$0.00</div>
+                                    </div>
+                                    <div>
+                                        <div class="text-text-secondary font-bold text-xs uppercase mb-1">Performed By</div>
+                                        <div class="text-text-primary font-black text-sm">Homeowner</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <div class="text-text-secondary font-bold text-xs uppercase mb-1">Summary</div>
+                                    <p class="text-text-primary font-bold text-sm">
+                                        Cleaned condenser coils and checked door seals. Coils were moderately dusty. Cleaning should improve efficiency by 10-15%. Next cleaning due in 6 months.
+                                    </p>
+                                </div>
+                                
+                                <div class="flex flex-wrap gap-2">
+                                    <button class="bg-secondary text-white border-3 border-text-primary px-3 py-1 font-bold uppercase text-xs">
+                                        View Photos
+                                    </button>
+                                    <button class="bg-transparent text-text-primary border-3 border-text-primary px-3 py-1 font-bold uppercase text-xs">
+                                        Schedule Next
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Timeline View (Hidden by default) -->
+                <section class="hidden" id="historyTimeline">
+                    <div class="timeline-container">
+                        <div class="timeline-line"></div>
+                        
+                        <!-- Timeline Item -->
+                        <div class="relative mb-8">
+                            <div class="timeline-dot completed">✓</div>
+                            <div class="bg-white border-4 border-text-primary p-4 ml-4">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h4 class="font-black uppercase text-text-primary">Furnace Inspection</h4>
+                                    <span class="text-text-secondary font-bold text-sm">Dec 18, 2023</span>
+                                </div>
+                                <p class="text-text-primary font-bold text-sm">Annual safety inspection completed successfully.</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Timeline Item -->
+                        <div class="relative mb-8">
+                            <div class="timeline-dot overdue">⚠</div>
+                            <div class="bg-white border-4 border-text-primary p-4 ml-4">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h4 class="font-black uppercase text-text-primary">HVAC Filter Change</h4>
+                                    <span class="text-text-secondary font-bold text-sm">Dec 15, 2023</span>
+                                </div>
+                                <p class="text-text-primary font-bold text-sm">Filter replacement completed 5 days late.</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Timeline Item -->
+                        <div class="relative mb-8">
+                            <div class="timeline-dot emergency">!</div>
+                            <div class="bg-white border-4 border-text-primary p-4 ml-4">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h4 class="font-black uppercase text-text-primary">Water Heater Emergency</h4>
+                                    <span class="text-text-secondary font-bold text-sm">Nov 28, 2023</span>
+                                </div>
+                                <p class="text-text-primary font-bold text-sm">Emergency repair: heating element replacement.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Load More -->
+                <section class="text-center mt-8">
+                    <button class="bg-secondary text-white border-4 border-text-primary px-8 py-4 font-bold uppercase brutal-shadow-dark brutal-hover-press">
+                        Load Older History
+                    </button>
+                </section>
+            </div>
+
+            <!-- Right Column: Reports & Analytics -->
+            <div class="space-y-6">
+                <!-- Monthly Summary -->
+                <div class="report-card brutal-shadow-primary">
+                    <h3 class="text-lg font-black uppercase text-text-primary mb-4">
+                        December Summary
+                    </h3>
+                    
+                    <div class="space-y-3">
+                        <div class="flex justify-between">
+                            <span class="text-text-secondary font-bold text-sm">Tasks Completed</span>
+                            <span class="text-text-primary font-black">8</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-text-secondary font-bold text-sm">Total Cost</span>
+                            <span class="text-text-primary font-black">$660</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-text-secondary font-bold text-sm">Avg Completion Time</span>
+                            <span class="text-text-primary font-black">1.8 days</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-text-secondary font-bold text-sm">Emergency Repairs</span>
+                            <span class="text-error font-black">1</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-text-secondary font-bold text-sm">On-Time Rate</span>
+                            <span class="text-accent font-black">87%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cost Breakdown -->
+                <div class="report-card brutal-shadow-secondary">
+                    <h3 class="text-lg font-black uppercase text-text-primary mb-4">
+                        Cost Breakdown
+                    </h3>
+                    
+                    <div class="chart-placeholder">
+                        <div class="text-center">
+                            <div class="text-6xl mb-4">📊</div>
+                            <div class="font-black uppercase text-text-primary">Cost Analysis Chart</div>
+                            <div class="text-text-secondary font-bold text-sm mt-2">
+                                Professional: $635 • DIY: $25 • Parts: $510
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4 space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-text-secondary font-bold text-sm">Professional Services</span>
+                            <span class="cost-indicator cost-high">$635</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-text-secondary font-bold text-sm">DIY Labor</span>
+                            <span class="cost-indicator cost-low">$25</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-text-secondary font-bold text-sm">Parts & Materials</span>
+                            <span class="cost-indicator cost-medium">$510</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Equipment Performance -->
+                <div class="report-card brutal-shadow-accent">
+                    <h3 class="text-lg font-black uppercase text-text-primary mb-4">
+                        Equipment Performance
+                    </h3>
+                    
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center gap-2">
+                                <div class="equipment-icon hvac">🔥</div>
+                                <span class="text-text-primary font-bold text-sm">HVAC System</span>
+                            </div>
+                            <span class="text-accent font-black">98%</span>
+                        </div>
+                        
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center gap-2">
+                                <div class="equipment-icon kitchen">❄️</div>
+                                <span class="text-text-primary font-bold text-sm">Kitchen Appliances</span>
+                            </div>
+                            <span class="text-accent font-black">95%</span>
+                        </div>
+                        
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center gap-2">
+                                <div class="equipment-icon plumbing">🚿</div>
+                                <span class="text-text-primary font-bold text-sm">Plumbing</span>
+                            </div>
+                            <span class="text-primary font-black">87%</span>
+                        </div>
+                        
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center gap-2">
+                                <div class="equipment-icon electrical">⚡</div>
+                                <span class="text-text-primary font-bold text-sm">Electrical</span>
+                            </div>
+                            <span class="text-accent font-black">92%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="space-y-3">
+                    <button class="w-full bg-primary text-white border-4 border-text-primary px-4 py-3 font-bold uppercase brutal-shadow-dark brutal-hover-press">
+                        📊 Generate Report
+                    </button>
+                    <button class="w-full bg-secondary text-white border-4 border-text-primary px-4 py-3 font-bold uppercase brutal-shadow-dark brutal-hover-press">
+                        📈 View Trends
+                    </button>
+                    <button class="w-full bg-accent text-white border-4 border-text-primary px-4 py-3 font-bold uppercase brutal-shadow-dark brutal-hover-press">
+                        📅 Schedule Review
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // History page functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const filterButtons = document.querySelectorAll('.filter-button');
+            const exportButton = document.getElementById('exportButton');
+            const exportMenu = document.getElementById('exportMenu');
+            const listView = document.getElementById('listView');
+            const timelineView = document.getElementById('timelineView');
+            const historyList = document.getElementById('historyList');
+            const historyTimeline = document.getElementById('historyTimeline');
+            
+            // Filter functionality
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Don't affect view toggle buttons
+                    if (this.id === 'listView' || this.id === 'timelineView') return;
+                    
+                    // Reset other filter buttons
+                    filterButtons.forEach(btn => {
+                        if (btn.id !== 'listView' && btn.id !== 'timelineView') {
+                            btn.classList.remove('active');
+                        }
+                    });
+                    this.classList.add('active');
+                    
+                    console.log('Filtering by:', this.textContent);
+                });
+            });
+            
+            // Export menu toggle
+            exportButton.addEventListener('click', function(e) {
+                e.stopPropagation();
+                exportMenu.classList.toggle('visible');
+            });
+            
+            // Close export menu when clicking outside
+            document.addEventListener('click', function() {
+                exportMenu.classList.remove('visible');
+            });
+            
+            // Export options
+            document.querySelectorAll('.export-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    console.log('Exporting as:', this.textContent);
+                    exportMenu.classList.remove('visible');
+                });
+            });
+            
+            // View toggle functionality
+            listView.addEventListener('click', function() {
+                listView.classList.add('active');
+                timelineView.classList.remove('active');
+                historyList.classList.remove('hidden');
+                historyTimeline.classList.add('hidden');
+            });
+            
+            timelineView.addEventListener('click', function() {
+                timelineView.classList.add('active');
+                listView.classList.remove('active');
+                historyList.classList.add('hidden');
+                historyTimeline.classList.remove('hidden');
+            });
+            
+            // History card interactions
+            const historyCards = document.querySelectorAll('.history-card');
+            historyCards.forEach(card => {
+                card.addEventListener('click', function(e) {
+                    // Don't trigger if clicking on buttons
+                    if (e.target.tagName === 'BUTTON') return;
+                    
+                    console.log('Opening history details...');
+                });
+            });
+            
+            // Action button handling
+            document.querySelectorAll('.history-card button').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    console.log('Action:', this.textContent.trim());
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HomeKeeper - Create Maintenance Task</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#e67e22',
+                        'secondary': '#4A6FA5', 
+                        'accent': '#5d9c59',
+                        'background': '#f5f0e8',
+                        'text-primary': '#2c3e50',
+                        'text-secondary': '#7f8c8d',
+                        'error': '#e74c3c'
+                    },
+                    fontFamily: {
+                        'mono': ['JetBrains Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .brutal-shadow-primary {
+            box-shadow: 8px 8px 0 #e67e22;
+        }
+        
+        .brutal-shadow-secondary {
+            box-shadow: 8px 8px 0 #4A6FA5;
+        }
+        
+        .brutal-shadow-accent {
+            box-shadow: 8px 8px 0 #5d9c59;
+        }
+        
+        .brutal-shadow-dark {
+            box-shadow: 8px 8px 0 #2c3e50;
+        }
+        
+        .brutal-shadow-error {
+            box-shadow: 8px 8px 0 #e74c3c;
+        }
+        
+        .brutal-hover-press {
+            transition: all 0.1s ease;
+        }
+        
+        .brutal-hover-press:hover {
+            transform: translate(4px, 4px);
+            box-shadow: none;
+        }
+        
+        .brutal-text-shadow {
+            text-shadow: 
+                4px 4px 0 #e67e22,
+                8px 8px 0 #2c3e50;
+        }
+        
+        .brutal-rotate-slight-left {
+            transform: rotate(-0.5deg);
+        }
+        
+        .brutal-rotate-slight-right {
+            transform: rotate(0.5deg);
+        }
+        
+        .hero-bg {
+            background: linear-gradient(135deg, #f5f0e8 0%, #e8ddd4 100%);
+        }
+        
+        .form-input {
+            background: white;
+            border: 4px solid #2c3e50;
+            padding: 0.75rem 1rem;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+            transition: all 0.1s ease;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            box-shadow: 4px 4px 0 #e67e22;
+            border-color: #e67e22;
+        }
+        
+        .form-input::placeholder {
+            color: #7f8c8d;
+            text-transform: uppercase;
+        }
+        
+        .form-label {
+            color: #2c3e50;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        
+        .form-select {
+            background: white;
+            border: 4px solid #2c3e50;
+            padding: 0.75rem 1rem;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+            cursor: pointer;
+        }
+        
+        .form-select:focus {
+            outline: none;
+            box-shadow: 4px 4px 0 #e67e22;
+            border-color: #e67e22;
+        }
+        
+        .form-section {
+            background: white;
+            border: 6px solid #2c3e50;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .form-section.highlighted {
+            box-shadow: 8px 8px 0 #e67e22;
+        }
+        
+        .breadcrumb {
+            color: #7f8c8d;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.875rem;
+        }
+        
+        .breadcrumb a {
+            color: #e67e22;
+            text-decoration: none;
+        }
+        
+        .breadcrumb a:hover {
+            color: #2c3e50;
+        }
+        
+        .back-button {
+            color: #e67e22;
+            font-weight: 700;
+            text-transform: uppercase;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .back-button:hover {
+            color: #2c3e50;
+        }
+        
+        .checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+        }
+        
+        .checkbox {
+            width: 1.5rem;
+            height: 1.5rem;
+            border: 4px solid #2c3e50;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            font-weight: 800;
+            color: white;
+        }
+        
+        .checkbox.checked {
+            background: #5d9c59;
+        }
+        
+        .frequency-option {
+            background: white;
+            border: 4px solid #2c3e50;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.1s ease;
+            text-align: center;
+        }
+        
+        .frequency-option.selected {
+            background: #e67e22;
+            color: white;
+            box-shadow: 4px 4px 0 #2c3e50;
+        }
+        
+        .frequency-option:hover {
+            box-shadow: 4px 4px 0 #e67e22;
+        }
+        
+        .priority-badge {
+            padding: 0.5rem 1rem;
+            border: 3px solid #2c3e50;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.1s ease;
+        }
+        
+        .priority-low {
+            background: #5d9c59;
+            color: white;
+        }
+        
+        .priority-medium {
+            background: #e67e22;
+            color: white;
+        }
+        
+        .priority-high {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .priority-badge:not(.selected) {
+            background: white;
+            color: #2c3e50;
+        }
+        
+        .priority-badge:hover {
+            box-shadow: 4px 4px 0 #2c3e50;
+        }
+        
+        .equipment-card {
+            background: white;
+            border: 4px solid #2c3e50;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.1s ease;
+        }
+        
+        .equipment-card.selected {
+            border-color: #e67e22;
+            box-shadow: 4px 4px 0 #e67e22;
+        }
+        
+        .equipment-card:hover {
+            box-shadow: 4px 4px 0 #e67e22;
+        }
+        
+        .notification-method {
+            background: white;
+            border: 4px solid #2c3e50;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.1s ease;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .notification-method.selected {
+            background: #4A6FA5;
+            color: white;
+            box-shadow: 4px 4px 0 #2c3e50;
+        }
+        
+        .notification-method:hover {
+            box-shadow: 4px 4px 0 #4A6FA5;
+        }
+        
+        .step-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 3rem;
+            height: 3rem;
+            border: 4px solid #2c3e50;
+            background: white;
+            font-weight: 800;
+            font-size: 1.125rem;
+            transition: all 0.1s ease;
+        }
+        
+        .step-indicator.active {
+            background: #e67e22;
+            color: white;
+            box-shadow: 4px 4px 0 #2c3e50;
+        }
+        
+        .step-indicator.completed {
+            background: #5d9c59;
+            color: white;
+        }
+        
+        .step-line {
+            flex: 1;
+            height: 4px;
+            background: #7f8c8d;
+            border: 2px solid #2c3e50;
+        }
+        
+        .step-line.completed {
+            background: #5d9c59;
+        }
+        
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+        }
+        
+        .calendar-day {
+            background: white;
+            border: 2px solid #2c3e50;
+            padding: 0.5rem;
+            text-align: center;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.1s ease;
+        }
+        
+        .calendar-day:hover {
+            background: #e67e22;
+            color: white;
+        }
+        
+        .calendar-day.selected {
+            background: #5d9c59;
+            color: white;
+        }
+        
+        .calendar-day.disabled {
+            background: #f8f9fa;
+            color: #7f8c8d;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body class="font-mono bg-background hero-bg">
+    <!-- Header -->
+    <header class="bg-text-primary border-b-8 border-primary">
+        <div class="max-w-7xl mx-auto px-5 py-4">
+            <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+                <!-- Logo -->
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-primary border-4 border-white brutal-rotate-slight-left brutal-shadow-secondary flex items-center justify-center">
+                        <svg width="48" height="48" viewBox="0 0 128 128" class="text-white">
+                            <polygon points="20,70 60,35 100,70" fill="currentColor"/>
+                            <rect x="20" y="70" width="80" height="36" fill="currentColor"/>
+                            <rect x="60" y="74" width="36" height="28" fill="#e67e22"/>
+                        </svg>
+                    </div>
+                    <h1 class="text-2xl md:text-3xl font-black text-white uppercase tracking-tight">
+                        HomeKeeper
+                    </h1>
+                </div>
+                
+                <!-- Navigation -->
+                <nav class="flex flex-wrap gap-2 md:gap-4">
+                    <button class="text-white font-bold uppercase px-3 py-2 text-sm md:text-base hover:text-primary">Dashboard</button>
+                    <button class="text-white font-bold uppercase px-3 py-2 text-sm md:text-base hover:text-primary">Manuals</button>
+                    <button class="text-primary font-bold uppercase px-3 py-2 text-sm md:text-base">Maintenance</button>
+                    <button class="text-white font-bold uppercase px-3 py-2 text-sm md:text-base hover:text-primary">Settings</button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-5xl mx-auto px-5 py-6">
+        <!-- Breadcrumb -->
+        <nav class="mb-6">
+            <div class="breadcrumb">
+                <a href="#" class="back-button">
+                    ← Back to Maintenance
+                </a>
+                <span class="mx-2">•</span>
+                <span>Create Task</span>
+            </div>
+        </nav>
+
+        <!-- Page Header -->
+        <section class="mb-8">
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-black uppercase leading-tight mb-4 text-text-primary brutal-text-shadow">
+                Create<br>
+                Maintenance<br>
+                Task
+            </h1>
+            <p class="text-lg md:text-xl font-bold text-text-secondary uppercase tracking-wide">
+                Schedule and track equipment maintenance
+            </p>
+        </section>
+
+        <!-- Progress Steps -->
+        <section class="mb-8">
+            <div class="flex items-center justify-between max-w-3xl mx-auto">
+                <div class="step-indicator completed">1</div>
+                <div class="step-line completed"></div>
+                <div class="step-indicator active">2</div>
+                <div class="step-line"></div>
+                <div class="step-indicator">3</div>
+                <div class="step-line"></div>
+                <div class="step-indicator">4</div>
+            </div>
+            <div class="flex justify-between max-w-3xl mx-auto mt-4">
+                <span class="text-text-secondary font-bold uppercase text-sm">Task Info</span>
+                <span class="text-primary font-bold uppercase text-sm">Equipment</span>
+                <span class="text-text-secondary font-bold uppercase text-sm">Schedule</span>
+                <span class="text-text-secondary font-bold uppercase text-sm">Notifications</span>
+            </div>
+        </section>
+
+        <!-- Form Content -->
+        <form class="space-y-8">
+            <!-- Task Information Section -->
+            <div class="form-section highlighted">
+                <h2 class="text-2xl font-black uppercase text-text-primary mb-6">
+                    Task Information
+                </h2>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Task Name -->
+                    <div class="lg:col-span-2">
+                        <label class="form-label">Task Name *</label>
+                        <input type="text" class="form-input w-full" placeholder="Water Filter Replacement" required>
+                    </div>
+                    
+                    <!-- Task Type -->
+                    <div>
+                        <label class="form-label">Task Type *</label>
+                        <select class="form-select w-full" required>
+                            <option value="">Select Type</option>
+                            <option value="inspection">Inspection</option>
+                            <option value="cleaning">Cleaning</option>
+                            <option value="replacement">Replacement</option>
+                            <option value="repair">Repair</option>
+                            <option value="calibration">Calibration</option>
+                            <option value="testing">Testing</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Priority -->
+                    <div>
+                        <label class="form-label">Priority Level</label>
+                        <div class="flex gap-2">
+                            <button type="button" class="priority-badge priority-low selected" data-priority="low">Low</button>
+                            <button type="button" class="priority-badge priority-medium" data-priority="medium">Medium</button>
+                            <button type="button" class="priority-badge priority-high" data-priority="high">High</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Description -->
+                    <div class="lg:col-span-2">
+                        <label class="form-label">Description</label>
+                        <textarea class="form-input w-full h-24 resize-none" placeholder="Replace water filter cartridge. Check filter housing for leaks. Reset filter indicator light."></textarea>
+                    </div>
+                    
+                    <!-- Estimated Duration -->
+                    <div>
+                        <label class="form-label">Estimated Duration</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <input type="number" class="form-input" placeholder="30" min="1">
+                            <select class="form-select">
+                                <option value="minutes">Minutes</option>
+                                <option value="hours">Hours</option>
+                                <option value="days">Days</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Cost Estimate -->
+                    <div>
+                        <label class="form-label">Cost Estimate</label>
+                        <div class="relative">
+                            <span class="absolute left-4 top-1/2 transform -translate-y-1/2 text-text-secondary font-bold">$</span>
+                            <input type="number" class="form-input w-full pl-8" placeholder="45.00" step="0.01" min="0">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Equipment Selection Section -->
+            <div class="form-section">
+                <h2 class="text-2xl font-black uppercase text-text-primary mb-6">
+                    Select Equipment
+                </h2>
+                
+                <!-- Equipment Search -->
+                <div class="mb-6">
+                    <input type="text" class="form-input w-full" placeholder="Search equipment by name or model...">
+                </div>
+                
+                <!-- Equipment Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div class="equipment-card selected">
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="w-8 h-8 bg-primary text-white font-bold text-xs flex items-center justify-center">❄️</div>
+                            <div>
+                                <h4 class="font-black uppercase text-sm text-text-primary">Samsung Refrigerator</h4>
+                                <p class="text-text-secondary font-bold text-xs">RF28T5001SR</p>
+                            </div>
+                        </div>
+                        <div class="text-text-secondary font-bold text-xs">Kitchen • Last maintenance: 6 months ago</div>
+                    </div>
+                    
+                    <div class="equipment-card">
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="w-8 h-8 bg-secondary text-white font-bold text-xs flex items-center justify-center">🔥</div>
+                            <div>
+                                <h4 class="font-black uppercase text-sm text-text-primary">Carrier HVAC</h4>
+                                <p class="text-text-secondary font-bold text-xs">FV4CNF006</p>
+                            </div>
+                        </div>
+                        <div class="text-text-secondary font-bold text-xs">Basement • Last maintenance: 3 months ago</div>
+                    </div>
+                    
+                    <div class="equipment-card">
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="w-8 h-8 bg-accent text-white font-bold text-xs flex items-center justify-center">🚿</div>
+                            <div>
+                                <h4 class="font-black uppercase text-sm text-text-primary">Rheem Water Heater</h4>
+                                <p class="text-text-secondary font-bold text-xs">XE50T10HD50U0</p>
+                            </div>
+                        </div>
+                        <div class="text-text-secondary font-bold text-xs">Utility Room • Last maintenance: 1 year ago</div>
+                    </div>
+                </div>
+                
+                <!-- Add New Equipment Button -->
+                <div class="mt-6">
+                    <button type="button" class="bg-transparent text-text-primary border-4 border-text-primary px-6 py-3 font-bold uppercase brutal-hover-press">
+                        + Add New Equipment
+                    </button>
+                </div>
+            </div>
+
+            <!-- Schedule Section -->
+            <div class="form-section">
+                <h2 class="text-2xl font-black uppercase text-text-primary mb-6">
+                    Schedule & Frequency
+                </h2>
+                
+                <!-- Frequency Options -->
+                <div class="mb-6">
+                    <label class="form-label">Frequency</label>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="frequency-option">
+                            <div class="text-2xl mb-2">📅</div>
+                            <div class="font-bold text-sm">One Time</div>
+                        </div>
+                        <div class="frequency-option selected">
+                            <div class="text-2xl mb-2">🔄</div>
+                            <div class="font-bold text-sm">Recurring</div>
+                        </div>
+                        <div class="frequency-option">
+                            <div class="text-2xl mb-2">⏰</div>
+                            <div class="font-bold text-sm">Based on Usage</div>
+                        </div>
+                        <div class="frequency-option">
+                            <div class="text-2xl mb-2">🎯</div>
+                            <div class="font-bold text-sm">Condition Based</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Recurring Schedule Options -->
+                <div id="recurring-options" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Recurrence Pattern -->
+                    <div>
+                        <label class="form-label">Repeat Every</label>
+                        <div class="grid grid-cols-2 gap-2 mb-4">
+                            <input type="number" class="form-input" value="6" min="1">
+                            <select class="form-select">
+                                <option value="days">Days</option>
+                                <option value="weeks">Weeks</option>
+                                <option value="months" selected>Months</option>
+                                <option value="years">Years</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Start Date -->
+                        <label class="form-label">Start Date</label>
+                        <input type="date" class="form-input w-full mb-4" value="2024-01-15">
+                        
+                        <!-- End Condition -->
+                        <label class="form-label">End Condition</label>
+                        <select class="form-select w-full">
+                            <option value="never">Never Ends</option>
+                            <option value="date">End by Date</option>
+                            <option value="occurrences">After Number of Occurrences</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Advanced Options -->
+                    <div>
+                        <label class="form-label">Advanced Settings</label>
+                        
+                        <div class="space-y-4">
+                            <label class="checkbox-wrapper">
+                                <div class="checkbox checked">✓</div>
+                                <span class="text-text-primary font-bold text-sm">Auto-schedule on completion</span>
+                            </label>
+                            
+                            <label class="checkbox-wrapper">
+                                <div class="checkbox">✓</div>
+                                <span class="text-text-primary font-bold text-sm">Skip weekends</span>
+                            </label>
+                            
+                            <label class="checkbox-wrapper">
+                                <div class="checkbox">✓</div>
+                                <span class="text-text-primary font-bold text-sm">Adjust for holidays</span>
+                            </label>
+                            
+                            <label class="checkbox-wrapper">
+                                <div class="checkbox checked">✓</div>
+                                <span class="text-text-primary font-bold text-sm">Create reminders</span>
+                            </label>
+                        </div>
+                        
+                        <!-- Lead Time -->
+                        <div class="mt-4">
+                            <label class="form-label">Reminder Lead Time</label>
+                            <div class="grid grid-cols-2 gap-2">
+                                <input type="number" class="form-input" value="7" min="1">
+                                <select class="form-select">
+                                    <option value="days" selected>Days Before</option>
+                                    <option value="weeks">Weeks Before</option>
+                                    <option value="hours">Hours Before</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notification Preferences Section -->
+            <div class="form-section">
+                <h2 class="text-2xl font-black uppercase text-text-primary mb-6">
+                    Notification Preferences
+                </h2>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Notification Methods -->
+                    <div>
+                        <label class="form-label">Notification Methods</label>
+                        <div class="space-y-3">
+                            <div class="notification-method selected">
+                                <div class="text-2xl">📱</div>
+                                <div>
+                                    <div class="font-bold text-sm">Push Notifications</div>
+                                    <div class="text-xs opacity-75">In-app notifications</div>
+                                </div>
+                            </div>
+                            
+                            <div class="notification-method selected">
+                                <div class="text-2xl">📧</div>
+                                <div>
+                                    <div class="font-bold text-sm">Email</div>
+                                    <div class="text-xs opacity-75">alison@homekeeper.com</div>
+                                </div>
+                            </div>
+                            
+                            <div class="notification-method">
+                                <div class="text-2xl">💬</div>
+                                <div>
+                                    <div class="font-bold text-sm">SMS</div>
+                                    <div class="text-xs opacity-75">(555) 123-4567</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Notification Timing -->
+                    <div>
+                        <label class="form-label">When to Notify</label>
+                        <div class="space-y-4">
+                            <label class="checkbox-wrapper">
+                                <div class="checkbox checked">✓</div>
+                                <span class="text-text-primary font-bold text-sm">Task is due (reminder)</span>
+                            </label>
+                            
+                            <label class="checkbox-wrapper">
+                                <div class="checkbox checked">✓</div>
+                                <span class="text-text-primary font-bold text-sm">Task is overdue</span>
+                            </label>
+                            
+                            <label class="checkbox-wrapper">
+                                <div class="checkbox">✓</div>
+                                <span class="text-text-primary font-bold text-sm">Task is completed</span>
+                            </label>
+                            
+                            <label class="checkbox-wrapper">
+                                <div class="checkbox">✓</div>
+                                <span class="text-text-primary font-bold text-sm">Task is rescheduled</span>
+                            </label>
+                        </div>
+                        
+                        <!-- Custom Message -->
+                        <div class="mt-6">
+                            <label class="form-label">Custom Message (Optional)</label>
+                            <textarea class="form-input w-full h-20 resize-none" placeholder="Time to replace the water filter in your Samsung refrigerator!"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="flex flex-col sm:flex-row gap-4 justify-end">
+                <button type="button" class="bg-transparent text-text-primary border-4 border-text-primary px-8 py-4 font-bold uppercase brutal-hover-press">
+                    Save as Draft
+                </button>
+                <button type="button" class="bg-text-secondary text-white border-4 border-text-primary px-8 py-4 font-bold uppercase brutal-shadow-dark brutal-hover-press">
+                    ← Previous Step
+                </button>
+                <button type="submit" class="bg-primary text-white border-4 border-text-primary px-8 py-4 font-bold uppercase brutal-shadow-dark brutal-hover-press">
+                    Create Task
+                </button>
+            </div>
+        </form>
+    </main>
+
+    <!-- Success Toast -->
+    <div id="successToast" class="fixed top-4 right-4 bg-accent text-white border-4 border-text-primary p-4 brutal-shadow-dark hidden">
+        <div class="flex items-center gap-3">
+            <div class="text-2xl">✅</div>
+            <div>
+                <div class="font-bold uppercase text-sm">Task Created!</div>
+                <div class="text-xs">Next maintenance: January 15, 2024</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Form functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Priority selection
+            const priorityButtons = document.querySelectorAll('[data-priority]');
+            priorityButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    priorityButtons.forEach(btn => btn.classList.remove('selected'));
+                    this.classList.add('selected');
+                });
+            });
+            
+            // Frequency selection
+            const frequencyOptions = document.querySelectorAll('.frequency-option');
+            frequencyOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    frequencyOptions.forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                });
+            });
+            
+            // Equipment selection
+            const equipmentCards = document.querySelectorAll('.equipment-card');
+            equipmentCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    this.classList.toggle('selected');
+                });
+            });
+            
+            // Notification method selection
+            const notificationMethods = document.querySelectorAll('.notification-method');
+            notificationMethods.forEach(method => {
+                method.addEventListener('click', function() {
+                    this.classList.toggle('selected');
+                });
+            });
+            
+            // Checkbox functionality
+            const checkboxes = document.querySelectorAll('.checkbox-wrapper');
+            checkboxes.forEach(wrapper => {
+                wrapper.addEventListener('click', function() {
+                    const checkbox = this.querySelector('.checkbox');
+                    checkbox.classList.toggle('checked');
+                });
+            });
+            
+            // Form submission
+            const form = document.querySelector('form');
+            const successToast = document.getElementById('successToast');
+            
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Show success message
+                successToast.classList.remove('hidden');
+                
+                setTimeout(() => {
+                    successToast.classList.add('hidden');
+                    // Simulate redirect to maintenance dashboard
+                    console.log('Redirecting to maintenance dashboard...');
+                }, 3000);
+            });
+        });
+    </script>
+</body>
+</html>

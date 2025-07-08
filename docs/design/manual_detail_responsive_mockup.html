@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HomeKeeper Manual Detail - Samsung Refrigerator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#e67e22',
+                        'secondary': '#4A6FA5', 
+                        'accent': '#5d9c59',
+                        'background': '#f5f0e8',
+                        'text-primary': '#2c3e50',
+                        'text-secondary': '#7f8c8d',
+                        'error': '#e74c3c'
+                    },
+                    fontFamily: {
+                        'mono': ['JetBrains Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .brutal-shadow-primary {
+            box-shadow: 8px 8px 0 #e67e22;
+        }
+        
+        .brutal-shadow-secondary {
+            box-shadow: 8px 8px 0 #4A6FA5;
+        }
+        
+        .brutal-shadow-accent {
+            box-shadow: 8px 8px 0 #5d9c59;
+        }
+        
+        .brutal-shadow-dark {
+            box-shadow: 8px 8px 0 #2c3e50;
+        }
+        
+        .brutal-shadow-error {
+            box-shadow: 8px 8px 0 #e74c3c;
+        }
+        
+        .brutal-shadow-triple {
+            box-shadow: 
+                4px 4px 0 #e67e22,
+                8px 8px 0 #4A6FA5,
+                12px 12px 0 #2c3e50;
+        }
+        
+        .brutal-hover-press {
+            transition: all 0.1s ease;
+        }
+        
+        .brutal-hover-press:hover {
+            transform: translate(4px, 4px);
+            box-shadow: none;
+        }
+        
+        .brutal-hover-lift {
+            transition: all 0.1s ease;
+        }
+        
+        .brutal-hover-lift:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 
+                6px 6px 0 #e67e22,
+                12px 12px 0 #2c3e50;
+        }
+        
+        .brutal-text-shadow {
+            text-shadow: 
+                4px 4px 0 #e67e22,
+                8px 8px 0 #2c3e50;
+        }
+        
+        .brutal-rotate-left {
+            transform: rotate(-2deg);
+        }
+        
+        .brutal-rotate-right {
+            transform: rotate(2deg);
+        }
+        
+        .brutal-rotate-slight-left {
+            transform: rotate(-0.5deg);
+        }
+        
+        .brutal-rotate-slight-right {
+            transform: rotate(0.5deg);
+        }
+        
+        /* Tab styles */
+        .tab-section-active {
+            background: #e67e22;
+            color: white;
+            border: 4px solid #2c3e50;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 1rem 1.5rem;
+            box-shadow: 4px 4px 0 #2c3e50;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        .tab-section-inactive {
+            background: transparent;
+            color: #2c3e50;
+            border: 4px solid #2c3e50;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 1rem 1.5rem;
+            transition: all 0.1s ease;
+            cursor: pointer;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        .tab-section-inactive:hover {
+            background: #e67e22;
+            color: white;
+            box-shadow: 4px 4px 0 #2c3e50;
+        }
+        
+        .hero-bg {
+            background: linear-gradient(135deg, #f5f0e8 0%, #e8ddd4 100%);
+        }
+        
+        .category-badge {
+            font-size: 0.75rem;
+            padding: 0.5rem 1rem;
+            border: 3px solid #2c3e50;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            background: #e67e22;
+            color: white;
+        }
+        
+        .pdf-viewer {
+            background: #ffffff;
+            border: 6px solid #2c3e50;
+            min-height: 600px;
+        }
+        
+        .pdf-toolbar {
+            background: #2c3e50;
+            border-bottom: 4px solid #e67e22;
+            padding: 1rem;
+        }
+        
+        .section-card {
+            background: white;
+            border: 4px solid #2c3e50;
+            transition: all 0.1s ease;
+        }
+        
+        .section-card:hover {
+            box-shadow: 4px 4px 0 #e67e22;
+        }
+        
+        .breadcrumb {
+            color: #7f8c8d;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.875rem;
+        }
+        
+        .breadcrumb a {
+            color: #e67e22;
+            text-decoration: none;
+        }
+        
+        .breadcrumb a:hover {
+            color: #2c3e50;
+        }
+        
+        .info-item {
+            border-left: 6px solid #e67e22;
+            padding-left: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .maintenance-item {
+            background: white;
+            border: 4px solid #2c3e50;
+            border-left: 8px solid #5d9c59;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .maintenance-item.overdue {
+            border-left-color: #e74c3c;
+        }
+        
+        .maintenance-item.upcoming {
+            border-left-color: #e67e22;
+        }
+        
+        .quick-action-btn {
+            background: white;
+            color: #2c3e50;
+            border: 4px solid #2c3e50;
+            padding: 0.75rem 1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.875rem;
+            transition: all 0.1s ease;
+        }
+        
+        .quick-action-btn:hover {
+            background: #e67e22;
+            color: white;
+            box-shadow: 4px 4px 0 #2c3e50;
+        }
+        
+        .spec-table {
+            background: white;
+            border: 4px solid #2c3e50;
+        }
+        
+        .spec-table th {
+            background: #2c3e50;
+            color: white;
+            padding: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            border-right: 2px solid #e67e22;
+        }
+        
+        .spec-table td {
+            padding: 0.75rem;
+            border-right: 2px solid #e67e22;
+            border-bottom: 2px solid #e67e22;
+            font-weight: 700;
+        }
+        
+        .spec-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .back-button {
+            color: #e67e22;
+            font-weight: 700;
+            text-transform: uppercase;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .back-button:hover {
+            color: #2c3e50;
+        }
+    </style>
+</head>
+<body class="font-mono bg-background hero-bg">
+    <!-- Header -->
+    <header class="bg-text-primary border-b-8 border-primary">
+        <div class="max-w-7xl mx-auto px-5 py-4">
+            <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+                <!-- Logo -->
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-primary border-4 border-white brutal-rotate-left brutal-shadow-secondary flex items-center justify-center">
+                        <svg width="48" height="48" viewBox="0 0 128 128" class="text-white">
+                            <polygon points="20,70 60,35 100,70" fill="currentColor"/>
+                            <rect x="20" y="70" width="80" height="36" fill="currentColor"/>
+                            <rect x="60" y="74" width="36" height="28" fill="#e67e22"/>
+                        </svg>
+                    </div>
+                    <h1 class="text-2xl md:text-3xl font-black text-white uppercase tracking-tight">
+                        HomeKeeper
+                    </h1>
+                </div>
+                
+                <!-- Navigation -->
+                <nav class="flex flex-wrap gap-2 md:gap-4">
+                    <button class="text-white font-bold uppercase px-3 py-2 text-sm md:text-base hover:text-primary">Dashboard</button>
+                    <button class="text-primary font-bold uppercase px-3 py-2 text-sm md:text-base">Manuals</button>
+                    <button class="text-white font-bold uppercase px-3 py-2 text-sm md:text-base hover:text-primary">Maintenance</button>
+                    <button class="text-white font-bold uppercase px-3 py-2 text-sm md:text-base hover:text-primary">Settings</button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-5 py-6">
+        <!-- Breadcrumb -->
+        <nav class="mb-6">
+            <div class="breadcrumb">
+                <a href="#" class="back-button">
+                    ← Back to Manuals
+                </a>
+                <span class="mx-2">•</span>
+                <span>Kitchen</span>
+                <span class="mx-2">•</span>
+                <span>Samsung Refrigerator</span>
+            </div>
+        </nav>
+
+        <!-- Manual Header -->
+        <section class="mb-8">
+            <div class="bg-white border-6 border-text-primary p-6 md:p-8 brutal-shadow-primary">
+                <div class="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-6">
+                    <div class="flex-1">
+                        <div class="flex flex-wrap items-center gap-4 mb-4">
+                            <span class="category-badge">Kitchen</span>
+                            <span class="text-text-secondary font-bold uppercase text-sm">Added 2 hours ago</span>
+                        </div>
+                        
+                        <h1 class="text-3xl md:text-4xl lg:text-5xl font-black uppercase leading-tight mb-4 text-text-primary">
+                            Samsung Refrigerator
+                        </h1>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                            <div class="info-item">
+                                <div class="text-text-secondary font-bold uppercase text-sm mb-1">Model Number</div>
+                                <div class="text-text-primary font-black text-lg">RF28T5001SR</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="text-text-secondary font-bold uppercase text-sm mb-1">Serial Number</div>
+                                <div class="text-text-primary font-black text-lg">123ABC456DEF</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="text-text-secondary font-bold uppercase text-sm mb-1">Purchase Date</div>
+                                <div class="text-text-primary font-black text-lg">March 15, 2023</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="text-text-secondary font-bold uppercase text-sm mb-1">Warranty Status</div>
+                                <div class="text-accent font-black text-lg">Active (8 months left)</div>
+                            </div>
+                        </div>
+                        
+                        <p class="text-text-primary font-bold text-lg mb-6">
+                            28 cu. ft. French Door Refrigerator with Twin Cooling Plus Technology
+                        </p>
+                    </div>
+                    
+                    <!-- Quick Actions -->
+                    <div class="flex flex-col gap-3 lg:min-w-[200px]">
+                        <button class="bg-primary text-white border-4 border-text-primary px-6 py-3 font-bold uppercase brutal-shadow-dark brutal-hover-press">
+                            Download PDF
+                        </button>
+                        <button class="quick-action-btn">
+                            Edit Details
+                        </button>
+                        <button class="quick-action-btn">
+                            Schedule Maintenance
+                        </button>
+                        <button class="quick-action-btn">
+                            Add Notes
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tabbed Content -->
+        <section class="mb-8">
+            <!-- Tab Navigation -->
+            <div class="flex flex-wrap gap-2 mb-6">
+                <button class="tab-section-active" data-tab="manual">Manual</button>
+                <button class="tab-section-inactive" data-tab="specs">Specifications</button>
+                <button class="tab-section-inactive" data-tab="maintenance">Maintenance</button>
+                <button class="tab-section-inactive" data-tab="notes">Notes</button>
+            </div>
+
+            <!-- Manual Tab Content -->
+            <div id="manual-content" class="tab-content">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- PDF Viewer -->
+                    <div class="lg:col-span-2">
+                        <div class="pdf-viewer brutal-shadow-secondary">
+                            <!-- PDF Toolbar -->
+                            <div class="pdf-toolbar">
+                                <div class="flex flex-wrap justify-between items-center gap-4">
+                                    <div class="flex items-center gap-4">
+                                        <button class="bg-primary text-white border-3 border-white px-3 py-2 font-bold uppercase text-sm">
+                                            Zoom In
+                                        </button>
+                                        <button class="bg-primary text-white border-3 border-white px-3 py-2 font-bold uppercase text-sm">
+                                            Zoom Out
+                                        </button>
+                                        <span class="text-white font-bold">Page 1 of 24</span>
+                                    </div>
+                                    <div class="flex items-center gap-4">
+                                        <button class="bg-accent text-white border-3 border-white px-3 py-2 font-bold uppercase text-sm">
+                                            Download
+                                        </button>
+                                        <button class="bg-secondary text-white border-3 border-white px-3 py-2 font-bold uppercase text-sm">
+                                            Print
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- PDF Content Area -->
+                            <div class="p-8 bg-gray-100 min-h-[500px] flex items-center justify-center">
+                                <div class="text-center">
+                                    <div class="text-8xl mb-4">📄</div>
+                                    <h3 class="text-2xl font-black uppercase text-text-primary mb-2">
+                                        Manual Preview
+                                    </h3>
+                                    <p class="text-text-secondary font-bold">
+                                        Samsung RF28T5001SR User Manual
+                                    </p>
+                                    <p class="text-text-secondary font-bold text-sm">
+                                        PDF • 2.4 MB • 24 pages
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Manual Navigation -->
+                    <div class="space-y-4">
+                        <h3 class="text-xl font-black uppercase text-text-primary mb-4">
+                            Manual Sections
+                        </h3>
+                        
+                        <div class="section-card p-4 cursor-pointer">
+                            <h4 class="text-lg font-black uppercase text-text-primary mb-2">Installation</h4>
+                            <p class="text-text-secondary font-bold text-sm">Pages 1-4</p>
+                        </div>
+                        
+                        <div class="section-card p-4 cursor-pointer">
+                            <h4 class="text-lg font-black uppercase text-text-primary mb-2">Operation</h4>
+                            <p class="text-text-secondary font-bold text-sm">Pages 5-12</p>
+                        </div>
+                        
+                        <div class="section-card p-4 cursor-pointer">
+                            <h4 class="text-lg font-black uppercase text-text-primary mb-2">Maintenance</h4>
+                            <p class="text-text-secondary font-bold text-sm">Pages 13-18</p>
+                        </div>
+                        
+                        <div class="section-card p-4 cursor-pointer">
+                            <h4 class="text-lg font-black uppercase text-text-primary mb-2">Troubleshooting</h4>
+                            <p class="text-text-secondary font-bold text-sm">Pages 19-22</p>
+                        </div>
+                        
+                        <div class="section-card p-4 cursor-pointer">
+                            <h4 class="text-lg font-black uppercase text-text-primary mb-2">Warranty</h4>
+                            <p class="text-text-secondary font-bold text-sm">Pages 23-24</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Specifications Tab Content -->
+            <div id="specs-content" class="tab-content hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="text-2xl font-black uppercase text-text-primary mb-6">
+                            Product Specifications
+                        </h3>
+                        
+                        <table class="spec-table w-full">
+                            <tbody>
+                                <tr>
+                                    <th class="w-1/3">Capacity</th>
+                                    <td>28 cu. ft.</td>
+                                </tr>
+                                <tr>
+                                    <th>Dimensions</th>
+                                    <td>35.75" W x 36.25" D x 70" H</td>
+                                </tr>
+                                <tr>
+                                    <th>Weight</th>
+                                    <td>305 lbs</td>
+                                </tr>
+                                <tr>
+                                    <th>Energy Star</th>
+                                    <td>Yes</td>
+                                </tr>
+                                <tr>
+                                    <th>Door Type</th>
+                                    <td>French Door</td>
+                                </tr>
+                                <tr>
+                                    <th>Ice Maker</th>
+                                    <td>Built-in</td>
+                                </tr>
+                                <tr>
+                                    <th>Water Filter</th>
+                                    <td>Yes</td>
+                                </tr>
+                                <tr>
+                                    <th>Color</th>
+                                    <td>Stainless Steel</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-2xl font-black uppercase text-text-primary mb-6">
+                            Features
+                        </h3>
+                        
+                        <div class="space-y-4">
+                            <div class="section-card p-4">
+                                <h4 class="text-lg font-black uppercase text-text-primary mb-2">Twin Cooling Plus</h4>
+                                <p class="text-text-secondary font-bold text-sm">
+                                    Independent cooling systems for refrigerator and freezer
+                                </p>
+                            </div>
+                            
+                            <div class="section-card p-4">
+                                <h4 class="text-lg font-black uppercase text-text-primary mb-2">FlexZone Drawer</h4>
+                                <p class="text-text-secondary font-bold text-sm">
+                                    Convertible drawer with 4 temperature settings
+                                </p>
+                            </div>
+                            
+                            <div class="section-card p-4">
+                                <h4 class="text-lg font-black uppercase text-text-primary mb-2">AutoFill Water Pitcher</h4>
+                                <p class="text-text-secondary font-bold text-sm">
+                                    Automatically refills and can infuse with flavors
+                                </p>
+                            </div>
+                            
+                            <div class="section-card p-4">
+                                <h4 class="text-lg font-black uppercase text-text-primary mb-2">LED Lighting</h4>
+                                <p class="text-text-secondary font-bold text-sm">
+                                    Energy-efficient LED lighting throughout
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Maintenance Tab Content -->
+            <div id="maintenance-content" class="tab-content hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="text-2xl font-black uppercase text-text-primary mb-6">
+                            Maintenance Schedule
+                        </h3>
+                        
+                        <div class="space-y-4">
+                            <div class="maintenance-item overdue">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h4 class="text-lg font-black uppercase text-text-primary">Water Filter Replacement</h4>
+                                    <span class="bg-error text-white px-2 py-1 font-bold uppercase text-xs border-2 border-text-primary">
+                                        Overdue
+                                    </span>
+                                </div>
+                                <p class="text-text-secondary font-bold text-sm mb-2">
+                                    Replace every 6 months or when indicator light turns red
+                                </p>
+                                <p class="text-text-secondary font-bold text-xs">
+                                    Last completed: March 15, 2023 • Due: September 15, 2023
+                                </p>
+                            </div>
+                            
+                            <div class="maintenance-item upcoming">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h4 class="text-lg font-black uppercase text-text-primary">Coil Cleaning</h4>
+                                    <span class="bg-primary text-white px-2 py-1 font-bold uppercase text-xs border-2 border-text-primary">
+                                        Due Soon
+                                    </span>
+                                </div>
+                                <p class="text-text-secondary font-bold text-sm mb-2">
+                                    Clean condenser coils to maintain efficiency
+                                </p>
+                                <p class="text-text-secondary font-bold text-xs">
+                                    Due: January 15, 2024
+                                </p>
+                            </div>
+                            
+                            <div class="maintenance-item">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h4 class="text-lg font-black uppercase text-text-primary">Interior Deep Clean</h4>
+                                    <span class="bg-accent text-white px-2 py-1 font-bold uppercase text-xs border-2 border-text-primary">
+                                        Good
+                                    </span>
+                                </div>
+                                <p class="text-text-secondary font-bold text-sm mb-2">
+                                    Monthly deep clean of interior surfaces
+                                </p>
+                                <p class="text-text-secondary font-bold text-xs">
+                                    Last completed: December 1, 2023 • Due: January 1, 2024
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-2xl font-black uppercase text-text-primary mb-6">
+                            Quick Maintenance
+                        </h3>
+                        
+                        <div class="space-y-4">
+                            <button class="w-full quick-action-btn text-left">
+                                + Schedule Water Filter Replacement
+                            </button>
+                            <button class="w-full quick-action-btn text-left">
+                                + Schedule Coil Cleaning
+                            </button>
+                            <button class="w-full quick-action-btn text-left">
+                                + Mark Interior Clean Complete
+                            </button>
+                            <button class="w-full quick-action-btn text-left">
+                                + Add Custom Maintenance Task
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notes Tab Content -->
+            <div id="notes-content" class="tab-content hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="text-2xl font-black uppercase text-text-primary mb-6">
+                            Personal Notes
+                        </h3>
+                        
+                        <div class="bg-white border-4 border-text-primary p-6 mb-6">
+                            <textarea 
+                                class="w-full h-32 font-mono font-bold text-text-primary resize-none focus:outline-none"
+                                placeholder="ADD NOTES ABOUT THIS APPLIANCE..."
+                            ></textarea>
+                            <button class="bg-primary text-white border-4 border-text-primary px-4 py-2 font-bold uppercase mt-4">
+                                Save Notes
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-2xl font-black uppercase text-text-primary mb-6">
+                            Activity Log
+                        </h3>
+                        
+                        <div class="space-y-4">
+                            <div class="section-card p-4">
+                                <div class="text-text-primary font-black text-sm mb-1">Manual Added</div>
+                                <div class="text-text-secondary font-bold text-xs">2 hours ago by Admin</div>
+                            </div>
+                            
+                            <div class="section-card p-4">
+                                <div class="text-text-primary font-black text-sm mb-1">Water Filter Replaced</div>
+                                <div class="text-text-secondary font-bold text-xs">March 15, 2023 by Maintenance</div>
+                            </div>
+                            
+                            <div class="section-card p-4">
+                                <div class="text-text-primary font-black text-sm mb-1">Appliance Installed</div>
+                                <div class="text-text-secondary font-bold text-xs">March 10, 2023 by Installer</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Floating Action Buttons -->
+    <div class="fixed bottom-6 right-6 md:bottom-8 md:right-8 flex flex-col gap-4">
+        <button class="w-14 h-14 bg-accent border-4 border-text-primary text-white text-xl font-black brutal-shadow-dark brutal-rotate-slight-left hover:brutal-rotate-right transition-all duration-200" title="Schedule Maintenance">
+            🔧
+        </button>
+        <button class="w-14 h-14 bg-secondary border-4 border-text-primary text-white text-xl font-black brutal-shadow-dark brutal-rotate-slight-right hover:brutal-rotate-left transition-all duration-200" title="Add Note">
+            📝
+        </button>
+    </div>
+
+    <script>
+        // Tab functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabButtons = document.querySelectorAll('[data-tab]');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const targetTab = this.getAttribute('data-tab');
+                    
+                    // Update button states
+                    tabButtons.forEach(btn => {
+                        btn.classList.remove('tab-section-active');
+                        btn.classList.add('tab-section-inactive');
+                    });
+                    
+                    this.classList.remove('tab-section-inactive');
+                    this.classList.add('tab-section-active');
+                    
+                    // Update content visibility
+                    tabContents.forEach(content => {
+                        content.classList.add('hidden');
+                    });
+                    
+                    document.getElementById(`${targetTab}-content`).classList.remove('hidden');
+                });
+            });
+            
+            // Section navigation
+            const sectionCards = document.querySelectorAll('.section-card');
+            sectionCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    console.log('Navigate to section:', this.querySelector('h4').textContent);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
