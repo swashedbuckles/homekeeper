@@ -76,9 +76,9 @@ export function KitchenSink() {
 
           <SubSectionTitle className="mb-6">Button Sizes</SubSectionTitle>
           <div className="flex flex-wrap gap-4 mb-8">
-            <Button variant="primary" size="small">Small</Button>
-            <Button variant="primary" size="default">Default</Button>
-            <Button variant="primary" size="large">Large</Button>
+            <Button variant="primary" size="sm">Small</Button>
+            <Button variant="primary" size="md">Default</Button>
+            <Button variant="primary" size="lg">Large</Button>
           </div>
 
           <SubSectionTitle className="mb-6">Button States</SubSectionTitle>
@@ -196,16 +196,16 @@ export function KitchenSink() {
               <div className="space-y-4">
                 <div>
                   <Text variant="label" weight="bold" className="block mb-2">Body Text Variants:</Text>
-                  <Text variant="body" size="large" className="block mb-2">Large body text - perfect for introductions and important content</Text>
-                  <Text variant="body" size="medium" className="block mb-2">Medium body text - standard content and descriptions</Text>
-                  <Text variant="body" size="small" className="block mb-2">Small body text - compact content and fine print</Text>
+                  <Text variant="body" size="lg" className="block mb-2">Large body text - perfect for introductions and important content</Text>
+                  <Text variant="body" size="md" className="block mb-2">Medium body text - standard content and descriptions</Text>
+                  <Text variant="body" size="sm" className="block mb-2">Small body text - compact content and fine print</Text>
                 </div>
                 
                 <div>
                   <Text variant="label" weight="bold" className="block mb-2">Caption Text:</Text>
-                  <Text variant="caption" size="large" color="secondary" className="block mb-1">Large caption - metadata and timestamps</Text>
-                  <Text variant="caption" size="medium" color="secondary" className="block mb-1">Medium caption - standard metadata</Text>
-                  <Text variant="caption" size="small" color="secondary" className="block mb-1">Small caption - compact metadata</Text>
+                  <Text variant="caption" size="lg" color="secondary" className="block mb-1">Large caption - metadata and timestamps</Text>
+                  <Text variant="caption" size="md" color="secondary" className="block mb-1">Medium caption - standard metadata</Text>
+                  <Text variant="caption" size="sm" color="secondary" className="block mb-1">Small caption - compact metadata</Text>
                 </div>
 
                 <div>
@@ -254,9 +254,9 @@ export function KitchenSink() {
                 <div>
                   <Text variant="label" weight="bold" className="block mb-2">Count Badges:</Text>
                   <div className="flex flex-wrap gap-3">
-                    <Badge variant="count" color="error" size="small">3</Badge>
-                    <Badge variant="count" color="primary" size="medium">12</Badge>
-                    <Badge variant="count" color="accent" size="large">47</Badge>
+                    <Badge variant="count" color="error" size="sm">3</Badge>
+                    <Badge variant="count" color="primary" size="md">12</Badge>
+                    <Badge variant="count" color="accent" size="lg">47</Badge>
                   </div>
                 </div>
               </div>
@@ -269,21 +269,21 @@ export function KitchenSink() {
                   value={47} 
                   label="Total Manuals" 
                   subtitle="+3 This Month"
-                  size="large" 
+                  size="lg" 
                   color="primary"
                 />
                 <Stats 
                   value="$2,340" 
                   label="Saved This Year" 
                   subtitle="vs $1,890 last year"
-                  size="medium" 
+                  size="md" 
                   color="accent"
                 />
                 <Stats 
                   value={12} 
                   label="Due This Week" 
                   subtitle="3 overdue"
-                  size="small" 
+                  size="sm" 
                   color="error"
                 />
               </div>
@@ -314,9 +314,9 @@ export function KitchenSink() {
                 <div>
                   <Text variant="label" weight="bold" className="block mb-2">Link Sizes:</Text>
                   <div className="flex flex-wrap gap-4">
-                    <TextLink to="/" variant="primary" size="small">Small Link</TextLink>
-                    <TextLink to="/" variant="primary" size="medium">Medium Link</TextLink>
-                    <TextLink to="/" variant="primary" size="large">Large Link</TextLink>
+                    <TextLink to="/" variant="primary" size="sm">Small Link</TextLink>
+                    <TextLink to="/" variant="primary" size="md">Medium Link</TextLink>
+                    <TextLink to="/" variant="primary" size="lg">Large Link</TextLink>
                   </div>
                 </div>
               </div>
@@ -328,13 +328,13 @@ export function KitchenSink() {
                 <div>
                   <Text variant="label" weight="bold" className="block mb-2">Inline Code:</Text>
                   <Text variant="body">
-                    Equipment model: <Code>ABC-123-XYZ</Code> with serial number <Code size="small">987654321</Code>
+                    Equipment model: <Code>ABC-123-XYZ</Code> with serial number <Code size="sm">987654321</Code>
                   </Text>
                 </div>
 
                 <div>
                   <Text variant="label" weight="bold" className="block mb-2">Block Code:</Text>
-                  <Code variant="block" size="medium">
+                  <Code variant="block" size="md">
 Model: ABC-123-XYZ
 Serial: 987654321
 Manufactured: 2023-01-15
@@ -621,19 +621,19 @@ Last Service: 2024-06-15
             <ListItem
               title="Review House Rules"
               subtitle="Last updated 2 days ago"
-              actions={<Button variant="primary" size="small">Edit</Button>}
+              actions={<Button variant="primary" size="sm">Edit</Button>}
             />
             <ListItem
               title="Complete Monthly Budget"
               subtitle="Due in 3 days"
               status="urgent"
-              actions={<Button variant="danger" size="small">Complete Now</Button>}
+              actions={<Button variant="danger" size="sm">Complete Now</Button>}
             />
             <ListItem
               title="Schedule Maintenance"
               subtitle="HVAC check completed"
               status="completed"
-              actions={<Button variant="outline" size="small">View Details</Button>}
+              actions={<Button variant="outline" size="sm">View Details</Button>}
             />
             <ListItem
               title="Update Emergency Contacts"

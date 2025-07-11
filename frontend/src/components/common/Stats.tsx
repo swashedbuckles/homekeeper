@@ -1,6 +1,7 @@
+import { type StandardSize, getSizeToken } from '../../lib/design-system/sizes';
 import type { ReactNode } from 'react';
 
-type StatsSize = 'small' | 'medium' | 'large';
+type StatsSize = StandardSize;
 type StatsColor = 'primary' | 'secondary' | 'accent' | 'dark' | 'error' | 'white';
 
 /**
@@ -43,22 +44,27 @@ const baseStyles = [
   'text-center'
 ];
 
-const valueStyles = {
-  small: ['text-2xl', 'md:text-3xl'],
-  medium: ['text-4xl', 'md:text-5xl'],
-  large: ['text-5xl', 'md:text-6xl', 'lg:text-7xl']
+const getValueStyles = (size: StandardSize): string[] => {
+  const sizeMap = {
+    xs: ['text-xl', 'md:text-2xl'],
+    sm: ['text-2xl', 'md:text-3xl'],
+    md: ['text-4xl', 'md:text-5xl'],
+    lg: ['text-5xl', 'md:text-6xl', 'lg:text-7xl'],
+    xl: ['text-6xl', 'md:text-7xl', 'lg:text-8xl']
+  };
+  return sizeMap[size];
 };
 
-const labelStyles = {
-  small: ['text-sm', 'mt-1'],
-  medium: ['text-base', 'mt-2'],
-  large: ['text-lg', 'mt-3']
+const getLabelStyles = (size: StandardSize): string[] => {
+  const textSize = getSizeToken(size, 'text');
+  const spacing = size === 'xs' || size === 'sm' ? 'mt-1' : size === 'md' ? 'mt-2' : 'mt-3';
+  return [textSize, spacing];
 };
 
-const subtitleStyles = {
-  small: ['text-xs', 'mt-1'],
-  medium: ['text-sm', 'mt-1'],
-  large: ['text-base', 'mt-2']
+const getSubtitleStyles = (size: StandardSize): string[] => {
+  const textSize = size === 'xs' ? 'text-xs' : size === 'sm' ? 'text-xs' : size === 'md' ? 'text-sm' : size === 'lg' ? 'text-base' : 'text-lg';
+  const spacing = size === 'lg' || size === 'xl' ? 'mt-2' : 'mt-1';
+  return [textSize, spacing];
 };
 
 const colorStyles = {
@@ -98,7 +104,7 @@ export const Stats = ({
   value,
   label,
   subtitle,
-  size = 'medium',
+  size = 'md',
   color = 'primary',
   className = '',
   testId = 'stats'
@@ -114,7 +120,7 @@ export const Stats = ({
     'font-black',
     'leading-none',
     'tracking-tight',
-    ...valueStyles[size],
+    ...getValueStyles(size),
     colorStyle.value
   ].join(' ');
 
@@ -122,7 +128,7 @@ export const Stats = ({
     'font-bold',
     'uppercase',
     'tracking-wide',
-    ...labelStyles[size],
+    ...getLabelStyles(size),
     colorStyle.label
   ].join(' ');
 
@@ -130,7 +136,7 @@ export const Stats = ({
     'font-bold',
     'uppercase',
     'tracking-wide',
-    ...subtitleStyles[size],
+    ...getSubtitleStyles(size),
     colorStyle.subtitle
   ].join(' ') : '';
 

@@ -18,31 +18,31 @@ export const OnboardingSuccess = () => {
             <Check className="text-green-800" size="48" />
           </div>
           <Title variant="subsection" className="mb-2">Welcome to The {hContext.activeHousehold?.name} Home!</Title>
-          <Text variant="body" size="medium" weight="normal" color="secondary">
+          <Text variant="body" size="md" weight="normal" color="secondary">
             You're all set up and ready to start organizing your household maintenance.
           </Text>
         </div>
 
         <div className="bg-white rounded-xl border border-ui-border p-6 mb-6">
-          <Text variant="body" size="medium" weight="bold" color="dark" className="block mb-4">
+          <Text variant="body" size="md" weight="bold" color="dark" className="block mb-4">
             What's next?
           </Text>
           <ul className="space-y-3 text-text-secondary">
             <li className="flex items-start">
               <FileText className="mr-2"/>
-              <Text variant="body" size="medium" weight="normal" color="secondary">
+              <Text variant="body" size="md" weight="normal" color="secondary">
                 Upload and organize your manuals
               </Text>
             </li>
             <li className="flex items-start">
               <Plus className="mr-2"/>
-              <Text variant="body" size="medium" weight="normal" color="secondary">
+              <Text variant="body" size="md" weight="normal" color="secondary">
                 Add your household assets and equipment
               </Text>
             </li>
             <li className="flex items-start">
               <Clock className="mr-2"/>
-              <Text variant="body" size="medium" weight="normal" color="secondary">
+              <Text variant="body" size="md" weight="normal" color="secondary">
                 Set up maintenance schedules and reminders
               </Text>
             </li>

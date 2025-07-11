@@ -22,7 +22,7 @@ describe('Stats', () => {
 
   describe('sizes', () => {
     it('renders small size correctly', () => {
-      render(<Stats value={25} label="Small Stats" size="small" />);
+      render(<Stats value={25} label="Small Stats" size="sm" />);
       
       const value = screen.getByText('25');
       const label = screen.getByText('Small Stats');
@@ -32,7 +32,7 @@ describe('Stats', () => {
     });
 
     it('renders medium size correctly', () => {
-      render(<Stats value={50} label="Medium Stats" size="medium" />);
+      render(<Stats value={50} label="Medium Stats" size="md" />);
       
       const value = screen.getByText('50');
       const label = screen.getByText('Medium Stats');
@@ -42,7 +42,7 @@ describe('Stats', () => {
     });
 
     it('renders large size correctly', () => {
-      render(<Stats value={100} label="Large Stats" size="large" />);
+      render(<Stats value={100} label="Large Stats" size="lg" />);
       
       const value = screen.getByText('100');
       const label = screen.getByText('Large Stats');
@@ -141,7 +141,7 @@ describe('Stats', () => {
           value={47} 
           label="Total Manuals" 
           subtitle="+3 This Month"
-          size="large"
+          size="lg"
           color="white"
         />
       );
@@ -210,7 +210,7 @@ describe('Stats', () => {
           value={47} 
           label="Total Manuals" 
           subtitle="+3 This Month"
-          size="large"
+          size="lg"
           color="primary"
         />
       );
@@ -226,7 +226,7 @@ describe('Stats', () => {
           value={5} 
           label="Pending Tasks" 
           subtitle="2 Due Soon"
-          size="medium"
+          size="md"
           color="error"
         />
       );
@@ -242,7 +242,7 @@ describe('Stats', () => {
           value={12} 
           label="Completed" 
           subtitle="This Month"
-          size="medium"
+          size="md"
           color="accent"
         />
       );
@@ -256,7 +256,7 @@ describe('Stats', () => {
         <Stats 
           value="Quick Actions"
           label="Available Now"
-          size="large"
+          size="lg"
           color="white"
         />
       );
@@ -272,7 +272,7 @@ describe('Stats', () => {
         <Stats 
           value={47} 
           label="Manuals Stored"
-          size="small"
+          size="sm"
           color="primary"
         />
       );

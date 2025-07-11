@@ -13,7 +13,7 @@ describe('Code', () => {
     const code = screen.getByTestId('code');
     
     expect(code.tagName).toBe('CODE'); // default variant inline
-    expect(code).toHaveClass('text-sm', 'px-2', 'py-1'); // default size medium
+    expect(code).toHaveClass('text-base', 'px-4', 'py-3'); // default size md
   });
 
   describe('variants', () => {
@@ -39,44 +39,44 @@ describe('Code', () => {
   describe('sizes', () => {
     describe('inline variant sizes', () => {
       it('renders small inline size correctly', () => {
-        render(<Code variant="inline" size="small">Small inline</Code>);
+        render(<Code variant="inline" size="sm">Small inline</Code>);
         const code = screen.getByTestId('code');
         
-        expect(code).toHaveClass('text-xs', 'px-1', 'py-0.5');
+        expect(code).toHaveClass('text-sm', 'px-3', 'py-2');
       });
 
       it('renders medium inline size correctly', () => {
-        render(<Code variant="inline" size="medium">Medium inline</Code>);
+        render(<Code variant="inline" size="md">Medium inline</Code>);
         const code = screen.getByTestId('code');
         
-        expect(code).toHaveClass('text-sm', 'px-2', 'py-1');
+        expect(code).toHaveClass('text-base', 'px-4', 'py-3');
       });
 
       it('renders large inline size correctly', () => {
-        render(<Code variant="inline" size="large">Large inline</Code>);
+        render(<Code variant="inline" size="lg">Large inline</Code>);
         const code = screen.getByTestId('code');
         
-        expect(code).toHaveClass('text-base', 'px-3', 'py-1.5');
+        expect(code).toHaveClass('text-lg', 'px-6', 'py-4');
       });
     });
 
     describe('block variant sizes', () => {
       it('renders small block size correctly', () => {
-        render(<Code variant="block" size="small">Small block</Code>);
+        render(<Code variant="block" size="sm">Small block</Code>);
         const code = screen.getByTestId('code');
         
         expect(code).toHaveClass('text-sm', 'p-3');
       });
 
       it('renders medium block size correctly', () => {
-        render(<Code variant="block" size="medium">Medium block</Code>);
+        render(<Code variant="block" size="md">Medium block</Code>);
         const code = screen.getByTestId('code');
         
         expect(code).toHaveClass('text-base', 'p-4');
       });
 
       it('renders large block size correctly', () => {
-        render(<Code variant="block" size="large">Large block</Code>);
+        render(<Code variant="block" size="lg">Large block</Code>);
         const code = screen.getByTestId('code');
         
         expect(code).toHaveClass('text-lg', 'p-6');
@@ -148,10 +148,10 @@ describe('Code', () => {
     });
 
     it('renders small ID code', () => {
-      render(<Code size="small">ID: #12345</Code>);
+      render(<Code size="sm">ID: #12345</Code>);
       
       const code = screen.getByText('ID: #12345');
-      expect(code).toHaveClass('text-xs', 'px-1', 'py-0.5');
+      expect(code).toHaveClass('text-sm', 'px-3', 'py-2');
     });
 
     it('renders technical specifications block', () => {
@@ -160,7 +160,7 @@ Manufactured: 2023-01-15
 Warranty: 5 years`;
       
       render(
-        <Code variant="block" size="large">
+        <Code variant="block" size="lg">
           {specs}
         </Code>
       );
@@ -173,18 +173,18 @@ Warranty: 5 years`;
     it('renders version numbers in documentation', () => {
       render(
         <p>
-          Current version: <Code size="small">v2.1.3</Code>
+          Current version: <Code size="sm">v2.1.3</Code>
         </p>
       );
       
       const code = screen.getByText('v2.1.3');
-      expect(code).toHaveClass('text-xs');
+      expect(code).toHaveClass('text-sm');
       expect(code.tagName).toBe('CODE');
     });
 
     it('renders configuration block', () => {
       render(
-        <Code variant="block" size="medium">
+        <Code variant="block" size="md">
           {`config:
   name: "HomeKeeper"
   version: "1.0.0"

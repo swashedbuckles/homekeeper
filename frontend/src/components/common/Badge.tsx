@@ -1,8 +1,9 @@
+import { type StandardSize, getSizeToken } from '../../lib/design-system/sizes';
 import type { ReactNode } from 'react';
 
 type BadgeVariant = 'status' | 'category' | 'count';
 type BadgeColor = 'primary' | 'secondary' | 'accent' | 'dark' | 'error' | 'success' | 'warning';
-type BadgeSize = 'small' | 'medium' | 'large';
+type BadgeSize = StandardSize;
 
 /**
  * Badge Component.
@@ -57,10 +58,12 @@ const variantStyles = {
   count: ['px-2', 'py-1', 'rounded-full', 'min-w-[2rem]']
 };
 
-const sizeStyles = {
-  small: ['text-xs', 'px-2', 'py-0.5'],
-  medium: ['text-sm', 'px-3', 'py-1'],
-  large: ['text-base', 'px-4', 'py-1.5']
+const getSizeStyles = (size: StandardSize): string[] => {
+  return [
+    getSizeToken(size, 'text'),
+    getSizeToken(size, 'paddingX'),
+    getSizeToken(size, 'paddingY')
+  ];
 };
 
 const colorStyles = {
@@ -105,7 +108,7 @@ export const Badge = ({
   children,
   variant = 'status',
   color = 'primary',
-  size = 'medium',
+  size = 'sm',
   className = '',
   testId = 'badge'
 }: BadgeProps) => {
@@ -114,7 +117,7 @@ export const Badge = ({
   const badgeStyles = [
     ...baseStyles,
     ...variantStyles[variant],
-    ...sizeStyles[size],
+    ...getSizeStyles(size),
     colorStyle.background,
     colorStyle.text,
     colorStyle.shadow,

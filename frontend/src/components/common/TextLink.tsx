@@ -1,8 +1,9 @@
 import { Link } from 'react-router';
+import { type StandardSize, getSizeToken } from '../../lib/design-system/sizes';
 import type { ReactNode } from 'react';
 
 type TextLinkVariant = 'primary' | 'secondary' | 'subtle' | 'danger';
-type TextLinkSize = 'small' | 'medium' | 'large';
+type TextLinkSize = StandardSize;
 
 /**
  * TextLink Component.
@@ -84,10 +85,10 @@ const variantStyles = {
   ]
 };
 
-const sizeStyles = {
-  small: ['text-sm', 'border-b-2'],
-  medium: ['text-base', 'border-b-4'],
-  large: ['text-lg', 'border-b-4']
+const getSizeStyles = (size: StandardSize): string[] => {
+  const textSize = getSizeToken(size, 'text');
+  const borderSize = size === 'xs' || size === 'sm' ? 'border-b-2' : 'border-b-4';
+  return [textSize, borderSize];
 };
 
 export const TextLink = ({
@@ -96,7 +97,7 @@ export const TextLink = ({
   href,
   onClick,
   variant = 'primary',
-  size = 'medium',
+  size = 'md',
   className = '',
   target = '_self',
   testId = 'text-link'
@@ -104,7 +105,7 @@ export const TextLink = ({
   const linkStyles = [
     ...baseStyles,
     ...variantStyles[variant],
-    ...sizeStyles[size],
+    ...getSizeStyles(size),
     className
   ].filter(Boolean).join(' ');
 

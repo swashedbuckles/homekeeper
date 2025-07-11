@@ -35,7 +35,7 @@ export function Dashboard() {
           <Title variant="page" className="text-5xl md:text-7xl lg:text-8xl" textShadow="orange"> Welcome back{name}!</Title>
         </div>
         <Card className="w-fit" shadow="primary" padding="sm" variant="subtle">
-          <Text variant="body" size="large" weight="bold" uppercase className="mb-0">
+          <Text variant="body" size="lg" weight="bold" uppercase className="mb-0">
             Here's what's happening with your home maintenance.
           </Text>
         </Card>
@@ -45,13 +45,13 @@ export function Dashboard() {
           <StatCard size="md" className="" label="Pending Tasks" value={5} subtitle="2 Due Soon" variant="secondary" rotation="slight-right" shadow="double" hover hoverEffect="raise" />
           <StatCard size="md" className="" label="Completed" value={12} subtitle="This Month" variant="accent" rotation="slight-left" shadow="double" hover hoverEffect="raise" />
           <Card variant="primary" rotation="slight-right" shadow="secondary" padding="md">
-            <Text variant="body" size="large" weight="bold" color="white" uppercase className="block mb-4">
+            <Text variant="body" size="lg" weight="bold" color="white" uppercase className="block mb-4">
               Quick Actions
             </Text>
-            <Button variant="tertiary" size="small" full className="mb-3 brutal-hover-press">
+            <Button variant="tertiary" size="sm" full className="mb-3 brutal-hover-press">
               + Add Manual
             </Button>
-            <Button variant="primary" size="small" full className="!shadow-none !border-white">
+            <Button variant="primary" size="sm" full className="!shadow-none !border-white">
               + Schedule Task
             </Button>
           </Card>
@@ -67,25 +67,25 @@ export function Dashboard() {
               <Card variant="default" className="!border-error !border-l-8 md:!border-l-12" shadow="error" rotation="slight-left">
                 <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-4 gap-3">
                   <div>
-                    <Text variant="body" size="large" weight="black" color="dark" uppercase className="block mb-2">
+                    <Text variant="body" size="lg" weight="black" color="dark" uppercase className="block mb-2">
                       HVAC Filter Change
                     </Text>
-                    <Text variant="caption" size="small" weight="bold" color="secondary" uppercase>
+                    <Text variant="caption" size="sm" weight="bold" color="secondary" uppercase>
                       Kitchen Unit - 3rd Floor
                     </Text>
                   </div>
-                  <Badge variant="status" color="error" size="small">
+                  <Badge variant="status" color="error" size="sm">
                     OVERDUE
                   </Badge>
                 </div>
-                <Text variant="body" size="medium" weight="bold" color="dark" className="block mb-4">
+                <Text variant="body" size="md" weight="bold" color="dark" className="block mb-4">
                   Replace air filter - last changed 4 months ago
                 </Text>
                 <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
-                  <Button variant="secondary" size="small">
+                  <Button variant="secondary" size="sm">
                     Mark Complete
                   </Button>
-                  <Button variant="outline" size="small">
+                  <Button variant="outline" size="sm">
                     Reschedule
                   </Button>
                 </div>
@@ -104,13 +104,13 @@ export function Dashboard() {
                     <BookUp size={36}/>
                   </div>
                   <div className="flex-1">
-                    <Text variant="body" size="medium" weight="black" color="dark" uppercase className="block mb-2">
+                    <Text variant="body" size="md" weight="black" color="dark" uppercase className="block mb-2">
                       Manual Added
                     </Text>
-                    <Text variant="body" size="medium" weight="bold" color="dark" className="block mb-2">
+                    <Text variant="body" size="md" weight="bold" color="dark" className="block mb-2">
                       Samsung Refrigerator <Code>RF28T5001SR</Code>
                     </Text>
-                    <Text variant="caption" size="small" weight="bold" color="secondary" uppercase>
+                    <Text variant="caption" size="sm" weight="bold" color="secondary" uppercase>
                       Kitchen Appliances • 2 hours ago
                     </Text>
                   </div>

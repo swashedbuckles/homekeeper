@@ -37,7 +37,7 @@ describe('SectionContainer', () => {
   describe('spacing prop', () => {
     it('renders with tight spacing', () => {
       render(
-        <SectionContainer spacing="tight">
+        <SectionContainer spacing="sm">
           <div>Tight Content</div>
         </SectionContainer>
       );
@@ -48,7 +48,7 @@ describe('SectionContainer', () => {
 
     it('renders with default spacing', () => {
       render(
-        <SectionContainer spacing="default">
+        <SectionContainer spacing="md">
           <div>Default Content</div>
         </SectionContainer>
       );
@@ -59,7 +59,7 @@ describe('SectionContainer', () => {
 
     it('renders with loose spacing', () => {
       render(
-        <SectionContainer spacing="loose">
+        <SectionContainer spacing="lg">
           <div>Loose Content</div>
         </SectionContainer>
       );
@@ -106,7 +106,7 @@ describe('SectionContainer', () => {
 
   it('combines custom className with spacing classes', () => {
     render(
-      <SectionContainer className="bg-red-500 border-2" spacing="loose">
+      <SectionContainer className="bg-red-500 border-2" spacing="lg">
         <div>Combined Classes</div>
       </SectionContainer>
     );
@@ -118,7 +118,7 @@ describe('SectionContainer', () => {
   describe('ContentContainer integration', () => {
     it('passes props correctly to ContentContainer', () => {
       render(
-        <SectionContainer spacing="tight" hero={true} className="test-class">
+        <SectionContainer spacing="sm" hero={true} className="test-class">
           <div>Integration Test</div>
         </SectionContainer>
       );
@@ -186,7 +186,7 @@ describe('SectionContainer', () => {
       render(
         <SectionContainer 
           className="bg-text-primary border-t-8 border-primary" 
-          spacing="loose" 
+          spacing="lg" 
           hero
         >
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -204,7 +204,7 @@ describe('SectionContainer', () => {
 
     it('renders call-to-action section', () => {
       render(
-        <SectionContainer className="bg-primary" spacing="loose" hero>
+        <SectionContainer className="bg-primary" spacing="lg" hero>
           <div className="text-center max-w-4xl mx-auto">
             <h2>Ready to Get Organized?</h2>
             <p>Join thousands of homeowners</p>
@@ -221,7 +221,7 @@ describe('SectionContainer', () => {
 
     it('renders content section with constrained width', () => {
       render(
-        <SectionContainer spacing="default">
+        <SectionContainer spacing="md">
           <div className="prose max-w-none">
             <h2>Content Section</h2>
             <p>This section has constrained width for better readability</p>
@@ -236,7 +236,7 @@ describe('SectionContainer', () => {
 
     it('renders tight spacing for compact sections', () => {
       render(
-        <SectionContainer spacing="tight" className="border-b border-gray-200">
+        <SectionContainer spacing="sm" className="border-b border-gray-200">
           <nav>
             <ul>
               <li>Navigation Item 1</li>

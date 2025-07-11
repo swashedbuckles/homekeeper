@@ -29,7 +29,7 @@ function AuthButtons({ isMobile, onClose }: { isMobile?: boolean; onClose?: () =
       <div className="space-y-4">
         <Button 
           variant="primary" 
-          size="large"
+          size="lg"
           full
           onClick={handleGetStarted}
         >
@@ -37,7 +37,7 @@ function AuthButtons({ isMobile, onClose }: { isMobile?: boolean; onClose?: () =
         </Button>
         <Button 
           variant="tertiary"
-          size="large" 
+          size="lg" 
           full
           onClick={handleSignIn}
         >
@@ -49,10 +49,10 @@ function AuthButtons({ isMobile, onClose }: { isMobile?: boolean; onClose?: () =
 
   return (
     <div className="hidden md:flex gap-4">
-      <Button variant="primary" size="large" onClick={handleGetStarted}>
+      <Button variant="primary" size="lg" onClick={handleGetStarted}>
         Get Started
       </Button>
-      <Button variant="tertiary" size="large" onClick={handleSignIn}>
+      <Button variant="tertiary" size="lg" onClick={handleSignIn}>
         Sign In
       </Button>
     </div>

@@ -96,10 +96,10 @@ export const OptionCard = ({
 
         {/* Content */}
         <div className="flex-1">
-          <Text variant="body" size="large" weight="black" color="dark" uppercase className="block mb-4 leading-tight">
+          <Text variant="body" size="lg" weight="black" color="dark" uppercase className="block mb-4 leading-tight">
             {title}
           </Text>
-          <Text variant="caption" size="small" weight="bold" color="secondary" uppercase className="block leading-relaxed mb-6">
+          <Text variant="caption" size="sm" weight="bold" color="secondary" uppercase className="block leading-relaxed mb-6">
             {description}
           </Text>
 
@@ -107,7 +107,7 @@ export const OptionCard = ({
           {buttonText && onButtonClick && (
             <Button
               variant={selected ? 'primary' : 'outline'}
-              size="default"
+              size="md"
               onClick={handleButtonClick}
               disabled={disabled}
             >
@@ -121,7 +121,7 @@ export const OptionCard = ({
               <div className="w-4 h-4 bg-primary border-2 border-text-primary flex items-center justify-center">
                 <span className="text-white text-xs font-black">✓</span>
               </div>
-              <Text variant="caption" size="small" weight="black" color="primary" uppercase className="tracking-wide">
+              <Text variant="caption" size="sm" weight="black" color="primary" uppercase className="tracking-wide">
                 Selected
               </Text>
             </div>

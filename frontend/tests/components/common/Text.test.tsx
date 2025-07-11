@@ -45,21 +45,21 @@ describe('Text', () => {
 
   describe('sizes', () => {
     it('renders small size correctly', () => {
-      render(<Text size="small">Small text</Text>);
+      render(<Text size="sm">Small text</Text>);
       const text = screen.getByTestId('text');
       
       expect(text).toHaveClass('text-sm');
     });
 
     it('renders medium size correctly', () => {
-      render(<Text size="medium">Medium text</Text>);
+      render(<Text size="md">Medium text</Text>);
       const text = screen.getByTestId('text');
       
       expect(text).toHaveClass('text-base');
     });
 
     it('renders large size correctly', () => {
-      render(<Text size="large">Large text</Text>);
+      render(<Text size="lg">Large text</Text>);
       const text = screen.getByTestId('text');
       
       expect(text).toHaveClass('text-lg');
@@ -165,7 +165,7 @@ describe('Text', () => {
   describe('real-world usage examples', () => {
     it('renders body text for descriptions', () => {
       render(
-        <Text variant="body" size="large" weight="bold" uppercase className="mb-0">
+        <Text variant="body" size="lg" weight="bold" uppercase className="mb-0">
           Here's what's happening with your home maintenance.
         </Text>
       );
@@ -177,7 +177,7 @@ describe('Text', () => {
 
     it('renders caption text for subtitles', () => {
       render(
-        <Text variant="caption" size="small" weight="bold" color="secondary" uppercase>
+        <Text variant="caption" size="sm" weight="bold" color="secondary" uppercase>
           Kitchen Appliances • 2 hours ago
         </Text>
       );
@@ -189,7 +189,7 @@ describe('Text', () => {
 
     it('renders label text for form fields', () => {
       render(
-        <Text variant="label" size="medium" weight="bold" color="dark">
+        <Text variant="label" size="md" weight="bold" color="dark">
           HVAC Filter Change
         </Text>
       );
@@ -201,7 +201,7 @@ describe('Text', () => {
 
     it('renders white text for dark backgrounds', () => {
       render(
-        <Text variant="caption" size="small" weight="bold" color="white" uppercase>
+        <Text variant="caption" size="sm" weight="bold" color="white" uppercase>
           © 2025 HomeKeeper. All rights reserved.
         </Text>
       );

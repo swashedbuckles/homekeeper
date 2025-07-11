@@ -1,7 +1,8 @@
 import type { ReactNode } from 'react';
+import { type StandardSize, getSizeToken } from '../../lib/design-system/sizes';
 
 type CodeVariant = 'inline' | 'block';
-type CodeSize = 'small' | 'medium' | 'large';
+type CodeSize = StandardSize;
 
 /**
  * Code Component.
@@ -59,32 +60,30 @@ const variantStyles = {
   ]
 };
 
-const sizeStyles = {
-  small: {
-    inline: ['text-xs', 'px-1', 'py-0.5'],
-    block: ['text-sm', 'p-3']
-  },
-  medium: {
-    inline: ['text-sm', 'px-2', 'py-1'],
-    block: ['text-base', 'p-4']
-  },
-  large: {
-    inline: ['text-base', 'px-3', 'py-1.5'],
-    block: ['text-lg', 'p-6']
+const getSizeStyles = (size: StandardSize, variant: CodeVariant): string[] => {
+  const baseText = getSizeToken(size, 'text');
+  const paddingX = getSizeToken(size, 'paddingX');
+  const paddingY = getSizeToken(size, 'paddingY');
+  const padding = getSizeToken(size, 'padding');
+  
+  if (variant === 'inline') {
+    return [baseText, paddingX, paddingY];
+  } else {
+    return [baseText, padding];
   }
 };
 
 export const Code = ({
   children,
   variant = 'inline',
-  size = 'medium',
+  size = 'md',
   className = '',
   testId = 'code'
 }: CodeProps) => {
   const codeStyles = [
     ...baseStyles,
     ...variantStyles[variant],
-    ...sizeStyles[size][variant],
+    ...getSizeStyles(size, variant),
     className
   ].filter(Boolean).join(' ');
 

@@ -22,15 +22,15 @@ export const LandingPage = () => {
                 Home
               </Title>
 
-              <Text variant="body" size="large" weight="bold" color="dark" uppercase className="block mb-12 leading-relaxed tracking-wide">
+              <Text variant="body" size="lg" weight="bold" color="dark" uppercase className="block mb-12 leading-relaxed tracking-wide">
                 Keep track of manuals,<br />
                 schedules, and maintenance<br />
                 for everything in your home.
               </Text>
 
               <div className="flex flex-col sm:flex-row gap-6">
-                <Button size="large" variant="primary">Get Started</Button>
-                <Button size="large" variant="secondary">Learn More</Button>
+                <Button size="lg" variant="primary">Get Started</Button>
+                <Button size="lg" variant="secondary">Learn More</Button>
               </div>
             </div>
 
@@ -74,7 +74,7 @@ export const LandingPage = () => {
         </div>
       </SectionContainer>
 
-      <SectionContainer className="bg-text-primary border-t-8 border-primary" spacing="loose" hero>
+      <SectionContainer className="bg-text-primary border-t-8 border-primary" spacing="lg" hero>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="text-center">
             <div className="w-20 h-20 bg-primary border-6 border-white flex items-center justify-center text-3xl font-black text-white mx-auto mb-6">
@@ -102,7 +102,7 @@ export const LandingPage = () => {
         </div>
       </SectionContainer>
 
-      <SectionContainer className="bg-primary" spacing="loose" hero>
+      <SectionContainer className="bg-primary" spacing="lg" hero>
         <div className="text-center max-w-4xl mx-auto">
           <h2 className="text-5xl md:text-6xl font-black text-white uppercase mb-8 brutal-text-shadow-white">
             Ready to Get<br />Organized?
@@ -110,7 +110,7 @@ export const LandingPage = () => {
           <p className="text-2xl font-bold text-white uppercase mb-12">
             Join thousands of homeowners who've simplified their lives.
           </p>
-          <Button variant="outline" size="large" className="bg-white uppercase">
+          <Button variant="outline" size="lg" className="bg-white uppercase">
             Start Free Today
           </Button>
         </div>
@@ -128,7 +128,7 @@ export const LandingPage = () => {
         </div>
 
         <div className="border-t border-white mt-8 pt-8 text-center">
-          <Text variant="caption" size="small" weight="bold" color="white" uppercase>
+          <Text variant="caption" size="sm" weight="bold" color="white" uppercase>
             © 2025 HomeKeeper. All rights reserved.
           </Text>
         </div>

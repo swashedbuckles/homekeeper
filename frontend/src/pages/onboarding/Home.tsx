@@ -22,7 +22,6 @@ export const OnboardingHome = () => {
             title="Create a new household"
             description="Start fresh and invite family members to join you in organizing your home maintenance."
             buttonText="Get Started"
-            variant="primary"
             onClick={getStartedClicked}
             icon={<Plus className="text-primary"/>}
           />
@@ -31,7 +30,6 @@ export const OnboardingHome = () => {
             title="Join existing household"
             description="Have an invitation code? Join a household that's already been set up."
             buttonText="Join with Code"
-            variant="secondary"
             onClick={joinClicked}
             icon={<KeyRound className="text-secondary"/>}
           />

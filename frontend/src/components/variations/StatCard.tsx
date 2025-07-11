@@ -41,9 +41,9 @@ export const StatCard = ({
 }: StatCardProps) => {
   // Map StatCard sizes to Stats component sizes
   const statsSize = {
-    sm: 'small' as const,
-    md: 'medium' as const,
-    lg: 'large' as const
+    sm: 'sm' as const,
+    md: 'md' as const,
+    lg: 'lg' as const
   };
 
   // Map card variants to appropriate Stats colors

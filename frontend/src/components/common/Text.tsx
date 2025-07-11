@@ -1,7 +1,8 @@
+import { type StandardSize, getSizeToken } from '../../lib/design-system/sizes';
 import type { ReactNode } from 'react';
 
 type TextVariant = 'body' | 'caption' | 'label';
-type TextSize = 'small' | 'medium' | 'large';
+type TextSize = StandardSize;
 type TextWeight = 'normal' | 'bold' | 'black';
 type TextColor = 'primary' | 'secondary' | 'accent' | 'dark' | 'error' | 'white';
 
@@ -46,28 +47,23 @@ const baseStyles = [
   'leading-relaxed'
 ];
 
-const variantStyles = {
-  body: ['text-base'],
-  caption: ['text-sm'],
-  label: ['text-sm', 'tracking-wide']
-};
 
-const sizeStyles = {
-  small: {
-    body: ['text-sm'],
-    caption: ['text-xs'],
-    label: ['text-xs']
-  },
-  medium: {
-    body: ['text-base'],
-    caption: ['text-sm'], 
-    label: ['text-sm']
-  },
-  large: {
-    body: ['text-lg'],
-    caption: ['text-base'],
-    label: ['text-base']
+const getSizeStyles = (size: StandardSize, variant: TextVariant): string[] => {
+  const baseText = getSizeToken(size, 'text');
+  
+  // Adjust size for different variants
+  const variantAdjustments = {
+    body: baseText,
+    caption: size === 'xs' ? 'text-xs' : size === 'sm' ? 'text-xs' : size === 'md' ? 'text-sm' : size === 'lg' ? 'text-base' : 'text-lg',
+    label: size === 'xs' ? 'text-xs' : size === 'sm' ? 'text-xs' : size === 'md' ? 'text-sm' : size === 'lg' ? 'text-base' : 'text-lg'
+  };
+  
+  const styles = [variantAdjustments[variant]];
+  if (variant === 'label') {
+    styles.push('tracking-wide');
   }
+  
+  return styles;
 };
 
 const weightStyles = {
@@ -88,7 +84,7 @@ const colorStyles = {
 export const Text = ({
   children,
   variant = 'body',
-  size = 'medium',
+  size = 'md',
   weight = 'normal',
   color = 'dark',
   className = '',
@@ -97,7 +93,7 @@ export const Text = ({
 }: TextProps) => {
   const textStyles = [
     ...baseStyles,
-    ...sizeStyles[size][variant],
+    ...getSizeStyles(size, variant),
     ...weightStyles[weight],
     ...colorStyles[color],
     uppercase ? 'uppercase' : '',

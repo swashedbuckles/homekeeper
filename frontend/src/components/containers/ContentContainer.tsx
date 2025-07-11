@@ -1,6 +1,7 @@
+import { type WideContainerSize, getContainerWidth } from '../../lib/design-system/sizes';
 import type {ReactNode} from 'react';
 
-export type ContentMaxWidth =  '4xl' | '5xl' | '6xl' | '7xl' | 'none';
+export type ContentMaxWidth = WideContainerSize;
 
 /**
  * Content container with maximum width but allowing full-width children. 
@@ -18,7 +19,7 @@ export const ContentContainer = ({
   className?: string;
   maxWidth?: ContentMaxWidth
 }) => {
-  const maxWidthClass = maxWidth !== 'none' ? `max-w-${maxWidth}` : '';
+  const maxWidthClass = getContainerWidth(maxWidth);
   
   return (
     <div className={`${maxWidthClass} mx-auto px-5 ${className}`}>

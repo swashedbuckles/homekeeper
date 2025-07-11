@@ -1,8 +1,9 @@
+import { type StandardSize, getSizeToken } from '../../lib/design-system/sizes';
 import type { ReactNode } from 'react';
 
 export interface ButtonProps {
   variant?: 'primary' | 'secondary' | 'tertiary' | 'outline' | 'text' | 'danger' | 'accent';
-  size?: 'small' | 'default' | 'large';
+  size?: StandardSize;
   disabled?: boolean;
   /** whether to display loading text / spinner */
   loading?: boolean;
@@ -29,29 +30,48 @@ const baseStyles = [
   'disabled:cursor-not-allowed'
 ];
 
-// Size variations
-const sizeStyles = {
-  small: [
-    'px-4',
-    'py-2',
-    'text-sm',
-    'border-brutal-sm',
-    'brutal-hover-press-small'
-  ],
-  default: [
-    'px-6',
-    'py-3',
-    'text-base',
-    'border-brutal-md',
-    'brutal-hover-press'
-  ],
-  large: [
-    'px-8',
-    'py-4',
-    'text-lg',
-    'border-brutal-lg',
-    'brutal-hover-press'
-  ]
+// Size variations using standardized tokens
+const getSizeStyles = (size: StandardSize): string[] => {
+  const sizeConfig = {
+    xs: {
+      padding: getSizeToken('xs', 'paddingX') + ' ' + getSizeToken('xs', 'paddingY'),
+      text: getSizeToken('xs', 'text'),
+      border: getSizeToken('xs', 'border'),
+      hover: 'brutal-hover-press-small'
+    },
+    sm: {
+      padding: getSizeToken('sm', 'paddingX') + ' ' + getSizeToken('sm', 'paddingY'),
+      text: getSizeToken('sm', 'text'),
+      border: getSizeToken('sm', 'border'),
+      hover: 'brutal-hover-press-small'
+    },
+    md: {
+      padding: getSizeToken('md', 'paddingX') + ' ' + getSizeToken('md', 'paddingY'),
+      text: getSizeToken('md', 'text'),
+      border: getSizeToken('md', 'border'),
+      hover: 'brutal-hover-press'
+    },
+    lg: {
+      padding: getSizeToken('lg', 'paddingX') + ' ' + getSizeToken('lg', 'paddingY'),
+      text: getSizeToken('lg', 'text'),
+      border: getSizeToken('lg', 'border'),
+      hover: 'brutal-hover-press'
+    },
+    xl: {
+      padding: getSizeToken('xl', 'paddingX') + ' ' + getSizeToken('xl', 'paddingY'),
+      text: getSizeToken('xl', 'text'),
+      border: getSizeToken('xl', 'border'),
+      hover: 'brutal-hover-press'
+    }
+  };
+  
+  const config = sizeConfig[size];
+  return [
+    config.padding,
+    config.text,
+    config.border,
+    config.hover
+  ];
 };
 
 // Variant styles - colors and borders
@@ -163,7 +183,7 @@ const variantStyles = {
  */
 export const Button = ({
   variant = 'primary',
-  size = 'default',
+  size = 'md',
   disabled = false,
   loading = false,
   loadingText = 'Loading...',
@@ -185,7 +205,7 @@ export const Button = ({
 
   const buttonStyles = [
     ...baseStyles,
-    ...sizeStyles[size],
+    ...getSizeStyles(size),
     ...variantStyles[variant],
     ...disabledStyles,
     full ? 'w-full' : '',

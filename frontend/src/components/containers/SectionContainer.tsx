@@ -1,13 +1,8 @@
+import { type ContainerSpacingSize, getContainerSpacing } from '../../lib/design-system/sizes';
 import { ContentContainer } from './ContentContainer';
 import type { ReactNode } from 'react';
 
-export type ContainerSpacing = 'tight' | 'default' | 'loose';
-
-const SPACING_CLASSES = {
-  tight: 'py-8',
-  default: 'py-10',
-  loose: 'py-16'
-};
+export type ContainerSpacing = ContainerSpacingSize;
 
 /**
  *  Container used with main content areas
@@ -19,7 +14,7 @@ const SPACING_CLASSES = {
 export const SectionContainer = ({
   children,
   className = '',
-  spacing = 'default',
+  spacing = 'md',
   hero = false,
 }: {
   children: ReactNode;
@@ -27,9 +22,10 @@ export const SectionContainer = ({
   spacing?: ContainerSpacing
   hero?: boolean;
 }) => {
+  const spacingClass = getContainerSpacing(spacing);
 
   return (
-    <ContentContainer className={`${SPACING_CLASSES[spacing]} ${className}`} maxWidth={hero ? 'none' : '7xl'}>
+    <ContentContainer className={`${spacingClass} ${className}`} maxWidth={hero ? 'none' : '7xl'}>
       {children}
     </ContentContainer>
   );

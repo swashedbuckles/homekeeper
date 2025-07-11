@@ -94,7 +94,7 @@ export const TaskCard = ({
             <Button
               key={`${action.label}-${index}`}
               variant={action.variant || (index === 0 ? config.buttonVariant : 'outline')}
-              size="small"
+              size="sm"
               onClick={action.onClick}
             >
               {action.label}

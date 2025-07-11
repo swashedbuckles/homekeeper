@@ -85,21 +85,21 @@ describe('TextLink', () => {
 
   describe('sizes', () => {
     it('renders small size correctly', () => {
-      render(<TextLink size="small" href="#">Small</TextLink>);
+      render(<TextLink size="sm" href="#">Small</TextLink>);
       const link = screen.getByTestId('text-link');
       
       expect(link).toHaveClass('text-sm', 'border-b-2');
     });
 
     it('renders medium size correctly', () => {
-      render(<TextLink size="medium" href="#">Medium</TextLink>);
+      render(<TextLink size="md" href="#">Medium</TextLink>);
       const link = screen.getByTestId('text-link');
       
       expect(link).toHaveClass('text-base', 'border-b-4');
     });
 
     it('renders large size correctly', () => {
-      render(<TextLink size="large" href="#">Large</TextLink>);
+      render(<TextLink size="lg" href="#">Large</TextLink>);
       const link = screen.getByTestId('text-link');
       
       expect(link).toHaveClass('text-lg', 'border-b-4');
@@ -203,7 +203,7 @@ describe('TextLink', () => {
     it('renders internal navigation link', () => {
       render(
         <RouterWrapper>
-          <TextLink to="/manuals" variant="primary" size="large">
+          <TextLink to="/manuals" variant="primary" size="lg">
             View All Manuals
           </TextLink>
         </RouterWrapper>
@@ -230,7 +230,7 @@ describe('TextLink', () => {
     it('renders clickable action link', () => {
       const mockAction = vi.fn();
       render(
-        <TextLink onClick={mockAction} variant="danger" size="small">
+        <TextLink onClick={mockAction} variant="danger" size="sm">
           Delete Item
         </TextLink>
       );

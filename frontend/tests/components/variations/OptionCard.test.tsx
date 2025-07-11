@@ -71,7 +71,7 @@ describe('OptionCard', () => {
   });
 
   it.skip('applies correct icon background based on button variant', () => {
-    const { container } = render(<OptionCard {...defaultProps} variant="secondary" />);
+    const { container } = render(<OptionCard {...defaultProps} />);
     
     const iconContainer = container.querySelector('.bg-secondary\\/10');
     expect(iconContainer).toBeInTheDocument();

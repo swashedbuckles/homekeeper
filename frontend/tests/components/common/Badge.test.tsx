@@ -13,7 +13,7 @@ describe('Badge', () => {
     const badge = screen.getByTestId('badge');
     
     expect(badge).toHaveClass('bg-primary'); // default color
-    expect(badge).toHaveClass('text-sm'); // default size medium
+    expect(badge).toHaveClass('text-sm'); // default size sm
     expect(badge).toHaveClass('px-3'); // default variant status
   });
 
@@ -72,24 +72,24 @@ describe('Badge', () => {
 
   describe('sizes', () => {
     it('renders small size correctly', () => {
-      render(<Badge size="small">Small</Badge>);
+      render(<Badge size="sm">Small</Badge>);
       const badge = screen.getByTestId('badge');
       
-      expect(badge).toHaveClass('text-xs', 'px-2', 'py-0.5');
+      expect(badge).toHaveClass('text-sm', 'px-3', 'py-2');
     });
 
     it('renders medium size correctly', () => {
-      render(<Badge size="medium">Medium</Badge>);
+      render(<Badge size="md">Medium</Badge>);
       const badge = screen.getByTestId('badge');
       
-      expect(badge).toHaveClass('text-sm', 'px-3', 'py-1');
+      expect(badge).toHaveClass('text-base', 'px-4', 'py-3');
     });
 
     it('renders large size correctly', () => {
-      render(<Badge size="large">Large</Badge>);
+      render(<Badge size="lg">Large</Badge>);
       const badge = screen.getByTestId('badge');
       
-      expect(badge).toHaveClass('text-base', 'px-4', 'py-1.5');
+      expect(badge).toHaveClass('text-lg', 'px-6', 'py-4');
     });
   });
 
@@ -127,13 +127,13 @@ describe('Badge', () => {
   describe('real-world usage examples', () => {
     it('renders overdue status badge', () => {
       render(
-        <Badge variant="status" color="error" size="small">
+        <Badge variant="status" color="error" size="sm">
           OVERDUE
         </Badge>
       );
       
       const badge = screen.getByText('OVERDUE');
-      expect(badge).toHaveClass('bg-error', 'text-xs');
+      expect(badge).toHaveClass('bg-error', 'text-sm');
     });
 
     it('renders category badge for HVAC', () => {
@@ -149,7 +149,7 @@ describe('Badge', () => {
 
     it('renders notification count badge', () => {
       render(
-        <Badge variant="count" color="accent" size="small">
+        <Badge variant="count" color="accent" size="sm">
           3
         </Badge>
       );

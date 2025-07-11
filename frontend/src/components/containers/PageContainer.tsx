@@ -1,7 +1,8 @@
 
+import { type ContainerWidthSize, getContainerWidth } from '../../lib/design-system/sizes';
 import type {ReactNode} from 'react';
 
-export type MaxPageWidth = 'md' | 'lg' | 'xl' | '2xl'
+export type MaxPageWidth = ContainerWidthSize;
 
 /**
  * Page container for forms and narrow-content
@@ -19,8 +20,10 @@ export const PageContainer = ({
   className?: string;
   maxWidth?: MaxPageWidth
 }) => {
+  const maxWidthClass = getContainerWidth(maxWidth);
+  
   return (
-    <div className={`max-w-${maxWidth} mx-auto px-6 py-12 ${className}`}>
+    <div className={`${maxWidthClass} mx-auto px-6 py-12 ${className}`}>
       {children}
     </div>
   );
