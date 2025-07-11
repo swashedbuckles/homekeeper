@@ -1,105 +1,74 @@
-import { Card } from '../common/Card';
+import { Card, type CardProps } from '../common/Card';
+import { Stats } from '../common/Stats';
 
 /**
  * StatCard component for displaying key metrics and dashboard statistics.
  * 
  * Built on top of the base Card component. Features large numbers with labels and subtitles,
- * perfect for dashboard KPIs, counts, and metrics. Supports various color themes and
- * optional click interactions for drill-down navigation.
+ * perfect for dashboard KPIs, counts, and metrics. Delegates all styling to Card component
+ * and focuses on content structure.
  * 
  * @example
  * ```tsx
- * // Dashboard metric with click navigation
+ * // Dashboard metric with custom styling
  * <StatCard
  *   label="Total Manuals"
  *   value={47}
  *   subtitle="+3 This Month"
  *   variant="dark"
+ *   shadow="double"
+ *   hover
+ *   hoverEffect="raise"
  *   rotation="slight-left"
  *   onClick={() => navigate('/manuals')}
  * />
- * 
- * // Simple stat display
- * <StatCard
- *   label="Completed Tasks"
- *   value={12}
- *   variant="accent"
- * />
  * ```
  */
-export interface StatCardProps {
+export interface StatCardProps extends Omit<CardProps, 'children'> {
   label :     string;
   value :     string | number;
   subtitle?:  string;
-  variant?:   'primary' | 'secondary' | 'accent' | 'dark';
-  rotation?:  'left' | 'right' | 'slight-left' | 'slight-right';
   size?:      'sm' | 'md' | 'lg';
-  onClick?:   () => void;
-  className?: string;
 }
 
 export const StatCard = ({
   label,
   value,
   subtitle,
-  variant = 'dark',
-  rotation = 'slight-left',
   size = 'lg',
-  onClick,
-  className = ''
+  variant = 'dark',
+  ...cardProps
 }: StatCardProps) => {
-  const variantConfig = {
-    primary: {
-      cardVariant: 'primary' as const,
-      valueColor:  'text-white',
-      shadow:      'secondary' as const
-    },
-    secondary: {
-      cardVariant: 'secondary' as const,
-      valueColor:  'text-background',
-      shadow:      'error' as const
-    },
-    accent: {
-      cardVariant: 'accent' as const,
-      valueColor:  'text-background',
-      shadow:      'secondary' as const
-    },
-    dark: {
-      cardVariant: 'dark' as const,
-      valueColor:  'text-primary',
-      shadow:      'dark' as const
-    }
+  // Map StatCard sizes to Stats component sizes
+  const statsSize = {
+    sm: 'small' as const,
+    md: 'medium' as const,
+    lg: 'large' as const
   };
 
-  const config = variantConfig[variant];
-
-  const sizeStyles = {
-    sm: 'text-4xl',
-    md: 'text-5xl', 
-    lg: 'text-7xl'
+  // Map card variants to appropriate Stats colors
+  const statsColor = {
+    default: 'dark' as const,
+    subtle: 'dark' as const,
+    primary: 'white' as const,
+    secondary: 'white' as const,
+    accent: 'white' as const,
+    danger: 'white' as const,
+    dark: 'white' as const
   };
 
   return (
     <Card
-      variant={config.cardVariant}
-      shadow={config.shadow}
-      rotation={rotation}
-      hover={!!onClick}
-      onClick={onClick}
-      className={className}
-      padding={size}
+      variant={variant}
+      {...cardProps}
     >
-      <div className="text-white font-bold text-lg uppercase mb-4">
-        {label}
-      </div>
-      <div className={`${sizeStyles[size]} font-black ${config.valueColor} leading-none mb-3`}>
-        {value}
-      </div>
-      {subtitle && (
-        <div className="text-white font-bold uppercase">
-          {subtitle}
-        </div>
-      )}
+      <Stats
+        value={value}
+        label={label}
+        subtitle={subtitle}
+        size={statsSize[size]}
+        color={statsColor[variant || 'dark']}
+      />
     </Card>
   );
 };

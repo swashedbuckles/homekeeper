@@ -12,22 +12,22 @@ export interface AlertProps {
 
 const variantStyles = {
   info: {
-    container: 'bg-info text-white border-white',
+    container: 'bg-info text-white border-text-primary',
     iconBg:    'bg-white',
     iconColor: 'text-info'
   },
   warning: {
-    container: 'bg-warning text-white border-white',
+    container: 'bg-warning text-white border-text-primary',
     iconBg:    'bg-white',
     iconColor: 'text-warning'
   },
   error: {
-    container: 'bg-error text-white border-white',
+    container: 'bg-error text-white border-text-primary',
     iconBg:    'bg-white',
     iconColor: 'text-error'
   },
   success: {
-    container: 'bg-success text-white border-white',
+    container: 'bg-success text-white border-text-primary',
     iconBg:    'bg-white',
     iconColor: 'text-success'
   },

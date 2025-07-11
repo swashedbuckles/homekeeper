@@ -124,12 +124,17 @@
 }
 
 /* === TEXT SHADOW UTILITIES === */
+/* Legacy utilities for backward compatibility */
 @utility brutal-text-shadow {
   text-shadow: var(--text-shadow-brutal);
 }
 
 @utility brutal-text-shadow-double {
   text-shadow: var(--text-shadow-brutal-double);
+}
+
+@utility brutal-text-shadow-double-reverse {
+  text-shadow: 4px 4px 0 var(--color-text-primary), 8px 8px 0 var(--color-primary);
 }
 
 @utility brutal-text-shadow-small {
@@ -140,7 +145,6 @@
   text-shadow: 1px 1px 0 var(--color-primary);
 }
 
-
 /* Simple text shadows for headings */
 @utility brutal-text-shadow-simple {
   text-shadow: 2px 2px 0 var(--color-text-primary);
@@ -148,6 +152,130 @@
 
 @utility brutal-text-shadow-primary-simple {
   text-shadow: 2px 2px 0 var(--color-primary);
+}
+
+/* === SIZE-APPROPRIATE TEXT SHADOWS === */
+/* Large text shadows (for page titles) */
+@utility brutal-text-shadow-lg-primary {
+  text-shadow: 5px 5px 0 var(--color-primary);
+}
+
+@utility brutal-text-shadow-lg-primary-double {
+  text-shadow: 5px 5px 0 var(--color-primary), 10px 10px 0 var(--color-text-primary);
+}
+
+@utility brutal-text-shadow-lg-secondary {
+  text-shadow: 5px 5px 0 var(--color-secondary);
+}
+
+@utility brutal-text-shadow-lg-secondary-double {
+  text-shadow: 5px 5px 0 var(--color-secondary), 10px 10px 0 var(--color-text-primary);
+}
+
+@utility brutal-text-shadow-lg-accent {
+  text-shadow: 5px 5px 0 var(--color-accent);
+}
+
+@utility brutal-text-shadow-lg-accent-double {
+  text-shadow: 5px 5px 0 var(--color-accent), 10px 10px 0 var(--color-text-primary);
+}
+
+@utility brutal-text-shadow-lg-dark {
+  text-shadow: 5px 5px 0 var(--color-text-primary);
+}
+
+@utility brutal-text-shadow-lg-dark-double {
+  text-shadow: 5px 5px 0 var(--color-text-primary), 10px 10px 0 var(--color-primary);
+}
+
+@utility brutal-text-shadow-lg-error {
+  text-shadow: 5px 5px 0 var(--color-error);
+}
+
+@utility brutal-text-shadow-lg-error-double {
+  text-shadow: 5px 5px 0 var(--color-error), 10px 10px 0 var(--color-text-primary);
+}
+
+/* Medium text shadows (for section titles) */
+@utility brutal-text-shadow-md-primary {
+  text-shadow: 4px 4px 0 var(--color-primary);
+}
+
+@utility brutal-text-shadow-md-primary-double {
+  text-shadow: 4px 4px 0 var(--color-primary), 8px 8px 0 var(--color-text-primary);
+}
+
+@utility brutal-text-shadow-md-secondary {
+  text-shadow: 4px 4px 0 var(--color-secondary);
+}
+
+@utility brutal-text-shadow-md-secondary-double {
+  text-shadow: 4px 4px 0 var(--color-secondary), 8px 8px 0 var(--color-text-primary);
+}
+
+@utility brutal-text-shadow-md-accent {
+  text-shadow: 4px 4px 0 var(--color-accent);
+}
+
+@utility brutal-text-shadow-md-accent-double {
+  text-shadow: 4px 4px 0 var(--color-accent), 8px 8px 0 var(--color-text-primary);
+}
+
+@utility brutal-text-shadow-md-dark {
+  text-shadow: 4px 4px 0 var(--color-text-primary);
+}
+
+@utility brutal-text-shadow-md-dark-double {
+  text-shadow: 4px 4px 0 var(--color-text-primary), 8px 8px 0 var(--color-primary);
+}
+
+@utility brutal-text-shadow-md-error {
+  text-shadow: 4px 4px 0 var(--color-error);
+}
+
+@utility brutal-text-shadow-md-error-double {
+  text-shadow: 4px 4px 0 var(--color-error), 8px 8px 0 var(--color-text-primary);
+}
+
+/* Small text shadows (for subsection titles) */
+@utility brutal-text-shadow-sm-primary {
+  text-shadow: 3px 3px 0 var(--color-primary);
+}
+
+@utility brutal-text-shadow-sm-primary-double {
+  text-shadow: 3px 3px 0 var(--color-primary), 6px 6px 0 var(--color-text-primary);
+}
+
+@utility brutal-text-shadow-sm-secondary {
+  text-shadow: 3px 3px 0 var(--color-secondary);
+}
+
+@utility brutal-text-shadow-sm-secondary-double {
+  text-shadow: 3px 3px 0 var(--color-secondary), 6px 6px 0 var(--color-text-primary);
+}
+
+@utility brutal-text-shadow-sm-accent {
+  text-shadow: 3px 3px 0 var(--color-accent);
+}
+
+@utility brutal-text-shadow-sm-accent-double {
+  text-shadow: 3px 3px 0 var(--color-accent), 6px 6px 0 var(--color-text-primary);
+}
+
+@utility brutal-text-shadow-sm-dark {
+  text-shadow: 3px 3px 0 var(--color-text-primary);
+}
+
+@utility brutal-text-shadow-sm-dark-double {
+  text-shadow: 3px 3px 0 var(--color-text-primary), 6px 6px 0 var(--color-primary);
+}
+
+@utility brutal-text-shadow-sm-error {
+  text-shadow: 3px 3px 0 var(--color-error);
+}
+
+@utility brutal-text-shadow-sm-error-double {
+  text-shadow: 3px 3px 0 var(--color-error), 6px 6px 0 var(--color-text-primary);
 }
 
 /* === ROTATION UTILITIES === */
@@ -189,10 +317,10 @@
 @utility brutal-hover-lift {
   transition: var(--transition-brutal);
   &:hover {
-    transform: translate(-3px, -3px);
+    transform: translate(-4px, -4px);
     box-shadow: 
-      calc(var(--spacing-brutal-offset-lg) + 3px) calc(var(--spacing-brutal-offset-lg) + 3px) 0 currentColor,
-      calc(var(--spacing-brutal-offset-xl) + 3px) calc(var(--spacing-brutal-offset-xl) + 3px) 0 var(--shadow-dark);
+      6px 6px 0 var(--shadow-primary),
+      12px 12px 0 var(--shadow-dark);
   }
 }
 
@@ -220,8 +348,9 @@
   &:hover {
     transform: translate(-4px, -4px);
     box-shadow: 
-      calc(var(--spacing-brutal-offset-lg) + 4px) calc(var(--spacing-brutal-offset-lg) + 4px) 0 var(--shadow-primary),
-      calc(var(--spacing-brutal-offset-xl) + 4px) calc(var(--spacing-brutal-offset-xl) + 4px) 0 var(--shadow-dark);
+      6px 6px 0 var(--shadow-primary),
+      12px 12px 0 var(--shadow-secondary),
+      18px 18px 0 var(--shadow-dark);
   }
 }
 

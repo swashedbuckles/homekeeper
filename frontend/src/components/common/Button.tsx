@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 
 export interface ButtonProps {
-  variant?: 'primary' | 'secondary' | 'tertiary' | 'outline' | 'text' | 'danger';
+  variant?: 'primary' | 'secondary' | 'tertiary' | 'outline' | 'text' | 'danger' | 'accent';
   size?: 'small' | 'default' | 'large';
   disabled?: boolean;
   /** whether to display loading text / spinner */
@@ -72,18 +72,24 @@ const variantStyles = {
     'bg-white',
     'text-text-primary',
     'border-text-primary',
-    'brutal-shadow-primary',
+    'brutal-shadow-dark',
   ],
   outline: [
     'bg-transparent',
     'text-text-primary',
     'border-text-primary',
-    'brutal-shadow-dark',
+    // 'brutal-shadow-dark',
     'hover:bg-text-primary',
     'hover:text-white'
   ],
   danger: [
     'bg-error',
+    'text-white',
+    'border-text-primary',
+    'brutal-shadow-dark'
+  ],
+  accent: [
+    'bg-accent',
     'text-white',
     'border-text-primary',
     'brutal-shadow-dark'
@@ -103,9 +109,57 @@ const variantStyles = {
 };
 
 /**
- * Standardized button type for use throughout the application. 
- * Handles loading state and provides additional variations. 
+ * Button Component
  * 
+ * A neobrutalist-styled button component with multiple variants, sizes, and states.
+ * Features thick borders, dramatic shadows, and press animations for tactile interaction.
+ * 
+ * @example
+ * ```tsx
+ * // Primary action button
+ * <Button variant="primary" size="large">
+ *   Get Started
+ * </Button>
+ * 
+ * // Loading state with custom text
+ * <Button variant="secondary" loading loadingText="Saving...">
+ *   Save Changes
+ * </Button>
+ * 
+ * // Full-width submit button
+ * <Button type="submit" variant="accent" full>
+ *   Create Account
+ * </Button>
+ * 
+ * // Destructive action
+ * <Button variant="danger" onClick={handleDelete}>
+ *   Delete Item
+ * </Button>
+ * 
+ * // Minimal text button
+ * <Button variant="text" size="small">
+ *   Cancel
+ * </Button>
+ * ```
+ * 
+ * @param variant - Visual style variant
+ *   - `primary`: Orange background, main call-to-action
+ *   - `secondary`: Blue background, secondary actions  
+ *   - `tertiary`: White background, neutral actions
+ *   - `outline`: Transparent with border, subtle actions
+ *   - `accent`: Green background, positive actions
+ *   - `danger`: Red background, destructive actions
+ *   - `text`: No background/border, minimal styling
+ * @param size - Button size affecting padding and text size
+ * @param loading - Shows spinner and loading text, disables interaction
+ * @param loadingText - Custom text to show during loading state
+ * @param full - Expands button to full width of container
+ * @param type - HTML button type for form submission
+ * @param disabled - Disables button interaction and applies opacity
+ * @param onClick - Click handler function
+ * @param className - Additional CSS classes to apply
+ * @param testId - Test identifier for automated testing
+ * @param children - Button content (text, icons, etc.)
  */
 export const Button = ({
   variant = 'primary',

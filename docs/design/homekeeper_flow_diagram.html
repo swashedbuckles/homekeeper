@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HomeKeeper - User Flow Diagram</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
@@ -59,94 +60,25 @@
             padding: 2rem;
             margin: 2rem 0;
             position: relative;
-            overflow: auto;
+            overflow: visible;
+            display: flex;
+            gap: 2rem;
         }
         
-        .page-node {
-            background: white;
+        .flow-diagram {
+            flex: 1;
+            height: 600px;
             border: 4px solid #2c3e50;
-            padding: 1rem;
-            text-align: center;
-            min-width: 180px;
-            cursor: pointer;
-            transition: all 0.1s ease;
-            position: relative;
-        }
-        
-        .page-node:hover {
-            transform: translate(-2px, -2px);
-            box-shadow: 6px 6px 0 #e67e22;
-        }
-        
-        .page-node.dashboard {
-            background: #2c3e50;
-            color: white;
-            box-shadow: 6px 6px 0 #e67e22;
-        }
-        
-        .page-node.manuals {
-            background: #e67e22;
-            color: white;
-        }
-        
-        .page-node.maintenance {
-            background: #4A6FA5;
-            color: white;
-        }
-        
-        .page-node.documents {
-            background: #5d9c59;
-            color: white;
-        }
-        
-        .page-node.notifications {
-            background: #e74c3c;
-            color: white;
-        }
-        
-        .flow-arrow {
-            position: absolute;
-            font-size: 2rem;
-            font-weight: 800;
-            color: #2c3e50;
-            z-index: 10;
-            pointer-events: none;
-        }
-        
-        .flow-line {
-            position: absolute;
-            background: #2c3e50;
-            z-index: 1;
-        }
-        
-        .flow-line.horizontal {
-            height: 4px;
-        }
-        
-        .flow-line.vertical {
-            width: 4px;
-        }
-        
-        .flow-label {
             background: #f5f0e8;
-            border: 3px solid #2c3e50;
-            padding: 0.25rem 0.5rem;
-            font-weight: 700;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            position: absolute;
-            z-index: 10;
-            white-space: nowrap;
         }
         
         .legend {
             background: white;
             border: 4px solid #2c3e50;
             padding: 1.5rem;
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            z-index: 20;
+            width: 240px;
+            height: fit-content;
+            flex-shrink: 0;
         }
         
         .legend-item {
@@ -227,19 +159,17 @@
         /* Responsive adjustments */
         @media (max-width: 768px) {
             .flow-container {
+                flex-direction: column;
                 padding: 1rem;
             }
             
             .legend {
-                position: relative;
-                top: auto;
-                right: auto;
-                margin: 1rem 0;
+                width: auto;
+                order: -1;
             }
             
-            .page-node {
-                min-width: 140px;
-                font-size: 0.875rem;
+            .flow-diagram {
+                height: 400px;
             }
         }
     </style>
@@ -334,7 +264,10 @@
             Main Application Flow
         </div>
 
-        <div class="flow-container relative" style="min-height: 800px;">
+        <div class="flow-container">
+            <!-- Main Flow Diagram -->
+            <div id="flowDiagram" class="flow-diagram"></div>
+            
             <!-- Legend -->
             <div class="legend">
                 <h3 class="font-black uppercase text-text-primary mb-3 text-sm">Page Types</h3>
@@ -359,109 +292,8 @@
                     <span class="text-text-primary font-bold text-sm">Notifications</span>
                 </div>
             </div>
-
-            <!-- Top Level: Dashboard -->
-            <div class="absolute top-8 left-1/2 transform -translate-x-1/2">
-                <div class="page-node dashboard">
-                    <div class="font-black text-lg mb-1">📊 MAIN DASHBOARD</div>
-                    <div class="text-sm">Central hub & overview</div>
-                </div>
-            </div>
-
-            <!-- Second Level: Main Sections -->
-            <div class="absolute top-40 left-8">
-                <div class="page-node manuals">
-                    <div class="font-black text-base mb-1">📚 MANUALS LIST</div>
-                    <div class="text-xs">Browse & manage manuals</div>
-                </div>
-            </div>
-
-            <div class="absolute top-40 left-1/2 transform -translate-x-1/2">
-                <div class="page-node maintenance">
-                    <div class="font-black text-base mb-1">🔧 MAINTENANCE DASHBOARD</div>
-                    <div class="text-xs">Active tasks & scheduling</div>
-                </div>
-            </div>
-
-            <div class="absolute top-40 right-8">
-                <div class="page-node notifications">
-                    <div class="font-black text-base mb-1">🔔 NOTIFICATIONS</div>
-                    <div class="text-xs">Alerts & reminders</div>
-                </div>
-            </div>
-
-            <!-- Third Level: Detail Pages -->
-            <div class="absolute top-72 left-8">
-                <div class="page-node manuals">
-                    <div class="font-black text-sm mb-1">📄 MANUAL DETAIL</div>
-                    <div class="text-xs">View manual & specs</div>
-                </div>
-            </div>
-
-            <div class="absolute top-72 left-64">
-                <div class="page-node manuals">
-                    <div class="font-black text-sm mb-1">➕ ADD MANUAL</div>
-                    <div class="text-xs">Upload new manual</div>
-                </div>
-            </div>
-
-            <div class="absolute top-72 left-1/2 transform -translate-x-16">
-                <div class="page-node maintenance">
-                    <div class="font-black text-sm mb-1">➕ CREATE TASK</div>
-                    <div class="text-xs">Schedule maintenance</div>
-                </div>
-            </div>
-
-            <div class="absolute top-72 left-1/2 transform translate-x-16">
-                <div class="page-node maintenance">
-                    <div class="font-black text-sm mb-1">📊 HISTORY</div>
-                    <div class="text-xs">Completed tasks</div>
-                </div>
-            </div>
-
-            <div class="absolute top-72 right-8">
-                <div class="page-node documents">
-                    <div class="font-black text-sm mb-1">📝 DOCUMENT EDITOR</div>
-                    <div class="text-xs">Create custom docs</div>
-                </div>
-            </div>
-
-            <!-- Connection Lines and Arrows -->
-            <!-- Dashboard to main sections -->
-            <div class="flow-line vertical" style="top: 120px; left: 50%; height: 40px;"></div>
-            <div class="flow-line horizontal" style="top: 160px; left: 20%; width: 60%;"></div>
-            <div class="flow-line vertical" style="top: 160px; left: 20%; height: 20px;"></div>
-            <div class="flow-line vertical" style="top: 160px; left: 50%; height: 20px;"></div>
-            <div class="flow-line vertical" style="top: 160px; left: 80%; height: 20px;"></div>
-
-            <!-- Arrows -->
-            <div class="flow-arrow" style="top: 115px; left: calc(50% - 10px);">↓</div>
-            <div class="flow-arrow" style="top: 155px; left: calc(20% - 10px);">↓</div>
-            <div class="flow-arrow" style="top: 155px; left: calc(50% - 10px);">↓</div>
-            <div class="flow-arrow" style="top: 155px; left: calc(80% - 10px);">↓</div>
-
-            <!-- Sub-page connections -->
-            <div class="flow-line vertical" style="top: 260px; left: 20%; height: 40px;"></div>
-            <div class="flow-line horizontal" style="top: 300px; left: 20%; width: 25%;"></div>
-            <div class="flow-line vertical" style="top: 300px; left: 45%; height: 20px;"></div>
-
-            <div class="flow-line vertical" style="top: 260px; left: 50%; height: 40px;"></div>
-            <div class="flow-line horizontal" style="top: 300px; left: 40%; width: 20%;"></div>
-            <div class="flow-line vertical" style="top: 300px; left: 40%; height: 20px;"></div>
-            <div class="flow-line vertical" style="top: 300px; left: 60%; height: 20px;"></div>
-
-            <!-- Labels -->
-            <div class="flow-label" style="top: 200px; left: 15%;">Browse & Upload</div>
-            <div class="flow-label" style="top: 200px; left: 45%;">Schedule & Track</div>
-            <div class="flow-label" style="top: 200px; left: 75%;">Alert Management</div>
-
-            <!-- Interconnections (dotted lines) -->
-            <div style="position: absolute; top: 220px; left: 30%; width: 25%; height: 2px; background: repeating-linear-gradient(to right, #2c3e50 0, #2c3e50 8px, transparent 8px, transparent 16px);"></div>
-            <div style="position: absolute; top: 220px; left: 55%; width: 20%; height: 2px; background: repeating-linear-gradient(to right, #2c3e50 0, #2c3e50 8px, transparent 8px, transparent 16px);"></div>
-
-            <div class="connection-type" style="top: 210px; left: 35%;">Links Equipment</div>
-            <div class="connection-type" style="top: 210px; left: 60%;">Sends Alerts</div>
-        </div>
+            
+        </div> <!-- Close flow-container -->
 
         <!-- User Journey Examples -->
         <div class="section-header">
@@ -710,27 +542,246 @@
     </main>
 
     <script>
-        // Interactive flow diagram
+        // Interactive flow diagram using vis.js
         document.addEventListener('DOMContentLoaded', function() {
-            const pageNodes = document.querySelectorAll('.page-node');
-            
-            // Add click interactions to page nodes
-            pageNodes.forEach(node => {
-                node.addEventListener('click', function() {
-                    const pageTitle = this.querySelector('.font-black').textContent;
-                    console.log('Navigating to:', pageTitle);
+            // Define nodes with brutal styling
+            const nodes = new vis.DataSet([
+                {
+                    id: 'dashboard',
+                    label: '📊 MAIN DASHBOARD\nCentral hub & overview',
+                    color: {
+                        background: '#2c3e50',
+                        border: '#2c3e50',
+                        highlight: { background: '#34495e', border: '#e67e22' }
+                    },
+                    font: { color: 'white', size: 16, face: 'JetBrains Mono', bold: true },
+                    shape: 'box',
+                    margin: 10,
+                    borderWidth: 4,
+                    level: 0
+                },
+                {
+                    id: 'manuals',
+                    label: '📚 MANUALS LIST\nBrowse & manage manuals',
+                    color: {
+                        background: '#e67e22',
+                        border: '#2c3e50',
+                        highlight: { background: '#f39c12', border: '#2c3e50' }
+                    },
+                    font: { color: 'white', size: 14, face: 'JetBrains Mono', bold: true },
+                    shape: 'box',
+                    margin: 10,
+                    borderWidth: 4,
+                    level: 1
+                },
+                {
+                    id: 'maintenance',
+                    label: '🔧 MAINTENANCE DASHBOARD\nActive tasks & scheduling',
+                    color: {
+                        background: '#4A6FA5',
+                        border: '#2c3e50',
+                        highlight: { background: '#5a7fb5', border: '#2c3e50' }
+                    },
+                    font: { color: 'white', size: 14, face: 'JetBrains Mono', bold: true },
+                    shape: 'box',
+                    margin: 10,
+                    borderWidth: 4,
+                    level: 1
+                },
+                {
+                    id: 'notifications',
+                    label: '🔔 NOTIFICATIONS\nAlerts & reminders',
+                    color: {
+                        background: '#e74c3c',
+                        border: '#2c3e50',
+                        highlight: { background: '#c0392b', border: '#2c3e50' }
+                    },
+                    font: { color: 'white', size: 14, face: 'JetBrains Mono', bold: true },
+                    shape: 'box',
+                    margin: 10,
+                    borderWidth: 4,
+                    level: 1
+                },
+                {
+                    id: 'manual-detail',
+                    label: '📄 MANUAL DETAIL\nView manual & specs',
+                    color: {
+                        background: '#e67e22',
+                        border: '#2c3e50',
+                        highlight: { background: '#f39c12', border: '#2c3e50' }
+                    },
+                    font: { color: 'white', size: 12, face: 'JetBrains Mono', bold: true },
+                    shape: 'box',
+                    margin: 8,
+                    borderWidth: 3,
+                    level: 2
+                },
+                {
+                    id: 'add-manual',
+                    label: '➕ ADD MANUAL\nUpload new manual',
+                    color: {
+                        background: '#e67e22',
+                        border: '#2c3e50',
+                        highlight: { background: '#f39c12', border: '#2c3e50' }
+                    },
+                    font: { color: 'white', size: 12, face: 'JetBrains Mono', bold: true },
+                    shape: 'box',
+                    margin: 8,
+                    borderWidth: 3,
+                    level: 2
+                },
+                {
+                    id: 'create-task',
+                    label: '➕ CREATE TASK\nSchedule maintenance',
+                    color: {
+                        background: '#4A6FA5',
+                        border: '#2c3e50',
+                        highlight: { background: '#5a7fb5', border: '#2c3e50' }
+                    },
+                    font: { color: 'white', size: 12, face: 'JetBrains Mono', bold: true },
+                    shape: 'box',
+                    margin: 8,
+                    borderWidth: 3,
+                    level: 2
+                },
+                {
+                    id: 'history',
+                    label: '📊 HISTORY\nCompleted tasks',
+                    color: {
+                        background: '#4A6FA5',
+                        border: '#2c3e50',
+                        highlight: { background: '#5a7fb5', border: '#2c3e50' }
+                    },
+                    font: { color: 'white', size: 12, face: 'JetBrains Mono', bold: true },
+                    shape: 'box',
+                    margin: 8,
+                    borderWidth: 3,
+                    level: 2
+                },
+                {
+                    id: 'doc-editor',
+                    label: '📝 DOCUMENT EDITOR\nCreate custom docs',
+                    color: {
+                        background: '#5d9c59',
+                        border: '#2c3e50',
+                        highlight: { background: '#6bb068', border: '#2c3e50' }
+                    },
+                    font: { color: 'white', size: 12, face: 'JetBrains Mono', bold: true },
+                    shape: 'box',
+                    margin: 8,
+                    borderWidth: 3,
+                    level: 2
+                }
+            ]);
+
+            // Define edges with brutal styling
+            const edges = new vis.DataSet([
+                // Dashboard to main sections
+                { from: 'dashboard', to: 'manuals', color: { color: '#2c3e50' }, width: 4 },
+                { from: 'dashboard', to: 'maintenance', color: { color: '#2c3e50' }, width: 4 },
+                { from: 'dashboard', to: 'notifications', color: { color: '#2c3e50' }, width: 4 },
+                
+                // Manuals section to detail pages
+                { from: 'manuals', to: 'manual-detail', color: { color: '#2c3e50' }, width: 3 },
+                { from: 'manuals', to: 'add-manual', color: { color: '#2c3e50' }, width: 3 },
+                
+                // Maintenance section to detail pages
+                { from: 'maintenance', to: 'create-task', color: { color: '#2c3e50' }, width: 3 },
+                { from: 'maintenance', to: 'history', color: { color: '#2c3e50' }, width: 3 },
+                
+                // Cross-connections (dotted)
+                { from: 'manual-detail', to: 'create-task', color: { color: '#7f8c8d' }, width: 2, dashes: [10, 5] },
+                { from: 'maintenance', to: 'doc-editor', color: { color: '#7f8c8d' }, width: 2, dashes: [10, 5] },
+                { from: 'create-task', to: 'notifications', color: { color: '#7f8c8d' }, width: 2, dashes: [10, 5] }
+            ]);
+
+            // Network options with brutal styling
+            const options = {
+                layout: {
+                    hierarchical: {
+                        enabled: true,
+                        levelSeparation: 120,
+                        nodeSpacing: 200,
+                        treeSpacing: 200,
+                        blockShifting: true,
+                        edgeMinimization: true,
+                        parentCentralization: true,
+                        direction: 'UD',
+                        sortMethod: 'directed'
+                    }
+                },
+                physics: {
+                    enabled: false
+                },
+                nodes: {
+                    font: {
+                        multi: true,
+                        align: 'center'
+                    },
+                    shadow: {
+                        enabled: true,
+                        color: '#e67e22',
+                        size: 8,
+                        x: 8,
+                        y: 8
+                    }
+                },
+                edges: {
+                    smooth: {
+                        type: 'continuous',
+                        forceDirection: 'none',
+                        roundness: 0.1
+                    },
+                    arrows: {
+                        to: {
+                            enabled: true,
+                            scaleFactor: 1.5
+                        }
+                    }
+                },
+                interaction: {
+                    hover: true,
+                    selectConnectedEdges: true,
+                    tooltipDelay: 200
+                }
+            };
+
+            // Initialize network
+            const container = document.getElementById('flowDiagram');
+            const data = { nodes: nodes, edges: edges };
+            const network = new vis.Network(container, data, options);
+
+            // Add click interactions
+            network.on('click', function(params) {
+                if (params.nodes.length > 0) {
+                    const nodeId = params.nodes[0];
+                    console.log('Clicked on node:', nodeId);
                     
                     // Highlight connected nodes
-                    pageNodes.forEach(n => n.style.opacity = '0.5');
-                    this.style.opacity = '1';
+                    const connectedNodes = network.getConnectedNodes(nodeId);
+                    const allNodes = nodes.get();
+                    
+                    // Update node opacity
+                    allNodes.forEach(node => {
+                        if (node.id === nodeId || connectedNodes.includes(node.id)) {
+                            node.opacity = 1;
+                        } else {
+                            node.opacity = 0.3;
+                        }
+                    });
+                    
+                    nodes.update(allNodes);
                     
                     // Reset after 2 seconds
                     setTimeout(() => {
-                        pageNodes.forEach(n => n.style.opacity = '1');
+                        allNodes.forEach(node => {
+                            node.opacity = 1;
+                        });
+                        nodes.update(allNodes);
                     }, 2000);
-                });
+                }
             });
-            
+
             // Add hover effects for journey steps
             const journeySteps = document.querySelectorAll('.journey-step');
             journeySteps.forEach(step => {

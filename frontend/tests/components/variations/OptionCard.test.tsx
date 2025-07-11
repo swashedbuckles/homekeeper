@@ -41,7 +41,7 @@ describe('OptionCard', () => {
     render(<OptionCard {...propsWithoutButton} />);
     
     // Click on the card
-    const card = screen.getByTestId('option-card');
+    const card = screen.getByTestId('card');
     await user.click(card);
     expect(mockOnClick).toHaveBeenCalledTimes(1);
   });

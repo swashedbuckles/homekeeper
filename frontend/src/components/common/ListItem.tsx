@@ -1,22 +1,23 @@
 import type { ReactNode } from 'react';
 
 /**
- * ActionItem Component.
+ * ListItem Component.
  * 
- * Displays a task or action item with optional subtitle and action buttons.
+ * Displays a horizontal list item with optional subtitle and action buttons.
  * Features thick borders, bold typography, and optional status indicators.
+ * Perfect for lists like invitations, settings, notifications, and admin tasks.
  * 
  * @example
  * ```tsx
- * // Basic action item
- * <ActionItem 
+ * // Basic list item
+ * <ListItem 
  *   title="Review House Rules"
  *   subtitle="Last updated 2 days ago"
  *   actions={<Button variant="primary" size="small">Edit</Button>}
  * />
  * 
- * // Action item with status
- * <ActionItem 
+ * // List item with status
+ * <ListItem 
  *   title="Complete Monthly Budget"
  *   subtitle="Due in 3 days"
  *   status="urgent"
@@ -24,7 +25,7 @@ import type { ReactNode } from 'react';
  * />
  * ```
  */
-export interface ActionItemProps {
+export interface ListItemProps {
   title: string;
   subtitle?: string;
   actions?: ReactNode;
@@ -35,7 +36,7 @@ export interface ActionItemProps {
   testId?: string;
 }
 
-export const ActionItem = ({
+export const ListItem = ({
   title,
   subtitle,
   actions,
@@ -43,8 +44,8 @@ export const ActionItem = ({
   hover = false,
   onClick,
   className = '',
-  testId = 'action-item'
-}: ActionItemProps) => {
+  testId = 'list-item'
+}: ListItemProps) => {
   const isClickable = onClick || hover;
 
   // Base styles with brutal design

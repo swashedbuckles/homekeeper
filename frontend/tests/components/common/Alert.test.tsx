@@ -13,28 +13,28 @@ describe('Alert', () => {
     const { container } = render(<Alert>Info message</Alert>);
     
     const alertDiv = container.firstChild;
-    expect(alertDiv).toHaveClass('font-mono', 'font-bold', 'uppercase', 'p-6', 'border-brutal-md', 'brutal-shadow-dark', 'bg-info', 'text-white', 'border-white');
+    expect(alertDiv).toHaveClass('font-mono', 'font-bold', 'uppercase', 'p-6', 'border-brutal-md', 'brutal-shadow-dark', 'bg-info', 'text-white', 'border-text-primary');
   });
 
   it('applies correct styles for warning variant', () => {
     const { container } = render(<Alert variant="warning">Warning message</Alert>);
     
     const alertDiv = container.firstChild;
-    expect(alertDiv).toHaveClass('font-mono', 'font-bold', 'uppercase', 'p-6', 'border-brutal-md', 'brutal-shadow-dark', 'bg-warning', 'text-white', 'border-white');
+    expect(alertDiv).toHaveClass('font-mono', 'font-bold', 'uppercase', 'p-6', 'border-brutal-md', 'brutal-shadow-dark', 'bg-warning', 'text-white', 'border-text-primary');
   });
 
   it('applies correct styles for error variant', () => {
     const { container } = render(<Alert variant="error">Error message</Alert>);
     
     const alertDiv = container.firstChild;
-    expect(alertDiv).toHaveClass('font-mono', 'font-bold', 'uppercase', 'p-6', 'border-brutal-md', 'brutal-shadow-dark', 'bg-error', 'text-white', 'border-white');
+    expect(alertDiv).toHaveClass('font-mono', 'font-bold', 'uppercase', 'p-6', 'border-brutal-md', 'brutal-shadow-dark', 'bg-error', 'text-white', 'border-text-primary');
   });
 
   it('applies correct styles for success variant', () => {
     const { container } = render(<Alert variant="success">Success message</Alert>);
     
     const alertDiv = container.firstChild;
-    expect(alertDiv).toHaveClass('font-mono', 'font-bold', 'uppercase', 'p-6', 'border-brutal-md', 'brutal-shadow-dark', 'bg-success', 'text-white', 'border-white');
+    expect(alertDiv).toHaveClass('font-mono', 'font-bold', 'uppercase', 'p-6', 'border-brutal-md', 'brutal-shadow-dark', 'bg-success', 'text-white', 'border-text-primary');
   });
 
   it('renders default icon for each variant', () => {

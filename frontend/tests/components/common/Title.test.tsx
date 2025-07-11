@@ -34,21 +34,21 @@ describe('PageTitle', () => {
     render(<PageTitle variant="page">Page Title</PageTitle>);
     
     const heading = screen.getByRole('heading');
-    expect(heading).toHaveClass('font-mono', 'font-black', 'uppercase', 'text-text-primary', 'text-4xl', 'md:text-6xl');
+    expect(heading).toHaveClass('font-mono', 'font-black', 'uppercase', 'tracking-wide', 'text-text-primary', 'leading-tight', 'text-5xl', 'md:text-7xl', 'lg:text-8xl', 'mb-6');
   });
 
   it('applies correct styles for section variant', () => {
     render(<PageTitle variant="section">Section Title</PageTitle>);
     
     const heading = screen.getByRole('heading');
-    expect(heading).toHaveClass('font-mono', 'font-black', 'uppercase', 'text-text-primary', 'text-2xl', 'md:text-4xl');
+    expect(heading).toHaveClass('font-mono', 'font-black', 'uppercase', 'tracking-wide', 'text-text-primary', 'leading-tight', 'text-3xl', 'md:text-5xl', 'mb-4');
   });
 
   it('applies correct styles for subsection variant', () => {
     render(<PageTitle variant="subsection">Subsection Title</PageTitle>);
     
     const heading = screen.getByRole('heading');
-    expect(heading).toHaveClass('font-mono', 'font-black', 'uppercase', 'text-text-primary', 'text-xl', 'md:text-2xl');
+    expect(heading).toHaveClass('font-mono', 'font-black', 'uppercase', 'tracking-wide', 'text-text-primary', 'leading-tight', 'text-2xl', 'md:text-3xl', 'lg:text-4xl', 'mb-3');
   });
 
   it('renders description when provided', () => {

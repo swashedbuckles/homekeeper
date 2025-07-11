@@ -1,47 +1,39 @@
 import { Button } from '../common/Button';
-import { Card } from '../common/Card';
+import { Card, type CardProps } from '../common/Card';
+import { Text } from '../common/Text';
 import type { ReactNode } from 'react';
 
 /**
  * OptionCard component for presenting user choices with optional action buttons.
  * 
  * Built on top of the base Card component. Perfect for onboarding flows, settings selections,
- * or any scenario where users need to choose between options. Supports both click-to-select
- * and button-action patterns.
+ * or any scenario where users need to choose between options. Delegates all styling to Card
+ * component and focuses on content structure and selection logic.
  * 
  * @example
  * ```tsx
- * // Click-to-select pattern
+ * // Click-to-select pattern with custom styling
  * <OptionCard
  *   title="Create New Household"
  *   description="Start fresh and invite family members"
  *   icon="+"
  *   selected={choice === 'create'}
  *   onClick={() => setChoice('create')}
- * />
- * 
- * // Button-action pattern for onboarding
- * <OptionCard
- *   title="Join Existing Household" 
- *   description="Use an invitation code to join"
- *   icon="🔑"
- *   buttonText="Join with Code"
- *   onButtonClick={() => navigate('/join')}
+ *   shadow="double"
+ *   hover
+ *   hoverEffect="lift"
  * />
  * ```
  */
-export interface OptionCardProps {
+export interface OptionCardProps extends Omit<CardProps, 'children' | 'variant'> {
   title :         string;
   description :   string;
   icon?:          ReactNode | string;
   selected?:      boolean;
   disabled?:      boolean;
-  onClick?:       () => void;
-  variant?:       'primary' | 'secondary' | 'accent';
+  iconVariant?:   'primary' | 'secondary' | 'accent';
   buttonText?:    string;
   onButtonClick?: () => void;
-  className?:     string;
-  testId?:        string;
 }
 
 export const OptionCard = ({
@@ -51,11 +43,10 @@ export const OptionCard = ({
   selected = false,
   disabled = false,
   onClick,
-  variant = 'primary',
+  iconVariant = 'primary',
   buttonText,
   onButtonClick,
-  className = '',
-  testId = 'option-card'
+  ...cardProps
 }: OptionCardProps) => {
   const iconVariants = {
     primary:   'bg-primary',
@@ -83,18 +74,16 @@ export const OptionCard = ({
   return (
     <Card
       variant={cardVariant}
-      shadow="primary"
       hover={cardHover}
       onClick={cardClick}
-      className={className}
-      testId={testId}
+      {...cardProps}
     >
       <div className="flex items-start space-x-6">
         {/* Icon */}
         {icon && (
           <div className={`
             w-16 h-16 
-            ${iconVariants[variant]}
+            ${iconVariants[iconVariant]}
             border-brutal-md border-text-primary 
             flex items-center justify-center 
             text-2xl font-black text-white 
@@ -107,12 +96,12 @@ export const OptionCard = ({
 
         {/* Content */}
         <div className="flex-1">
-          <h3 className="text-2xl font-black uppercase mb-4 text-text-primary leading-tight">
+          <Text variant="body" size="large" weight="black" color="dark" uppercase className="block mb-4 leading-tight">
             {title}
-          </h3>
-          <p className="text-text-secondary font-bold uppercase text-sm leading-relaxed mb-6">
+          </Text>
+          <Text variant="caption" size="small" weight="bold" color="secondary" uppercase className="block leading-relaxed mb-6">
             {description}
-          </p>
+          </Text>
 
           {/* Action Button */}
           {buttonText && onButtonClick && (
@@ -132,9 +121,9 @@ export const OptionCard = ({
               <div className="w-4 h-4 bg-primary border-2 border-text-primary flex items-center justify-center">
                 <span className="text-white text-xs font-black">✓</span>
               </div>
-              <span className="text-primary font-black uppercase text-sm tracking-wide">
+              <Text variant="caption" size="small" weight="black" color="primary" uppercase className="tracking-wide">
                 Selected
-              </span>
+              </Text>
             </div>
           )}
         </div>

@@ -11,19 +11,29 @@ type TitleVariant = 'page' | 'section' | 'subsection';
  * 
  * @example
  * ```tsx
- * // Page title with description
- * <Title variant="page" description="Manage your household efficiently">
+ * // Page title with orange shadow
+ * <Title variant="page" textShadow="orange" description="Manage your household efficiently">
  *   Household Dashboard
  * </Title>
  * 
- * // Section title with text shadow
- * <Title variant="section" textShadow>
+ * // Section title with dark shadow
+ * <Title variant="section" textShadow="dark">
  *   Recent Activity
  * </Title>
  * 
- * // Subsection title with rotation
- * <Title variant="subsection" rotation="slight-left">
+ * // Subsection title with orange-dark double shadow and rotation
+ * <Title variant="subsection" textShadow="orange-dark" rotation="slight-left">
  *   Task Details
+ * </Title>
+ * 
+ * // Title with dark-orange double shadow
+ * <Title variant="page" textShadow="dark-orange">
+ *   Alternative Style
+ * </Title>
+ * 
+ * // Title with no shadow
+ * <Title variant="page" textShadow="none">
+ *   Clean Title
  * </Title>
  * ```
  */
@@ -32,7 +42,7 @@ export interface TitleProps {
   variant?: TitleVariant;
   className?: string;
   description?: string;
-  textShadow?: boolean;
+  textShadow?: 'none' | 'orange' | 'dark' | 'orange-dark' | 'dark-orange';
   rotation?: 'none' | 'left' | 'right' | 'slight-left' | 'slight-right';
   testId?: string;
 }
@@ -48,26 +58,62 @@ const baseStyles = [
 
 const variantStyles = {
   page: [
-    'text-4xl',
-    'md:text-6xl',
+    'text-5xl',
+    'md:text-7xl',
+    'lg:text-8xl',
     'mb-6'
   ],
   section: [
-    'text-2xl',
-    'md:text-4xl',
+    'text-3xl',
+    'md:text-5xl',
     'mb-4'
   ],
   subsection: [
-    'text-xl',
-    'md:text-2xl',
+    'text-2xl',
+    'md:text-3xl',
+    'lg:text-4xl',
     'mb-3'
   ]
 };
 
-const textShadowStyles = {
-  page: 'brutal-text-shadow md:brutal-text-shadow-double',
-  section: 'brutal-text-shadow-small',
-  subsection: 'brutal-text-shadow-tiny'
+// Simple text shadow mapping
+const getTextShadowClass = (
+  variant: TitleVariant,
+  shadowType: 'none' | 'orange' | 'dark' | 'orange-dark' | 'dark-orange'
+) => {
+  if (shadowType === 'none') return '';
+  
+  // Use size-appropriate shadows for each variant
+  const shadowMap = {
+    orange: {
+      page: 'brutal-text-shadow',           // 4px orange
+      section: 'brutal-text-shadow-small',  // 2px orange  
+      subsection: 'brutal-text-shadow-tiny' // 1px orange
+    },
+    dark: {
+      page: 'brutal-text-shadow-simple',        // 2px dark
+      section: 'brutal-text-shadow-simple',     // 2px dark
+      subsection: 'brutal-text-shadow-simple'  // 2px dark
+    },
+    'orange-dark': {
+      page: 'brutal-text-shadow-double',        // 4px orange + 8px dark
+      section: 'brutal-text-shadow-double',     // 4px orange + 8px dark  
+      subsection: 'brutal-text-shadow-double'  // 4px orange + 8px dark
+    },
+    'dark-orange': {
+      page: 'brutal-text-shadow-double-reverse',        // 4px dark + 8px orange
+      section: 'brutal-text-shadow-double-reverse',     // 4px dark + 8px orange
+      subsection: 'brutal-text-shadow-double-reverse'  // 4px dark + 8px orange
+    }
+  };
+  
+  // Error handling for invalid shadowType
+  if (!shadowMap[shadowType]) {
+    console.warn(`Invalid shadowType: "${shadowType}". Using default orange shadow.`);
+    return shadowMap.orange[variant];
+  }
+  
+  return shadowMap[shadowType][variant];
 };
 
 const rotationStyles = {
@@ -89,7 +135,7 @@ export const Title = ({
   variant = 'page', 
   className = '',
   description,
-  textShadow = false,
+  textShadow = 'none',
   rotation = 'none',
   testId = 'title'
 }: TitleProps) => {
@@ -98,7 +144,7 @@ export const Title = ({
   const titleStyles = [
     ...baseStyles,
     ...variantStyles[variant],
-    textShadow ? textShadowStyles[variant] : '',
+    getTextShadowClass(variant, textShadow),
     rotationStyles[rotation],
     className
   ].filter(Boolean).join(' ');

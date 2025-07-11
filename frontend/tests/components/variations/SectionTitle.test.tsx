@@ -15,7 +15,7 @@ describe('SectionTitle', () => {
     render(<SectionTitle>Section Title</SectionTitle>);
     
     const heading = screen.getByRole('heading');
-    expect(heading).toHaveClass('font-mono', 'font-black', 'uppercase', 'text-text-primary', 'text-2xl', 'md:text-4xl');
+    expect(heading).toHaveClass('font-mono', 'font-black', 'uppercase', 'tracking-wide', 'text-text-primary', 'leading-tight', 'text-3xl', 'md:text-5xl', 'mb-4');
   });
 
   it('accepts PageTitle props except variant', () => {

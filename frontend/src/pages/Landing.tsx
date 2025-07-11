@@ -3,6 +3,8 @@ import { Smartphone, LockKeyhole, Rocket, BookText, AlarmClock, Users } from 'lu
 import { Button } from '../components/common/Button';
 import { Card } from '../components/common/Card';
 import { DarkBgHeader } from '../components/common/Logo';
+import { Text } from '../components/common/Text';
+import { TextLink } from '../components/common/TextLink';
 import { Title } from '../components/common/Title';
 import { SectionContainer } from '../components/containers/SectionContainer';
 import { StatCard } from '../components/variations/StatCard';
@@ -14,17 +16,17 @@ export const LandingPage = () => {
         <div className="relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div>
-              <Title variant="page" textShadow className="uppercase text-6xl md:text-8xl lg:text-9xl">
+              <Title variant="page" textShadow="orange" className="uppercase text-6xl md:text-8xl lg:text-9xl">
                 Organize<br />
                 Your<br />
                 Home
               </Title>
 
-              <p className="text-2xl md:text-3xl font-bold text-text-primary uppercase tracking-wide mb-12 leading-relaxed">
+              <Text variant="body" size="large" weight="bold" color="dark" uppercase className="block mb-12 leading-relaxed tracking-wide">
                 Keep track of manuals,<br />
                 schedules, and maintenance<br />
                 for everything in your home.
-              </p>
+              </Text>
 
               <div className="flex flex-col sm:flex-row gap-6">
                 <Button size="large" variant="primary">Get Started</Button>
@@ -119,16 +121,16 @@ export const LandingPage = () => {
           <DarkBgHeader />
 
           <div className="flex gap-8">
-            <a href="#" className="text-white font-bold uppercase hover:text-primary transition-colors">Privacy</a>
-            <a href="#" className="text-white font-bold uppercase hover:text-primary transition-colors">Terms</a>
-            <a href="#" className="text-white font-bold uppercase hover:text-primary transition-colors">Support</a>
+            <TextLink href="#" variant="subtle" className="text-white hover:text-primary">Privacy</TextLink>
+            <TextLink href="#" variant="subtle" className="text-white hover:text-primary">Terms</TextLink>
+            <TextLink href="#" variant="subtle" className="text-white hover:text-primary">Support</TextLink>
           </div>
         </div>
 
         <div className="border-t border-white mt-8 pt-8 text-center">
-          <p className="text-white font-bold uppercase text-sm">
+          <Text variant="caption" size="small" weight="bold" color="white" uppercase>
             © 2025 HomeKeeper. All rights reserved.
-          </p>
+          </Text>
         </div>
       </SectionContainer>
     </>
