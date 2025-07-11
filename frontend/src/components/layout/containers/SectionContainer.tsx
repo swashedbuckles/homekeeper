@@ -1,4 +1,4 @@
-import { type ContainerSpacingSize, getContainerSpacing } from '../../lib/design-system/sizes';
+import { type ContainerSpacingSize, getContainerSpacing } from '../../../lib/design-system/sizes';
 import { ContentContainer } from './ContentContainer';
 import type { ReactNode } from 'react';
 

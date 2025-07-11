@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router';
 import { Z_INDEX_CLASSES } from '../../lib/constants/zIndex';
 import { Button } from '../common/Button';
 import { LightBgHeader } from '../common/Logo';
-import { MobileMenu } from '../containers/MobileMenu';
+import { MobileMenu } from '../layout/containers/MobileMenu';
 import { MobileMenuToggle } from './MobileMenuToggle';
 /**
  * AuthButtons component that renders authentication buttons for unauthenticated users

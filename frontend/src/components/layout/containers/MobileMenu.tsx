@@ -1,4 +1,4 @@
-import { Z_INDEX_CLASSES } from '../../lib/constants/zIndex';
+import { Z_INDEX_CLASSES } from '../../../lib/constants/zIndex';
 
 export interface MobileMenuProps {
   isOpen: boolean;

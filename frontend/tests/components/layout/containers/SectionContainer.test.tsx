@@ -1,9 +1,9 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import { SectionContainer } from '../../../src/components/containers/SectionContainer';
+import { SectionContainer } from '../../../../src/components/layout/containers/SectionContainer';
 
 // Mock ContentContainer since SectionContainer depends on it
-vi.mock('../../../src/components/containers/ContentContainer', () => ({
+vi.mock('../../../../src/components/layout/containers/ContentContainer', () => ({
   ContentContainer: ({ children, className, maxWidth }: any) => (
     <div data-testid="content-container" className={className} data-max-width={maxWidth}>
       {children}

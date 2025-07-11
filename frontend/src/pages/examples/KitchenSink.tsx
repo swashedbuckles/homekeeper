@@ -1,37 +1,37 @@
 import { Home, Key } from 'lucide-react';
 import { useState } from 'react';
-import { BackgroundCircles } from '../components/backgrounds/BackgroundCircles';
-import { BackgroundGrid } from '../components/backgrounds/BackgroundGrid';
-import { BackgroundLines } from '../components/backgrounds/BackgroundLines';
-import { BackgroundRectangles } from '../components/backgrounds/BackgroundRectangles';
+import { BackgroundCircles } from '../../components/backgrounds/BackgroundCircles';
+import { BackgroundGrid } from '../../components/backgrounds/BackgroundGrid';
+import { BackgroundLines } from '../../components/backgrounds/BackgroundLines';
+import { BackgroundRectangles } from '../../components/backgrounds/BackgroundRectangles';
 
 // Common Components
-import { BackgroundSquares } from '../components/backgrounds/BackgroundSquares';
-import { Alert } from '../components/common/Alert';
-import { BackButton } from '../components/common/BackButton';
-import { Badge } from '../components/common/Badge';
-import { Button } from '../components/common/Button';
-import { Card } from '../components/common/Card';
-import { Code } from '../components/common/Code';
-import { ListItem } from '../components/common/ListItem';
-import { Stats } from '../components/common/Stats';
-import { Text } from '../components/common/Text';
-import { TextLink } from '../components/common/TextLink';
-import { Title } from '../components/common/Title';
+import { BackgroundSquares } from '../../components/backgrounds/BackgroundSquares';
+import { Alert } from '../../components/common/Alert';
+import { BackButton } from '../../components/common/BackButton';
+import { Badge } from '../../components/common/Badge';
+import { Button } from '../../components/common/Button';
+import { Card } from '../../components/common/Card';
+import { Code } from '../../components/common/Code';
+import { ListItem } from '../../components/common/ListItem';
+import { Stats } from '../../components/common/Stats';
+import { Text } from '../../components/common/Text';
+import { TextLink } from '../../components/common/TextLink';
+import { Title } from '../../components/common/Title';
 
 // Form Components
-import { ContentContainer } from '../components/containers/ContentContainer';
-import { PasswordStrengthIndicator } from '../components/form/PasswordStrengthIndicator';
-import { TextArea } from '../components/form/TextArea';
-import { TextInput } from '../components/form/TextInput';
+import { PasswordStrengthIndicator } from '../../components/form/PasswordStrengthIndicator';
+import { TextArea } from '../../components/form/TextArea';
+import { TextInput } from '../../components/form/TextInput';
+import { ContentContainer } from '../../components/layout/containers/ContentContainer';
 
 // Variation Components
-import { CodeInput } from '../components/variations/CodeInput';
-import { OptionCard } from '../components/variations/OptionCard';
-import { SectionTitle } from '../components/variations/SectionTitle';
-import { StatCard } from '../components/variations/StatCard';
-import { SubSectionTitle } from '../components/variations/SubSectionTitle';
-import { TaskCard } from '../components/variations/TaskCard';
+import { CodeInput } from '../../components/variations/CodeInput';
+import { OptionCard } from '../../components/variations/OptionCard';
+import { SectionTitle } from '../../components/variations/SectionTitle';
+import { StatCard } from '../../components/variations/StatCard';
+import { SubSectionTitle } from '../../components/variations/SubSectionTitle';
+import { TaskCard } from '../../components/variations/TaskCard';
 
 // Container Components
 

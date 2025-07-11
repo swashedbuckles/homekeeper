@@ -1,5 +1,5 @@
-import type { ReactNode } from 'react';
 import { type StandardSize, getSizeToken } from '../../lib/design-system/sizes';
+import type { ReactNode } from 'react';
 
 type CodeVariant = 'inline' | 'block';
 type CodeSize = StandardSize;

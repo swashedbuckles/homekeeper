@@ -6,7 +6,7 @@ import { DarkBgHeader } from '../components/common/Logo';
 import { Text } from '../components/common/Text';
 import { TextLink } from '../components/common/TextLink';
 import { Title } from '../components/common/Title';
-import { SectionContainer } from '../components/containers/SectionContainer';
+import { SectionContainer } from '../components/layout/containers/SectionContainer';
 import { StatCard } from '../components/variations/StatCard';
 
 export const LandingPage = () => {

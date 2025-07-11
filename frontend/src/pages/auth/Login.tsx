@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router';
-import { PageContainer } from '../../components/containers/PageContainer';
 import { LoginForm } from '../../components/fragments/LoginForm';
+import { PageContainer } from '../../components/layout/containers/PageContainer';
 
 export function Login() {
   const navigate = useNavigate();

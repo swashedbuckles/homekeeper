@@ -1,4 +1,4 @@
-import { type WideContainerSize, getContainerWidth } from '../../lib/design-system/sizes';
+import { type WideContainerSize, getContainerWidth } from '../../../lib/design-system/sizes';
 import type {ReactNode} from 'react';
 
 export type ContentMaxWidth = WideContainerSize;

@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router';
-import { PageContainer } from '../../components/containers/PageContainer';
 import { RegistrationForm } from '../../components/fragments/RegistrationForm';
+import { PageContainer } from '../../components/layout/containers/PageContainer';
 
 export function Register() {
   const navigate = useNavigate();

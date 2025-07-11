@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { Z_INDEX_CLASSES } from '../../lib/constants/zIndex';
 import { DarkBgHeader } from '../common/Logo';
-import { MobileMenu } from '../containers/MobileMenu';
+import { MobileMenu } from '../layout/containers/MobileMenu';
 import { AppNavigation } from './AppNavigation';
 import { HeaderGradient } from './HeaderGradient';
 import { MobileMenuToggle } from './MobileMenuToggle';

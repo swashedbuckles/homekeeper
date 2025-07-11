@@ -8,7 +8,7 @@ import { Card } from '../components/common/Card';
 import { Code } from '../components/common/Code';
 import { Text } from '../components/common/Text';
 import { Title } from '../components/common/Title';
-import { PageContainer } from '../components/containers/PageContainer';
+import { PageContainer } from '../components/layout/containers/PageContainer';
 
 import { StatCard } from '../components/variations/StatCard';
 import { useAuth } from '../hooks/useAuth';

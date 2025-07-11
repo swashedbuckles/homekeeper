@@ -1,5 +1,5 @@
 
-import { type ContainerWidthSize, getContainerWidth } from '../../lib/design-system/sizes';
+import { type ContainerWidthSize, getContainerWidth } from '../../../lib/design-system/sizes';
 import type {ReactNode} from 'react';
 
 export type MaxPageWidth = ContainerWidthSize;
