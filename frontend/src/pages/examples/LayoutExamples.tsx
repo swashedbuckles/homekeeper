@@ -3,8 +3,8 @@ import { Button } from '../../components/common/Button';
 import { Card } from '../../components/common/Card';
 import { Text } from '../../components/common/Text';
 import { Title } from '../../components/common/Title';
-import { ContentContainer } from '../../components/layout/containers/ContentContainer';
 import { SectionContainer } from '../../components/layout/containers/SectionContainer';
+import { WideContainer } from '../../components/layout/containers/WideContainer';
 import { Flex, Stack, Inline } from '../../components/layout/Flex';
 import { Grid } from '../../components/layout/Grid';
 import { TwoColumnLayout } from '../../components/layout/TwoColumnLayout';
@@ -26,7 +26,7 @@ export const LayoutExamples = () => {
     <div className="min-h-screen bg-background">
       {/* Hero Section with Layout Overview */}
       <SectionContainer spacing="xl">
-        <ContentContainer>
+        <WideContainer>
           <Stack spacing="xl">
             <Flex spacing="lg" className="flex-col items-center">
               <Title variant="page">Layout Component Examples</Title>
@@ -48,12 +48,12 @@ export const LayoutExamples = () => {
               </Stack>
             </Card>
           </Stack>
-        </ContentContainer>
+        </WideContainer>
       </SectionContainer>
 
       {/* Grid Examples Section */}
       <SectionContainer spacing="lg">
-        <ContentContainer>
+        <WideContainer>
           <Stack spacing="xl">
             <Title variant="section">Grid System Examples</Title>
             
@@ -118,12 +118,12 @@ export const LayoutExamples = () => {
               </Stack>
             </Card>
           </Stack>
-        </ContentContainer>
+        </WideContainer>
       </SectionContainer>
 
       {/* Flex Examples Section */}
       <SectionContainer spacing="lg">
-        <ContentContainer>
+        <WideContainer>
           <Stack spacing="xl">
             <Title variant="section">Flex Utility Examples</Title>
 
@@ -228,12 +228,12 @@ export const LayoutExamples = () => {
               </Stack>
             </Card>
           </Stack>
-        </ContentContainer>
+        </WideContainer>
       </SectionContainer>
 
       {/* Stack and Inline Examples */}
       <SectionContainer spacing="lg">
-        <ContentContainer>
+        <WideContainer>
           <Stack spacing="xl">
             <Title variant="section">Stack & Inline Examples</Title>
 
@@ -286,12 +286,12 @@ export const LayoutExamples = () => {
               </Card>
             </Grid>
           </Stack>
-        </ContentContainer>
+        </WideContainer>
       </SectionContainer>
 
       {/* Two-Column Layout Example */}
       <SectionContainer spacing="lg">
-        <ContentContainer>
+        <WideContainer>
           <Stack spacing="xl">
             <Title variant="section">Two-Column Layout Example</Title>
             
@@ -341,12 +341,12 @@ export const LayoutExamples = () => {
               </Stack>
             </Card>
           </Stack>
-        </ContentContainer>
+        </WideContainer>
       </SectionContainer>
 
       {/* Real-World Combination Example */}
       <SectionContainer spacing="lg">
-        <ContentContainer>
+        <WideContainer>
           <Stack spacing="xl">
             <Title variant="section">Combined Layout Patterns</Title>
             
@@ -433,18 +433,18 @@ export const LayoutExamples = () => {
               </Stack>
             </Card>
           </Stack>
-        </ContentContainer>
+        </WideContainer>
       </SectionContainer>
 
       {/* Footer */}
       <SectionContainer spacing="lg">
-        <ContentContainer>
+        <WideContainer>
           <Flex spacing="md" className="justify-center border-t-4 border-text-primary pt-8">
             <Text color="secondary">
               Layout Examples • Demonstrating TwoColumnLayout, Grid, Flex, Stack & Inline components
             </Text>
           </Flex>
-        </ContentContainer>
+        </WideContainer>
       </SectionContainer>
     </div>
   );

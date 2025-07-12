@@ -2,23 +2,23 @@
 import { type ContainerWidthSize, getContainerWidth } from '../../../lib/design-system/sizes';
 import type {ReactNode} from 'react';
 
-export type MaxPageWidth = ContainerWidthSize;
+export type MaxNarrowWidth = ContainerWidthSize;
 
 /**
- * Page container for forms and narrow-content
+ * Narrow container for forms, single-column content, and focused layouts
  * 
  * @param children nested content
  * @param className additional classes to apply
  * @param maxWidth container max width, defaults to lg
  */
-export const PageContainer = ({ 
+export const NarrowContainer = ({ 
   children, 
   className = '',
   maxWidth = 'lg'
 }: { 
   children: ReactNode;
   className?: string;
-  maxWidth?: MaxPageWidth
+  maxWidth?: MaxNarrowWidth
 }) => {
   const maxWidthClass = getContainerWidth(maxWidth);
   

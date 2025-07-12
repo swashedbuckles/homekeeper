@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router';
 import { RegistrationForm } from '../../components/fragments/RegistrationForm';
-import { PageContainer } from '../../components/layout/containers/PageContainer';
+import { NarrowContainer } from '../../components/layout/containers/NarrowContainer';
 
 export function Register() {
   const navigate = useNavigate();
@@ -10,8 +10,8 @@ export function Register() {
   };
 
   return (
-    <PageContainer maxWidth="md">
+    <NarrowContainer maxWidth="md">
       <RegistrationForm onSuccess={handleSubmit} />
-    </PageContainer>
+    </NarrowContainer>
   );
 }

@@ -7,6 +7,8 @@ import { Text } from '../components/common/Text';
 import { TextLink } from '../components/common/TextLink';
 import { Title } from '../components/common/Title';
 import { SectionContainer } from '../components/layout/containers/SectionContainer';
+import { Flex, Inline } from '../components/layout/Flex';
+import { Grid } from '../components/layout/Grid';
 import { StatCard } from '../components/variations/StatCard';
 
 export const LandingPage = () => {
@@ -14,7 +16,7 @@ export const LandingPage = () => {
     <>
       <SectionContainer className="relative min-h-screen flex items-start">
         <div className="relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          <Grid columns={2} spacing="xl" className="items-center">
             <div>
               <Title variant="page" textShadow="orange" className="uppercase text-6xl md:text-8xl lg:text-9xl">
                 Organize<br />
@@ -28,15 +30,15 @@ export const LandingPage = () => {
                 for everything in your home.
               </Text>
 
-              <div className="flex flex-col sm:flex-row gap-6">
+              <Inline spacing="lg" className="flex-col sm:flex-row">
                 <Button size="lg" variant="primary">Get Started</Button>
                 <Button size="lg" variant="secondary">Learn More</Button>
-              </div>
+              </Inline>
             </div>
 
             <div className="relative">
               <Card variant="default" shadow="dark" padding="lg">
-                <div className="flex items-center gap-6 mb-8">
+                <Inline spacing="lg" className="items-center mb-8">
                   <div className="w-16 h-16 bg-primary border-4 border-text-primary flex items-center justify-center text-2xl font-black text-white brutal-rotate-slight-left">
                     <BookText size={32}/>
                   </div>
@@ -44,9 +46,9 @@ export const LandingPage = () => {
                     <h3 className="text-2xl font-black uppercase text-text-primary">Manual Storage</h3>
                     <p className="text-text-secondary font-bold uppercase text-sm">Never lose another manual</p>
                   </div>
-                </div>
+                </Inline>
 
-                <div className="flex items-center gap-6 mb-8">
+                <Inline spacing="lg" className="items-center mb-8">
                   <div className="w-16 h-16 bg-secondary border-4 border-text-primary flex items-center justify-center text-2xl font-black text-white brutal-rotate-slight-right">
                     <AlarmClock size={32}/>
                   </div>
@@ -54,9 +56,9 @@ export const LandingPage = () => {
                     <h3 className="text-2xl font-black uppercase text-text-primary">Smart Schedules</h3>
                     <p className="text-text-secondary font-bold uppercase text-sm">Automated maintenance reminders</p>
                   </div>
-                </div>
+                </Inline>
 
-                <div className="flex items-center gap-6">
+                <Inline spacing="lg" className="items-center">
                   <div className="w-16 h-16 bg-accent border-4 border-text-primary flex items-center justify-center text-2xl font-black text-white brutal-rotate-slight-left">
                     <Users size={32}/>
                   </div>
@@ -64,18 +66,18 @@ export const LandingPage = () => {
                     <h3 className="text-2xl font-black uppercase text-text-primary">Family Sharing</h3>
                     <p className="text-text-secondary font-bold uppercase text-sm">Collaborate with household members</p>
                   </div>
-                </div>
+                </Inline>
               </Card>
 
               <StatCard size="sm" className="absolute -top-16 -right-8 hidden lg:block" label="Manuals Stored" value={47} variant="primary" rotation="slight-right" />
               <StatCard size="sm" className="absolute -bottom-24 -left-16 hidden lg:block" label="Tasks Completed" value={12} variant="accent" rotation="left" />
             </div>
-          </div>
+          </Grid>
         </div>
       </SectionContainer>
 
       <SectionContainer className="bg-text-primary border-t-8 border-primary" spacing="lg" hero>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <Grid columns={3} spacing="lg">
           <div className="text-center">
             <div className="w-20 h-20 bg-primary border-6 border-white flex items-center justify-center text-3xl font-black text-white mx-auto mb-6">
               <Smartphone size="42" />
@@ -99,7 +101,7 @@ export const LandingPage = () => {
             <h3 className="text-2xl font-black text-white uppercase mb-4">Easy Setup</h3>
             <p className="text-white font-bold uppercase text-sm">Get organized in minutes, not hours.</p>
           </div>
-        </div>
+        </Grid>
       </SectionContainer>
 
       <SectionContainer className="bg-primary" spacing="lg" hero>
@@ -117,15 +119,15 @@ export const LandingPage = () => {
       </SectionContainer>
 
       <SectionContainer className="bg-text-primary border-t-8 border-primary" hero>
-        <div className="flex flex-col md:flex-row justify-between items-center">
+        <Flex spacing="lg" className="flex-col md:flex-row justify-between items-center">
           <DarkBgHeader />
 
-          <div className="flex gap-8">
+          <Inline spacing="lg">
             <TextLink href="#" variant="subtle" className="text-white hover:text-primary">Privacy</TextLink>
             <TextLink href="#" variant="subtle" className="text-white hover:text-primary">Terms</TextLink>
             <TextLink href="#" variant="subtle" className="text-white hover:text-primary">Support</TextLink>
-          </div>
-        </div>
+          </Inline>
+        </Flex>
 
         <div className="border-t border-white mt-8 pt-8 text-center">
           <Text variant="caption" size="sm" weight="bold" color="white" uppercase>

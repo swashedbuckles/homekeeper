@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router';
 import { LoginForm } from '../../components/fragments/LoginForm';
-import { PageContainer } from '../../components/layout/containers/PageContainer';
+import { NarrowContainer } from '../../components/layout/containers/NarrowContainer';
 
 export function Login() {
   const navigate = useNavigate();
@@ -9,8 +9,8 @@ export function Login() {
   };
 
   return (
-    <PageContainer maxWidth="md">
+    <NarrowContainer maxWidth="md">
       <LoginForm onSuccess={handleClick} />
-    </PageContainer>
+    </NarrowContainer>
   );
 }

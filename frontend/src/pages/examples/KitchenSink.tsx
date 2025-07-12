@@ -23,7 +23,9 @@ import { Title } from '../../components/common/Title';
 import { PasswordStrengthIndicator } from '../../components/form/PasswordStrengthIndicator';
 import { TextArea } from '../../components/form/TextArea';
 import { TextInput } from '../../components/form/TextInput';
-import { ContentContainer } from '../../components/layout/containers/ContentContainer';
+import { WideContainer } from '../../components/layout/containers/WideContainer';
+import { Inline } from '../../components/layout/Flex';
+import { Grid } from '../../components/layout/Grid';
 
 // Variation Components
 import { CodeInput } from '../../components/variations/CodeInput';
@@ -54,7 +56,7 @@ export function KitchenSink() {
       
       {/* Content layer */}
       <div className="relative z-10">
-        <ContentContainer className="py-10">
+        <WideContainer className="py-10">
         <Title variant="page" textShadow="orange" className="mb-12">
           Component Kitchen Sink
         </Title>
@@ -64,7 +66,7 @@ export function KitchenSink() {
         <SectionTitle className="mb-8">Buttons</SectionTitle>
         <Card variant="default" shadow="triple" className="p-8 mb-12">
           <SubSectionTitle className="mb-6">Button Variants</SubSectionTitle>
-          <div className="grid grid-cols-2 md:grid-cols-7 gap-4 mb-8">
+          <Grid columns={5} spacing="md" className="mb-8">
             <Button variant="primary">Primary</Button>
             <Button variant="secondary">Secondary</Button>
             <Button variant="tertiary">Tertiary</Button>
@@ -72,36 +74,36 @@ export function KitchenSink() {
             <Button variant="text">Text</Button>
             <Button variant="danger">Danger</Button>
             <Button variant="accent">Accent</Button>
-          </div>
+          </Grid>
 
           <SubSectionTitle className="mb-6">Button Sizes</SubSectionTitle>
-          <div className="flex flex-wrap gap-4 mb-8">
+          <Inline spacing="md" className="flex-wrap mb-8">
             <Button variant="primary" size="sm">Small</Button>
             <Button variant="primary" size="md">Default</Button>
             <Button variant="primary" size="lg">Large</Button>
-          </div>
+          </Inline>
 
           <SubSectionTitle className="mb-6">Button States</SubSectionTitle>
-          <div className="flex flex-wrap gap-4 mb-8">
+          <Inline spacing="md" className="flex-wrap mb-8">
             <Button variant="primary">Normal</Button>
             <Button variant="primary" disabled>Disabled</Button>
             <Button variant="primary" loading>Loading</Button>
             <Button variant="primary" full>Full Width</Button>
-          </div>
+          </Inline>
 
           <SubSectionTitle className="mb-6">Back Button</SubSectionTitle>
-          <div className="flex gap-4">
+          <Inline spacing="md">
             <BackButton />
             <BackButton label="Custom Label" size="small" />
             <BackButton variant="text" label="Text Style" />
-          </div>
+          </Inline>
         </Card>
 
         {/* Cards Section */}
         <SectionTitle className="mb-8">Cards</SectionTitle>
         <Card variant="default" shadow="triple" className="p-8 mb-8">
           <SubSectionTitle className="mb-6">Card Variants</SubSectionTitle>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+          <Grid columns={3} spacing="lg" className="mb-8">
             <Card variant="default" className="p-4">
               <p className="font-mono">Default Card</p>
             </Card>
@@ -120,10 +122,10 @@ export function KitchenSink() {
             <Card variant="danger" className="p-4">
               <p className="font-mono text-white">Danger Card</p>
             </Card>
-          </div>
+          </Grid>
 
           <SubSectionTitle className="mb-6">Card Shadows & Rotations</SubSectionTitle>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <Grid columns={4} spacing="lg" className="mb-8">
             <Card variant="default" shadow="primary" rotation="slight-left" className="p-4">
               <p className="font-mono">Primary Shadow + Rotation</p>
             </Card>
@@ -136,10 +138,10 @@ export function KitchenSink() {
             <Card variant="default" shadow="none" className="p-4">
               <p className="font-mono">No Shadow</p>
             </Card>
-          </div>
+          </Grid>
 
           <SubSectionTitle className="mb-6">Card Hover Effects</SubSectionTitle>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <Grid columns={4} spacing="lg" className="mb-8">
             <Card variant="default" hover hoverEffect="lift" className="p-4">
               <p className="font-mono">Hover: Lift (Default)</p>
             </Card>
@@ -152,10 +154,10 @@ export function KitchenSink() {
             <Card variant="accent" hover hoverEffect="press-small" className="p-4">
               <p className="font-mono text-white">Hover: Press Small</p>
             </Card>
-          </div>
+          </Grid>
 
           <SubSectionTitle className="mb-6">Custom Borders & Shadows</SubSectionTitle>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <Grid columns={3} spacing="lg">
             <Card variant="primary" border="white" shadow="double-white" className="p-4">
               <p className="font-mono text-white">Primary + White Border + Double White Shadow</p>
             </Card>
@@ -174,7 +176,7 @@ export function KitchenSink() {
             <Card variant="dark" border="accent" shadow="triple" className="p-4">
               <p className="font-mono text-white">Dark + Accent Border + Triple Shadow</p>
             </Card>
-          </div>
+          </Grid>
         </Card>
 
         {/* Typography Section */}
@@ -264,7 +266,7 @@ export function KitchenSink() {
 
             <div>
               <SubSectionTitle className="mb-4">Stats Components</SubSectionTitle>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <Grid columns={3} spacing="lg">
                 <Stats 
                   value={47} 
                   label="Total Manuals" 
@@ -286,7 +288,7 @@ export function KitchenSink() {
                   size="sm" 
                   color="error"
                 />
-              </div>
+              </Grid>
             </div>
 
             <div>
@@ -294,30 +296,30 @@ export function KitchenSink() {
               <div className="space-y-4">
                 <div>
                   <Text variant="label" weight="bold" className="block mb-2">Link Variants:</Text>
-                  <div className="flex flex-wrap gap-4">
+                  <Inline spacing="md" className="flex-wrap">
                     <TextLink to="/" variant="primary">Primary Link</TextLink>
                     <TextLink to="/" variant="secondary">Secondary Link</TextLink>
                     <TextLink to="/" variant="subtle">Subtle Link</TextLink>
                     <TextLink to="/" variant="danger">Danger Link</TextLink>
-                  </div>
+                  </Inline>
                 </div>
 
                 <div>
                   <Text variant="label" weight="bold" className="block mb-2">Internal vs External Links:</Text>
-                  <div className="flex flex-wrap gap-4">
+                  <Inline spacing="md" className="flex-wrap">
                     <TextLink to="/" variant="primary">Internal Route (React Router)</TextLink>
                     <TextLink href="https://example.com" target="_blank" variant="secondary">External URL</TextLink>
                     <TextLink onClick={() => alert('Clicked!')} variant="subtle">Click Handler</TextLink>
-                  </div>
+                  </Inline>
                 </div>
 
                 <div>
                   <Text variant="label" weight="bold" className="block mb-2">Link Sizes:</Text>
-                  <div className="flex flex-wrap gap-4">
+                  <Inline spacing="md" className="flex-wrap">
                     <TextLink to="/" variant="primary" size="sm">Small Link</TextLink>
                     <TextLink to="/" variant="primary" size="md">Medium Link</TextLink>
                     <TextLink to="/" variant="primary" size="lg">Large Link</TextLink>
-                  </div>
+                  </Inline>
                 </div>
               </div>
             </div>
@@ -431,7 +433,7 @@ Last Service: 2024-06-15
         {/* Form Components Section */}
         <SectionTitle className="mb-8">Form Components</SectionTitle>
         <Card variant="default" shadow="triple" className="p-8 mb-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <Grid columns={2} spacing="lg">
             <div>
               <SubSectionTitle className="mb-6">Text Input</SubSectionTitle>
               <TextInput 
@@ -500,7 +502,7 @@ Last Service: 2024-06-15
               />
               <PasswordStrengthIndicator password={password} />
             </div>
-          </div>
+          </Grid>
         </Card>
 
         {/* Alert Section */}
@@ -528,7 +530,7 @@ Last Service: 2024-06-15
         {/* Option Cards */}
         <Card variant="default" shadow="triple" className="p-8 mb-8">
           <SubSectionTitle className="mb-6">Option Cards</SubSectionTitle>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <Grid columns={2} spacing="lg" className="mb-8">
             <OptionCard
               title="Create New Household"
               description="Start fresh and invite family members"
@@ -543,10 +545,10 @@ Last Service: 2024-06-15
               buttonText="Join with Code"
               onButtonClick={() => alert('Join clicked')}
             />
-          </div>
+          </Grid>
 
           <SubSectionTitle className="mb-6">Stat Cards</SubSectionTitle>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <Grid columns={3} spacing="lg" className="mb-8">
             <StatCard
               label="Active Tasks"
               value="12"
@@ -564,10 +566,10 @@ Last Service: 2024-06-15
               value="3"
               variant="secondary"
             />
-          </div>
+          </Grid>
 
           <SubSectionTitle className="mb-6">Task Cards</SubSectionTitle>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Grid columns={2} spacing="lg">
             <TaskCard
               title="HVAC Filter Change"
               subtitle="Central Air System • 3rd Floor"
@@ -611,7 +613,7 @@ Last Service: 2024-06-15
                 { label: 'Schedule Follow-up', onClick: () => alert('Schedule follow-up'), variant: 'outline' }
               ]}
             />
-          </div>
+          </Grid>
         </Card>
 
         {/* List Items Section */}
@@ -654,7 +656,7 @@ Last Service: 2024-06-15
           <Title variant="subsection" className="mb-4">
             Individual Background Patterns
           </Title>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <Grid columns={2} spacing="lg" className="mb-8">
             <div className="relative h-64 bg-background border-4 border-text-primary">
               <BackgroundCircles />
               <div className="absolute inset-0 flex items-center justify-center">
@@ -690,7 +692,7 @@ Last Service: 2024-06-15
                 </Card>
               </div>
             </div>
-          </div>
+          </Grid>
 
           <Title variant="subsection" className="mb-4">
             Layered Background Patterns
@@ -755,7 +757,7 @@ Last Service: 2024-06-15
             design verification, testing, and component development.
           </p>
         </Card>
-        </ContentContainer>
+        </WideContainer>
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 import { type ContainerSpacingSize, getContainerSpacing } from '../../../lib/design-system/sizes';
-import { ContentContainer } from './ContentContainer';
+import { WideContainer } from './WideContainer';
 import type { ReactNode } from 'react';
 
 export type ContainerSpacing = ContainerSpacingSize;
@@ -25,8 +25,8 @@ export const SectionContainer = ({
   const spacingClass = getContainerSpacing(spacing);
 
   return (
-    <ContentContainer className={`${spacingClass} ${className}`} maxWidth={hero ? 'none' : '7xl'}>
+    <WideContainer className={`${spacingClass} ${className}`} maxWidth={hero ? 'none' : '7xl'}>
       {children}
-    </ContentContainer>
+    </WideContainer>
   );
 };

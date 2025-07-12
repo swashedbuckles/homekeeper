@@ -16,13 +16,13 @@
 export type StandardSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 
 /**
- * Container width sizes (for PageContainer)
+ * Container width sizes (for NarrowContainer)
  * Covers mobile-first to medium layouts with seamless progression
  */
 export type ContainerWidthSize = 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl';
 
 /**
- * Wide container sizes (for ContentContainer)
+ * Wide container sizes (for WideContainer)
  * Covers large layouts to full width
  */
 export type WideContainerSize = '4xl' | '5xl' | '6xl' | '7xl' | 'none';
@@ -104,7 +104,7 @@ export const SIZE_TOKENS = {
  * Provides seamless progression from mobile to desktop layouts
  */
 export const CONTAINER_WIDTH_TOKENS = {
-  // PageContainer range: Mobile-first → Medium layouts
+  // NarrowContainer range: Mobile-first → Medium layouts
   sm: 'max-w-sm',     // 24rem / 384px
   md: 'max-w-md',     // 28rem / 448px  
   lg: 'max-w-lg',     // 32rem / 512px
@@ -112,7 +112,7 @@ export const CONTAINER_WIDTH_TOKENS = {
   '2xl': 'max-w-2xl', // 42rem / 672px
   '3xl': 'max-w-3xl', // 48rem / 768px
   
-  // ContentContainer range: Large layouts → Full width
+  // WideContainer range: Large layouts → Full width
   '4xl': 'max-w-4xl', // 56rem / 896px
   '5xl': 'max-w-5xl', // 64rem / 1024px
   '6xl': 'max-w-6xl', // 72rem / 1152px
@@ -154,7 +154,7 @@ export function getSizeToken(
 }
 
 /**
- * Get container width class for PageContainer or ContentContainer
+ * Get container width class for NarrowContainer or WideContainer
  * 
  * @param size - The container width size
  * @returns The corresponding max-width CSS class
@@ -214,19 +214,19 @@ export const SIZE_ORDER: StandardSize[] = ['xs', 'sm', 'md', 'lg', 'xl'];
 
 /**
  * Container width progression showing seamless scaling
- * No gaps between PageContainer max and ContentContainer min
+ * No gaps between NarrowContainer max and WideContainer min
  */
 export const CONTAINER_WIDTH_ORDER = [
-  'sm',   // 24rem - PageContainer start
+  'sm',   // 24rem - NarrowContainer start
   'md',   // 28rem
   'lg',   // 32rem  
   'xl',   // 36rem
   '2xl',  // 42rem
-  '3xl',  // 48rem - PageContainer end
-  '4xl',  // 56rem - ContentContainer start
+  '3xl',  // 48rem - NarrowContainer end
+  '4xl',  // 56rem - WideContainer start
   '5xl',  // 64rem
   '6xl',  // 72rem
-  '7xl'   // 80rem - ContentContainer end
+  '7xl'   // 80rem - WideContainer end
 ] as const;
 
 /**
@@ -238,7 +238,7 @@ export const DEFAULT_SIZES = {
   badge:            'sm' as StandardSize,
   alert:            'md' as StandardSize,
   input:            'md' as StandardSize,
-  pageContainer:    'lg' as ContainerWidthSize,
-  contentContainer: '7xl' as WideContainerSize,
+  narrowContainer:  'lg' as ContainerWidthSize,
+  wideContainer:    '7xl' as WideContainerSize,
   sectionSpacing:   'md' as ContainerSpacingSize
 } as const;

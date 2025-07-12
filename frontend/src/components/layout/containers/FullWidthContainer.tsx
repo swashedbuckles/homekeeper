@@ -1,24 +1,41 @@
-import { ContentContainer } from './ContentContainer';
-import { FullWidthContainer } from './HeroContainer';
+import { WideContainer } from './WideContainer';
+import type { ReactNode } from 'react';
 
 /**
- * Container used with landing pages (Hero elements)
+ * Full-width container for hero sections, headers, and edge-to-edge content
+ * 
+ * Can be used in two modes:
+ * 1. Basic full-width wrapper (hero=false)
+ * 2. Hero section with centered content (hero=true)
  * 
  * @param children nested content
  * @param className additional classes to apply
+ * @param hero if true, creates a hero section with min-height, centering, and padding
  */
-export const HeroContainer = ({ 
+export const FullWidthContainer = ({ 
   children, 
-  className = '' 
+  className = '',
+  hero = false
 }: { 
-  children: React.ReactNode;
+  children: ReactNode;
   className?: string;
+  hero?: boolean;
 }) => {
+  if (hero) {
+    // Hero mode: full-width with centered content
+    return (
+      <div className={`w-full min-h-screen flex items-center ${className}`}>
+        <WideContainer className="py-20">
+          {children}
+        </WideContainer>
+      </div>
+    );
+  }
+
+  // Basic mode: simple full-width wrapper
   return (
-    <FullWidthContainer className={`min-h-screen flex items-center ${className}`}>
-      <ContentContainer className="py-20">
-        {children}
-      </ContentContainer>
-    </FullWidthContainer>
+    <div className={`w-full ${className}`}>
+      {children}
+    </div>
   );
 };
