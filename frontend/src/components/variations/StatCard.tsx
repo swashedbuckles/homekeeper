@@ -18,7 +18,7 @@ import { Stats } from '../common/Stats';
  *   variant="dark"
  *   shadow="double"
  *   hover
- *   hoverEffect="raise"
+ *   hoverEffect="lift"
  *   rotation="slight-left"
  *   onClick={() => navigate('/manuals')}
  * />

@@ -1,3 +1,4 @@
+import { getHoverEffectClasses } from '../../lib/design-system/hover-effects';
 import type { ReactNode } from 'react';
 
 /**
@@ -68,8 +69,7 @@ export const ListItem = ({
   // Interactive styles
   const interactiveStyles = isClickable ? [
     'cursor-pointer',
-    'brutal-transition',
-    'brutal-hover-lift'
+    ...getHoverEffectClasses('lift')
   ] : [];
 
   const itemStyles = [

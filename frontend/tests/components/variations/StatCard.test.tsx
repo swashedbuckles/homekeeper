@@ -196,7 +196,7 @@ describe('StatCard', () => {
           rotation="left"
           shadow="double"
           hover
-          hoverEffect="raise"
+          hoverEffect="lift"
         />
       );
       
@@ -216,7 +216,7 @@ describe('StatCard', () => {
           rotation="slight-right"
           shadow="double"
           hover
-          hoverEffect="raise"
+          hoverEffect="lift"
         />
       );
       
@@ -237,7 +237,7 @@ describe('StatCard', () => {
           rotation="slight-left"
           shadow="double"
           hover
-          hoverEffect="raise"
+          hoverEffect="lift"
         />
       );
       

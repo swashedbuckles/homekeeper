@@ -1,3 +1,4 @@
+import { type HoverEffect, getHoverEffectClasses } from '../../lib/design-system/hover-effects';
 import type { ReactNode } from 'react';
 /**
  * Base Card Component.
@@ -27,7 +28,7 @@ export interface CardProps {
   border?: 'default' | 'white' | 'primary' | 'secondary' | 'accent' | 'dark' | 'error';
   rotation?: 'none' | 'left' | 'right' | 'slight-left' | 'slight-right';
   hover?: boolean;
-  hoverEffect?: 'lift' | 'raise' | 'press' | 'press-small';
+  hoverEffect?: HoverEffect;
   onClick?: () => void;
   className?: string;
   testId?: string;
@@ -147,15 +148,8 @@ export const Card = ({
     'brutal-transition'
   ] : [];
 
-  // Hover effect variations
-  const hoverEffectStyles = {
-    lift: 'brutal-hover-lift',
-    raise: 'brutal-hover',
-    press: 'brutal-hover-press',
-    'press-small': 'brutal-hover-press-small'
-  };
-
-  const hoverStyles = hover ? [hoverEffectStyles[hoverEffect]] : [];
+  // Hover effect using standardized system
+  const hoverStyles = hover ? getHoverEffectClasses(hoverEffect, false) : [];
 
   // Use provided props or fall back to variant defaults
   const finalBorder = border || variantDefaults[variant].border;

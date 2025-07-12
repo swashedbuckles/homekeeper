@@ -43,9 +43,9 @@ export function Dashboard() {
         </Card>
         {/** quick stats */}
         <Grid columns={4} spacing="xl" className="mt-8">
-          <StatCard size="md" className="" label="Total Manuals" value={47} subtitle="+3 This Month" variant="dark" rotation="left" shadow="double" hover hoverEffect="raise" />
-          <StatCard size="md" className="" label="Pending Tasks" value={5} subtitle="2 Due Soon" variant="secondary" rotation="slight-right" shadow="double" hover hoverEffect="raise" />
-          <StatCard size="md" className="" label="Completed" value={12} subtitle="This Month" variant="accent" rotation="slight-left" shadow="double" hover hoverEffect="raise" />
+          <StatCard size="md" className="" label="Total Manuals" value={47} subtitle="+3 This Month" variant="dark" rotation="left" shadow="double" hover hoverEffect="lift" />
+          <StatCard size="md" className="" label="Pending Tasks" value={5} subtitle="2 Due Soon" variant="secondary" rotation="slight-right" shadow="double" hover hoverEffect="lift" />
+          <StatCard size="md" className="" label="Completed" value={12} subtitle="This Month" variant="accent" rotation="slight-left" shadow="double" hover hoverEffect="lift" />
           <Card variant="primary" rotation="slight-right" shadow="secondary" padding="md">
             <Text variant="body" size="lg" weight="bold" color="white" uppercase className="block mb-4">
               Quick Actions

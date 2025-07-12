@@ -1,3 +1,4 @@
+import { type HoverEffect, getHoverEffectClass } from '../../lib/design-system/hover-effects';
 import { type StandardSize, getSizeToken } from '../../lib/design-system/sizes';
 import type { ReactNode } from 'react';
 
@@ -31,47 +32,16 @@ const baseStyles = [
 ];
 
 // Size variations using standardized tokens
-const getSizeStyles = (size: StandardSize): string[] => {
-  const sizeConfig = {
-    xs: {
-      padding: getSizeToken('xs', 'paddingX') + ' ' + getSizeToken('xs', 'paddingY'),
-      text: getSizeToken('xs', 'text'),
-      border: getSizeToken('xs', 'border'),
-      hover: 'brutal-hover-press-small'
-    },
-    sm: {
-      padding: getSizeToken('sm', 'paddingX') + ' ' + getSizeToken('sm', 'paddingY'),
-      text: getSizeToken('sm', 'text'),
-      border: getSizeToken('sm', 'border'),
-      hover: 'brutal-hover-press-small'
-    },
-    md: {
-      padding: getSizeToken('md', 'paddingX') + ' ' + getSizeToken('md', 'paddingY'),
-      text: getSizeToken('md', 'text'),
-      border: getSizeToken('md', 'border'),
-      hover: 'brutal-hover-press'
-    },
-    lg: {
-      padding: getSizeToken('lg', 'paddingX') + ' ' + getSizeToken('lg', 'paddingY'),
-      text: getSizeToken('lg', 'text'),
-      border: getSizeToken('lg', 'border'),
-      hover: 'brutal-hover-press'
-    },
-    xl: {
-      padding: getSizeToken('xl', 'paddingX') + ' ' + getSizeToken('xl', 'paddingY'),
-      text: getSizeToken('xl', 'text'),
-      border: getSizeToken('xl', 'border'),
-      hover: 'brutal-hover-press'
-    }
-  };
-  
-  const config = sizeConfig[size];
-  return [
-    config.padding,
-    config.text,
-    config.border,
-    config.hover
-  ];
+const getSizeStyles = (size: StandardSize): string[] => [
+  getSizeToken(size, 'paddingX') + ' ' + getSizeToken(size, 'paddingY'),
+  getSizeToken(size, 'text'),
+  getSizeToken(size, 'border')
+];
+
+// Get hover effect based on button size
+const getButtonHoverEffect = (size: StandardSize): HoverEffect => {
+  // Smaller buttons use press-small, larger use press
+  return (size === 'xs' || size === 'sm') ? 'press-small' : 'press';
 };
 
 // Variant styles - colors and borders
@@ -203,11 +173,15 @@ export const Button = ({
     '!hover:shadow-[var(--shadow-brutal-lg)_var(--shadow-dark)]'
   ] : [];
 
+  const hoverEffect = getButtonHoverEffect(size);
+  const hoverClass = !isDisabled ? getHoverEffectClass(hoverEffect) : '';
+  
   const buttonStyles = [
     ...baseStyles,
     ...getSizeStyles(size),
     ...variantStyles[variant],
     ...disabledStyles,
+    hoverClass,
     full ? 'w-full' : '',
     className
   ].filter(Boolean).join(' ');

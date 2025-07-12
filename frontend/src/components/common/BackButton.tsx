@@ -1,5 +1,6 @@
 import { ChevronLeft } from 'lucide-react';
 import { useNavigate } from 'react-router';
+import { type HoverEffect, getHoverEffectClass } from '../../lib/design-system/hover-effects';
 import { type StandardSize, getSizeToken } from '../../lib/design-system/sizes';
 
 /**
@@ -60,8 +61,7 @@ const variantStyles = {
     'border-text-primary',
     'text-text-primary',
     'hover:bg-text-primary',
-    'hover:text-white',
-    'brutal-hover-press'
+    'hover:text-white'
   ],
   text: [
     'bg-transparent',
@@ -70,6 +70,11 @@ const variantStyles = {
     'hover:text-text-primary',
     'hover:underline'
   ]
+};
+
+// Get hover effect based on variant
+const getBackButtonHoverEffect = (variant: 'outline' | 'text'): HoverEffect => {
+  return variant === 'outline' ? 'press' : 'none';
 };
 
 export const BackButton = ({
@@ -91,10 +96,14 @@ export const BackButton = ({
     navigate(-1);
   };
 
+  const hoverEffect = getBackButtonHoverEffect(variant);
+  const hoverClass = getHoverEffectClass(hoverEffect);
+  
   const buttonStyles = [
     ...baseStyles,
     ...getSizeStyles(size),
     ...variantStyles[variant],
+    hoverClass,
     className
   ].filter(Boolean).join(' ');
 

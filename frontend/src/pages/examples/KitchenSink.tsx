@@ -149,18 +149,22 @@ export function KitchenSink() {
           </Grid>
 
           <SubSectionTitle className="mb-6">Card Hover Effects</SubSectionTitle>
-          <Grid columns={4} spacing="lg" className="mb-8">
+          <Grid columns={4} spacing="lg" className="mb-6">
             <Card variant="default" hover hoverEffect="lift" className="p-4">
-              <p className="font-mono">Hover: Lift (Default)</p>
+              <p className="font-mono text-xs uppercase">Lift</p>
+              <p className="font-mono text-xs">Cards & Content</p>
             </Card>
-            <Card variant="primary" hover hoverEffect="raise" shadow="double" className="p-4">
-              <p className="font-mono text-white">Hover: Raise (3-Shadow)</p>
+            <Card variant="primary" hover hoverEffect="press" className="p-4">
+              <p className="font-mono text-white text-xs uppercase">Press</p>
+              <p className="font-mono text-white text-xs">Buttons & CTAs</p>
             </Card>
-            <Card variant="secondary" hover hoverEffect="press" className="p-4">
-              <p className="font-mono text-white">Hover: Press</p>
+            <Card variant="secondary" hover hoverEffect="press-small" className="p-4">
+              <p className="font-mono text-white text-xs uppercase">Press Small</p>
+              <p className="font-mono text-white text-xs">Small Elements</p>
             </Card>
-            <Card variant="accent" hover hoverEffect="press-small" className="p-4">
-              <p className="font-mono text-white">Hover: Press Small</p>
+            <Card variant="accent" hoverEffect="none" className="p-4">
+              <p className="font-mono text-white text-xs uppercase">None</p>
+              <p className="font-mono text-white text-xs">Static Elements</p>
             </Card>
           </Grid>
 
