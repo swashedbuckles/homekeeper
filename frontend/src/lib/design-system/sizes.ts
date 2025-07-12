@@ -95,6 +95,18 @@ export const SIZE_TOKENS = {
   }
 } as const;
 
+/**
+ * Responsive text size tokens providing mobile-first scaling
+ * Used for components that need responsive typography
+ */
+export const RESPONSIVE_TEXT_TOKENS = {
+  xs: 'text-xs',                              // xs on all breakpoints
+  sm: 'text-xs md:text-sm',                   // xs → sm
+  md: 'text-sm md:text-base',                 // sm → base
+  lg: 'text-base md:text-lg',                 // base → lg
+  xl: 'text-lg md:text-xl'                    // lg → xl
+} as const;
+
 // =====================================
 // Container Size Tokens
 // =====================================
@@ -151,6 +163,20 @@ export function getSizeToken(
   aspect: keyof typeof SIZE_TOKENS[StandardSize]
 ): string {
   return SIZE_TOKENS[size][aspect];
+}
+
+/**
+ * Get responsive text size token with mobile-first scaling
+ * 
+ * @param size - The standard size
+ * @returns The corresponding responsive CSS classes
+ * 
+ * @example
+ * getResponsiveTextToken('md') // Returns 'text-sm md:text-base'
+ * getResponsiveTextToken('lg') // Returns 'text-base md:text-lg'
+ */
+export function getResponsiveTextToken(size: StandardSize): string {
+  return RESPONSIVE_TEXT_TOKENS[size];
 }
 
 /**

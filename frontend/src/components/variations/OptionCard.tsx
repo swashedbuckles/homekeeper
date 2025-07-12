@@ -1,3 +1,4 @@
+import { getResponsiveTextToken } from '../../lib/design-system/sizes';
 import { Button } from '../common/Button';
 import { Card, type CardProps } from '../common/Card';
 import { Text } from '../common/Text';
@@ -86,7 +87,7 @@ export const OptionCard = ({
             ${iconVariants[iconVariant]}
             border-brutal-md border-text-primary 
             flex items-center justify-center 
-            text-2xl font-black text-white 
+            ${getResponsiveTextToken('lg')} font-black text-white 
             brutal-rotate-slight-left
             flex-shrink-0
           `}>
@@ -119,7 +120,7 @@ export const OptionCard = ({
           {selected && !buttonText && (
             <div className="mt-4 inline-flex items-center gap-2">
               <div className="w-4 h-4 bg-primary border-2 border-text-primary flex items-center justify-center">
-                <span className="text-white text-xs font-black">✓</span>
+                <span className={`text-white ${getResponsiveTextToken('xs')} font-black`}>✓</span>
               </div>
               <Text variant="caption" size="sm" weight="black" color="primary" uppercase className="tracking-wide">
                 Selected

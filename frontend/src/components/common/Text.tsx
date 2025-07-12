@@ -1,4 +1,4 @@
-import { type StandardSize, getSizeToken } from '../../lib/design-system/sizes';
+import { type StandardSize, getResponsiveTextToken } from '../../lib/design-system/sizes';
 import type { ReactNode } from 'react';
 
 type TextVariant = 'body' | 'caption' | 'label';
@@ -49,16 +49,20 @@ const baseStyles = [
 
 
 const getSizeStyles = (size: StandardSize, variant: TextVariant): string[] => {
-  const baseText = getSizeToken(size, 'text');
-  
-  // Adjust size for different variants
-  const variantAdjustments = {
-    body: baseText,
-    caption: size === 'xs' ? 'text-xs' : size === 'sm' ? 'text-xs' : size === 'md' ? 'text-sm' : size === 'lg' ? 'text-base' : 'text-lg',
-    label: size === 'xs' ? 'text-xs' : size === 'sm' ? 'text-xs' : size === 'md' ? 'text-sm' : size === 'lg' ? 'text-base' : 'text-lg'
+  // Get smaller size for caption and label variants
+  const getSmallerSize = (currentSize: StandardSize): StandardSize => {
+    const sizeOrder: StandardSize[] = ['xs', 'sm', 'md', 'lg', 'xl'];
+    const currentIndex = sizeOrder.indexOf(currentSize);
+    return currentIndex > 0 ? sizeOrder[currentIndex - 1] : currentSize;
   };
   
-  const styles = [variantAdjustments[variant]];
+  const variantAdjustments = {
+    body: [getResponsiveTextToken(size)], // Use responsive scaling
+    caption: [getResponsiveTextToken(getSmallerSize(size))], // One size smaller
+    label: [getResponsiveTextToken(getSmallerSize(size))]    // One size smaller
+  };
+  
+  const styles = [...variantAdjustments[variant]];
   if (variant === 'label') {
     styles.push('tracking-wide');
   }

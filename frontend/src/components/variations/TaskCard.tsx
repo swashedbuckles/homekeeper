@@ -1,3 +1,4 @@
+import { getResponsiveTextToken } from '../../lib/design-system/sizes';
 import { Button } from '../common/Button';
 import { Card, type CardProps } from '../common/Card';
 
@@ -77,13 +78,13 @@ export const TaskCard = ({
       className={`${config.borderColor} ${className}`}
       {...cardProps}
     >
-      <h3 className="text-xl font-black uppercase mb-3 text-text-primary">
+      <h3 className={`${getResponsiveTextToken('lg')} font-black uppercase mb-3 text-text-primary`}>
         {title}
       </h3>
-      <p className="text-sm font-bold text-text-secondary uppercase mb-3">
+      <p className={`${getResponsiveTextToken('sm')} font-bold text-text-secondary uppercase mb-3`}>
         {subtitle}
       </p>
-      <p className={`text-lg font-bold ${config.textColor} uppercase mb-4`}>
+      <p className={`${getResponsiveTextToken('md')} font-bold ${config.textColor} uppercase mb-4`}>
         {dueDate}
       </p>
       
