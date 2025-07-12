@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
-import { PageContainer } from '../../../../src/components/layout/containers/PageContainer';
+import { NarrowContainer as PageContainer } from '../../../../src/components/layout/containers/NarrowContainer';
 
 describe('PageContainer', () => {
   it('renders children correctly', () => {

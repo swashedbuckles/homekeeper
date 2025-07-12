@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
-import { ContentContainer } from '../../../../src/components/layout/containers/ContentContainer';
+import { WideContainer as ContentContainer } from '../../../../src/components/layout/containers/WideContainer';
 
 describe('ContentContainer', () => {
   it('renders children correctly', () => {

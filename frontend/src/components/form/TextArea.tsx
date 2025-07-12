@@ -1,4 +1,5 @@
 import { forwardRef } from 'react';
+import { type StandardSize, getSizeToken } from '../../lib/design-system/sizes';
 import type { ReactNode } from 'react';
 import type { UseFormRegisterReturn } from 'react-hook-form';
 
@@ -28,7 +29,7 @@ const DEFAULT_ROWS = 4;
  * // Large size for important forms
  * <TextArea 
  *   label="Family Mission Statement"
- *   size="large"
+ *   size="lg"
  *   rows={8}
  *   placeholder="What values guide your household?"
  * />
@@ -43,7 +44,7 @@ export interface TextAreaProps {
   testId?: string;
   className?: string;
   rows?: number;
-  size?: 'small' | 'default' | 'large';
+  size?: StandardSize;
   grouped?: boolean;
 }
 
@@ -63,26 +64,13 @@ const baseStyles = [
   'focus:translate-y-1'
 ];
 
-const sizeStyles = {
-  small: [
-    'px-3',
-    'py-2',
-    'text-sm',
-    'border-brutal-sm'
-  ],
-  default: [
-    'px-4',
-    'py-3',
-    'text-base',
-    'border-brutal-md'
-  ],
-  large: [
-    'px-6',
-    'py-4',
-    'text-lg',
-    'border-brutal-lg'
-  ]
-};
+// Size variations using standardized tokens
+const getSizeStyles = (size: StandardSize): string[] => [
+  getSizeToken(size, 'paddingX'),
+  getSizeToken(size, 'paddingY'),
+  getSizeToken(size, 'text'),
+  getSizeToken(size, 'border')
+];
 
 export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>((props, ref) => {
   const inputId = `textarea-${props.label.replace(/\s+/g, '-').toLowerCase()}`;
@@ -97,7 +85,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>((props, r
   const textareaStyles = [
     ...(props.grouped ? [] : ['w-full']),
     ...baseStyles,
-    ...sizeStyles[props.size || 'default'],
+    ...getSizeStyles(props.size || 'md'),
     ...errorStyles,
     props.className
   ].filter(Boolean).join(' ');

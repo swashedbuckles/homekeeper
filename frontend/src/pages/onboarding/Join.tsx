@@ -15,7 +15,7 @@ export const JoinHousehold = () => {
 
         <JoinHouseholdForm />
 
-        <Alert variant="info">
+        <Alert className="mt-4" variant="info">
           <p className="text-blue-800 text-sm">
             You'll join as a guest initially. The household owner can update your role later.
           </p>

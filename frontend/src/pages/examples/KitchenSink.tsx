@@ -91,12 +91,20 @@ export function KitchenSink() {
             <Button variant="primary" full>Full Width</Button>
           </Inline>
 
-          <SubSectionTitle className="mb-6">Back Button</SubSectionTitle>
-          <Inline spacing="md">
-            <BackButton />
-            <BackButton label="Custom Label" size="small" />
-            <BackButton variant="text" label="Text Style" />
-          </Inline>
+          <SubSectionTitle className="mb-6">Back Button - StandardSize Options</SubSectionTitle>
+          <div className="space-y-4">
+            <Inline spacing="md">
+              <BackButton label="XS Size" size="xs" />
+              <BackButton label="Small" size="sm" />
+              <BackButton label="Medium (Default)" size="md" />
+              <BackButton label="Large" size="lg" />
+              <BackButton label="Extra Large" size="xl" />
+            </Inline>
+            <Inline spacing="md">
+              <BackButton variant="text" label="Text Style" size="sm" />
+              <BackButton variant="outline" label="Outline Style" size="md" />
+            </Inline>
+          </div>
         </Card>
 
         {/* Cards Section */}
@@ -445,7 +453,7 @@ Last Service: 2024-06-15
               <TextInput 
                 label="Password" 
                 type="password" 
-                size="large"
+                size="lg"
                 placeholder="Enter password"
                 className="mb-4"
               />
@@ -453,7 +461,44 @@ Last Service: 2024-06-15
                 label="Error State" 
                 type="text" 
                 error="This field is required"
-                className=""
+                className="mb-6"
+              />
+
+              <SubSectionTitle className="mb-4">TextInput Sizes (All 5 StandardSize Options)</SubSectionTitle>
+              <TextInput 
+                label="Extra Small Input" 
+                type="text" 
+                size="xs"
+                placeholder="xs - minimal padding"
+                className="mb-3"
+              />
+              <TextInput 
+                label="Small Input" 
+                type="text" 
+                size="sm"
+                placeholder="sm - compact size"
+                className="mb-3"
+              />
+              <TextInput 
+                label="Medium Input" 
+                type="text" 
+                size="md"
+                placeholder="md - default size"
+                className="mb-3"
+              />
+              <TextInput 
+                label="Large Input" 
+                type="text" 
+                size="lg"
+                placeholder="lg - prominent size"
+                className="mb-3"
+              />
+              <TextInput 
+                label="Extra Large Input" 
+                type="text" 
+                size="xl"
+                placeholder="xl - maximum impact"
+                className="mb-4"
               />
 
               <SubSectionTitle className="mb-4">Code Input</SubSectionTitle>
@@ -465,7 +510,7 @@ Last Service: 2024-06-15
               />
               <CodeInput 
                 label="Verification Code"
-                size="large"
+                size="lg"
                 placeholder="123456"
                 maxLength={6}
               />
@@ -481,8 +526,45 @@ Last Service: 2024-06-15
               />
               <TextArea 
                 label="Large Text Area"
-                size="large"
+                size="lg"
                 placeholder="Larger text area example"
+                rows={6}
+                className="mb-6"
+              />
+
+              <SubSectionTitle className="mb-4">TextArea Sizes (All 5 StandardSize Options)</SubSectionTitle>
+              <TextArea 
+                label="Extra Small TextArea"
+                size="xs"
+                placeholder="xs - minimal padding, compact text"
+                rows={2}
+                className="mb-3"
+              />
+              <TextArea 
+                label="Small TextArea"
+                size="sm"
+                placeholder="sm - compact size"
+                rows={3}
+                className="mb-3"
+              />
+              <TextArea 
+                label="Medium TextArea"
+                size="md"
+                placeholder="md - default size"
+                rows={4}
+                className="mb-3"
+              />
+              <TextArea 
+                label="Large TextArea"
+                size="lg"
+                placeholder="lg - prominent with larger text"
+                rows={5}
+                className="mb-3"
+              />
+              <TextArea 
+                label="Extra Large TextArea"
+                size="xl"
+                placeholder="xl - maximum impact for important forms"
                 rows={6}
                 className="mb-4"
               />
@@ -516,11 +598,13 @@ Last Service: 2024-06-15
             <Alert variant="basic" hideIcon>Basic alert without icon.</Alert>
           </div>
 
-          <SubSectionTitle className="mt-8 mb-4">Alert Sizes</SubSectionTitle>
+          <SubSectionTitle className="mt-8 mb-4">Alert Sizes (All 5 StandardSize Options)</SubSectionTitle>
           <div className="space-y-4">
-            <Alert variant="info" size="small">Small alert message</Alert>
-            <Alert variant="warning" size="default">Default size alert</Alert>
-            <Alert variant="error" size="large">Large alert with more prominent styling</Alert>
+            <Alert variant="info" size="xs">Extra small alert - minimal spacing and tiny icon</Alert>
+            <Alert variant="success" size="sm">Small alert - compact with small icon</Alert>
+            <Alert variant="warning" size="md">Medium alert - default size with standard icon</Alert>
+            <Alert variant="error" size="lg">Large alert - prominent with larger icon</Alert>
+            <Alert variant="basic" size="xl">Extra large alert - maximum impact with biggest icon</Alert>
           </div>
         </Card>
 
