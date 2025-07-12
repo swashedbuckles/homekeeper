@@ -38,6 +38,13 @@ jobs:
       - name: Run frontend checks
         run: npm run type-check -w frontend && npm run lint -w frontend
 
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+        working-directory: frontend
+
+      - name: Run visual regression tests
+        run: npm run test:visual -w frontend
+
   # Option 2: Parallel approach (faster, but more complex)
   # Uncomment this section and comment out the above if you prefer parallel execution
   
