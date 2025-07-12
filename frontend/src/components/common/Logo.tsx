@@ -1,8 +1,10 @@
 import { Link } from 'react-router';
+import { type StandardSize, getSizeToken } from '../../lib/design-system/sizes';
 
 export interface LogoProps {
     className?: string; // Make optional since you have default
     size?: number;
+    borderSize?: StandardSize;
     color?: 'primary' | 'secondary' | 'accent';
     border?: 'light' | 'dark';
     shadow?: 'primary' | 'secondary' | 'accent';
@@ -21,6 +23,7 @@ export interface LogoProps {
    */
   export const Logo = ({
     size = 48,
+    borderSize = 'md',
     className = '',
     color = 'primary',
     border = 'light',
@@ -31,7 +34,7 @@ export interface LogoProps {
     const backgroundClass = `bg-${color}`;
 
     const containerClass = [
-      'border-2 lg:border-4',
+      getSizeToken(borderSize, 'border'),
       'w-12 h-12 lg:w-16 lg:h-16',
       'brutal-rotate-left flex items-center justify-center',
       borderColor,

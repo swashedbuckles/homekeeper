@@ -47,7 +47,6 @@ const baseStyles = [
   'inline-flex',
   'items-center',
   'justify-center',
-  'border-4',
   'border-text-primary',
   'whitespace-nowrap'
 ];
@@ -62,7 +61,8 @@ const getSizeStyles = (size: StandardSize): string[] => {
   return [
     getSizeToken(size, 'text'),
     getSizeToken(size, 'paddingX'),
-    getSizeToken(size, 'paddingY')
+    getSizeToken(size, 'paddingY'),
+    getSizeToken(size, 'border')
   ];
 };
 

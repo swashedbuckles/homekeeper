@@ -1,9 +1,35 @@
-export function SearchInput() {
+import { type StandardSize, getSizeToken } from '../../lib/design-system/sizes';
+
+export interface SearchInputProps {
+  size?: StandardSize;
+  className?: string;
+}
+
+export function SearchInput({ 
+  size = 'md',
+  className = ''
+}: SearchInputProps) {
+  const searchStyles = [
+    'w-48',
+    getSizeToken(size, 'paddingX'),
+    getSizeToken(size, 'paddingY'),
+    'bg-text-primary',
+    'text-white',
+    getSizeToken(size, 'border'),
+    'border-white',
+    'font-bold',
+    'placeholder-text-secondary',
+    'focus:outline-none',
+    'focus:bg-background',
+    'focus:text-text-primary',
+    className
+  ].filter(Boolean).join(' ');
+
   return (
     <input
       type="text"
       placeholder="SEARCH MANUALS..."
-      className="w-48 px-4 py-3 bg-text-primary text-white border-4 border-white font-bold placeholder-text-secondary focus:outline-none focus:bg-background focus:text-text-primary"
+      className={searchStyles}
     />
   );
 }

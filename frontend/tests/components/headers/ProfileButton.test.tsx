@@ -100,8 +100,7 @@ describe('ProfileButton', () => {
       'brutal-hover-press-small',
       'brutal-shadow-accent-sm',
       'bg-primary',
-      'border-3',
-      'md:border-4',
+      'border-brutal-md',
       'border-white'
     );
   });
