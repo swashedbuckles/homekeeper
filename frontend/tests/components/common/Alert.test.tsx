@@ -40,14 +40,15 @@ describe('Alert', () => {
   it('renders default icon for each variant', () => {
     const { container } = render(<Alert variant="info">Info message</Alert>);
     
-    const icon = container.querySelector('.w-5.h-5');
+    // Check for responsive icon classes - medium default size uses w-4 h-4 md:w-5 md:h-5
+    const icon = container.querySelector('.w-4.h-4.md\\:w-5.md\\:h-5');
     expect(icon).toBeInTheDocument();
   });
 
   it('hides icon when hideIcon is true', () => {
     const { container } = render(<Alert hideIcon>No icon message</Alert>);
     
-    const icon = container.querySelector('.w-5.h-5');
+    const icon = container.querySelector('.w-4.h-4.md\\:w-5.md\\:h-5');
     expect(icon).not.toBeInTheDocument();
   });
 
