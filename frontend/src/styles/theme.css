@@ -64,12 +64,6 @@
     8px 8px 0 var(--shadow-secondary),
     12px 12px 0 var(--shadow-dark);
 
-  --shadow-brutal-mega:
-    6px 6px 0 var(--shadow-primary),
-    12px 12px 0 var(--shadow-secondary),
-    18px 18px 0 var(--shadow-accent),
-    24px 24px 0 var(--shadow-dark);
-
   /* === TRANSFORMS === */
   --transform-brutal-rotate-left: rotate(-2deg);
   --transform-brutal-rotate-right: rotate(2deg);
@@ -85,9 +79,4 @@
   /* === TEXT SHADOWS === */
   --text-shadow-brutal: 4px 4px 0 var(--shadow-primary);
   --text-shadow-brutal-double: 4px 4px 0 var(--shadow-primary), 8px 8px 0 var(--shadow-dark);
-  --text-shadow-brutal-mega: 
-    3px 3px 0 var(--shadow-primary),
-    6px 6px 0 var(--shadow-secondary),
-    9px 9px 0 var(--shadow-accent),
-    12px 12px 0 var(--shadow-dark);
 }

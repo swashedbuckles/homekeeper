@@ -4,9 +4,9 @@ import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
 
 import { z } from 'zod';
-import { ActionItem } from '../../components/common/ActionItem';
 import { Button } from '../../components/common/Button';
 import { Card } from '../../components/common/Card';
+import { ListItem } from '../../components/common/ListItem';
 import { PageTitle } from '../../components/common/Title';
 import { TextInput } from '../../components/form/TextInput';
 import { SectionTitle } from '../../components/variations/SectionTitle';
@@ -109,7 +109,7 @@ export const InviteOthers = () => {
   const pendingInvitations = invitations.map(invitation => {
 
     return (
-      <ActionItem
+      <ListItem
         title={invitation.email}
         subtitle={`Code: ${invitation.code}. Expires in 14 days`}
         actions={

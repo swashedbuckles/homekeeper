@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HomeKeeper Design Mockups - Index</title>
+    <style>
+        :root {
+            --primary: #e67e22;
+            --secondary: #4A6FA5;
+            --accent: #5d9c59;
+            --background: #f5f0e8;
+            --text-primary: #2c3e50;
+            --text-secondary: #7f8c8d;
+            --error: #e74c3c;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--background);
+            color: var(--text-primary);
+            line-height: 1.6;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-bottom: 2rem;
+            text-shadow: 4px 4px 0 var(--primary);
+            transform: rotate(-1deg);
+        }
+
+        .section {
+            margin-bottom: 3rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            border-left: 8px solid var(--primary);
+            padding-left: 1rem;
+        }
+
+        .mockup-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .mockup-card {
+            background: white;
+            border: 4px solid var(--text-primary);
+            padding: 1.5rem;
+            text-decoration: none;
+            color: inherit;
+            transition: transform 0.1s ease;
+            box-shadow: 6px 6px 0 var(--primary);
+        }
+
+        .mockup-card:hover {
+            transform: translate(-4px, -4px);
+            box-shadow: 10px 10px 0 var(--primary);
+        }
+
+        .mockup-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .mockup-description {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .research-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        .research-card {
+            background: var(--accent);
+            border: 4px solid var(--text-primary);
+            padding: 1rem;
+            text-decoration: none;
+            color: white;
+            transition: transform 0.1s ease;
+            box-shadow: 4px 4px 0 var(--text-primary);
+        }
+
+        .research-card:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0 var(--text-primary);
+        }
+
+        .research-card .mockup-title {
+            color: white;
+            font-size: 1rem;
+        }
+
+        .research-card .mockup-description {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .original-card {
+            background: var(--secondary);
+            color: white;
+            box-shadow: 4px 4px 0 var(--text-primary);
+        }
+
+        .original-card:hover {
+            box-shadow: 6px 6px 0 var(--text-primary);
+        }
+
+        .original-card .mockup-title {
+            color: white;
+        }
+
+        .original-card .mockup-description {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .special-files {
+            background: var(--error);
+            border: 4px solid var(--text-primary);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .special-files h3 {
+            color: white;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+
+        .special-link {
+            display: inline-block;
+            background: white;
+            color: var(--text-primary);
+            padding: 0.5rem 1rem;
+            text-decoration: none;
+            font-weight: 700;
+            text-transform: uppercase;
+            border: 2px solid var(--text-primary);
+            margin-right: 1rem;
+            margin-bottom: 0.5rem;
+            transition: transform 0.1s ease;
+        }
+
+        .special-link:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 4px 4px 0 var(--text-primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>HomeKeeper Design Mockups</h1>
+        
+        <div class="special-files">
+            <h3>Special Files</h3>
+            <a href="homekeeper_flow_diagram.html" class="special-link">Flow Diagram</a>
+            <a href="neobrutalist_design_guide.md" class="special-link">Design Guide</a>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">Main Application Mockups</h2>
+            <div class="mockup-grid">
+                <a href="mockups/dashboard_responsive_mockup.html" class="mockup-card">
+                    <div class="mockup-title">Dashboard</div>
+                    <div class="mockup-description">Main dashboard with stats, tasks, and activity feed</div>
+                </a>
+                
+                <a href="mockups/landing_responsive_mockup.html" class="mockup-card">
+                    <div class="mockup-title">Landing Page</div>
+                    <div class="mockup-description">Marketing landing page with features and signup</div>
+                </a>
+                
+                <a href="mockups/onboarding_responsive_mockup.html" class="mockup-card">
+                    <div class="mockup-title">Onboarding Flow</div>
+                    <div class="mockup-description">User onboarding and household setup</div>
+                </a>
+                
+                <a href="mockups/settings_responsive_mockup.html" class="mockup-card">
+                    <div class="mockup-title">Settings & Household</div>
+                    <div class="mockup-description">Settings, household management, and user preferences</div>
+                </a>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">Maintenance System</h2>
+            <div class="mockup-grid">
+                <a href="mockups/maintenance_dashboard_mockup.html" class="mockup-card">
+                    <div class="mockup-title">Maintenance Dashboard</div>
+                    <div class="mockup-description">Task management, scheduling, and status tracking</div>
+                </a>
+                
+                <a href="mockups/maintenance_history_mockup.html" class="mockup-card">
+                    <div class="mockup-title">Maintenance History</div>
+                    <div class="mockup-description">Historical maintenance records and reports</div>
+                </a>
+                
+                <a href="mockups/maintenance_task_creation_mockup.html" class="mockup-card">
+                    <div class="mockup-title">Task Creation</div>
+                    <div class="mockup-description">Create and schedule maintenance tasks</div>
+                </a>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">Manual Management</h2>
+            <div class="mockup-grid">
+                <a href="mockups/manuals_list_responsive_mockup.html" class="mockup-card">
+                    <div class="mockup-title">Manuals Library</div>
+                    <div class="mockup-description">Browse and search equipment manuals</div>
+                </a>
+                
+                <a href="mockups/manual_detail_responsive_mockup.html" class="mockup-card">
+                    <div class="mockup-title">Manual Details</div>
+                    <div class="mockup-description">Individual manual viewer and information</div>
+                </a>
+                
+                <a href="mockups/manual_creation_responsive_mockup.html" class="mockup-card">
+                    <div class="mockup-title">Manual Upload</div>
+                    <div class="mockup-description">Upload and create new equipment manuals</div>
+                </a>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">Advanced Features</h2>
+            <div class="mockup-grid">
+                <a href="mockups/custom_document_editor_mockup.html" class="mockup-card">
+                    <div class="mockup-title">Document Editor</div>
+                    <div class="mockup-description">Rich text editor for creating and editing documents</div>
+                </a>
+                
+                <a href="mockups/notification_center_mockup.html" class="mockup-card">
+                    <div class="mockup-title">Notification Center</div>
+                    <div class="mockup-description">Manage notifications, alerts, and system messages</div>
+                </a>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">Original Design Iterations</h2>
+            <div class="mockup-grid">
+                <a href="mockups/original_design/neobrutalist_dashboard.html" class="mockup-card original-card">
+                    <div class="mockup-title">Original Dashboard</div>
+                    <div class="mockup-description">Early dashboard design concept</div>
+                </a>
+                
+                <a href="mockups/original_design/neobrutalist_landing.html" class="mockup-card original-card">
+                    <div class="mockup-title">Original Landing</div>
+                    <div class="mockup-description">Early landing page concept</div>
+                </a>
+                
+                <a href="mockups/original_design/neobrutalist_onboarding.html" class="mockup-card original-card">
+                    <div class="mockup-title">Original Onboarding</div>
+                    <div class="mockup-description">Early onboarding flow concept</div>
+                </a>
+                
+                <a href="mockups/original_design/neobrutalist_settings.html" class="mockup-card original-card">
+                    <div class="mockup-title">Original Settings</div>
+                    <div class="mockup-description">Early settings page concept</div>
+                </a>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">Research & Experiments</h2>
+            <div class="research-grid">
+                <a href="mockups/research/dashboard_with_minimal_tabs.html" class="research-card">
+                    <div class="mockup-title">Minimal Tabs Research</div>
+                    <div class="mockup-description">Dashboard with minimal tab styling</div>
+                </a>
+                
+                <a href="mockups/research/profile_dropdown_mockup.html" class="research-card">
+                    <div class="mockup-title">Profile Dropdown</div>
+                    <div class="mockup-description">Profile dropdown component research</div>
+                </a>
+                
+                <a href="mockups/research/profile_dropdown_overlay_mockup.html" class="research-card">
+                    <div class="mockup-title">Profile Overlay</div>
+                    <div class="mockup-description">Profile dropdown with overlay</div>
+                </a>
+                
+                <a href="mockups/research/tab_mockups.html" class="research-card">
+                    <div class="mockup-title">Tab Variations</div>
+                    <div class="mockup-description">Different tab styling approaches</div>
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

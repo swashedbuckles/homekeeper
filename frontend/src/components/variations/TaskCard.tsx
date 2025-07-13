@@ -1,16 +1,17 @@
+import { getResponsiveTextToken } from '../../lib/design-system/sizes';
 import { Button } from '../common/Button';
-import { Card } from '../common/Card';
+import { Card, type CardProps } from '../common/Card';
 
 /**
  * TaskCard component for displaying maintenance tasks with status indicators.
  * 
  * Built on top of the base Card component. Shows task details with colored left borders
- * indicating urgency, due dates, and optional action buttons. Perfect for dashboard
- * task lists and maintenance workflows.
+ * indicating urgency, due dates, and optional action buttons. Delegates all styling
+ * to Card component and focuses on content structure and status semantics.
  * 
  * @example
  * ```tsx
- * // Urgent task with action button
+ * // Urgent task with custom styling
  * <TaskCard
  *   title="Change HVAC Filter"
  *   subtitle="Central Air System • Living Room"
@@ -18,25 +19,22 @@ import { Card } from '../common/Card';
  *   dueDate="Due in 2 Days"
  *   onAction={() => markComplete(taskId)}
  *   actionLabel="Mark Done"
- * />
- * 
- * // Future task without action
- * <TaskCard
- *   title="Pool Opening Checklist"
- *   subtitle="Above Ground Pool • Backyard"
- *   status="future"
- *   dueDate="Due in 3 Weeks"
+ *   shadow="double"
+ *   hover
+ *   hoverEffect="lift"
  * />
  * ```
  */
-export interface TaskCardProps {
+export interface TaskCardProps extends Omit<CardProps, 'children'> {
   title :       string;
   subtitle :    string;
   status :      'urgent' | 'normal' | 'future' | 'completed';
   dueDate :     string;
-  onAction?:    () => void;
-  actionLabel?: string;
-  className?:   string;
+  actions?:     Array<{
+    label: string;
+    onClick: () => void;
+    variant?: 'primary' | 'secondary' | 'tertiary' | 'outline' | 'danger' | 'accent';
+  }>;
 }
 
 export const TaskCard = ({
@@ -44,32 +42,29 @@ export const TaskCard = ({
   subtitle, 
   status,
   dueDate,
-  onAction,
-  actionLabel = 'View',
-  className = ''
+  actions,
+  className = '',
+  ...cardProps
 }: TaskCardProps) => {
+  // Status-specific content styling (semantic, not layout)
   const statusConfig = {
     urgent: {
       borderColor:   'border-l-error border-l-brutal-xl',
-      shadow:        'error' as const,
       textColor:     'text-error',
       buttonVariant: 'danger' as const
     },
     normal: {
       borderColor:   'border-l-secondary border-l-brutal-xl',
-      shadow:        'secondary' as const,
       textColor:     'text-secondary',
       buttonVariant: 'secondary' as const
     },
     future: {
       borderColor:   'border-l-accent border-l-brutal-xl',
-      shadow:        'accent' as const,
       textColor:     'text-accent',
       buttonVariant: 'accent' as const
     },
     completed: {
       borderColor:   'border-l-accent border-l-brutal-xl',
-      shadow:        'accent' as const,
       textColor:     'text-accent',
       buttonVariant: 'accent' as const
     }
@@ -80,31 +75,33 @@ export const TaskCard = ({
   return (
     <Card
       variant="default"
-      shadow={config.shadow}
-      className={`${config.borderColor} mb-6 ${className}`}
+      className={`${config.borderColor} ${className}`}
+      {...cardProps}
     >
-      <h3 className="text-xl font-black uppercase mb-3 text-text-primary">
+      <h3 className={`${getResponsiveTextToken('lg')} font-black uppercase mb-3 text-text-primary`}>
         {title}
       </h3>
-      <p className="text-sm font-bold text-text-secondary uppercase mb-3">
+      <p className={`${getResponsiveTextToken('sm')} font-bold text-text-secondary uppercase mb-3`}>
         {subtitle}
       </p>
-      <p className={`text-lg font-bold ${config.textColor} uppercase mb-4`}>
+      <p className={`${getResponsiveTextToken('md')} font-bold ${config.textColor} uppercase mb-4`}>
         {dueDate}
       </p>
       
-      {onAction && (
-        <Button
-          variant={
-            config.buttonVariant === 'danger' ? 'danger' :
-            config.buttonVariant === 'secondary' ? 'secondary' : 
-            'primary'
-          }
-          size="small"
-          onClick={onAction}
-        >
-          {actionLabel}
-        </Button>
+      {/* Actions */}
+      {actions && actions.length > 0 && (
+        <div className="flex flex-wrap gap-3">
+          {actions.map((action, index) => (
+            <Button
+              key={`${action.label}-${index}`}
+              variant={action.variant || (index === 0 ? config.buttonVariant : 'outline')}
+              size="sm"
+              onClick={action.onClick}
+            >
+              {action.label}
+            </Button>
+          ))}
+        </div>
       )}
     </Card>
   );

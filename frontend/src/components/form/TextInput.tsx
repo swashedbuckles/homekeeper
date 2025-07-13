@@ -1,4 +1,5 @@
 import { forwardRef } from 'react';
+import { type StandardSize, getSizeToken } from '../../lib/design-system/sizes';
 import type { HTMLInputTypeAttribute, ReactNode, InputHTMLAttributes } from 'react';
 import type { UseFormRegisterReturn } from 'react-hook-form';
 
@@ -12,7 +13,7 @@ export interface TextInputProps extends Omit<InputHTMLAttributes<HTMLInputElemen
   testId?: string;
   className?: string;
   grouped?: boolean;
-  size?: 'small' | 'default' | 'large';
+  size?: StandardSize;
   variant?: 'default' | 'search';
 };
 
@@ -25,26 +26,13 @@ const baseStyles = [
   'brutal-transition'
 ];
 
-const sizeStyles = {
-  small: [
-    'px-3',
-    'py-2',
-    'text-sm',
-    'border-brutal-sm'
-  ],
-  default: [
-    'px-4',
-    'py-3',
-    'text-base',
-    'border-brutal-md'
-  ],
-  large: [
-    'px-6',
-    'py-4',
-    'text-lg',
-    'border-brutal-lg'
-  ]
-};
+// Size variations using standardized tokens
+const getSizeStyles = (size: StandardSize): string[] => [
+  getSizeToken(size, 'paddingX'),
+  getSizeToken(size, 'paddingY'),
+  getSizeToken(size, 'text'),
+  getSizeToken(size, 'border')
+];
 
 const variantStyles = {
   default: [
@@ -60,7 +48,7 @@ const variantStyles = {
     // Override default focus for search
     'focus:bg-background',
     'focus:text-text-primary',
-    'focus:brutal-shadow-mega'
+    'focus:brutal-shadow-triple'
   ]
 };
 
@@ -77,7 +65,7 @@ const variantStyles = {
  * ```
  * @example Large size for hero forms
  * ```
- * <TextInput label="Household Name"type="text"size="large"placeholder="The Smith Family Home"/>
+ * <TextInput label="Household Name"type="text"size="lg"placeholder="The Smith Family Home"/>
  * ```
  * @example Search variant (dark theme)
  * ```
@@ -112,7 +100,7 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>((props, re
   const inputStyles = [
     ...(grouped ? [] : ['w-full']),
     ...baseStyles,
-    ...sizeStyles[size || 'default'],
+    ...getSizeStyles(size || 'md'),
     ...variantStyles[variant || 'default'],
     ...errorStyles,
     className

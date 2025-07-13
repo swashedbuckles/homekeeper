@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 
 import { Z_INDEX_CLASSES } from '../../lib/constants/zIndex';
+import { getResponsivePattern } from '../../lib/design-system/sizes';
 import { DarkBgHeader } from '../common/Logo';
-import { MobileMenu } from '../containers/MobileMenu';
+import { MobileMenu } from '../layout/containers/MobileMenu';
 import { AppNavigation } from './AppNavigation';
 import { HeaderGradient } from './HeaderGradient';
 import { MobileMenuToggle } from './MobileMenuToggle';
@@ -40,7 +41,7 @@ export function MainHeader(_props: MainHeaderProps) {
       <HeaderGradient />
 
       { /* Desktop */}
-      <div className="hidden md:block">
+      <div className={getResponsivePattern('tabletUp')}>
         <div className="max-w-full mx-auto px-3 py-5">
           <div className="flex justify-between items-center gap-12">
             <DarkBgHeader />
@@ -58,7 +59,7 @@ export function MainHeader(_props: MainHeaderProps) {
       </div>
 
       { /* Mobile */}
-      <div className="md:hidden">
+      <div className={getResponsivePattern('mobileOnly')}>
         <div className="px-4 py-4">
           <div className="flex justify-between items-center">
             <DarkBgHeader />
@@ -74,7 +75,7 @@ export function MainHeader(_props: MainHeaderProps) {
       {/* Desktop Profile Dropdown  */}
       <div
         data-profile-menu
-        className={`absolute right-5 mt-2 top-full hidden ${isDesktopProfileMenuOpen ? 'md:block' : ''} ${Z_INDEX_CLASSES.MOBILE_MENU}`}
+        className={`absolute right-5 mt-2 top-full ${isDesktopProfileMenuOpen ? getResponsivePattern('tabletUp') : 'hidden'} ${Z_INDEX_CLASSES.MOBILE_MENU}`}
       >
         <ProfileMenu />
       </div>

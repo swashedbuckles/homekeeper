@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HomeKeeper - Add New Manual</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#e67e22',
+                        'secondary': '#4A6FA5', 
+                        'accent': '#5d9c59',
+                        'background': '#f5f0e8',
+                        'text-primary': '#2c3e50',
+                        'text-secondary': '#7f8c8d',
+                        'error': '#e74c3c'
+                    },
+                    fontFamily: {
+                        'mono': ['JetBrains Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .brutal-shadow-primary {
+            box-shadow: 8px 8px 0 #e67e22;
+        }
+        
+        .brutal-shadow-secondary {
+            box-shadow: 8px 8px 0 #4A6FA5;
+        }
+        
+        .brutal-shadow-accent {
+            box-shadow: 8px 8px 0 #5d9c59;
+        }
+        
+        .brutal-shadow-dark {
+            box-shadow: 8px 8px 0 #2c3e50;
+        }
+        
+        .brutal-shadow-error {
+            box-shadow: 8px 8px 0 #e74c3c;
+        }
+        
+        .brutal-shadow-triple {
+            box-shadow: 
+                4px 4px 0 #e67e22,
+                8px 8px 0 #4A6FA5,
+                12px 12px 0 #2c3e50;
+        }
+        
+        .brutal-hover-press {
+            transition: all 0.1s ease;
+        }
+        
+        .brutal-hover-press:hover {
+            transform: translate(4px, 4px);
+            box-shadow: none;
+        }
+        
+        .brutal-text-shadow {
+            text-shadow: 
+                4px 4px 0 #e67e22,
+                8px 8px 0 #2c3e50;
+        }
+        
+        .brutal-rotate-left {
+            transform: rotate(-2deg);
+        }
+        
+        .brutal-rotate-right {
+            transform: rotate(2deg);
+        }
+        
+        .brutal-rotate-slight-left {
+            transform: rotate(-0.5deg);
+        }
+        
+        .brutal-rotate-slight-right {
+            transform: rotate(0.5deg);
+        }
+        
+        .hero-bg {
+            background: linear-gradient(135deg, #f5f0e8 0%, #e8ddd4 100%);
+        }
+        
+        .form-input {
+            background: white;
+            border: 4px solid #2c3e50;
+            padding: 0.75rem 1rem;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+            transition: all 0.1s ease;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            box-shadow: 4px 4px 0 #e67e22;
+            border-color: #e67e22;
+        }
+        
+        .form-input::placeholder {
+            color: #7f8c8d;
+            text-transform: uppercase;
+        }
+        
+        .form-label {
+            color: #2c3e50;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        
+        .form-select {
+            background: white;
+            border: 4px solid #2c3e50;
+            padding: 0.75rem 1rem;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+            cursor: pointer;
+        }
+        
+        .form-select:focus {
+            outline: none;
+            box-shadow: 4px 4px 0 #e67e22;
+            border-color: #e67e22;
+        }
+        
+        .file-upload-area {
+            background: white;
+            border: 4px dashed #2c3e50;
+            padding: 3rem 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.1s ease;
+        }
+        
+        .file-upload-area.dragover {
+            border-color: #e67e22;
+            background: rgba(230, 126, 34, 0.1);
+            box-shadow: 4px 4px 0 #e67e22;
+        }
+        
+        .file-upload-area:hover {
+            border-color: #e67e22;
+            box-shadow: 4px 4px 0 #e67e22;
+        }
+        
+        .progress-bar {
+            background: #7f8c8d;
+            height: 8px;
+            border: 2px solid #2c3e50;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            background: #e67e22;
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+        
+        .step-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 3rem;
+            height: 3rem;
+            border: 4px solid #2c3e50;
+            background: white;
+            font-weight: 800;
+            font-size: 1.125rem;
+            transition: all 0.1s ease;
+        }
+        
+        .step-indicator.active {
+            background: #e67e22;
+            color: white;
+            box-shadow: 4px 4px 0 #2c3e50;
+        }
+        
+        .step-indicator.completed {
+            background: #5d9c59;
+            color: white;
+        }
+        
+        .step-line {
+            flex: 1;
+            height: 4px;
+            background: #7f8c8d;
+            border: 2px solid #2c3e50;
+        }
+        
+        .step-line.completed {
+            background: #5d9c59;
+        }
+        
+        .breadcrumb {
+            color: #7f8c8d;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.875rem;
+        }
+        
+        .breadcrumb a {
+            color: #e67e22;
+            text-decoration: none;
+        }
+        
+        .breadcrumb a:hover {
+            color: #2c3e50;
+        }
+        
+        .back-button {
+            color: #e67e22;
+            font-weight: 700;
+            text-transform: uppercase;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .back-button:hover {
+            color: #2c3e50;
+        }
+        
+        .checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+        }
+        
+        .checkbox {
+            width: 1.5rem;
+            height: 1.5rem;
+            border: 4px solid #2c3e50;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            font-weight: 800;
+            color: white;
+        }
+        
+        .checkbox.checked {
+            background: #5d9c59;
+        }
+        
+        .form-section {
+            background: white;
+            border: 6px solid #2c3e50;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .form-section.highlighted {
+            box-shadow: 8px 8px 0 #e67e22;
+        }
+        
+        .uploaded-file {
+            background: white;
+            border: 4px solid #5d9c59;
+            border-left: 8px solid #5d9c59;
+            padding: 1rem;
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .file-preview {
+            background: #f8f9fa;
+            border: 4px solid #2c3e50;
+            padding: 1rem;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body class="font-mono bg-background hero-bg">
+    <!-- Header -->
+    <header class="bg-text-primary border-b-8 border-primary">
+        <div class="max-w-7xl mx-auto px-5 py-4">
+            <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+                <!-- Logo -->
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-primary border-4 border-white brutal-rotate-left brutal-shadow-secondary flex items-center justify-center">
+                        <svg width="48" height="48" viewBox="0 0 128 128" class="text-white">
+                            <polygon points="20,70 60,35 100,70" fill="currentColor"/>
+                            <rect x="20" y="70" width="80" height="36" fill="currentColor"/>
+                            <rect x="60" y="74" width="36" height="28" fill="#e67e22"/>
+                        </svg>
+                    </div>
+                    <h1 class="text-2xl md:text-3xl font-black text-white uppercase tracking-tight">
+                        HomeKeeper
+                    </h1>
+                </div>
+                
+                <!-- Navigation -->
+                <nav class="flex flex-wrap gap-2 md:gap-4">
+                    <button class="text-white font-bold uppercase px-3 py-2 text-sm md:text-base hover:text-primary">Dashboard</button>
+                    <button class="text-primary font-bold uppercase px-3 py-2 text-sm md:text-base">Manuals</button>
+                    <button class="text-white font-bold uppercase px-3 py-2 text-sm md:text-base hover:text-primary">Maintenance</button>
+                    <button class="text-white font-bold uppercase px-3 py-2 text-sm md:text-base hover:text-primary">Settings</button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-5xl mx-auto px-5 py-6">
+        <!-- Breadcrumb -->
+        <nav class="mb-6">
+            <div class="breadcrumb">
+                <a href="#" class="back-button">
+                    ← Back to Manuals
+                </a>
+                <span class="mx-2">•</span>
+                <span>Add New Manual</span>
+            </div>
+        </nav>
+
+        <!-- Page Header -->
+        <section class="mb-8">
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-black uppercase leading-tight mb-4 text-text-primary brutal-text-shadow">
+                Add New<br>
+                Manual
+            </h1>
+            <p class="text-lg md:text-xl font-bold text-text-secondary uppercase tracking-wide">
+                Upload equipment manuals and documentation
+            </p>
+        </section>
+
+        <!-- Progress Steps -->
+        <section class="mb-8">
+            <div class="flex items-center justify-between max-w-2xl mx-auto">
+                <div class="step-indicator completed">1</div>
+                <div class="step-line completed"></div>
+                <div class="step-indicator active">2</div>
+                <div class="step-line"></div>
+                <div class="step-indicator">3</div>
+                <div class="step-line"></div>
+                <div class="step-indicator">4</div>
+            </div>
+            <div class="flex justify-between max-w-2xl mx-auto mt-4">
+                <span class="text-text-secondary font-bold uppercase text-sm">Upload</span>
+                <span class="text-primary font-bold uppercase text-sm">Details</span>
+                <span class="text-text-secondary font-bold uppercase text-sm">Categories</span>
+                <span class="text-text-secondary font-bold uppercase text-sm">Review</span>
+            </div>
+        </section>
+
+        <!-- Form Content -->
+        <form class="space-y-8">
+            <!-- File Upload Section -->
+            <div class="form-section highlighted">
+                <h2 class="text-2xl font-black uppercase text-text-primary mb-6">
+                    Manual File
+                </h2>
+                
+                <!-- File Upload Area -->
+                <div class="file-upload-area mb-6" id="dropZone">
+                    <div class="text-6xl mb-4">📄</div>
+                    <h3 class="text-xl font-black uppercase text-text-primary mb-2">
+                        Drop PDF File Here
+                    </h3>
+                    <p class="text-text-secondary font-bold mb-4">
+                        or click to browse for files
+                    </p>
+                    <button type="button" class="bg-primary text-white border-4 border-text-primary px-6 py-3 font-bold uppercase brutal-shadow-dark brutal-hover-press">
+                        Choose File
+                    </button>
+                    <input type="file" id="fileInput" class="hidden" accept=".pdf,.doc,.docx">
+                    <p class="text-text-secondary font-bold text-sm mt-4">
+                        Supported formats: PDF, DOC, DOCX • Max size: 10MB
+                    </p>
+                </div>
+
+                <!-- Uploaded File Display -->
+                <div id="uploadedFile" class="uploaded-file hidden">
+                    <div class="flex-1">
+                        <div class="text-text-primary font-black text-lg mb-1" id="fileName">Samsung_Refrigerator_Manual.pdf</div>
+                        <div class="text-text-secondary font-bold text-sm" id="fileSize">2.4 MB</div>
+                        <div class="progress-bar mt-2">
+                            <div class="progress-fill" id="progressFill" style="width: 100%"></div>
+                        </div>
+                    </div>
+                    <button type="button" class="bg-error text-white border-3 border-text-primary px-3 py-2 font-bold uppercase text-sm">
+                        Remove
+                    </button>
+                </div>
+            </div>
+
+            <!-- Equipment Details Section -->
+            <div class="form-section">
+                <h2 class="text-2xl font-black uppercase text-text-primary mb-6">
+                    Equipment Details
+                </h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Equipment Name -->
+                    <div>
+                        <label class="form-label">Equipment Name *</label>
+                        <input type="text" class="form-input w-full" placeholder="Samsung Refrigerator" required>
+                    </div>
+                    
+                    <!-- Brand -->
+                    <div>
+                        <label class="form-label">Brand</label>
+                        <input type="text" class="form-input w-full" placeholder="Samsung">
+                    </div>
+                    
+                    <!-- Model Number -->
+                    <div>
+                        <label class="form-label">Model Number</label>
+                        <input type="text" class="form-input w-full" placeholder="RF28T5001SR">
+                    </div>
+                    
+                    <!-- Serial Number -->
+                    <div>
+                        <label class="form-label">Serial Number</label>
+                        <input type="text" class="form-input w-full" placeholder="123ABC456DEF">
+                    </div>
+                    
+                    <!-- Purchase Date -->
+                    <div>
+                        <label class="form-label">Purchase Date</label>
+                        <input type="date" class="form-input w-full">
+                    </div>
+                    
+                    <!-- Warranty Expiration -->
+                    <div>
+                        <label class="form-label">Warranty Expiration</label>
+                        <input type="date" class="form-input w-full">
+                    </div>
+                </div>
+                
+                <!-- Description -->
+                <div class="mt-6">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-input w-full h-24 resize-none" placeholder="28 cu. ft. French Door Refrigerator with Twin Cooling Plus Technology"></textarea>
+                </div>
+            </div>
+
+            <!-- Location & Category Section -->
+            <div class="form-section">
+                <h2 class="text-2xl font-black uppercase text-text-primary mb-6">
+                    Location & Category
+                </h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Category -->
+                    <div>
+                        <label class="form-label">Category *</label>
+                        <select class="form-select w-full" required>
+                            <option value="">Select Category</option>
+                            <option value="kitchen">Kitchen</option>
+                            <option value="hvac">HVAC</option>
+                            <option value="appliances">Appliances</option>
+                            <option value="electronics">Electronics</option>
+                            <option value="plumbing">Plumbing</option>
+                            <option value="electrical">Electrical</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Location -->
+                    <div>
+                        <label class="form-label">Location</label>
+                        <input type="text" class="form-input w-full" placeholder="Kitchen - Main Floor">
+                    </div>
+                    
+                    <!-- Room -->
+                    <div>
+                        <label class="form-label">Room/Area</label>
+                        <select class="form-select w-full">
+                            <option value="">Select Room</option>
+                            <option value="kitchen">Kitchen</option>
+                            <option value="living-room">Living Room</option>
+                            <option value="bedroom">Bedroom</option>
+                            <option value="bathroom">Bathroom</option>
+                            <option value="garage">Garage</option>
+                            <option value="basement">Basement</option>
+                            <option value="attic">Attic</option>
+                            <option value="utility">Utility Room</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Priority -->
+                    <div>
+                        <label class="form-label">Priority Level</label>
+                        <select class="form-select w-full">
+                            <option value="normal">Normal</option>
+                            <option value="high">High</option>
+                            <option value="critical">Critical</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Maintenance Settings Section -->
+            <div class="form-section">
+                <h2 class="text-2xl font-black uppercase text-text-primary mb-6">
+                    Maintenance Settings
+                </h2>
+                
+                <!-- Maintenance Options -->
+                <div class="space-y-4 mb-6">
+                    <label class="checkbox-wrapper">
+                        <div class="checkbox checked">✓</div>
+                        <span class="text-text-primary font-bold">Enable automatic maintenance reminders</span>
+                    </label>
+                    
+                    <label class="checkbox-wrapper">
+                        <div class="checkbox">✓</div>
+                        <span class="text-text-primary font-bold">Extract maintenance schedule from manual</span>
+                    </label>
+                    
+                    <label class="checkbox-wrapper">
+                        <div class="checkbox">✓</div>
+                        <span class="text-text-primary font-bold">Add to household inventory</span>
+                    </label>
+                </div>
+                
+                <!-- Quick Maintenance Tasks -->
+                <div>
+                    <label class="form-label">Initial Maintenance Tasks</label>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <input type="text" class="form-input w-full" placeholder="Water filter replacement">
+                        <input type="text" class="form-input w-full" placeholder="Coil cleaning">
+                        <input type="text" class="form-input w-full" placeholder="Interior deep clean">
+                        <input type="text" class="form-input w-full" placeholder="+ Add another task">
+                    </div>
+                </div>
+            </div>
+
+            <!-- File Preview Section -->
+            <div class="form-section">
+                <h2 class="text-2xl font-black uppercase text-text-primary mb-6">
+                    Manual Preview
+                </h2>
+                
+                <div class="file-preview">
+                    <div class="text-center">
+                        <div class="text-4xl mb-4">📄</div>
+                        <h3 class="text-xl font-black uppercase text-text-primary mb-2">
+                            Preview Available
+                        </h3>
+                        <p class="text-text-secondary font-bold mb-4">
+                            Samsung_Refrigerator_Manual.pdf
+                        </p>
+                        <button type="button" class="bg-secondary text-white border-4 border-text-primary px-6 py-3 font-bold uppercase brutal-shadow-dark brutal-hover-press">
+                            View Full Document
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="flex flex-col sm:flex-row gap-4 justify-end">
+                <button type="button" class="bg-transparent text-text-primary border-4 border-text-primary px-8 py-4 font-bold uppercase brutal-hover-press">
+                    Save as Draft
+                </button>
+                <button type="button" class="bg-text-secondary text-white border-4 border-text-primary px-8 py-4 font-bold uppercase brutal-shadow-dark brutal-hover-press">
+                    ← Previous Step
+                </button>
+                <button type="submit" class="bg-primary text-white border-4 border-text-primary px-8 py-4 font-bold uppercase brutal-shadow-dark brutal-hover-press">
+                    Next Step →
+                </button>
+            </div>
+        </form>
+    </main>
+
+    <!-- Progress Toast -->
+    <div id="progressToast" class="fixed top-4 right-4 bg-accent text-white border-4 border-text-primary p-4 brutal-shadow-dark hidden">
+        <div class="flex items-center gap-3">
+            <div class="text-2xl">⚡</div>
+            <div>
+                <div class="font-bold uppercase text-sm">Processing Manual</div>
+                <div class="text-xs">Extracting text and analyzing content...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // File upload functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const dropZone = document.getElementById('dropZone');
+            const fileInput = document.getElementById('fileInput');
+            const uploadedFile = document.getElementById('uploadedFile');
+            const progressToast = document.getElementById('progressToast');
+            
+            // Click to upload
+            dropZone.addEventListener('click', function() {
+                fileInput.click();
+            });
+            
+            // File input change
+            fileInput.addEventListener('change', function(e) {
+                if (e.target.files.length > 0) {
+                    handleFileUpload(e.target.files[0]);
+                }
+            });
+            
+            // Drag and drop
+            dropZone.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                dropZone.classList.add('dragover');
+            });
+            
+            dropZone.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                dropZone.classList.remove('dragover');
+            });
+            
+            dropZone.addEventListener('drop', function(e) {
+                e.preventDefault();
+                dropZone.classList.remove('dragover');
+                
+                if (e.dataTransfer.files.length > 0) {
+                    handleFileUpload(e.dataTransfer.files[0]);
+                }
+            });
+            
+            function handleFileUpload(file) {
+                // Show uploaded file
+                document.getElementById('fileName').textContent = file.name;
+                document.getElementById('fileSize').textContent = formatFileSize(file.size);
+                
+                uploadedFile.classList.remove('hidden');
+                dropZone.style.display = 'none';
+                
+                // Show processing toast
+                progressToast.classList.remove('hidden');
+                
+                // Simulate processing
+                setTimeout(() => {
+                    progressToast.classList.add('hidden');
+                }, 3000);
+            }
+            
+            function formatFileSize(bytes) {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            }
+            
+            // Remove file
+            document.querySelector('.uploaded-file button').addEventListener('click', function() {
+                uploadedFile.classList.add('hidden');
+                dropZone.style.display = 'block';
+                fileInput.value = '';
+            });
+            
+            // Checkbox functionality
+            const checkboxes = document.querySelectorAll('.checkbox-wrapper');
+            checkboxes.forEach(wrapper => {
+                wrapper.addEventListener('click', function() {
+                    const checkbox = this.querySelector('.checkbox');
+                    checkbox.classList.toggle('checked');
+                });
+            });
+            
+            // Form validation
+            const form = document.querySelector('form');
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Show success message
+                const toast = document.createElement('div');
+                toast.className = 'fixed top-4 right-4 bg-accent text-white border-4 border-text-primary p-4 brutal-shadow-dark';
+                toast.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="text-2xl">✓</div>
+                        <div>
+                            <div class="font-bold uppercase text-sm">Manual Added Successfully</div>
+                            <div class="text-xs">Ready for review and categorization</div>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(toast);
+                
+                setTimeout(() => {
+                    toast.remove();
+                }, 4000);
+            });
+        });
+    </script>
+</body>
+</html>

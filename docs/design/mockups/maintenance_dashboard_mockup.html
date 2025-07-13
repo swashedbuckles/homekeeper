@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HomeKeeper - Maintenance Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#e67e22',
+                        'secondary': '#4A6FA5', 
+                        'accent': '#5d9c59',
+                        'background': '#f5f0e8',
+                        'text-primary': '#2c3e50',
+                        'text-secondary': '#7f8c8d',
+                        'error': '#e74c3c'
+                    },
+                    fontFamily: {
+                        'mono': ['JetBrains Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .brutal-shadow-primary {
+            box-shadow: 8px 8px 0 #e67e22;
+        }
+        
+        .brutal-shadow-secondary {
+            box-shadow: 8px 8px 0 #4A6FA5;
+        }
+        
+        .brutal-shadow-accent {
+            box-shadow: 8px 8px 0 #5d9c59;
+        }
+        
+        .brutal-shadow-dark {
+            box-shadow: 8px 8px 0 #2c3e50;
+        }
+        
+        .brutal-shadow-error {
+            box-shadow: 8px 8px 0 #e74c3c;
+        }
+        
+        .brutal-shadow-triple {
+            box-shadow: 
+                4px 4px 0 #e67e22,
+                8px 8px 0 #4A6FA5,
+                12px 12px 0 #2c3e50;
+        }
+        
+        .brutal-hover-press {
+            transition: all 0.1s ease;
+        }
+        
+        .brutal-hover-press:hover {
+            transform: translate(4px, 4px);
+            box-shadow: none;
+        }
+        
+        .brutal-hover-lift {
+            transition: all 0.1s ease;
+        }
+        
+        .brutal-hover-lift:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 
+                6px 6px 0 #e67e22,
+                12px 12px 0 #2c3e50;
+        }
+        
+        .brutal-text-shadow {
+            text-shadow: 
+                4px 4px 0 #e67e22,
+                8px 8px 0 #2c3e50;
+        }
+        
+        .brutal-rotate-slight-left {
+            transform: rotate(-0.5deg);
+        }
+        
+        .brutal-rotate-slight-right {
+            transform: rotate(0.5deg);
+        }
+        
+        .hero-bg {
+            background: linear-gradient(135deg, #f5f0e8 0%, #e8ddd4 100%);
+        }
+        
+        /* Tab styles */
+        .tab-active {
+            background: #e67e22;
+            color: white;
+            border: 4px solid #2c3e50;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 0.75rem 1.5rem;
+            box-shadow: 4px 4px 0 #2c3e50;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        .tab-inactive {
+            background: transparent;
+            color: #2c3e50;
+            border: 4px solid #2c3e50;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 0.75rem 1.5rem;
+            transition: all 0.1s ease;
+            cursor: pointer;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        .tab-inactive:hover {
+            background: #e67e22;
+            color: white;
+            box-shadow: 4px 4px 0 #2c3e50;
+        }
+        
+        .task-card {
+            background: white;
+            border: 6px solid #2c3e50;
+            padding: 1.5rem;
+            transition: all 0.1s ease;
+            cursor: pointer;
+        }
+        
+        .task-card:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 8px 8px 0 #e67e22;
+        }
+        
+        .task-card.overdue {
+            border-left: 12px solid #e74c3c;
+        }
+        
+        .task-card.due-soon {
+            border-left: 12px solid #e67e22;
+        }
+        
+        .task-card.upcoming {
+            border-left: 12px solid #4A6FA5;
+        }
+        
+        .task-card.completed {
+            border-left: 12px solid #5d9c59;
+            opacity: 0.8;
+        }
+        
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border: 3px solid #2c3e50;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+        }
+        
+        .status-overdue {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .status-due-soon {
+            background: #e67e22;
+            color: white;
+        }
+        
+        .status-upcoming {
+            background: #4A6FA5;
+            color: white;
+        }
+        
+        .status-completed {
+            background: #5d9c59;
+            color: white;
+        }
+        
+        .priority-high {
+            color: #e74c3c;
+        }
+        
+        .priority-medium {
+            color: #e67e22;
+        }
+        
+        .priority-low {
+            color: #5d9c59;
+        }
+        
+        .filter-button {
+            background: white;
+            color: #2c3e50;
+            border: 4px solid #2c3e50;
+            padding: 0.5rem 1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.1s ease;
+        }
+        
+        .filter-button.active {
+            background: #4A6FA5;
+            color: white;
+            box-shadow: 4px 4px 0 #2c3e50;
+        }
+        
+        .filter-button:hover {
+            box-shadow: 4px 4px 0 #4A6FA5;
+        }
+        
+        .search-input {
+            background: white;
+            border: 4px solid #2c3e50;
+            padding: 0.75rem 1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            box-shadow: 4px 4px 0 #2c3e50;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            box-shadow: 4px 4px 0 #e67e22;
+        }
+        
+        .search-input::placeholder {
+            color: #7f8c8d;
+        }
+        
+        .calendar-mini {
+            background: white;
+            border: 4px solid #2c3e50;
+            padding: 1rem;
+        }
+        
+        .calendar-day {
+            width: 2rem;
+            height: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.1s ease;
+        }
+        
+        .calendar-day:hover {
+            background: #e67e22;
+            color: white;
+        }
+        
+        .calendar-day.has-tasks {
+            background: #4A6FA5;
+            color: white;
+            border: 2px solid #2c3e50;
+        }
+        
+        .calendar-day.today {
+            background: #e67e22;
+            color: white;
+            border: 2px solid #2c3e50;
+        }
+        
+        .equipment-quick-view {
+            background: white;
+            border: 4px solid #2c3e50;
+            padding: 1rem;
+            transition: all 0.1s ease;
+            cursor: pointer;
+        }
+        
+        .equipment-quick-view:hover {
+            box-shadow: 4px 4px 0 #e67e22;
+        }
+        
+        .equipment-quick-view.needs-attention {
+            border-color: #e74c3c;
+        }
+        
+        .equipment-quick-view.good-condition {
+            border-color: #5d9c59;
+        }
+        
+        .progress-bar {
+            background: #e8ddd4;
+            height: 8px;
+            border: 2px solid #2c3e50;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+        
+        .progress-overdue {
+            background: #e74c3c;
+        }
+        
+        .progress-due-soon {
+            background: #e67e22;
+        }
+        
+        .progress-on-track {
+            background: #5d9c59;
+        }
+    </style>
+</head>
+<body class="font-mono bg-background hero-bg">
+    <!-- Header -->
+    <header class="bg-text-primary border-b-8 border-primary">
+        <div class="max-w-7xl mx-auto px-5 py-4">
+            <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+                <!-- Logo -->
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-primary border-4 border-white brutal-rotate-slight-left brutal-shadow-secondary flex items-center justify-center">
+                        <svg width="48" height="48" viewBox="0 0 128 128" class="text-white">
+                            <polygon points="20,70 60,35 100,70" fill="currentColor"/>
+                            <rect x="20" y="70" width="80" height="36" fill="currentColor"/>
+                            <rect x="60" y="74" width="36" height="28" fill="#e67e22"/>
+                        </svg>
+                    </div>
+                    <h1 class="text-2xl md:text-3xl font-black text-white uppercase tracking-tight">
+                        HomeKeeper
+                    </h1>
+                </div>
+                
+                <!-- Navigation -->
+                <nav class="flex flex-wrap gap-2 md:gap-4">
+                    <button class="text-white font-bold uppercase px-3 py-2 text-sm md:text-base hover:text-primary">Dashboard</button>
+                    <button class="text-white font-bold uppercase px-3 py-2 text-sm md:text-base hover:text-primary">Manuals</button>
+                    <button class="text-primary font-bold uppercase px-3 py-2 text-sm md:text-base">Maintenance</button>
+                    <button class="text-white font-bold uppercase px-3 py-2 text-sm md:text-base hover:text-primary">Settings</button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-5 py-8">
+        <!-- Page Header -->
+        <section class="mb-12">
+            <div class="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-6">
+                <div>
+                    <h1 class="text-4xl md:text-6xl lg:text-7xl font-black uppercase leading-none mb-4 text-text-primary brutal-text-shadow">
+                        Maintenance<br>
+                        Dashboard
+                    </h1>
+                    <p class="text-lg md:text-xl font-bold text-text-secondary uppercase tracking-wide">
+                        12 active tasks • 3 overdue • 5 due this week
+                    </p>
+                </div>
+                
+                <!-- Quick Actions -->
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <button class="bg-primary text-white border-4 border-text-primary px-6 py-3 font-bold uppercase brutal-shadow-dark brutal-hover-press">
+                        + Create Task
+                    </button>
+                    <button class="bg-secondary text-white border-4 border-text-primary px-6 py-3 font-bold uppercase brutal-shadow-dark brutal-hover-press">
+                        📅 Schedule Review
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats Overview -->
+        <section class="mb-12">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Overdue Tasks -->
+                <div class="bg-error border-6 border-white p-6 brutal-rotate-slight-left brutal-shadow-dark">
+                    <div class="text-white font-bold text-sm uppercase mb-2">Overdue Tasks</div>
+                    <div class="text-4xl font-black text-white leading-none mb-2">3</div>
+                    <div class="text-white font-bold uppercase text-xs">Needs Immediate Attention</div>
+                </div>
+                
+                <!-- Due This Week -->
+                <div class="bg-primary border-6 border-white p-6 brutal-rotate-slight-right brutal-shadow-accent">
+                    <div class="text-white font-bold text-sm uppercase mb-2">Due This Week</div>
+                    <div class="text-4xl font-black text-white leading-none mb-2">5</div>
+                    <div class="text-white font-bold uppercase text-xs">Plan Ahead</div>
+                </div>
+                
+                <!-- Completed This Month -->
+                <div class="bg-accent border-6 border-white p-6 brutal-rotate-slight-left brutal-shadow-secondary">
+                    <div class="text-white font-bold text-sm uppercase mb-2">Completed</div>
+                    <div class="text-4xl font-black text-white leading-none mb-2">18</div>
+                    <div class="text-white font-bold uppercase text-xs">This Month</div>
+                </div>
+                
+                <!-- Equipment Monitored -->
+                <div class="bg-text-primary border-6 border-white p-6 brutal-rotate-slight-right brutal-shadow-primary">
+                    <div class="text-white font-bold text-sm uppercase mb-2">Equipment</div>
+                    <div class="text-4xl font-black text-primary leading-none mb-2">47</div>
+                    <div class="text-white font-bold uppercase text-xs">Being Monitored</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Content Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Left Column: Tasks -->
+            <div class="lg:col-span-2">
+                <!-- Task Filters -->
+                <section class="mb-8">
+                    <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+                        <!-- Search -->
+                        <div class="flex-1 max-w-md">
+                            <input 
+                                type="text" 
+                                placeholder="Search tasks..."
+                                class="search-input w-full font-mono"
+                            />
+                        </div>
+                        
+                        <!-- Filter Buttons -->
+                        <div class="flex flex-wrap gap-2">
+                            <button class="filter-button active">All</button>
+                            <button class="filter-button">Overdue</button>
+                            <button class="filter-button">Due Soon</button>
+                            <button class="filter-button">Upcoming</button>
+                            <button class="filter-button">Completed</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Task List -->
+                <section class="space-y-6">
+                    <!-- Overdue Task -->
+                    <div class="task-card overdue">
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-4 gap-3">
+                            <div class="flex-1">
+                                <div class="flex items-center gap-3 mb-2">
+                                    <h3 class="text-lg md:text-xl font-black uppercase text-text-primary">HVAC Filter Change</h3>
+                                    <span class="status-badge status-overdue">Overdue</span>
+                                    <span class="priority-high">●</span>
+                                </div>
+                                <p class="text-text-secondary font-bold text-sm mb-2">
+                                    Carrier Air Handler • FV4CNF006 • Basement
+                                </p>
+                                <p class="text-text-primary font-bold text-sm">
+                                    Replace air filter - improve air quality and system efficiency
+                                </p>
+                            </div>
+                            <div class="text-right sm:text-right">
+                                <div class="text-error font-black text-sm mb-1">5 DAYS OVERDUE</div>
+                                <div class="text-text-secondary font-bold text-xs">Due: Dec 15, 2023</div>
+                            </div>
+                        </div>
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+                            <div class="flex items-center gap-4">
+                                <span class="text-text-secondary font-bold text-xs uppercase">Est: 30 min</span>
+                                <span class="text-text-secondary font-bold text-xs uppercase">Cost: $25</span>
+                            </div>
+                            <div class="flex gap-2">
+                                <button class="bg-accent text-white border-3 border-text-primary px-3 py-1 font-bold uppercase text-xs">
+                                    Mark Complete
+                                </button>
+                                <button class="bg-transparent text-text-primary border-3 border-text-primary px-3 py-1 font-bold uppercase text-xs">
+                                    Reschedule
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Due Soon Task -->
+                    <div class="task-card due-soon">
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-4 gap-3">
+                            <div class="flex-1">
+                                <div class="flex items-center gap-3 mb-2">
+                                    <h3 class="text-lg md:text-xl font-black uppercase text-text-primary">Water Filter Replacement</h3>
+                                    <span class="status-badge status-due-soon">Due Soon</span>
+                                    <span class="priority-medium">●</span>
+                                </div>
+                                <p class="text-text-secondary font-bold text-sm mb-2">
+                                    Samsung Refrigerator • RF28T5001SR • Kitchen
+                                </p>
+                                <p class="text-text-primary font-bold text-sm">
+                                    Replace water filter cartridge and reset indicator light
+                                </p>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-primary font-black text-sm mb-1">DUE IN 2 DAYS</div>
+                                <div class="text-text-secondary font-bold text-xs">Due: Dec 22, 2023</div>
+                            </div>
+                        </div>
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+                            <div class="flex items-center gap-4">
+                                <span class="text-text-secondary font-bold text-xs uppercase">Est: 15 min</span>
+                                <span class="text-text-secondary font-bold text-xs uppercase">Cost: $45</span>
+                            </div>
+                            <div class="flex gap-2">
+                                <button class="bg-accent text-white border-3 border-text-primary px-3 py-1 font-bold uppercase text-xs">
+                                    Mark Complete
+                                </button>
+                                <button class="bg-transparent text-text-primary border-3 border-text-primary px-3 py-1 font-bold uppercase text-xs">
+                                    Details
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Upcoming Task -->
+                    <div class="task-card upcoming">
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-4 gap-3">
+                            <div class="flex-1">
+                                <div class="flex items-center gap-3 mb-2">
+                                    <h3 class="text-lg md:text-xl font-black uppercase text-text-primary">Dishwasher Deep Clean</h3>
+                                    <span class="status-badge status-upcoming">Upcoming</span>
+                                    <span class="priority-low">●</span>
+                                </div>
+                                <p class="text-text-secondary font-bold text-sm mb-2">
+                                    Bosch Dishwasher • SHPM78Z54N • Kitchen
+                                </p>
+                                <p class="text-text-primary font-bold text-sm">
+                                    Run cleaning cycle and clean filter assembly
+                                </p>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-secondary font-black text-sm mb-1">JAN 5, 2024</div>
+                                <div class="text-text-secondary font-bold text-xs">Recurring Monthly</div>
+                            </div>
+                        </div>
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+                            <div class="flex items-center gap-4">
+                                <span class="text-text-secondary font-bold text-xs uppercase">Est: 45 min</span>
+                                <span class="text-text-secondary font-bold text-xs uppercase">Cost: $0</span>
+                            </div>
+                            <div class="flex gap-2">
+                                <button class="bg-transparent text-text-primary border-3 border-text-primary px-3 py-1 font-bold uppercase text-xs">
+                                    Edit Schedule
+                                </button>
+                                <button class="bg-transparent text-text-primary border-3 border-text-primary px-3 py-1 font-bold uppercase text-xs">
+                                    Details
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recently Completed Task -->
+                    <div class="task-card completed">
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-4 gap-3">
+                            <div class="flex-1">
+                                <div class="flex items-center gap-3 mb-2">
+                                    <h3 class="text-lg md:text-xl font-black uppercase text-text-primary">Furnace Inspection</h3>
+                                    <span class="status-badge status-completed">Completed</span>
+                                    <span class="priority-high">●</span>
+                                </div>
+                                <p class="text-text-secondary font-bold text-sm mb-2">
+                                    Rheem Furnace • R801TA075417MSA • Basement
+                                </p>
+                                <p class="text-text-primary font-bold text-sm">
+                                    Annual safety inspection and efficiency check
+                                </p>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-accent font-black text-sm mb-1">COMPLETED</div>
+                                <div class="text-text-secondary font-bold text-xs">Dec 18, 2023</div>
+                            </div>
+                        </div>
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+                            <div class="flex items-center gap-4">
+                                <span class="text-text-secondary font-bold text-xs uppercase">Actual: 2 hours</span>
+                                <span class="text-text-secondary font-bold text-xs uppercase">Cost: $150</span>
+                            </div>
+                            <div class="flex gap-2">
+                                <button class="bg-transparent text-text-primary border-3 border-text-primary px-3 py-1 font-bold uppercase text-xs">
+                                    View Report
+                                </button>
+                                <button class="bg-transparent text-text-primary border-3 border-text-primary px-3 py-1 font-bold uppercase text-xs">
+                                    Schedule Next
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Load More -->
+                <section class="text-center mt-8">
+                    <button class="bg-secondary text-white border-4 border-text-primary px-8 py-4 font-bold uppercase brutal-shadow-dark brutal-hover-press">
+                        Load More Tasks
+                    </button>
+                </section>
+            </div>
+
+            <!-- Right Column: Sidebar -->
+            <div class="space-y-6">
+                <!-- Calendar Widget -->
+                <div class="calendar-mini brutal-shadow-primary">
+                    <h3 class="text-lg font-black uppercase text-text-primary mb-4">December 2023</h3>
+                    <div class="grid grid-cols-7 gap-1 mb-2">
+                        <div class="text-xs font-bold text-text-secondary text-center">S</div>
+                        <div class="text-xs font-bold text-text-secondary text-center">M</div>
+                        <div class="text-xs font-bold text-text-secondary text-center">T</div>
+                        <div class="text-xs font-bold text-text-secondary text-center">W</div>
+                        <div class="text-xs font-bold text-text-secondary text-center">T</div>
+                        <div class="text-xs font-bold text-text-secondary text-center">F</div>
+                        <div class="text-xs font-bold text-text-secondary text-center">S</div>
+                    </div>
+                    <div class="grid grid-cols-7 gap-1">
+                        <div class="calendar-day"></div>
+                        <div class="calendar-day"></div>
+                        <div class="calendar-day"></div>
+                        <div class="calendar-day"></div>
+                        <div class="calendar-day"></div>
+                        <div class="calendar-day">1</div>
+                        <div class="calendar-day">2</div>
+                        <div class="calendar-day">3</div>
+                        <div class="calendar-day">4</div>
+                        <div class="calendar-day">5</div>
+                        <div class="calendar-day">6</div>
+                        <div class="calendar-day">7</div>
+                        <div class="calendar-day">8</div>
+                        <div class="calendar-day">9</div>
+                        <div class="calendar-day">10</div>
+                        <div class="calendar-day">11</div>
+                        <div class="calendar-day">12</div>
+                        <div class="calendar-day">13</div>
+                        <div class="calendar-day">14</div>
+                        <div class="calendar-day has-tasks">15</div>
+                        <div class="calendar-day">16</div>
+                        <div class="calendar-day">17</div>
+                        <div class="calendar-day">18</div>
+                        <div class="calendar-day">19</div>
+                        <div class="calendar-day today">20</div>
+                        <div class="calendar-day">21</div>
+                        <div class="calendar-day has-tasks">22</div>
+                        <div class="calendar-day">23</div>
+                        <div class="calendar-day">24</div>
+                        <div class="calendar-day">25</div>
+                        <div class="calendar-day">26</div>
+                        <div class="calendar-day">27</div>
+                        <div class="calendar-day">28</div>
+                        <div class="calendar-day">29</div>
+                        <div class="calendar-day">30</div>
+                        <div class="calendar-day">31</div>
+                    </div>
+                </div>
+
+                <!-- Equipment Status -->
+                <div>
+                    <h3 class="text-xl font-black uppercase text-text-primary mb-4">
+                        Equipment Status
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="equipment-quick-view needs-attention">
+                            <div class="flex items-center gap-3 mb-2">
+                                <div class="w-8 h-8 bg-error text-white font-bold text-xs flex items-center justify-center">🔥</div>
+                                <div>
+                                    <h4 class="font-black uppercase text-sm text-text-primary">HVAC System</h4>
+                                    <p class="text-text-secondary font-bold text-xs">3 overdue tasks</p>
+                                </div>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill progress-overdue" style="width: 25%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="equipment-quick-view">
+                            <div class="flex items-center gap-3 mb-2">
+                                <div class="w-8 h-8 bg-primary text-white font-bold text-xs flex items-center justify-center">❄️</div>
+                                <div>
+                                    <h4 class="font-black uppercase text-sm text-text-primary">Kitchen Appliances</h4>
+                                    <p class="text-text-secondary font-bold text-xs">1 due soon</p>
+                                </div>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill progress-due-soon" style="width: 75%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="equipment-quick-view good-condition">
+                            <div class="flex items-center gap-3 mb-2">
+                                <div class="w-8 h-8 bg-accent text-white font-bold text-xs flex items-center justify-center">🚿</div>
+                                <div>
+                                    <h4 class="font-black uppercase text-sm text-text-primary">Plumbing</h4>
+                                    <p class="text-text-secondary font-bold text-xs">All up to date</p>
+                                </div>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill progress-on-track" style="width: 100%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="bg-white border-4 border-text-primary p-4 brutal-shadow-secondary">
+                    <h3 class="text-lg font-black uppercase text-text-primary mb-4">
+                        This Month
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="flex justify-between">
+                            <span class="text-text-secondary font-bold text-sm">Tasks Completed</span>
+                            <span class="text-text-primary font-black">18</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-text-secondary font-bold text-sm">Hours Saved</span>
+                            <span class="text-text-primary font-black">24.5</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-text-secondary font-bold text-sm">Money Saved</span>
+                            <span class="text-text-primary font-black">$450</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-text-secondary font-bold text-sm">Equipment Health</span>
+                            <span class="text-accent font-black">94%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="space-y-3">
+                    <button class="w-full bg-primary text-white border-4 border-text-primary px-4 py-3 font-bold uppercase brutal-shadow-dark brutal-hover-press">
+                        + Quick Task
+                    </button>
+                    <button class="w-full bg-secondary text-white border-4 border-text-primary px-4 py-3 font-bold uppercase brutal-shadow-dark brutal-hover-press">
+                        📊 View Reports
+                    </button>
+                    <button class="w-full bg-accent text-white border-4 border-text-primary px-4 py-3 font-bold uppercase brutal-shadow-dark brutal-hover-press">
+                        ⚙️ Settings
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Floating Action Button -->
+    <div class="fixed bottom-6 right-6 md:bottom-8 md:right-8">
+        <button class="w-16 h-16 bg-primary border-4 border-text-primary text-white text-2xl font-black brutal-shadow-dark brutal-rotate-slight-left hover:brutal-rotate-right transition-all duration-200">
+            +
+        </button>
+    </div>
+
+    <script>
+        // Dashboard functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Filter functionality
+            const filterButtons = document.querySelectorAll('.filter-button');
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Filter logic would go here
+                    console.log('Filtering by:', this.textContent);
+                });
+            });
+            
+            // Task card interactions
+            const taskCards = document.querySelectorAll('.task-card');
+            taskCards.forEach(card => {
+                card.addEventListener('click', function(e) {
+                    // Don't trigger if clicking on buttons
+                    if (e.target.tagName === 'BUTTON') return;
+                    
+                    console.log('Opening task details...');
+                });
+            });
+            
+            // Equipment quick view interactions
+            const equipmentViews = document.querySelectorAll('.equipment-quick-view');
+            equipmentViews.forEach(view => {
+                view.addEventListener('click', function() {
+                    console.log('Opening equipment details...');
+                });
+            });
+            
+            // Calendar day interactions
+            const calendarDays = document.querySelectorAll('.calendar-day');
+            calendarDays.forEach(day => {
+                day.addEventListener('click', function() {
+                    if (this.textContent) {
+                        console.log('Selected date:', this.textContent);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

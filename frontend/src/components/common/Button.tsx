@@ -1,8 +1,10 @@
+import { getHoverEffectClass } from '../../lib/design-system/hover-effects';
+import { type StandardSize, getSizeToken } from '../../lib/design-system/sizes';
 import type { ReactNode } from 'react';
 
 export interface ButtonProps {
-  variant?: 'primary' | 'secondary' | 'tertiary' | 'outline' | 'text' | 'danger';
-  size?: 'small' | 'default' | 'large';
+  variant?: 'primary' | 'secondary' | 'tertiary' | 'outline' | 'text' | 'danger' | 'accent';
+  size?: StandardSize;
   disabled?: boolean;
   /** whether to display loading text / spinner */
   loading?: boolean;
@@ -29,30 +31,13 @@ const baseStyles = [
   'disabled:cursor-not-allowed'
 ];
 
-// Size variations
-const sizeStyles = {
-  small: [
-    'px-4',
-    'py-2',
-    'text-sm',
-    'border-brutal-sm',
-    'brutal-hover-press-small'
-  ],
-  default: [
-    'px-6',
-    'py-3',
-    'text-base',
-    'border-brutal-md',
-    'brutal-hover-press'
-  ],
-  large: [
-    'px-8',
-    'py-4',
-    'text-lg',
-    'border-brutal-lg',
-    'brutal-hover-press'
-  ]
-};
+// Size variations using standardized tokens
+const getSizeStyles = (size: StandardSize): string[] => [
+  getSizeToken(size, 'paddingX') + ' ' + getSizeToken(size, 'paddingY'),
+  getSizeToken(size, 'text'),
+  getSizeToken(size, 'border')
+];
+
 
 // Variant styles - colors and borders
 const variantStyles = {
@@ -72,18 +57,24 @@ const variantStyles = {
     'bg-white',
     'text-text-primary',
     'border-text-primary',
-    'brutal-shadow-primary',
+    'brutal-shadow-dark',
   ],
   outline: [
     'bg-transparent',
     'text-text-primary',
     'border-text-primary',
-    'brutal-shadow-dark',
+    // 'brutal-shadow-dark',
     'hover:bg-text-primary',
     'hover:text-white'
   ],
   danger: [
     'bg-error',
+    'text-white',
+    'border-text-primary',
+    'brutal-shadow-dark'
+  ],
+  accent: [
+    'bg-accent',
     'text-white',
     'border-text-primary',
     'brutal-shadow-dark'
@@ -103,13 +94,61 @@ const variantStyles = {
 };
 
 /**
- * Standardized button type for use throughout the application. 
- * Handles loading state and provides additional variations. 
+ * Button Component
  * 
+ * A neobrutalist-styled button component with multiple variants, sizes, and states.
+ * Features thick borders, dramatic shadows, and press animations for tactile interaction.
+ * 
+ * @example
+ * ```tsx
+ * // Primary action button
+ * <Button variant="primary" size="large">
+ *   Get Started
+ * </Button>
+ * 
+ * // Loading state with custom text
+ * <Button variant="secondary" loading loadingText="Saving...">
+ *   Save Changes
+ * </Button>
+ * 
+ * // Full-width submit button
+ * <Button type="submit" variant="accent" full>
+ *   Create Account
+ * </Button>
+ * 
+ * // Destructive action
+ * <Button variant="danger" onClick={handleDelete}>
+ *   Delete Item
+ * </Button>
+ * 
+ * // Minimal text button
+ * <Button variant="text" size="small">
+ *   Cancel
+ * </Button>
+ * ```
+ * 
+ * @param variant - Visual style variant
+ *   - `primary`: Orange background, main call-to-action
+ *   - `secondary`: Blue background, secondary actions  
+ *   - `tertiary`: White background, neutral actions
+ *   - `outline`: Transparent with border, subtle actions
+ *   - `accent`: Green background, positive actions
+ *   - `danger`: Red background, destructive actions
+ *   - `text`: No background/border, minimal styling
+ * @param size - Button size affecting padding and text size
+ * @param loading - Shows spinner and loading text, disables interaction
+ * @param loadingText - Custom text to show during loading state
+ * @param full - Expands button to full width of container
+ * @param type - HTML button type for form submission
+ * @param disabled - Disables button interaction and applies opacity
+ * @param onClick - Click handler function
+ * @param className - Additional CSS classes to apply
+ * @param testId - Test identifier for automated testing
+ * @param children - Button content (text, icons, etc.)
  */
 export const Button = ({
   variant = 'primary',
-  size = 'default',
+  size = 'md',
   disabled = false,
   loading = false,
   loadingText = 'Loading...',
@@ -129,11 +168,15 @@ export const Button = ({
     '!hover:shadow-[var(--shadow-brutal-lg)_var(--shadow-dark)]'
   ] : [];
 
+  const hoverEffect = (size === 'xs' || size === 'sm') ? 'press-small' : 'press';
+  const hoverClass  = !isDisabled ? getHoverEffectClass(hoverEffect) : '';
+  
   const buttonStyles = [
     ...baseStyles,
-    ...sizeStyles[size],
+    ...getSizeStyles(size),
     ...variantStyles[variant],
     ...disabledStyles,
+    hoverClass,
     full ? 'w-full' : '',
     className
   ].filter(Boolean).join(' ');

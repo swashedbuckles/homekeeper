@@ -10,15 +10,15 @@ import { Login } from './pages/auth/Login';
 import { Register } from './pages/auth/Register';
 import { Dashboard } from './pages/Dashboard';
 
+import { KitchenSink } from './pages/examples/KitchenSink';
+import { LayoutExamples } from './pages/examples/LayoutExamples';
 import { Home } from './pages/Home';
-import { KitchenSink } from './pages/KitchenSink';
 import { LandingPage } from './pages/Landing';
 import { CreateHousehold } from './pages/onboarding/Create';
 import { OnboardingHome } from './pages/onboarding/Home';
 import { InviteOthers } from './pages/onboarding/Invite';
 import { JoinHousehold } from './pages/onboarding/Join';
 import { OnboardingSuccess } from './pages/onboarding/Success';
-import { Test } from './pages/Test';
 
 /** @todo setup constants file for front-end */
 const FIVE_MINUTES = 5 * 60 * 1000;
@@ -57,8 +57,8 @@ export function App() {
               </Route>
               <Route path="/debug" element={<Root />}>
                 <Route path="home" element={<Home />} />
-                <Route path="test" element={<Test />} />
                 <Route path="kitchen-sink" element={<KitchenSink />} />
+                <Route path="layout" element={<LayoutExamples />} />
               </Route>
               <Route path="/onboarding">
                 <Route index element={<OnboardingHome />} />

@@ -1,5 +1,7 @@
 import { ChevronLeft } from 'lucide-react';
 import { useNavigate } from 'react-router';
+import { getHoverEffectClass } from '../../lib/design-system/hover-effects';
+import { type StandardSize, getSizeToken } from '../../lib/design-system/sizes';
 
 /**
  * BackButton Component.
@@ -19,14 +21,14 @@ import { useNavigate } from 'react-router';
  * <BackButton 
  *   label="Back to Settings" 
  *   historyOverride="/settings"
- *   size="small"
+ *   size="sm"
  * />
  * ```
  */
 export interface BackButtonProps {
   label?: string;
   historyOverride?: string;
-  size?: 'small' | 'default';
+  size?: StandardSize;
   variant?: 'outline' | 'text';
   className?: string;
   testId?: string;
@@ -45,18 +47,12 @@ const baseStyles = [
   'mb-4'
 ];
 
-const sizeStyles = {
-  small: [
-    'px-3',
-    'py-2',
-    'text-sm'
-  ],
-  default: [
-    'px-4',
-    'py-3',
-    'text-base'
-  ]
-};
+// Size variations using standardized tokens
+const getSizeStyles = (size: StandardSize): string[] => [
+  getSizeToken(size, 'paddingX'),
+  getSizeToken(size, 'paddingY'),
+  getSizeToken(size, 'text')
+];
 
 const variantStyles = {
   outline: [
@@ -65,8 +61,7 @@ const variantStyles = {
     'border-text-primary',
     'text-text-primary',
     'hover:bg-text-primary',
-    'hover:text-white',
-    'brutal-hover-press'
+    'hover:text-white'
   ],
   text: [
     'bg-transparent',
@@ -80,7 +75,7 @@ const variantStyles = {
 export const BackButton = ({
   label = 'Back', 
   historyOverride,
-  size = 'default',
+  size = 'md',
   variant = 'outline',
   className = '',
   testId = 'back-button'
@@ -96,14 +91,18 @@ export const BackButton = ({
     navigate(-1);
   };
 
+  const hoverEffect = variant === 'outline' ? 'press' : 'none';
+  const hoverClass = getHoverEffectClass(hoverEffect);
+  
   const buttonStyles = [
     ...baseStyles,
-    ...sizeStyles[size],
+    ...getSizeStyles(size),
     ...variantStyles[variant],
+    hoverClass,
     className
   ].filter(Boolean).join(' ');
 
-  const iconSize = size === 'small' ? 'w-4 h-4' : 'w-5 h-5';
+  const iconSize = getSizeToken(size, 'icon');
 
   return (
     <button 

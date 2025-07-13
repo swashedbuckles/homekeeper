@@ -43,11 +43,13 @@ export const mockAuthEndpoints = () => {
     body: { csrfToken: 'mock-csrf-token'  },
   }});
 
-  // fetchMock.route({
-  //   url: 'path:/auth/refresh', 
-  //   response: {
-  //   status: 200,
-  // }});
+  fetchMock.route({
+    url: 'path:/auth/refresh', 
+    response: {
+      status: 401,
+      body: { error: 'Session expired' }
+    }
+  });
 
   // Mock profile endpoint
   fetchMock.route({

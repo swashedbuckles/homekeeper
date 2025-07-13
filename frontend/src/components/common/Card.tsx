@@ -1,5 +1,5 @@
+import { type HoverEffect, getHoverEffectClasses } from '../../lib/design-system/hover-effects';
 import type { ReactNode } from 'react';
-
 /**
  * Base Card Component.
  * 
@@ -24,21 +24,29 @@ export interface CardProps {
   children: ReactNode;
   variant?: 'default' | 'subtle' | 'primary' | 'secondary' | 'accent' | 'danger' | 'dark';
   padding?: 'sm' | 'md' | 'lg';
-  shadow?: 'none' | 'primary' | 'secondary' | 'accent' | 'dark' | 'error' | 'triple' | 'mega';
+  shadow?: 'none' | 'primary' | 'secondary' | 'accent' | 'dark' | 'error' | 'double' | 'double-white' | 'triple';
+  border?: 'default' | 'white' | 'primary' | 'secondary' | 'accent' | 'dark' | 'error';
   rotation?: 'none' | 'left' | 'right' | 'slight-left' | 'slight-right';
   hover?: boolean;
+  hoverEffect?: HoverEffect;
   onClick?: () => void;
   className?: string;
   testId?: string;
 }
 
+type variant_t = NonNullable<CardProps['variant']>;
+type border_t  = NonNullable<CardProps['border']>;
+type shadow_t  = NonNullable<CardProps['shadow']>;
+
 export const Card = ({
   children,
   variant = 'default',
   padding = 'md',
-  shadow = 'dark',
+  shadow,
+  border,
   rotation = 'none',
   hover = false,
+  hoverEffect = 'lift',
   onClick,
   className = '',
   testId = 'card',
@@ -58,63 +66,79 @@ export const Card = ({
     lg: 'p-8'
   };
 
-  // Variant styles (background, text, border colors)
+  // Variant styles (background and text colors)
   const variantStyles = {
     default: [
       'bg-white',
-      'text-text-primary',
-      'border-text-primary'
+      'text-text-primary'
     ],
     subtle: [
       'bg-background',
-      'text-text-primary',
-      'border-text-primary'
+      'text-text-primary'
     ],
     primary: [
       'bg-primary',
-      'text-white',
-      'border-white'
+      'text-white'
     ],
     secondary: [
       'bg-secondary', 
-      'text-white',
-      'border-white'
+      'text-white'
     ],
     accent: [
       'bg-accent',
-      'text-white', 
-      'border-white'
+      'text-white'
     ],
     danger: [
       'bg-error',
-      'text-white',
-      'border-white'
+      'text-white'
     ],
     dark: [
       'bg-text-primary',
-      'text-white',
-      'border-white'
+      'text-white'
     ]
+  };
+
+  // Variant defaults for border and shadow
+  const variantDefaults: {[key in variant_t]: {border: border_t, shadow: shadow_t}} = {
+    default:   { border: 'default', shadow: 'dark' },
+    subtle:    { border: 'default', shadow: 'primary' },
+    primary:   { border: 'default', shadow: 'dark' },
+    secondary: { border: 'default', shadow: 'dark' },
+    accent:    { border: 'default', shadow: 'dark' },
+    danger:    { border: 'default', shadow: 'dark' },
+    dark:      { border: 'default', shadow: 'dark' }
+  };
+
+  // Border color options
+  const borderStyles = {
+    default:   'border-text-primary',
+    white:     'border-white',
+    primary:   'border-primary',
+    secondary: 'border-secondary',
+    accent:    'border-accent',
+    dark:      'border-text-primary',
+    error:     'border-error'
   };
 
   // Shadow variations
   const shadowStyles = {
     none: '',
-    primary: 'brutal-shadow-primary',
-    secondary: 'brutal-shadow-secondary', 
-    accent: 'brutal-shadow-accent',
-    dark: 'brutal-shadow-dark',
-    error: 'brutal-shadow-error',
-    triple: 'brutal-shadow-triple',
-    mega: 'brutal-shadow-mega'
+    primary:        'brutal-shadow-primary',
+    secondary:      'brutal-shadow-secondary',
+    accent:         'brutal-shadow-accent',
+    dark:           'brutal-shadow-dark',
+    error:          'brutal-shadow-error',
+    double:         'brutal-shadow-double',
+    'double-white': 'brutal-shadow-double-white',
+    triple:         'brutal-shadow-triple'
   };
 
   // Rotation variations
   const rotationStyles = {
-    none: '',
-    left: 'brutal-rotate-left',
-    right: 'brutal-rotate-right',
-    'slight-left': 'brutal-rotate-slight-left',
+    none:           '',
+    left:           'brutal-rotate-left',
+    right:          'brutal-rotate-right',
+    'slight-left':  'brutal-rotate-slight-left',
     'slight-right': 'brutal-rotate-slight-right'
   };
 
@@ -124,13 +148,19 @@ export const Card = ({
     'brutal-transition'
   ] : [];
 
-  const hoverStyles = hover ? ['brutal-hover-lift'] : [];
+  // Hover effect using standardized system
+  const hoverStyles = hover ? getHoverEffectClasses(hoverEffect, false) : [];
+
+  // Use provided props or fall back to variant defaults
+  const finalBorder = border || variantDefaults[variant].border;
+  const finalShadow = shadow || variantDefaults[variant].shadow;
 
   const cardStyles = [
     ...baseStyles,
     paddingStyles[padding],
     ...variantStyles[variant],
-    shadowStyles[shadow],
+    borderStyles[finalBorder],
+    shadowStyles[finalShadow],
     rotationStyles[rotation],
     ...interactiveStyles,
     ...hoverStyles,

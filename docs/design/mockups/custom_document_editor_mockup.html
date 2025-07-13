@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HomeKeeper - Document Editor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#e67e22',
+                        'secondary': '#4A6FA5', 
+                        'accent': '#5d9c59',
+                        'background': '#f5f0e8',
+                        'text-primary': '#2c3e50',
+                        'text-secondary': '#7f8c8d',
+                        'error': '#e74c3c'
+                    },
+                    fontFamily: {
+                        'mono': ['JetBrains Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .brutal-shadow-primary {
+            box-shadow: 8px 8px 0 #e67e22;
+        }
+        
+        .brutal-shadow-secondary {
+            box-shadow: 8px 8px 0 #4A6FA5;
+        }
+        
+        .brutal-shadow-accent {
+            box-shadow: 8px 8px 0 #5d9c59;
+        }
+        
+        .brutal-shadow-dark {
+            box-shadow: 8px 8px 0 #2c3e50;
+        }
+        
+        .brutal-hover-press {
+            transition: all 0.1s ease;
+        }
+        
+        .brutal-hover-press:hover {
+            transform: translate(4px, 4px);
+            box-shadow: none;
+        }
+        
+        .brutal-text-shadow {
+            text-shadow: 
+                4px 4px 0 #e67e22,
+                8px 8px 0 #2c3e50;
+        }
+        
+        .brutal-rotate-slight-left {
+            transform: rotate(-0.5deg);
+        }
+        
+        .brutal-rotate-slight-right {
+            transform: rotate(0.5deg);
+        }
+        
+        .hero-bg {
+            background: linear-gradient(135deg, #f5f0e8 0%, #e8ddd4 100%);
+        }
+        
+        .editor-toolbar {
+            background: #2c3e50;
+            border-bottom: 4px solid #e67e22;
+            padding: 1rem;
+        }
+        
+        .editor-button {
+            background: white;
+            color: #2c3e50;
+            border: 3px solid #2c3e50;
+            padding: 0.5rem 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.1s ease;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        .editor-button:hover {
+            background: #e67e22;
+            color: white;
+            box-shadow: 2px 2px 0 #2c3e50;
+        }
+        
+        .editor-button.active {
+            background: #4A6FA5;
+            color: white;
+            box-shadow: 2px 2px 0 #2c3e50;
+        }
+        
+        .editor-separator {
+            width: 2px;
+            background: #7f8c8d;
+            margin: 0 0.5rem;
+        }
+        
+        .editor-content {
+            background: white;
+            border: 6px solid #2c3e50;
+            min-height: 500px;
+            padding: 2rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+            line-height: 1.6;
+        }
+        
+        .editor-content:focus {
+            outline: none;
+        }
+        
+        .editor-content h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            border-bottom: 4px solid #e67e22;
+            padding-bottom: 0.5rem;
+        }
+        
+        .editor-content h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #2c3e50;
+            margin: 1.5rem 0 1rem 0;
+            border-left: 6px solid #4A6FA5;
+            padding-left: 1rem;
+        }
+        
+        .editor-content h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #2c3e50;
+            margin: 1rem 0 0.5rem 0;
+        }
+        
+        .editor-content p {
+            margin-bottom: 1rem;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+        
+        .editor-content strong {
+            font-weight: 800;
+            color: #e67e22;
+        }
+        
+        .editor-content em {
+            font-style: italic;
+            color: #4A6FA5;
+        }
+        
+        .editor-content ul, .editor-content ol {
+            margin: 1rem 0;
+            padding-left: 2rem;
+        }
+        
+        .editor-content li {
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+        
+        .editor-content blockquote {
+            border-left: 6px solid #5d9c59;
+            background: #f8f9fa;
+            padding: 1rem;
+            margin: 1rem 0;
+            font-style: italic;
+        }
+        
+        .editor-content code {
+            background: #f8f9fa;
+            border: 2px solid #2c3e50;
+            padding: 0.25rem 0.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+        }
+        
+        .editor-content pre {
+            background: #2c3e50;
+            color: white;
+            border: 4px solid #e67e22;
+            padding: 1rem;
+            margin: 1rem 0;
+            overflow-x: auto;
+        }
+        
+        .editor-content table {
+            border: 4px solid #2c3e50;
+            border-collapse: collapse;
+            width: 100%;
+            margin: 1rem 0;
+        }
+        
+        .editor-content th, .editor-content td {
+            border: 2px solid #2c3e50;
+            padding: 0.75rem;
+            text-align: left;
+            font-weight: 700;
+        }
+        
+        .editor-content th {
+            background: #2c3e50;
+            color: white;
+            text-transform: uppercase;
+        }
+        
+        .form-input {
+            background: white;
+            border: 4px solid #2c3e50;
+            padding: 0.75rem 1rem;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+            transition: all 0.1s ease;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            box-shadow: 4px 4px 0 #e67e22;
+            border-color: #e67e22;
+        }
+        
+        .form-input::placeholder {
+            color: #7f8c8d;
+            text-transform: uppercase;
+        }
+        
+        .form-label {
+            color: #2c3e50;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        
+        .form-select {
+            background: white;
+            border: 4px solid #2c3e50;
+            padding: 0.75rem 1rem;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+            cursor: pointer;
+        }
+        
+        .form-select:focus {
+            outline: none;
+            box-shadow: 4px 4px 0 #e67e22;
+            border-color: #e67e22;
+        }
+        
+        .breadcrumb {
+            color: #7f8c8d;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.875rem;
+        }
+        
+        .breadcrumb a {
+            color: #e67e22;
+            text-decoration: none;
+        }
+        
+        .breadcrumb a:hover {
+            color: #2c3e50;
+        }
+        
+        .back-button {
+            color: #e67e22;
+            font-weight: 700;
+            text-transform: uppercase;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .back-button:hover {
+            color: #2c3e50;
+        }
+        
+        .template-card {
+            background: white;
+            border: 4px solid #2c3e50;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.1s ease;
+        }
+        
+        .template-card:hover {
+            box-shadow: 4px 4px 0 #e67e22;
+        }
+        
+        .template-card.selected {
+            border-color: #e67e22;
+            box-shadow: 4px 4px 0 #e67e22;
+        }
+        
+        .sidebar {
+            background: white;
+            border: 4px solid #2c3e50;
+            padding: 1.5rem;
+        }
+        
+        .sidebar-section {
+            margin-bottom: 2rem;
+        }
+        
+        .sidebar-section:last-child {
+            margin-bottom: 0;
+        }
+        
+        .tag-input {
+            background: #f8f9fa;
+            border: 3px solid #2c3e50;
+            padding: 0.5rem;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+        
+        .tag-input:focus {
+            outline: none;
+            border-color: #e67e22;
+        }
+        
+        .tag {
+            background: #4A6FA5;
+            color: white;
+            border: 2px solid #2c3e50;
+            padding: 0.25rem 0.5rem;
+            font-weight: 700;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            display: inline-block;
+            margin: 0.25rem 0.25rem 0.25rem 0;
+        }
+        
+        .tag .remove {
+            margin-left: 0.5rem;
+            cursor: pointer;
+        }
+        
+        .save-status {
+            background: white;
+            border: 3px solid #5d9c59;
+            color: #5d9c59;
+            padding: 0.5rem 1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            border-radius: 0;
+        }
+        
+        .save-status.saving {
+            border-color: #e67e22;
+            color: #e67e22;
+        }
+        
+        .save-status.error {
+            border-color: #e74c3c;
+            color: #e74c3c;
+        }
+        
+        .word-count {
+            background: #f8f9fa;
+            border: 2px solid #2c3e50;
+            padding: 0.5rem;
+            font-weight: 700;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: #7f8c8d;
+        }
+        
+        .format-preview {
+            background: #f8f9fa;
+            border: 4px solid #2c3e50;
+            padding: 1rem;
+            margin-top: 1rem;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body class="font-mono bg-background hero-bg">
+    <!-- Header -->
+    <header class="bg-text-primary border-b-8 border-primary">
+        <div class="max-w-7xl mx-auto px-5 py-4">
+            <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+                <!-- Logo -->
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-primary border-4 border-white brutal-rotate-slight-left brutal-shadow-secondary flex items-center justify-center">
+                        <svg width="48" height="48" viewBox="0 0 128 128" class="text-white">
+                            <polygon points="20,70 60,35 100,70" fill="currentColor"/>
+                            <rect x="20" y="70" width="80" height="36" fill="currentColor"/>
+                            <rect x="60" y="74" width="36" height="28" fill="#e67e22"/>
+                        </svg>
+                    </div>
+                    <h1 class="text-2xl md:text-3xl font-black text-white uppercase tracking-tight">
+                        HomeKeeper
+                    </h1>
+                </div>
+                
+                <!-- Navigation -->
+                <nav class="flex flex-wrap gap-2 md:gap-4">
+                    <button class="text-white font-bold uppercase px-3 py-2 text-sm md:text-base hover:text-primary">Dashboard</button>
+                    <button class="text-primary font-bold uppercase px-3 py-2 text-sm md:text-base">Documents</button>
+                    <button class="text-white font-bold uppercase px-3 py-2 text-sm md:text-base hover:text-primary">Maintenance</button>
+                    <button class="text-white font-bold uppercase px-3 py-2 text-sm md:text-base hover:text-primary">Settings</button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-5 py-6">
+        <!-- Breadcrumb -->
+        <nav class="mb-6">
+            <div class="breadcrumb">
+                <a href="#" class="back-button">
+                    ← Back to Documents
+                </a>
+                <span class="mx-2">•</span>
+                <span>Create Document</span>
+            </div>
+        </nav>
+
+        <!-- Document Header -->
+        <section class="mb-6">
+            <div class="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-6">
+                <div class="flex-1">
+                    <input 
+                        type="text" 
+                        class="form-input w-full text-2xl md:text-3xl font-black mb-4" 
+                        placeholder="UNTITLED DOCUMENT" 
+                        value="Kitchen Renovation Guide"
+                    />
+                    <div class="flex flex-wrap items-center gap-4">
+                        <div class="save-status">
+                            ✓ Saved 2 minutes ago
+                        </div>
+                        <div class="word-count">
+                            847 words • 4,521 characters
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quick Actions -->
+                <div class="flex flex-wrap gap-3">
+                    <button class="bg-primary text-white border-4 border-text-primary px-4 py-2 font-bold uppercase text-sm brutal-shadow-dark brutal-hover-press">
+                        📤 Export
+                    </button>
+                    <button class="bg-secondary text-white border-4 border-text-primary px-4 py-2 font-bold uppercase text-sm brutal-shadow-dark brutal-hover-press">
+                        👁️ Preview
+                    </button>
+                    <button class="bg-accent text-white border-4 border-text-primary px-4 py-2 font-bold uppercase text-sm brutal-shadow-dark brutal-hover-press">
+                        💾 Save
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Editor Layout -->
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            <!-- Main Editor -->
+            <div class="lg:col-span-3">
+                <!-- Toolbar -->
+                <div class="editor-toolbar">
+                    <div class="flex flex-wrap items-center gap-2">
+                        <!-- Text Formatting -->
+                        <button class="editor-button" title="Bold">
+                            <strong>B</strong>
+                        </button>
+                        <button class="editor-button" title="Italic">
+                            <em>I</em>
+                        </button>
+                        <button class="editor-button" title="Underline">
+                            <u>U</u>
+                        </button>
+                        <button class="editor-button" title="Strike">
+                            <s>S</s>
+                        </button>
+                        
+                        <div class="editor-separator"></div>
+                        
+                        <!-- Headings -->
+                        <button class="editor-button" title="Heading 1">H1</button>
+                        <button class="editor-button" title="Heading 2">H2</button>
+                        <button class="editor-button" title="Heading 3">H3</button>
+                        
+                        <div class="editor-separator"></div>
+                        
+                        <!-- Lists -->
+                        <button class="editor-button" title="Bullet List">• List</button>
+                        <button class="editor-button" title="Numbered List">1. List</button>
+                        <button class="editor-button" title="Checklist">☑ Check</button>
+                        
+                        <div class="editor-separator"></div>
+                        
+                        <!-- Insert -->
+                        <button class="editor-button" title="Link">🔗 Link</button>
+                        <button class="editor-button" title="Image">🖼️ Image</button>
+                        <button class="editor-button" title="Table">📊 Table</button>
+                        <button class="editor-button" title="Code">💻 Code</button>
+                        
+                        <div class="editor-separator"></div>
+                        
+                        <!-- Alignment -->
+                        <button class="editor-button" title="Align Left">⬅️</button>
+                        <button class="editor-button" title="Align Center">↔️</button>
+                        <button class="editor-button" title="Align Right">➡️</button>
+                        
+                        <div class="editor-separator"></div>
+                        
+                        <!-- Undo/Redo -->
+                        <button class="editor-button" title="Undo">↶</button>
+                        <button class="editor-button" title="Redo">↷</button>
+                    </div>
+                </div>
+
+                <!-- Editor Content -->
+                <div class="editor-content" contenteditable="true" id="editor">
+                    <h1>Kitchen Renovation Planning Guide</h1>
+                    
+                    <p>This document serves as a comprehensive guide for planning and executing a kitchen renovation project. It covers everything from initial planning to final inspections.</p>
+                    
+                    <h2>Pre-Planning Phase</h2>
+                    
+                    <h3>Budget Considerations</h3>
+                    <p>Before starting any renovation work, establish a clear budget that includes:</p>
+                    <ul>
+                        <li><strong>Appliances</strong> - 35-40% of total budget</li>
+                        <li><strong>Labor</strong> - 20-25% of total budget</li>
+                        <li><strong>Cabinets & Hardware</strong> - 35-40% of total budget</li>
+                        <li><strong>Contingency Fund</strong> - 10-20% for unexpected costs</li>
+                    </ul>
+                    
+                    <h3>Design Planning</h3>
+                    <p>Consider the kitchen work triangle and traffic flow when planning your layout. The three main work areas are:</p>
+                    <ol>
+                        <li>Refrigerator/Storage Area</li>
+                        <li>Sink/Cleanup Area</li>
+                        <li>Stove/Cooking Area</li>
+                    </ol>
+                    
+                    <blockquote>
+                        <strong>Pro Tip:</strong> The total distance of the work triangle should be between 12-26 feet for optimal efficiency.
+                    </blockquote>
+                    
+                    <h2>Equipment & Appliance Specifications</h2>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Appliance</th>
+                                <th>Model</th>
+                                <th>Dimensions</th>
+                                <th>Power Requirements</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Refrigerator</td>
+                                <td>Samsung RF28T5001SR</td>
+                                <td>35.75" W x 36.25" D x 70" H</td>
+                                <td>115V, 15A</td>
+                            </tr>
+                            <tr>
+                                <td>Range</td>
+                                <td>GE JGS760SELSS</td>
+                                <td>30" W x 28.75" D x 36" H</td>
+                                <td>Natural Gas</td>
+                            </tr>
+                            <tr>
+                                <td>Dishwasher</td>
+                                <td>Bosch SHPM78Z54N</td>
+                                <td>23.5" W x 22.5" D x 33.75" H</td>
+                                <td>120V, 12A</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <h2>Installation Timeline</h2>
+                    
+                    <h3>Week 1-2: Demolition & Preparation</h3>
+                    <ul>
+                        <li>Remove old appliances and cabinetry</li>
+                        <li>Update electrical and plumbing as needed</li>
+                        <li>Install new flooring</li>
+                    </ul>
+                    
+                    <h3>Week 3-4: Installation</h3>
+                    <ul>
+                        <li>Install new cabinets</li>
+                        <li>Install countertops</li>
+                        <li>Install backsplash</li>
+                        <li>Install appliances</li>
+                    </ul>
+                    
+                    <h2>Maintenance Schedule</h2>
+                    
+                    <p>Once renovation is complete, establish a regular maintenance schedule:</p>
+                    
+                    <pre><code>Monthly Tasks:
+- Clean range hood filter
+- Check garbage disposal operation
+- Inspect cabinet hardware
+
+Quarterly Tasks:
+- Deep clean appliances
+- Check caulking around sink
+- Inspect under-cabinet lighting
+
+Annual Tasks:
+- Service range hood
+- Check appliance warranties
+- Update equipment manuals</code></pre>
+                    
+                    <h2>Important Contact Information</h2>
+                    
+                    <ul>
+                        <li><strong>General Contractor:</strong> ABC Construction - (555) 123-4567</li>
+                        <li><strong>Electrician:</strong> Bright Electric - (555) 234-5678</li>
+                        <li><strong>Plumber:</strong> Flow Pro Plumbing - (555) 345-6789</li>
+                        <li><strong>Appliance Service:</strong> Quick Fix Appliances - (555) 456-7890</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <!-- Document Settings -->
+                <div class="sidebar-section">
+                    <h3 class="text-lg font-black uppercase text-text-primary mb-4">
+                        Document Settings
+                    </h3>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="form-label">Category</label>
+                            <select class="form-select w-full text-sm">
+                                <option value="renovation">Renovation</option>
+                                <option value="maintenance">Maintenance</option>
+                                <option value="reference">Reference</option>
+                                <option value="guide">Guide</option>
+                                <option value="checklist">Checklist</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="form-label">Priority</label>
+                            <select class="form-select w-full text-sm">
+                                <option value="normal">Normal</option>
+                                <option value="high">High</option>
+                                <option value="critical">Critical</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="form-label">Status</label>
+                            <select class="form-select w-full text-sm">
+                                <option value="draft">Draft</option>
+                                <option value="review">In Review</option>
+                                <option value="published">Published</option>
+                                <option value="archived">Archived</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tags -->
+                <div class="sidebar-section">
+                    <h3 class="text-lg font-black uppercase text-text-primary mb-4">
+                        Tags
+                    </h3>
+                    
+                    <input 
+                        type="text" 
+                        class="tag-input w-full" 
+                        placeholder="Add tag..."
+                        id="tagInput"
+                    />
+                    
+                    <div class="mt-3">
+                        <span class="tag">Kitchen <span class="remove">×</span></span>
+                        <span class="tag">Renovation <span class="remove">×</span></span>
+                        <span class="tag">Planning <span class="remove">×</span></span>
+                        <span class="tag">Guide <span class="remove">×</span></span>
+                    </div>
+                </div>
+
+                <!-- Related Equipment -->
+                <div class="sidebar-section">
+                    <h3 class="text-lg font-black uppercase text-text-primary mb-4">
+                        Related Equipment
+                    </h3>
+                    
+                    <div class="space-y-2">
+                        <div class="flex items-center gap-2 p-2 bg-background border-2 border-text-primary">
+                            <div class="w-6 h-6 bg-primary text-white font-bold text-xs flex items-center justify-center">❄️</div>
+                            <div>
+                                <div class="font-bold text-xs text-text-primary">Samsung Refrigerator</div>
+                                <div class="text-xs text-text-secondary">RF28T5001SR</div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center gap-2 p-2 bg-background border-2 border-text-primary">
+                            <div class="w-6 h-6 bg-secondary text-white font-bold text-xs flex items-center justify-center">🔥</div>
+                            <div>
+                                <div class="font-bold text-xs text-text-primary">GE Range</div>
+                                <div class="text-xs text-text-secondary">JGS760SELSS</div>
+                            </div>
+                        </div>
+                        
+                        <button class="w-full bg-transparent text-text-primary border-3 border-text-primary px-3 py-2 font-bold uppercase text-xs hover:bg-text-primary hover:text-white">
+                            + Link Equipment
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Templates -->
+                <div class="sidebar-section">
+                    <h3 class="text-lg font-black uppercase text-text-primary mb-4">
+                        Quick Templates
+                    </h3>
+                    
+                    <div class="space-y-2">
+                        <button class="w-full bg-white border-3 border-text-primary px-3 py-2 font-bold uppercase text-xs text-left hover:bg-primary hover:text-white">
+                            📝 Maintenance Checklist
+                        </button>
+                        <button class="w-full bg-white border-3 border-text-primary px-3 py-2 font-bold uppercase text-xs text-left hover:bg-primary hover:text-white">
+                            📋 Installation Guide
+                        </button>
+                        <button class="w-full bg-white border-3 border-text-primary px-3 py-2 font-bold uppercase text-xs text-left hover:bg-primary hover:text-white">
+                            🔧 Troubleshooting
+                        </button>
+                        <button class="w-full bg-white border-3 border-text-primary px-3 py-2 font-bold uppercase text-xs text-left hover:bg-primary hover:text-white">
+                            📊 Specification Sheet
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Export Options -->
+                <div class="sidebar-section">
+                    <h3 class="text-lg font-black uppercase text-text-primary mb-4">
+                        Export Options
+                    </h3>
+                    
+                    <div class="space-y-2">
+                        <button class="w-full bg-primary text-white border-3 border-text-primary px-3 py-2 font-bold uppercase text-xs">
+                            📄 Export as PDF
+                        </button>
+                        <button class="w-full bg-secondary text-white border-3 border-text-primary px-3 py-2 font-bold uppercase text-xs">
+                            📝 Export as DOC
+                        </button>
+                        <button class="w-full bg-accent text-white border-3 border-text-primary px-3 py-2 font-bold uppercase text-xs">
+                            🌐 Export as HTML
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Auto-save notification -->
+    <div id="saveNotification" class="fixed bottom-4 right-4 bg-accent text-white border-4 border-text-primary p-3 brutal-shadow-dark hidden">
+        <div class="flex items-center gap-2">
+            <div class="text-lg">💾</div>
+            <div class="font-bold uppercase text-sm">Auto-saved</div>
+        </div>
+    </div>
+
+    <script>
+        // Editor functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const editor = document.getElementById('editor');
+            const saveNotification = document.getElementById('saveNotification');
+            const tagInput = document.getElementById('tagInput');
+            let saveTimeout;
+            
+            // Auto-save functionality
+            function autoSave() {
+                clearTimeout(saveTimeout);
+                saveTimeout = setTimeout(() => {
+                    // Show save notification
+                    saveNotification.classList.remove('hidden');
+                    setTimeout(() => {
+                        saveNotification.classList.add('hidden');
+                    }, 2000);
+                    
+                    // Update save status
+                    const status = document.querySelector('.save-status');
+                    status.textContent = '✓ Saved just now';
+                    status.className = 'save-status';
+                }, 2000);
+            }
+            
+            // Editor content changes
+            editor.addEventListener('input', function() {
+                // Update word count
+                const text = this.textContent;
+                const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+                const chars = text.length;
+                
+                document.querySelector('.word-count').textContent = 
+                    `${words} words • ${chars.toLocaleString()} characters`;
+                
+                // Update save status
+                const status = document.querySelector('.save-status');
+                status.textContent = '⋯ Saving...';
+                status.className = 'save-status saving';
+                
+                autoSave();
+            });
+            
+            // Toolbar button functionality
+            const toolbarButtons = document.querySelectorAll('.editor-button');
+            toolbarButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const title = this.getAttribute('title');
+                    
+                    // Simple formatting commands
+                    switch(title) {
+                        case 'Bold':
+                            document.execCommand('bold');
+                            break;
+                        case 'Italic':
+                            document.execCommand('italic');
+                            break;
+                        case 'Underline':
+                            document.execCommand('underline');
+                            break;
+                        case 'Undo':
+                            document.execCommand('undo');
+                            break;
+                        case 'Redo':
+                            document.execCommand('redo');
+                            break;
+                        default:
+                            console.log('Formatting:', title);
+                    }
+                    
+                    // Toggle active state for formatting buttons
+                    if (['Bold', 'Italic', 'Underline'].includes(title)) {
+                        this.classList.toggle('active');
+                    }
+                });
+            });
+            
+            // Tag functionality
+            tagInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && this.value.trim()) {
+                    const tagText = this.value.trim().toUpperCase();
+                    const tagElement = document.createElement('span');
+                    tagElement.className = 'tag';
+                    tagElement.innerHTML = `${tagText} <span class="remove">×</span>`;
+                    
+                    // Add remove functionality
+                    tagElement.querySelector('.remove').addEventListener('click', function() {
+                        tagElement.remove();
+                    });
+                    
+                    // Insert before input
+                    this.parentNode.insertBefore(tagElement, this.nextSibling);
+                    this.value = '';
+                }
+            });
+            
+            // Remove tag functionality for existing tags
+            document.querySelectorAll('.tag .remove').forEach(remove => {
+                remove.addEventListener('click', function() {
+                    this.parentElement.remove();
+                });
+            });
+            
+            // Template buttons
+            const templateButtons = document.querySelectorAll('[href="#template"]');
+            templateButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const templateType = this.textContent.trim();
+                    console.log('Loading template:', templateType);
+                    
+                    // Insert template content
+                    const cursor = editor.querySelector('h1').nextElementSibling;
+                    if (cursor) {
+                        cursor.insertAdjacentHTML('afterend', `
+                            <h2>${templateType}</h2>
+                            <p>Template content for ${templateType} would be inserted here...</p>
+                        `);
+                    }
+                });
+            });
+            
+            // Quick action buttons
+            document.querySelector('[title="Export"]')?.addEventListener('click', function() {
+                console.log('Exporting document...');
+            });
+            
+            document.querySelector('[title="Preview"]')?.addEventListener('click', function() {
+                console.log('Opening preview...');
+            });
+            
+            document.querySelector('[title="Save"]')?.addEventListener('click', function() {
+                autoSave();
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,13 +1,15 @@
 import { User } from 'lucide-react';
 
 import { useAuth } from '../../hooks/useAuth';
+import { type StandardSize, getSizeToken } from '../../lib/design-system/sizes';
 
 export interface ToggleableMenuProps {
   isOpen: boolean;
   setIsOpen: (val: boolean) => void;
+  size?: StandardSize;
 }
 
-export function ProfileButton({ isOpen, setIsOpen }: ToggleableMenuProps) {
+export function ProfileButton({ isOpen, setIsOpen, size = 'md' }: ToggleableMenuProps) {
   const { user } = useAuth();
   const initial = user?.name.charAt(0).toUpperCase();
 
@@ -15,9 +17,11 @@ export function ProfileButton({ isOpen, setIsOpen }: ToggleableMenuProps) {
     'w-10 h-10 md:w-12 md:h-12 brutal-rotate-right',
     'brutal-transition brutal-hover-press-small brutal-shadow-accent-sm',
     'bg-primary',
-    'border-3 md:border-4 border-white',
+    getSizeToken(size, 'border'),
+    'border-white',
     'flex items-center justify-center',
-    'text-sm md:text-lg font-black text-white'
+    getSizeToken(size, 'text'),
+    'font-black text-white'
   ].join(' ');
 
   return (

@@ -61,7 +61,8 @@ describe('LoginForm', () => {
       fetchMock.route({
         url: 'path:/auth/refresh',
         response: {
-          status: 200,
+          status: 401,
+          body: { error: 'Session expired' }
         }
       });
 
