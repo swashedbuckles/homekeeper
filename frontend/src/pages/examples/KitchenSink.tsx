@@ -20,6 +20,7 @@ import { TextLink } from '../../components/common/TextLink';
 import { Title } from '../../components/common/Title';
 
 // Form Components
+import { CheckBox } from '../../components/form/Checkbox';
 import { PasswordStrengthIndicator } from '../../components/form/PasswordStrengthIndicator';
 import { TextArea } from '../../components/form/TextArea';
 import { TextInput } from '../../components/form/TextInput';
@@ -43,12 +44,75 @@ import { TaskCard } from '../../components/variations/TaskCard';
  * Used for testing, development, and design verification. Shows all component
  * variants, sizes, and states in one location.
  */
+
+// Table of contents navigation component
+const TableOfContents = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  
+  const sections = [
+    { id: 'buttons', label: 'Buttons' },
+    { id: 'cards', label: 'Cards' },
+    { id: 'typography', label: 'Typography' },
+    { id: 'text-shadows', label: 'Text Shadows' },
+    { id: 'forms', label: 'Form Components' },
+    { id: 'alerts', label: 'Alerts' },
+    { id: 'variations', label: 'Variation Components' },
+    { id: 'list-items', label: 'List Items' },
+    { id: 'backgrounds', label: 'Background Components' }
+  ];
+
+  const scrollToSection = (id: string) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setIsOpen(false);
+    }
+  };
+
+  return (
+    <div className="fixed top-6 right-6 z-50">
+      {/* Toggle Button */}
+      <Button
+        variant="primary"
+        size="sm"
+        onClick={() => setIsOpen(!isOpen)}
+        className="mb-2 shadow-lg"
+      >
+        {isOpen ? '✕' : '☰'} TOC
+      </Button>
+
+      {/* Navigation Menu */}
+      {isOpen && (
+        <Card variant="dark" shadow="triple" className="p-4 min-w-[200px]">
+          <Text variant="label" weight="bold" color="white" className="block mb-3" uppercase>
+            Quick Navigation
+          </Text>
+          <div className="space-y-2">
+            {sections.map((section) => (
+              <button
+                key={section.id}
+                onClick={() => scrollToSection(section.id)}
+                className="block w-full text-left text-white hover:text-accent font-mono text-sm py-1 px-2 hover:bg-white/10 rounded transition-colors"
+              >
+                {section.label}
+              </button>
+            ))}
+          </div>
+        </Card>
+      )}
+    </div>
+  );
+};
+
 export function KitchenSink() {
   const [password, setPassword] = useState('');
   const [selectedOption, setSelectedOption] = useState<string>('');
 
   return (
     <div className="relative min-h-screen">
+      {/* Table of Contents */}
+      <TableOfContents />
+      
       {/* Background layer */}
       <div className="absolute inset-0 overflow-hidden">
         <BackgroundRectangles />
@@ -63,7 +127,8 @@ export function KitchenSink() {
 
 
         {/* Buttons Section */}
-        <SectionTitle className="mb-8">Buttons</SectionTitle>
+        <section id="buttons">
+          <SectionTitle className="mb-8">Buttons</SectionTitle>
         <Card variant="default" shadow="triple" className="p-8 mb-12">
           <SubSectionTitle className="mb-6">Button Variants</SubSectionTitle>
           <Grid columns={5} spacing="md" className="mb-8">
@@ -106,9 +171,11 @@ export function KitchenSink() {
             </Inline>
           </div>
         </Card>
+        </section>
 
         {/* Cards Section */}
-        <SectionTitle className="mb-8">Cards</SectionTitle>
+        <section id="cards">
+          <SectionTitle className="mb-8">Cards</SectionTitle>
         <Card variant="default" shadow="triple" className="p-8 mb-8">
           <SubSectionTitle className="mb-6">Card Variants</SubSectionTitle>
           <Grid columns={3} spacing="lg" className="mb-8">
@@ -190,9 +257,11 @@ export function KitchenSink() {
             </Card>
           </Grid>
         </Card>
+        </section>
 
         {/* Typography Section */}
-        <SectionTitle className="mb-8">Typography</SectionTitle>
+        <section id="typography">
+          <SectionTitle className="mb-8">Typography</SectionTitle>
         <Card variant="default" shadow="triple" className="p-8 mb-8">
           <div className="space-y-8">
             <div>
@@ -360,9 +429,11 @@ Last Service: 2024-06-15
             </div>
           </div>
         </Card>
+        </section>
 
         {/* Typography & Text Shadows Section */}
-        <SectionTitle className="mb-8">Text Shadows</SectionTitle>
+        <section id="text-shadows">
+          <SectionTitle className="mb-8">Text Shadows</SectionTitle>
         <Card variant="default" shadow="triple" className="p-8 mb-12">
           <div className="space-y-8">
             <div>
@@ -441,9 +512,11 @@ Last Service: 2024-06-15
             </div>
           </div>
         </Card>
+        </section>
 
         {/* Form Components Section */}
-        <SectionTitle className="mb-8">Form Components</SectionTitle>
+        <section id="forms">
+          <SectionTitle className="mb-8">Form Components</SectionTitle>
         <Card variant="default" shadow="triple" className="p-8 mb-8">
           <Grid columns={2} spacing="lg">
             <div>
@@ -588,11 +661,60 @@ Last Service: 2024-06-15
               />
               <PasswordStrengthIndicator password={password} />
             </div>
+            <div>
+              <SubSectionTitle className="mb-6">Checkbox Components</SubSectionTitle>
+              
+              <div className="space-y-6">
+                <div>
+                  <Text variant="label" weight="bold" className="block mb-3">Checkbox Sizes:</Text>
+                  <div className="space-y-3">
+                    <CheckBox label="Extra Small - compact forms" size="xs" />
+                    <CheckBox label="Small - minimal interfaces" size="sm" />
+                    <CheckBox label="Medium - default size (recommended)" size="md" />
+                    <CheckBox label="Large - prominent forms" size="lg" />
+                    <CheckBox label="Extra Large - maximum impact" size="xl" />
+                  </div>
+                </div>
+
+                <div>
+                  <Text variant="label" weight="bold" className="block mb-3">Checkbox Colors:</Text>
+                  <div className="space-y-3">
+                    <CheckBox label="Accent (Green) - Default" color="accent" />
+                    <CheckBox label="Primary (Blue) - Main actions" color="primary" />
+                    <CheckBox label="Secondary (Purple) - Alternative" color="secondary" />
+                    <CheckBox label="Success (Green) - Confirmations" color="success" />
+                    <CheckBox label="Warning (Orange) - Cautions" color="warning" />
+                    <CheckBox label="Error (Red) - Destructive actions" color="error" />
+                    <CheckBox label="Dark (Black) - High contrast" color="dark" />
+                  </div>
+                </div>
+
+                <div>
+                  <Text variant="label" weight="bold" className="block mb-3">Disabled State:</Text>
+                  <div className="space-y-3">
+                    <CheckBox label="Disabled unchecked checkbox" color="accent" disabled />
+                    <CheckBox label="Disabled checked checkbox" color="primary" checked disabled />
+                    <CheckBox label="Large disabled checkbox" color="success" size="lg" disabled />
+                  </div>
+                </div>
+
+                <div>
+                  <Text variant="label" weight="bold" className="block mb-3">Pre-checked Examples:</Text>
+                  <div className="space-y-3">
+                    <CheckBox label="HVAC system maintenance enabled" color="accent" defaultChecked />
+                    <CheckBox label="Receive mobile push notifications" color="primary" defaultChecked />
+                    <CheckBox label="Auto-schedule recurring tasks" color="success" defaultChecked />
+                  </div>
+                </div>
+              </div>
+            </div>
           </Grid>
         </Card>
+        </section>
 
         {/* Alert Section */}
-        <SectionTitle className="mb-8">Alerts</SectionTitle>
+        <section id="alerts">
+          <SectionTitle className="mb-8">Alerts</SectionTitle>
         <Card variant="default" shadow="triple" className="p-8 mb-8">
           <div className="space-y-4">
             <Alert variant="info">This is an informational message.</Alert>
@@ -611,9 +733,11 @@ Last Service: 2024-06-15
             <Alert variant="basic" size="xl">Extra large alert - maximum impact with biggest icon</Alert>
           </div>
         </Card>
+        </section>
 
         {/* Variation Components Section */}
-        <SectionTitle className="mb-8">Variation Components</SectionTitle>
+        <section id="variations">
+          <SectionTitle className="mb-8">Variation Components</SectionTitle>
         
         {/* Option Cards */}
         <Card variant="default" shadow="triple" className="p-8 mb-8">
@@ -703,9 +827,11 @@ Last Service: 2024-06-15
             />
           </Grid>
         </Card>
+        </section>
 
         {/* List Items Section */}
-        <SectionTitle className="mb-8">List Items</SectionTitle>
+        <section id="list-items">
+          <SectionTitle className="mb-8">List Items</SectionTitle>
         <Card variant="default" shadow="triple" className="p-8 mb-12">
           <div className="space-y-4">
             <ListItem
@@ -734,9 +860,10 @@ Last Service: 2024-06-15
             />
           </div>
         </Card>
+        </section>
 
         {/* Background Components */}
-        <section>
+        <section id="backgrounds">
           <Title variant="section" className="mb-6">
             Background Components
           </Title>
@@ -833,7 +960,6 @@ Last Service: 2024-06-15
             </ul>
           </Card>
         </section>
-
 
         {/* Footer */}
         <Card variant="dark" shadow="triple" className="p-8">
