@@ -1,15 +1,6 @@
 import { render, screen } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { SectionContainer } from '../../../../src/components/layout/containers/SectionContainer';
-
-// Mock ContentContainer since SectionContainer depends on it
-vi.mock('../../../../src/components/layout/containers/ContentContainer', () => ({
-  ContentContainer: ({ children, className, maxWidth }: any) => (
-    <div data-testid="content-container" className={className} data-max-width={maxWidth}>
-      {children}
-    </div>
-  )
-}));
 
 describe('SectionContainer', () => {
   it('renders children correctly', () => {
@@ -29,9 +20,10 @@ describe('SectionContainer', () => {
       </SectionContainer>
     );
     
-    const container = screen.getByTestId('content-container');
-    expect(container).toHaveClass('py-10'); // default spacing
-    expect(container).toHaveAttribute('data-max-width', '7xl'); // default maxWidth
+    const container = screen.getByText('Default Content').parentElement;
+    expect(container).toHaveClass('py-10'); // default spacing (md = py-10)
+    expect(container).toHaveClass('max-w-7xl'); // default maxWidth
+    expect(container).toHaveClass('mx-auto', 'px-5'); // WideContainer base classes
   });
 
   describe('spacing prop', () => {
@@ -42,8 +34,8 @@ describe('SectionContainer', () => {
         </SectionContainer>
       );
       
-      const container = screen.getByTestId('content-container');
-      expect(container).toHaveClass('py-8');
+      const container = screen.getByText('Tight Content').parentElement;
+      expect(container).toHaveClass('py-8'); // sm = py-8
     });
 
     it('renders with default spacing', () => {
@@ -53,8 +45,8 @@ describe('SectionContainer', () => {
         </SectionContainer>
       );
       
-      const container = screen.getByTestId('content-container');
-      expect(container).toHaveClass('py-10');
+      const container = screen.getByText('Default Content').parentElement;
+      expect(container).toHaveClass('py-10'); // md = py-10
     });
 
     it('renders with loose spacing', () => {
@@ -64,8 +56,8 @@ describe('SectionContainer', () => {
         </SectionContainer>
       );
       
-      const container = screen.getByTestId('content-container');
-      expect(container).toHaveClass('py-16');
+      const container = screen.getByText('Loose Content').parentElement;
+      expect(container).toHaveClass('py-16'); // lg = py-16
     });
   });
 
@@ -77,8 +69,8 @@ describe('SectionContainer', () => {
         </SectionContainer>
       );
       
-      const container = screen.getByTestId('content-container');
-      expect(container).toHaveAttribute('data-max-width', '7xl');
+      const container = screen.getByText('Constrained Content').parentElement;
+      expect(container).toHaveClass('max-w-7xl'); // hero=false uses 7xl maxWidth
     });
 
     it('renders with no max width when hero is true', () => {
@@ -88,8 +80,8 @@ describe('SectionContainer', () => {
         </SectionContainer>
       );
       
-      const container = screen.getByTestId('content-container');
-      expect(container).toHaveAttribute('data-max-width', 'none');
+      const container = screen.getByText('Hero Content').parentElement;
+      expect(container).not.toHaveClass('max-w-7xl'); // hero=true uses maxWidth='none' (no max-width class)
     });
   });
 
@@ -100,7 +92,7 @@ describe('SectionContainer', () => {
       </SectionContainer>
     );
     
-    const container = screen.getByTestId('content-container');
+    const container = screen.getByText('Custom Class Content').parentElement;
     expect(container).toHaveClass('custom-class');
   });
 
@@ -111,21 +103,22 @@ describe('SectionContainer', () => {
       </SectionContainer>
     );
     
-    const container = screen.getByTestId('content-container');
+    const container = screen.getByText('Combined Classes').parentElement;
     expect(container).toHaveClass('py-16', 'bg-red-500', 'border-2');
   });
 
-  describe('ContentContainer integration', () => {
-    it('passes props correctly to ContentContainer', () => {
+  describe('WideContainer integration', () => {
+    it('passes props correctly to WideContainer', () => {
       render(
         <SectionContainer spacing="sm" hero={true} className="test-class">
           <div>Integration Test</div>
         </SectionContainer>
       );
       
-      const container = screen.getByTestId('content-container');
-      expect(container).toHaveClass('py-8', 'test-class');
-      expect(container).toHaveAttribute('data-max-width', 'none');
+      const container = screen.getByText('Integration Test').parentElement;
+      expect(container).toHaveClass('py-8', 'test-class'); // spacing + custom class
+      expect(container).toHaveClass('mx-auto', 'px-5'); // WideContainer base classes
+      expect(container).not.toHaveClass('max-w-7xl'); // hero=true means no max-width constraint
     });
   });
 
@@ -176,9 +169,11 @@ describe('SectionContainer', () => {
         </SectionContainer>
       );
       
-      const container = screen.getByTestId('content-container');
+      // Find the WideContainer div (should have mx-auto and px-5)
+      const container = screen.getByText('Hero Title').closest('div[class*="px-5"]');
       expect(container).toHaveClass('relative', 'min-h-screen', 'flex', 'items-start');
-      expect(container).toHaveAttribute('data-max-width', 'none'); // Hero sections use full width
+      expect(container).toHaveClass('mx-auto', 'px-5'); // WideContainer base classes
+      expect(container).not.toHaveClass('max-w-7xl'); // Hero sections use full width
       expect(screen.getByText('Hero Title')).toBeInTheDocument();
     });
 
@@ -197,7 +192,7 @@ describe('SectionContainer', () => {
         </SectionContainer>
       );
       
-      const container = screen.getByTestId('content-container');
+      const container = screen.getByText('Feature 1').closest('div[class*="px-5"]');
       expect(container).toHaveClass('bg-text-primary', 'border-t-8', 'border-primary', 'py-16');
       expect(screen.getByText('Feature 1')).toBeInTheDocument();
     });
@@ -213,9 +208,10 @@ describe('SectionContainer', () => {
         </SectionContainer>
       );
       
-      const container = screen.getByTestId('content-container');
+      // Find the WideContainer by looking for the element with px-5 and bg-primary
+      const container = screen.getByText('Ready to Get Organized?').closest('div[class*="px-5"]');
       expect(container).toHaveClass('bg-primary', 'py-16');
-      expect(container).toHaveAttribute('data-max-width', 'none');
+      expect(container).not.toHaveClass('max-w-7xl'); // hero=true means no max-width
       expect(screen.getByText('Ready to Get Organized?')).toBeInTheDocument();
     });
 
@@ -229,9 +225,9 @@ describe('SectionContainer', () => {
         </SectionContainer>
       );
       
-      const container = screen.getByTestId('content-container');
-      expect(container).toHaveClass('py-10');
-      expect(container).toHaveAttribute('data-max-width', '7xl'); // Constrained width
+      const container = screen.getByText('Content Section').parentElement?.parentElement;
+      expect(container).toHaveClass('py-10'); // md spacing
+      expect(container).toHaveClass('max-w-7xl'); // Constrained width (default)
     });
 
     it('renders tight spacing for compact sections', () => {
@@ -246,7 +242,7 @@ describe('SectionContainer', () => {
         </SectionContainer>
       );
       
-      const container = screen.getByTestId('content-container');
+      const container = screen.getByText('Navigation Item 1').closest('div[class*="px-5"]');
       expect(container).toHaveClass('py-8', 'border-b', 'border-gray-200');
     });
   });

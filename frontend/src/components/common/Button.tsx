@@ -1,4 +1,4 @@
-import { type HoverEffect, getHoverEffectClass } from '../../lib/design-system/hover-effects';
+import { getHoverEffectClass } from '../../lib/design-system/hover-effects';
 import { type StandardSize, getSizeToken } from '../../lib/design-system/sizes';
 import type { ReactNode } from 'react';
 
@@ -38,11 +38,6 @@ const getSizeStyles = (size: StandardSize): string[] => [
   getSizeToken(size, 'border')
 ];
 
-// Get hover effect based on button size
-const getButtonHoverEffect = (size: StandardSize): HoverEffect => {
-  // Smaller buttons use press-small, larger use press
-  return (size === 'xs' || size === 'sm') ? 'press-small' : 'press';
-};
 
 // Variant styles - colors and borders
 const variantStyles = {
@@ -173,8 +168,8 @@ export const Button = ({
     '!hover:shadow-[var(--shadow-brutal-lg)_var(--shadow-dark)]'
   ] : [];
 
-  const hoverEffect = getButtonHoverEffect(size);
-  const hoverClass = !isDisabled ? getHoverEffectClass(hoverEffect) : '';
+  const hoverEffect = (size === 'xs' || size === 'sm') ? 'press-small' : 'press';
+  const hoverClass  = !isDisabled ? getHoverEffectClass(hoverEffect) : '';
   
   const buttonStyles = [
     ...baseStyles,

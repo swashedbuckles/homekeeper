@@ -27,7 +27,7 @@ describe('SearchInput', () => {
       'py-3',
       'bg-text-primary',
       'text-white',
-      'border-4',
+      'border-brutal-md', // Updated to match design system
       'border-white',
       'font-bold'
     );

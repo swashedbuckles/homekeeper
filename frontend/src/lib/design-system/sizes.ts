@@ -374,10 +374,10 @@ export const DEFAULT_SIZES = {
  * Provides consistent breakpoint usage across all components
  */
 export const BREAKPOINTS = {
-  mobile: '',           // 0-767px (default, no prefix)
-  tablet: 'md:',        // 768px+ (primary breakpoint)
-  desktop: 'lg:',       // 1024px+ (enhanced breakpoint)
-  wide: 'xl:'          // 1280px+ (large screens)
+  mobile:  '',      // 0-767px (default, no prefix)
+  tablet:  'md:',   // 768px+ (primary breakpoint)
+  desktop: 'lg:',   // 1024px+ (enhanced breakpoint)
+  wide:    'xl:'    // 1280px+ (large screens)
 } as const;
 
 /**
@@ -387,8 +387,8 @@ export const BREAKPOINTS = {
 export const RESPONSIVE_PATTERNS = {
   // Visibility patterns
   mobileOnly: 'md:hidden',
-  tabletUp: 'hidden md:block',
-  desktopUp: 'hidden lg:block',
+  tabletUp:   'hidden md:block',
+  desktopUp:  'hidden lg:block',
   
   // Layout patterns
   stackToRow: 'flex-col md:flex-row',
@@ -400,7 +400,7 @@ export const RESPONSIVE_PATTERNS = {
   // Grid patterns
   singleToDouble: 'grid-cols-1 md:grid-cols-2',
   singleToTriple: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3',
-  singleToQuad: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4'
+  singleToQuad:   'grid-cols-1 md:grid-cols-2 lg:grid-cols-4'
 } as const;
 
 /**

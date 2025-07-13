@@ -1,8 +1,9 @@
+import { type StandardColor, getTextColor } from '../../lib/design-system/colors';
 import { type StandardSize, getSizeToken } from '../../lib/design-system/sizes';
 import type { ReactNode } from 'react';
 
 type StatsSize = StandardSize;
-type StatsColor = 'primary' | 'secondary' | 'accent' | 'dark' | 'error' | 'white';
+type StatsColor = StandardColor;
 
 /**
  * Stats Component.
@@ -62,43 +63,26 @@ const getLabelStyles = (size: StandardSize): string[] => {
 };
 
 const getSubtitleStyles = (size: StandardSize): string[] => {
-  const textSize = size === 'xs' ? 'text-xs' : size === 'sm' ? 'text-xs' : size === 'md' ? 'text-sm' : size === 'lg' ? 'text-base' : 'text-lg';
-  const spacing = size === 'lg' || size === 'xl' ? 'mt-2' : 'mt-1';
+  let textSize;
+  let spacing;
+  
+  switch(size) {
+    case 'xs': textSize = 'text-xs'; spacing = 'mt-1'; break;
+    case 'sm': textSize = 'text-xs'; spacing = 'mt-1'; break;
+    case 'md': textSize = 'text-sm'; spacing = 'mt-1'; break;
+    case 'lg': textSize = 'text-base'; spacing = 'mt-2'; break;
+    case 'xl': textSize = 'text-lg';   spacing = 'mt-2'; break;
+    default:   textSize = 'text-base'; spacing = 'mt-1';  
+  }
+  
   return [textSize, spacing];
 };
 
-const colorStyles = {
-  primary: {
-    value: 'text-primary',
-    label: 'text-text-primary',
-    subtitle: 'text-text-secondary'
-  },
-  secondary: {
-    value: 'text-secondary',
-    label: 'text-text-primary',
-    subtitle: 'text-text-secondary'
-  },
-  accent: {
-    value: 'text-accent',
-    label: 'text-text-primary',
-    subtitle: 'text-text-secondary'
-  },
-  dark: {
-    value: 'text-text-primary',
-    label: 'text-text-primary',
-    subtitle: 'text-text-secondary'
-  },
-  error: {
-    value: 'text-error',
-    label: 'text-text-primary',
-    subtitle: 'text-text-secondary'
-  },
-  white: {
-    value: 'text-white',
-    label: 'text-white',
-    subtitle: 'text-white/80'
-  }
-};
+const getColorStyles = (color: StandardColor) => ({
+  value:    getTextColor(color),
+  label:    color === 'white' ? getTextColor('white'): getTextColor('dark'),
+  subtitle: color === 'white' ? 'text-white/80': getTextColor('secondary')
+});
 
 export const Stats = ({
   value,
@@ -109,7 +93,7 @@ export const Stats = ({
   className = '',
   testId = 'stats'
 }: StatsProps) => {
-  const colorStyle = colorStyles[color];
+  const colorStyle = getColorStyles(color);
   
   const containerStyles = [
     ...baseStyles,

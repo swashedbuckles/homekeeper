@@ -1,10 +1,11 @@
+import { type StandardColor, getTextColor } from '../../lib/design-system/colors';
 import { type StandardSize, getResponsiveTextToken } from '../../lib/design-system/sizes';
 import type { ReactNode } from 'react';
 
 type TextVariant = 'body' | 'caption' | 'label';
 type TextSize = StandardSize;
 type TextWeight = 'normal' | 'bold' | 'black';
-type TextColor = 'primary' | 'secondary' | 'accent' | 'dark' | 'error' | 'white';
+type TextColor = StandardColor;
 
 /**
  * Text Component.
@@ -57,9 +58,9 @@ const getSizeStyles = (size: StandardSize, variant: TextVariant): string[] => {
   };
   
   const variantAdjustments = {
-    body: [getResponsiveTextToken(size)], // Use responsive scaling
-    caption: [getResponsiveTextToken(getSmallerSize(size))], // One size smaller
-    label: [getResponsiveTextToken(getSmallerSize(size))]    // One size smaller
+    body:    [getResponsiveTextToken(size)],                   // Use responsive scaling
+    caption: [getResponsiveTextToken(getSmallerSize(size))],   // One size smaller
+    label:   [getResponsiveTextToken(getSmallerSize(size))] 
   };
   
   const styles = [...variantAdjustments[variant]];
@@ -72,18 +73,13 @@ const getSizeStyles = (size: StandardSize, variant: TextVariant): string[] => {
 
 const weightStyles = {
   normal: ['font-normal'],
-  bold: ['font-bold'],
-  black: ['font-black']
+  bold:   ['font-bold'],
+  black:  ['font-black']
 };
 
-const colorStyles = {
-  primary: ['text-primary'],
-  secondary: ['text-text-secondary'],
-  accent: ['text-accent'],
-  dark: ['text-text-primary'],
-  error: ['text-error'],
-  white: ['text-white']
-};
+const getColorStyles = (color: StandardColor): string[] => [
+  getTextColor(color)
+];
 
 export const Text = ({
   children,
@@ -99,7 +95,7 @@ export const Text = ({
     ...baseStyles,
     ...getSizeStyles(size, variant),
     ...weightStyles[weight],
-    ...colorStyles[color],
+    ...getColorStyles(color),
     uppercase ? 'uppercase' : '',
     className
   ].filter(Boolean).join(' ');

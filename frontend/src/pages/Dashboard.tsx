@@ -2,7 +2,6 @@ import { BookUp } from 'lucide-react';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router';
 
-import { getResponsiveTextToken, getResponsivePattern } from '../lib/design-system/sizes';
 
 import { Badge } from '../components/common/Badge';
 import { Button } from '../components/common/Button';
@@ -16,6 +15,7 @@ import { Grid } from '../components/layout/Grid';
 
 import { StatCard } from '../components/variations/StatCard';
 import { useAuth } from '../hooks/useAuth';
+import { getResponsiveTextToken, getResponsivePattern } from '../lib/design-system/sizes';
 
 export function Dashboard() {
   const navigate = useNavigate();

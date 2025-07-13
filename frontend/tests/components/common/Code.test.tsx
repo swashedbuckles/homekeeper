@@ -22,7 +22,7 @@ describe('Code', () => {
       const code = screen.getByTestId('code');
       
       expect(code.tagName).toBe('CODE');
-      expect(code).toHaveClass('inline-block', 'px-2', 'py-1', 'mx-1');
+      expect(code).toHaveClass('inline-block', 'mx-1');
       expect(code).not.toHaveClass('block', 'whitespace-pre-wrap');
     });
 
@@ -105,7 +105,7 @@ describe('Code', () => {
       'font-mono',
       'font-bold',
       'bg-background',
-      'border-4',
+      'border-brutal-md', // Updated to match design system
       'border-text-primary',
       'text-text-primary'
     );
@@ -132,7 +132,7 @@ describe('Code', () => {
       render(<Code>RF28T5001SR</Code>);
       
       const code = screen.getByText('RF28T5001SR');
-      expect(code).toHaveClass('inline-block', 'font-mono', 'border-4');
+      expect(code).toHaveClass('inline-block', 'font-mono', 'border-brutal-md'); // Updated to match design system
       expect(code.tagName).toBe('CODE');
     });
 

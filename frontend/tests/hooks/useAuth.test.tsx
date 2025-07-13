@@ -191,6 +191,15 @@ describe('useAuth', () => {
           body: { error: 'Invalid credentials' }
         }
       });
+      
+      fetchMock.route({
+        url: 'path:/auth/refresh',
+        allowRelativeUrls: true,
+        response: {
+          status: 401,
+          body: { error: 'Session expired' }
+        }
+      });
 
       const { result } = renderHook(() => useAuth(), {
         wrapper: ({ children }) => (
@@ -321,6 +330,15 @@ describe('useAuth', () => {
         response: {
           status: 500,
           body: { error: 'Server error' }
+        }
+      });
+      
+      fetchMock.route({
+        url: 'path:/auth/refresh',
+        allowRelativeUrls: true,
+        response: {
+          status: 401,
+          body: { error: 'Session expired' }
         }
       });
 

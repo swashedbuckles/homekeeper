@@ -75,13 +75,22 @@ const getGridColumns = (columns: GridColumns | 'auto-fit' | 'auto-fill', minWidt
 };
 
 const getAlignmentClass = (alignment: GridAlignment, type: 'items' | 'justify'): string => {
-  const prefix = type === 'items' ? 'items' : 'justify-items';
-  const alignmentMap = {
-    start: `${prefix}-start`,
-    center: `${prefix}-center`, 
-    end: `${prefix}-end`,
-    stretch: `${prefix}-stretch`
-  };
+  let alignmentMap: Record<GridAlignment, string> = { // justify default
+      start:   'justify-items-start',
+      center:  'justify-items-center',
+      end:     'justify-items-end',
+      stretch: 'justify-items-stretch'
+    };
+  
+  if(type === 'items') {
+    alignmentMap = {
+      start:   'items-start',
+      center:  'items-center',
+      end:     'items-end',
+      stretch: 'items-stretch'
+    };
+  }
+  
   return alignmentMap[alignment];
 };
 
@@ -96,9 +105,9 @@ export const Grid = ({
   className = '',
   testId = 'grid'
 }: GridProps) => {
-  const spacingClass = getSizeToken(spacing, 'spacing');
-  const columnsClass = typeof columns === 'string' ? '' : getGridColumns(columns, minWidth);
-  const alignItemsClass = getAlignmentClass(alignItems, 'items');
+  const columnsClass      = typeof columns === 'string' ? '' : getGridColumns(columns, minWidth);
+  const spacingClass      = getSizeToken(spacing, 'spacing');
+  const alignItemsClass   = getAlignmentClass(alignItems, 'items');
   const justifyItemsClass = getAlignmentClass(justifyItems, 'justify');
   
   const gridClasses = [

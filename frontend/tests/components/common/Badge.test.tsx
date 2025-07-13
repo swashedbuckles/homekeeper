@@ -14,7 +14,8 @@ describe('Badge', () => {
     
     expect(badge).toHaveClass('bg-primary'); // default color
     expect(badge).toHaveClass('text-sm'); // default size sm
-    expect(badge).toHaveClass('px-3'); // default variant status
+    expect(badge).toHaveClass('px-3'); // default size sm padding
+    expect(badge).toHaveClass('rounded-none'); // default variant status
   });
 
   describe('variants', () => {
@@ -22,21 +23,27 @@ describe('Badge', () => {
       render(<Badge variant="status">STATUS</Badge>);
       const badge = screen.getByTestId('badge');
       
-      expect(badge).toHaveClass('px-3', 'py-1', 'rounded-none');
+      expect(badge).toHaveClass('rounded-none');
+      expect(badge).toHaveClass('px-3'); // from size system
+      expect(badge).toHaveClass('py-2'); // from size system
     });
 
     it('renders category variant correctly', () => {
       render(<Badge variant="category">CATEGORY</Badge>);
       const badge = screen.getByTestId('badge');
       
-      expect(badge).toHaveClass('px-2', 'py-1', 'rounded-none');
+      expect(badge).toHaveClass('rounded-none');
+      expect(badge).toHaveClass('px-3'); // from size system
+      expect(badge).toHaveClass('py-2'); // from size system
     });
 
     it('renders count variant correctly', () => {
       render(<Badge variant="count">3</Badge>);
       const badge = screen.getByTestId('badge');
       
-      expect(badge).toHaveClass('px-2', 'py-1', 'rounded-full', 'min-w-[2rem]');
+      expect(badge).toHaveClass('rounded-full', 'min-w-[2rem]');
+      expect(badge).toHaveClass('px-3'); // from size system
+      expect(badge).toHaveClass('py-2'); // from size system
     });
   });
 
@@ -118,10 +125,10 @@ describe('Badge', () => {
       'inline-flex',
       'items-center',
       'justify-center',
-      'border-4',
       'border-text-primary',
       'whitespace-nowrap'
     );
+    expect(badge).toHaveClass('border-brutal-sm'); // from size system
   });
 
   describe('real-world usage examples', () => {

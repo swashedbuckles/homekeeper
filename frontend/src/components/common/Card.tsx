@@ -100,45 +100,45 @@ export const Card = ({
 
   // Variant defaults for border and shadow
   const variantDefaults: {[key in variant_t]: {border: border_t, shadow: shadow_t}} = {
-    default: { border: 'default', shadow: 'dark' },
-    subtle: { border: 'default', shadow: 'primary' },
-    primary: { border: 'default', shadow: 'dark' },
+    default:   { border: 'default', shadow: 'dark' },
+    subtle:    { border: 'default', shadow: 'primary' },
+    primary:   { border: 'default', shadow: 'dark' },
     secondary: { border: 'default', shadow: 'dark' },
-    accent: { border: 'default', shadow: 'dark' },
-    danger: { border: 'default', shadow: 'dark' },
-    dark: { border: 'default', shadow: 'dark' }
+    accent:    { border: 'default', shadow: 'dark' },
+    danger:    { border: 'default', shadow: 'dark' },
+    dark:      { border: 'default', shadow: 'dark' }
   };
 
   // Border color options
   const borderStyles = {
-    default: 'border-text-primary',
-    white: 'border-white',
-    primary: 'border-primary',
+    default:   'border-text-primary',
+    white:     'border-white',
+    primary:   'border-primary',
     secondary: 'border-secondary',
-    accent: 'border-accent',
-    dark: 'border-text-primary',
-    error: 'border-error'
+    accent:    'border-accent',
+    dark:      'border-text-primary',
+    error:     'border-error'
   };
 
   // Shadow variations
   const shadowStyles = {
     none: '',
-    primary: 'brutal-shadow-primary',
-    secondary: 'brutal-shadow-secondary', 
-    accent: 'brutal-shadow-accent',
-    dark: 'brutal-shadow-dark',
-    error: 'brutal-shadow-error',
-    double: 'brutal-shadow-double',
+    primary:        'brutal-shadow-primary',
+    secondary:      'brutal-shadow-secondary',
+    accent:         'brutal-shadow-accent',
+    dark:           'brutal-shadow-dark',
+    error:          'brutal-shadow-error',
+    double:         'brutal-shadow-double',
     'double-white': 'brutal-shadow-double-white',
-    triple: 'brutal-shadow-triple'
+    triple:         'brutal-shadow-triple'
   };
 
   // Rotation variations
   const rotationStyles = {
-    none: '',
-    left: 'brutal-rotate-left',
-    right: 'brutal-rotate-right',
-    'slight-left': 'brutal-rotate-slight-left',
+    none:           '',
+    left:           'brutal-rotate-left',
+    right:          'brutal-rotate-right',
+    'slight-left':  'brutal-rotate-slight-left',
     'slight-right': 'brutal-rotate-slight-right'
   };
 

@@ -1,6 +1,6 @@
 import { ChevronLeft } from 'lucide-react';
 import { useNavigate } from 'react-router';
-import { type HoverEffect, getHoverEffectClass } from '../../lib/design-system/hover-effects';
+import { getHoverEffectClass } from '../../lib/design-system/hover-effects';
 import { type StandardSize, getSizeToken } from '../../lib/design-system/sizes';
 
 /**
@@ -72,11 +72,6 @@ const variantStyles = {
   ]
 };
 
-// Get hover effect based on variant
-const getBackButtonHoverEffect = (variant: 'outline' | 'text'): HoverEffect => {
-  return variant === 'outline' ? 'press' : 'none';
-};
-
 export const BackButton = ({
   label = 'Back', 
   historyOverride,
@@ -96,7 +91,7 @@ export const BackButton = ({
     navigate(-1);
   };
 
-  const hoverEffect = getBackButtonHoverEffect(variant);
+  const hoverEffect = variant === 'outline' ? 'press' : 'none';
   const hoverClass = getHoverEffectClass(hoverEffect);
   
   const buttonStyles = [

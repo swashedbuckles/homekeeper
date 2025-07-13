@@ -48,13 +48,13 @@ export const StatCard = ({
 
   // Map card variants to appropriate Stats colors
   const statsColor = {
-    default: 'dark' as const,
-    subtle: 'dark' as const,
-    primary: 'white' as const,
+    default:   'dark' as const,
+    subtle:    'dark' as const,
+    primary:   'white' as const,
     secondary: 'white' as const,
-    accent: 'white' as const,
-    danger: 'white' as const,
-    dark: 'white' as const
+    accent:    'white' as const,
+    danger:    'white' as const,
+    dark:      'white' as const
   };
 
   return (

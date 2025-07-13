@@ -1,8 +1,9 @@
+import { type StandardColor, getBackgroundColor, getTextColor, getShadowColor } from '../../lib/design-system/colors';
 import { type StandardSize, getSizeToken } from '../../lib/design-system/sizes';
 import type { ReactNode } from 'react';
 
 type BadgeVariant = 'status' | 'category' | 'count';
-type BadgeColor = 'primary' | 'secondary' | 'accent' | 'dark' | 'error' | 'success' | 'warning';
+type BadgeColor = StandardColor;
 type BadgeSize = StandardSize;
 
 /**
@@ -52,9 +53,9 @@ const baseStyles = [
 ];
 
 const variantStyles = {
-  status: ['px-3', 'py-1', 'rounded-none'],
-  category: ['px-2', 'py-1', 'rounded-none'],
-  count: ['px-2', 'py-1', 'rounded-full', 'min-w-[2rem]']
+  status: ['rounded-none'],
+  category: ['rounded-none'],
+  count: ['rounded-full', 'min-w-[2rem]']
 };
 
 const getSizeStyles = (size: StandardSize): string[] => {
@@ -66,43 +67,11 @@ const getSizeStyles = (size: StandardSize): string[] => {
   ];
 };
 
-const colorStyles = {
-  primary: {
-    background: 'bg-primary',
-    text: 'text-white',
-    shadow: 'brutal-shadow-dark'
-  },
-  secondary: {
-    background: 'bg-secondary',
-    text: 'text-white',
-    shadow: 'brutal-shadow-dark'
-  },
-  accent: {
-    background: 'bg-accent',
-    text: 'text-white',
-    shadow: 'brutal-shadow-dark'
-  },
-  dark: {
-    background: 'bg-text-primary',
-    text: 'text-white',
-    shadow: 'brutal-shadow-primary'
-  },
-  error: {
-    background: 'bg-error',
-    text: 'text-white',
-    shadow: 'brutal-shadow-dark'
-  },
-  success: {
-    background: 'bg-accent',
-    text: 'text-white',
-    shadow: 'brutal-shadow-dark'
-  },
-  warning: {
-    background: 'bg-primary',
-    text: 'text-white',
-    shadow: 'brutal-shadow-dark'
-  }
-};
+const getColorStyles = (color: StandardColor) => ({
+  background: getBackgroundColor(color),
+  text: getTextColor('white'),
+  shadow: color === 'dark' ? getShadowColor('primary') : getShadowColor('error')
+});
 
 export const Badge = ({
   children,
@@ -112,7 +81,7 @@ export const Badge = ({
   className = '',
   testId = 'badge'
 }: BadgeProps) => {
-  const colorStyle = colorStyles[color];
+  const colorStyle = getColorStyles(color);
   
   const badgeStyles = [
     ...baseStyles,

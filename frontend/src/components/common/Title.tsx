@@ -86,24 +86,24 @@ const getTextShadowClass = (
   // Use size-appropriate shadows for each variant
   const shadowMap = {
     orange: {
-      page: 'brutal-text-shadow',           // 4px orange
-      section: 'brutal-text-shadow-small',  // 2px orange  
-      subsection: 'brutal-text-shadow-tiny' // 1px orange
+      page:       'brutal-text-shadow',         // 4px orange
+      section:    'brutal-text-shadow-small',   // 2px orange  
+      subsection: 'brutal-text-shadow-tiny'     // 1px orange
     },
     dark: {
-      page: 'brutal-text-shadow-simple',        // 2px dark
-      section: 'brutal-text-shadow-simple',     // 2px dark
-      subsection: 'brutal-text-shadow-simple'  // 2px dark
+      page:       'brutal-text-shadow-simple',   // 2px dark
+      section:    'brutal-text-shadow-simple',   // 2px dark
+      subsection: 'brutal-text-shadow-simple'    // 2px dark
     },
     'orange-dark': {
-      page: 'brutal-text-shadow-double',        // 4px orange + 8px dark
-      section: 'brutal-text-shadow-double',     // 4px orange + 8px dark  
-      subsection: 'brutal-text-shadow-double'  // 4px orange + 8px dark
+      page:       'brutal-text-shadow-double',   // 4px orange + 8px dark
+      section:    'brutal-text-shadow-double',   // 4px orange + 8px dark  
+      subsection: 'brutal-text-shadow-double'    // 4px orange + 8px dark
     },
     'dark-orange': {
-      page: 'brutal-text-shadow-double-reverse',        // 4px dark + 8px orange
-      section: 'brutal-text-shadow-double-reverse',     // 4px dark + 8px orange
-      subsection: 'brutal-text-shadow-double-reverse'  // 4px dark + 8px orange
+      page:       'brutal-text-shadow-double-reverse',   // 4px dark + 8px orange
+      section:    'brutal-text-shadow-double-reverse',   // 4px dark + 8px orange
+      subsection: 'brutal-text-shadow-double-reverse'    // 4px dark + 8px orange
     }
   };
   
@@ -117,10 +117,10 @@ const getTextShadowClass = (
 };
 
 const rotationStyles = {
-  none: '',
-  left: 'brutal-rotate-left',
-  right: 'brutal-rotate-right',
-  'slight-left': 'brutal-rotate-slight-left',
+  none:           '',
+  left:           'brutal-rotate-left',
+  right:          'brutal-rotate-right',
+  'slight-left':  'brutal-rotate-slight-left',
   'slight-right': 'brutal-rotate-slight-right'
 };
 

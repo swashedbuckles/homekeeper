@@ -12,8 +12,8 @@ describe('Text', () => {
     render(<Text>Default Text</Text>);
     const text = screen.getByTestId('text');
     
-    expect(text).toHaveClass('text-base'); // default size medium
-    expect(text).toHaveClass('text-text-primary'); // default color primary
+    expect(text).toHaveClass('text-sm', 'md:text-base'); // responsive default size medium
+    expect(text).toHaveClass('text-text-primary'); // default color dark
   });
 
   describe('variants', () => {
@@ -22,7 +22,7 @@ describe('Text', () => {
       const text = screen.getByTestId('text');
       
       expect(text.tagName).toBe('SPAN');
-      expect(text).toHaveClass('text-base');
+      expect(text).toHaveClass('text-sm', 'md:text-base'); // responsive sizing
     });
 
     it('renders caption variant correctly', () => {
@@ -30,7 +30,7 @@ describe('Text', () => {
       const text = screen.getByTestId('text');
       
       expect(text.tagName).toBe('SPAN');
-      expect(text).toHaveClass('text-sm');
+      expect(text).toHaveClass('text-xs', 'md:text-sm'); // smaller size with responsive scaling
     });
 
     it('renders label variant correctly', () => {
@@ -38,8 +38,8 @@ describe('Text', () => {
       const text = screen.getByTestId('text');
       
       expect(text.tagName).toBe('SPAN');
-      expect(text).toHaveClass('text-sm');
-      // Note: tracking-wide is defined in variantStyles but not applied due to component logic
+      expect(text).toHaveClass('text-xs', 'md:text-sm'); // smaller size with responsive scaling
+      expect(text).toHaveClass('tracking-wide'); // label specific styling
     });
   });
 
@@ -48,21 +48,21 @@ describe('Text', () => {
       render(<Text size="sm">Small text</Text>);
       const text = screen.getByTestId('text');
       
-      expect(text).toHaveClass('text-sm');
+      expect(text).toHaveClass('text-xs', 'md:text-sm'); // responsive small size
     });
 
     it('renders medium size correctly', () => {
       render(<Text size="md">Medium text</Text>);
       const text = screen.getByTestId('text');
       
-      expect(text).toHaveClass('text-base');
+      expect(text).toHaveClass('text-sm', 'md:text-base'); // responsive medium size
     });
 
     it('renders large size correctly', () => {
       render(<Text size="lg">Large text</Text>);
       const text = screen.getByTestId('text');
       
-      expect(text).toHaveClass('text-lg');
+      expect(text).toHaveClass('text-base', 'md:text-lg'); // responsive large size
     });
   });
 
@@ -171,7 +171,7 @@ describe('Text', () => {
       );
       
       const text = screen.getByText("Here's what's happening with your home maintenance.");
-      expect(text).toHaveClass('text-lg', 'font-bold', 'uppercase', 'mb-0');
+      expect(text).toHaveClass('text-base', 'md:text-lg', 'font-bold', 'uppercase', 'mb-0');
       expect(text.tagName).toBe('SPAN');
     });
 
@@ -195,7 +195,7 @@ describe('Text', () => {
       );
       
       const text = screen.getByText('HVAC Filter Change');
-      expect(text).toHaveClass('text-sm', 'text-text-primary');
+      expect(text).toHaveClass('text-xs', 'md:text-sm', 'text-text-primary');
       expect(text.tagName).toBe('SPAN');
     });
 

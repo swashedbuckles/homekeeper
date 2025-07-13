@@ -69,7 +69,7 @@ describe('Stats', () => {
       const value = screen.getByText('20');
       const label = screen.getByText('Secondary');
       
-      expect(value).toHaveClass('text-secondary');
+      expect(value).toHaveClass('text-text-secondary');
       expect(label).toHaveClass('text-text-primary');
     });
 

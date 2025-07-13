@@ -46,13 +46,10 @@ const baseStyles = [
 const variantStyles = {
   inline: [
     'inline-block',
-    'px-2',
-    'py-1',
     'mx-1'
   ],
   block: [
     'block',
-    'p-4',
     'my-2',
     'whitespace-pre-wrap',
     'brutal-shadow-primary'
@@ -63,8 +60,8 @@ const getSizeStyles = (size: StandardSize, variant: CodeVariant): string[] => {
   const baseText = getSizeToken(size, 'text');
   const paddingX = getSizeToken(size, 'paddingX');
   const paddingY = getSizeToken(size, 'paddingY');
-  const padding = getSizeToken(size, 'padding');
-  const border = getSizeToken(size, 'border');
+  const padding  = getSizeToken(size, 'padding');
+  const border   = getSizeToken(size, 'border');
   
   if (variant === 'inline') {
     return [baseText, paddingX, paddingY, border];
