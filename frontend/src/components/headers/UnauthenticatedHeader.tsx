@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Z_INDEX_CLASSES } from '../../lib/constants/zIndex';
-import { getResponsivePattern, getResponsiveSpacingToken } from '../../lib/design-system/sizes';
+import { getResponsiveSpacingToken } from '../../lib/design-system/sizes';
 import { Button } from '../common/Button';
 import { LightBgHeader } from '../common/Logo';
 import { MobileMenu } from '../layout/containers/MobileMenu';
@@ -49,11 +49,11 @@ function AuthButtons({ isMobile, onClose }: { isMobile?: boolean; onClose?: () =
   }
 
   return (
-    <div className={`${getResponsivePattern('tabletUp')} gap-4`}>
+    <div className="hidden md:flex gap-4">
       <Button variant="primary" size="lg" onClick={handleGetStarted}>
         Get Started
       </Button>
-      <Button variant="tertiary" size="lg" onClick={handleSignIn}>
+      <Button variant="tertiary"size="lg" onClick={handleSignIn}>
         Sign In
       </Button>
     </div>

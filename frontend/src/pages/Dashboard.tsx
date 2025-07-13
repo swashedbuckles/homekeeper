@@ -2,6 +2,8 @@ import { BookUp } from 'lucide-react';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router';
 
+import { getResponsiveTextToken, getResponsivePattern } from '../lib/design-system/sizes';
+
 import { Badge } from '../components/common/Badge';
 import { Button } from '../components/common/Button';
 import { Card } from '../components/common/Card';
@@ -34,7 +36,7 @@ export function Dashboard() {
     <>
       <WideContainer>
         <div className="w-1/2">
-          <Title variant="page" className="text-5xl md:text-7xl lg:text-8xl" textShadow="orange"> Welcome back{name}!</Title>
+          <Title variant="page" className={getResponsiveTextToken('xl')} textShadow="orange"> Welcome back{name}!</Title>
         </div>
         <Card className="w-fit" shadow="primary" padding="sm" variant="subtle">
           <Text variant="body" size="lg" weight="bold" uppercase className="mb-0">
@@ -61,13 +63,13 @@ export function Dashboard() {
         {/** activity */}
         <Grid columns={2} spacing="xl" className="mt-12">
           <section>
-            <Title variant="subsection" className="!text-primary text-3xl md:text-4xl lg:text-5xl brutal-text-shadow-simple mb-6 md:mb-8"> 
+            <Title variant="subsection" className={`!text-primary ${getResponsiveTextToken('xl')} brutal-text-shadow-simple mb-6`}> 
                 Upcoming <br/>
                 Maintenance
             </Title>
             <Stack spacing="lg">
               <Card variant="default" className="!border-error !border-l-8 md:!border-l-12" shadow="error" rotation="slight-left">
-                <Flex spacing="sm" className="flex-col sm:flex-row sm:justify-between sm:items-start mb-4">
+                <Flex spacing="sm" className={`${getResponsivePattern('stackToRow')} md:justify-between md:items-start mb-4`}>
                   <div>
                     <Text variant="body" size="lg" weight="black" color="dark" uppercase className="block mb-2">
                       HVAC Filter Change
@@ -83,7 +85,7 @@ export function Dashboard() {
                 <Text variant="body" size="md" weight="bold" color="dark" className="block mb-4">
                   Replace air filter - last changed 4 months ago
                 </Text>
-                <Inline spacing="sm" className="flex-col sm:flex-row">
+                <Inline spacing="md" className={getResponsivePattern('stackToRow')}>
                   <Button variant="secondary" size="sm">
                     Mark Complete
                   </Button>
@@ -95,14 +97,14 @@ export function Dashboard() {
             </Stack>
           </section>
           <section>
-            <Title variant="subsection" className="!text-primary text-3xl md:text-4xl lg:text-5xl brutal-text-shadow-simple mb-6 md:mb-8"> 
+            <Title variant="subsection" className={`!text-primary ${getResponsiveTextToken('xl')} brutal-text-shadow-simple mb-6`}> 
                 Recent <br/>
                 Activity
             </Title>
             <Stack spacing="lg">
               <Card variant="default" shadow="accent">
                 <Flex spacing="sm" className="items-start">
-                  <div className="w-12 md:w-16 h-12 md:h-16 bg-accent border-4 border-text-primary flex items-center justify-center text-lg md:text-2xl font-black text-white brutal-rotate-slight-left">
+                  <div className={`w-12 h-12 md:w-16 md:h-16 bg-accent border-4 border-text-primary flex items-center justify-center ${getResponsiveTextToken('lg')} font-black text-white brutal-rotate-slight-left`}>
                     <BookUp size={36}/>
                   </div>
                   <div className="flex-1">

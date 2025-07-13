@@ -10,7 +10,7 @@ import { SectionContainer } from '../components/layout/containers/SectionContain
 import { Flex, Inline } from '../components/layout/Flex';
 import { Grid } from '../components/layout/Grid';
 import { StatCard } from '../components/variations/StatCard';
-import { getResponsivePattern } from '../lib/design-system/sizes';
+import { getResponsivePattern, getResponsiveTextToken } from '../lib/design-system/sizes';
 
 export const LandingPage = () => {
   return (
@@ -19,7 +19,7 @@ export const LandingPage = () => {
         <div className="relative z-10">
           <Grid columns={2} spacing="xl" className="items-center">
             <div>
-              <Title variant="page" textShadow="orange" className="uppercase text-6xl md:text-8xl lg:text-9xl">
+              <Title variant="page" textShadow="orange" className={`uppercase ${getResponsiveTextToken('xl')}`}>
                 Organize<br />
                 Your<br />
                 Home
@@ -31,7 +31,7 @@ export const LandingPage = () => {
                 for everything in your home.
               </Text>
 
-              <Inline spacing="lg" className={getResponsivePattern('stackToRow')}>
+              <Inline spacing="md" className={getResponsivePattern('stackToRow')}>
                 <Button size="lg" variant="primary">Get Started</Button>
                 <Button size="lg" variant="secondary">Learn More</Button>
               </Inline>
@@ -107,7 +107,7 @@ export const LandingPage = () => {
 
       <SectionContainer className="bg-primary" spacing="lg" hero>
         <div className="text-center max-w-4xl mx-auto">
-          <h2 className="text-5xl md:text-6xl font-black text-white uppercase mb-8 brutal-text-shadow-white">
+          <h2 className={`${getResponsiveTextToken('xl')} font-black text-white uppercase mb-8 brutal-text-shadow-white`}>
             Ready to Get<br />Organized?
           </h2>
           <p className="text-2xl font-bold text-white uppercase mb-12">
