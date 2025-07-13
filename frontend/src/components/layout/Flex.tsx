@@ -23,7 +23,7 @@ import type { ReactNode } from 'react';
  * </Flex>
  * 
  * // Button group with wrapping and responsive classes
- * <Flex spacing="sm" className="flex-wrap justify-center lg:justify-start">
+ * <Flex spacing="sm" className="flex-wrap justify-center md:justify-start">
  *   <Button>Action 1</Button>
  *   <Button>Action 2</Button>
  *   <Button>Action 3</Button>

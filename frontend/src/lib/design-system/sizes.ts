@@ -107,6 +107,70 @@ export const RESPONSIVE_TEXT_TOKENS = {
   xl: 'text-lg md:text-xl'                    // lg → xl
 } as const;
 
+/**
+ * Responsive spacing tokens providing mobile-first scaling
+ * Used for components that need responsive padding, margins, and gaps
+ */
+export const RESPONSIVE_SPACING_TOKENS = {
+  xs: {
+    padding: 'p-2',                           // xs on all breakpoints
+    paddingX: 'px-2',
+    paddingY: 'py-1',
+    margin: 'm-2',
+    marginX: 'mx-2', 
+    marginY: 'my-1',
+    gap: 'gap-1'
+  },
+  sm: {
+    padding: 'p-2 md:p-3',                    // p-2 → p-3
+    paddingX: 'px-2 md:px-3',
+    paddingY: 'py-1 md:py-2',
+    margin: 'm-2 md:m-3',
+    marginX: 'mx-2 md:mx-3',
+    marginY: 'my-1 md:my-2',
+    gap: 'gap-1 md:gap-2'
+  },
+  md: {
+    padding: 'p-3 md:p-4',                    // p-3 → p-4
+    paddingX: 'px-3 md:px-4',
+    paddingY: 'py-2 md:py-3',
+    margin: 'm-3 md:m-4',
+    marginX: 'mx-3 md:mx-4',
+    marginY: 'my-2 md:my-3',
+    gap: 'gap-2 md:gap-4'
+  },
+  lg: {
+    padding: 'p-4 md:p-6',                    // p-4 → p-6
+    paddingX: 'px-4 md:px-6',
+    paddingY: 'py-3 md:py-4',
+    margin: 'm-4 md:m-6',
+    marginX: 'mx-4 md:mx-6',
+    marginY: 'my-3 md:my-4',
+    gap: 'gap-4 md:gap-6'
+  },
+  xl: {
+    padding: 'p-6 md:p-8',                    // p-6 → p-8
+    paddingX: 'px-6 md:px-8',
+    paddingY: 'py-4 md:py-4',
+    margin: 'm-6 md:m-8',
+    marginX: 'mx-6 md:mx-8',
+    marginY: 'my-4 md:my-4',
+    gap: 'gap-6 md:gap-8'
+  }
+} as const;
+
+/**
+ * Responsive shadow tokens providing mobile-first scaling
+ * Used for components that need responsive shadow effects
+ */
+export const RESPONSIVE_SHADOW_TOKENS = {
+  xs: 'brutal-shadow-primary-sm',             // xs on all breakpoints
+  sm: 'brutal-shadow-primary-sm md:brutal-shadow-primary',     // sm → primary
+  md: 'brutal-shadow-primary md:brutal-shadow-dark',          // primary → dark
+  lg: 'brutal-shadow-dark md:brutal-shadow-double',           // dark → double
+  xl: 'brutal-shadow-double'                  // double on all breakpoints
+} as const;
+
 // =====================================
 // Container Size Tokens
 // =====================================
@@ -177,6 +241,38 @@ export function getSizeToken(
  */
 export function getResponsiveTextToken(size: StandardSize): string {
   return RESPONSIVE_TEXT_TOKENS[size];
+}
+
+/**
+ * Get responsive spacing token with mobile-first scaling
+ * 
+ * @param size - The standard size
+ * @param aspect - Which aspect of spacing to retrieve
+ * @returns The corresponding responsive CSS classes
+ * 
+ * @example
+ * getResponsiveSpacingToken('md', 'padding') // Returns 'p-3 md:p-4'
+ * getResponsiveSpacingToken('lg', 'gap') // Returns 'gap-4 md:gap-6'
+ */
+export function getResponsiveSpacingToken(
+  size: StandardSize,
+  aspect: keyof typeof RESPONSIVE_SPACING_TOKENS[StandardSize]
+): string {
+  return RESPONSIVE_SPACING_TOKENS[size][aspect];
+}
+
+/**
+ * Get responsive shadow token with mobile-first scaling
+ * 
+ * @param size - The standard size
+ * @returns The corresponding responsive CSS classes
+ * 
+ * @example
+ * getResponsiveShadowToken('md') // Returns 'brutal-shadow-primary md:brutal-shadow-dark'
+ * getResponsiveShadowToken('lg') // Returns 'brutal-shadow-dark md:brutal-shadow-double'
+ */
+export function getResponsiveShadowToken(size: StandardSize): string {
+  return RESPONSIVE_SHADOW_TOKENS[size];
 }
 
 /**
@@ -268,3 +364,57 @@ export const DEFAULT_SIZES = {
   wideContainer:    '7xl' as WideContainerSize,
   sectionSpacing:   'md' as ContainerSpacingSize
 } as const;
+
+// =====================================
+// Breakpoint Utilities
+// =====================================
+
+/**
+ * Standardized breakpoint names and their Tailwind prefixes
+ * Provides consistent breakpoint usage across all components
+ */
+export const BREAKPOINTS = {
+  mobile: '',           // 0-767px (default, no prefix)
+  tablet: 'md:',        // 768px+ (primary breakpoint)
+  desktop: 'lg:',       // 1024px+ (enhanced breakpoint)
+  wide: 'xl:'          // 1280px+ (large screens)
+} as const;
+
+/**
+ * Standard responsive patterns for common use cases
+ * Provides consistent mobile-first patterns
+ */
+export const RESPONSIVE_PATTERNS = {
+  // Visibility patterns
+  mobileOnly: 'md:hidden',
+  tabletUp: 'hidden md:block',
+  desktopUp: 'hidden lg:block',
+  
+  // Layout patterns
+  stackToRow: 'flex-col md:flex-row',
+  rowToStack: 'flex-row md:flex-col',
+  
+  // Touch targets (44px minimum for mobile)
+  touchTarget: 'min-h-[44px]',
+  
+  // Grid patterns
+  singleToDouble: 'grid-cols-1 md:grid-cols-2',
+  singleToTriple: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3',
+  singleToQuad: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4'
+} as const;
+
+/**
+ * Get responsive pattern class string
+ * 
+ * @param pattern - The responsive pattern to use
+ * @returns The corresponding CSS classes
+ * 
+ * @example
+ * getResponsivePattern('tabletUp') // Returns 'hidden md:block'
+ * getResponsivePattern('stackToRow') // Returns 'flex-col md:flex-row'
+ */
+export function getResponsivePattern(
+  pattern: keyof typeof RESPONSIVE_PATTERNS
+): string {
+  return RESPONSIVE_PATTERNS[pattern];
+}

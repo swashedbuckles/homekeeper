@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Z_INDEX_CLASSES } from '../../lib/constants/zIndex';
+import { getResponsivePattern, getResponsiveSpacingToken } from '../../lib/design-system/sizes';
 import { Button } from '../common/Button';
 import { LightBgHeader } from '../common/Logo';
 import { MobileMenu } from '../layout/containers/MobileMenu';
@@ -48,7 +49,7 @@ function AuthButtons({ isMobile, onClose }: { isMobile?: boolean; onClose?: () =
   }
 
   return (
-    <div className="hidden md:flex gap-4">
+    <div className={`${getResponsivePattern('tabletUp')} gap-4`}>
       <Button variant="primary" size="lg" onClick={handleGetStarted}>
         Get Started
       </Button>
@@ -71,7 +72,7 @@ export function UnauthenticatedHeader() {
 
   return (
     <header className={`relative ${Z_INDEX_CLASSES.HEADER}`}>
-      <div className="max-w-7xl mx-auto px-4 md:px-5 py-4 md:py-8">
+      <div className={`max-w-7xl mx-auto ${getResponsiveSpacingToken('lg', 'paddingX')} ${getResponsiveSpacingToken('lg', 'paddingY')}`}>
         <div className="flex justify-between items-center">
           {/* Logo */}
           <LightBgHeader />

@@ -1,4 +1,4 @@
-import { type StandardSize, getSizeToken } from '../../lib/design-system/sizes';
+import { type StandardSize, getSizeToken, getResponsivePattern } from '../../lib/design-system/sizes';
 import type { ReactNode } from 'react';
 
 type LayoutVariant = 'sidebar-left' | 'sidebar-right' | 'equal';
@@ -111,8 +111,8 @@ TwoColumnLayout.Sidebar = ({
     'bg-white',
     'brutal-shadow-dark',
     sticky ? 'sticky top-0 h-screen overflow-y-auto' : '',
-    // Mobile responsiveness
-    'hidden lg:block',
+    // Mobile responsiveness - show on tablet and up
+    getResponsivePattern('tabletUp'),
     className
   ].filter(Boolean).join(' ');
 

@@ -4,6 +4,7 @@ import { type StandardSize, getSizeToken } from '../../lib/design-system/sizes';
 export interface LogoProps {
     className?: string; // Make optional since you have default
     size?: number;
+    responsiveSize?: StandardSize;
     borderSize?: StandardSize;
     color?: 'primary' | 'secondary' | 'accent';
     border?: 'light' | 'dark';
@@ -23,6 +24,7 @@ export interface LogoProps {
    */
   export const Logo = ({
     size = 48,
+    responsiveSize = 'md',
     borderSize = 'md',
     className = '',
     color = 'primary',
@@ -33,9 +35,21 @@ export interface LogoProps {
     const shadowClass = `brutal-shadow-${shadow}`;
     const backgroundClass = `bg-${color}`;
 
+    // Responsive sizing based on StandardSize
+    const getResponsiveLogoSize = (size: StandardSize): string => {
+      const sizeMap = {
+        xs: 'w-8 h-8 md:w-10 md:h-10',
+        sm: 'w-10 h-10 md:w-12 md:h-12',
+        md: 'w-12 h-12 md:w-16 md:h-16',  // Default: matches existing behavior
+        lg: 'w-16 h-16 md:w-20 md:h-20',
+        xl: 'w-20 h-20 md:w-24 md:h-24'
+      };
+      return sizeMap[size];
+    };
+
     const containerClass = [
       getSizeToken(borderSize, 'border'),
-      'w-12 h-12 lg:w-16 lg:h-16',
+      getResponsiveLogoSize(responsiveSize),
       'brutal-rotate-left flex items-center justify-center',
       borderColor,
       shadowClass,

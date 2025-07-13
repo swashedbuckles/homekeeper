@@ -10,6 +10,7 @@ import { SectionContainer } from '../components/layout/containers/SectionContain
 import { Flex, Inline } from '../components/layout/Flex';
 import { Grid } from '../components/layout/Grid';
 import { StatCard } from '../components/variations/StatCard';
+import { getResponsivePattern } from '../lib/design-system/sizes';
 
 export const LandingPage = () => {
   return (
@@ -30,7 +31,7 @@ export const LandingPage = () => {
                 for everything in your home.
               </Text>
 
-              <Inline spacing="lg" className="flex-col sm:flex-row">
+              <Inline spacing="lg" className={getResponsivePattern('stackToRow')}>
                 <Button size="lg" variant="primary">Get Started</Button>
                 <Button size="lg" variant="secondary">Learn More</Button>
               </Inline>
@@ -69,8 +70,8 @@ export const LandingPage = () => {
                 </Inline>
               </Card>
 
-              <StatCard size="sm" className="absolute -top-16 -right-8 hidden lg:block" label="Manuals Stored" value={47} variant="primary" rotation="slight-right" />
-              <StatCard size="sm" className="absolute -bottom-24 -left-16 hidden lg:block" label="Tasks Completed" value={12} variant="accent" rotation="left" />
+              <StatCard size="sm" className={`absolute -top-16 -right-8 ${getResponsivePattern('desktopUp')}`} label="Manuals Stored" value={47} variant="primary" rotation="slight-right" />
+              <StatCard size="sm" className={`absolute -bottom-24 -left-16 ${getResponsivePattern('desktopUp')}`} label="Tasks Completed" value={12} variant="accent" rotation="left" />
             </div>
           </Grid>
         </div>
