@@ -48,7 +48,7 @@ const variantStyles = {
     // Override default focus for search
     'focus:bg-background',
     'focus:text-text-primary',
-    'focus:brutal-shadow-triple'
+    'focus:brutal-shadow-primary'
   ]
 };
 
