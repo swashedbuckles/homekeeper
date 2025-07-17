@@ -1,5 +1,6 @@
 import { Alert } from '../../components/common/Alert';
 import { BackButton } from '../../components/common/BackButton';
+import { Text } from '../../components/common/Text';
 import { PageTitle } from '../../components/common/Title';
 import { JoinHouseholdForm } from '../../components/fragments/JoinHouseholdForm';
 
@@ -16,9 +17,9 @@ export const JoinHousehold = () => {
         <JoinHouseholdForm />
 
         <Alert className="mt-4" variant="info">
-          <p className="text-blue-800 text-sm">
+          <Text color="white">
             You'll join as a guest initially. The household owner can update your role later.
-          </p>
+          </Text>
         </Alert>
 
       </div>

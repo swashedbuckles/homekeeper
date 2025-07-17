@@ -15,7 +15,7 @@ import { getResponsivePattern, getResponsiveTextToken } from '../lib/design-syst
 export const LandingPage = () => {
   return (
     <>
-      <SectionContainer className="relative min-h-screen flex items-start">
+      <SectionContainer className="relative min-h-screen flex items-start mt-8">
         <div className="relative z-10">
           <Grid columns={2} spacing="xl" className="items-center">
             <div>

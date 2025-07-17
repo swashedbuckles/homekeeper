@@ -30,27 +30,26 @@ const getCheckedBgColor = (color: StandardColor): string => {
 };
 
 const getCheckboxDimensions = (size: StandardSize): string => {
-  // Use the same height as TextInput by using paddingY tokens
-  // and calculate width to match for a square appearance
+  // Perfect squares that account for border thickness and maintain visual balance
   switch (size) {
-    case 'xs': return 'w-6 h-6';   // py-1 = 0.25rem top/bottom + text height ≈ 24px
-    case 'sm': return 'w-8 h-8';   // py-2 = 0.5rem top/bottom + text height ≈ 32px  
-    case 'md': return 'w-10 h-10'; // py-3 = 0.75rem top/bottom + text height ≈ 40px
-    case 'lg': return 'w-12 h-12'; // py-4 = 1rem top/bottom + text height ≈ 48px
-    case 'xl': return 'w-12 h-12'; // py-4 = 1rem top/bottom + text height ≈ 48px (same as lg)
-    default:   return 'w-10 h-10';
+    case 'xs': return 'w-5 h-5 min-w-5';   // Small and clean with 2px border
+    case 'sm': return 'w-6 h-6 min-w-6';   // Compact with 3px border
+    case 'md': return 'w-8 h-8 min-w-8';   // Default size with 4px border
+    case 'lg': return 'w-10 h-10 min-w-10'; // Large with 6px border
+    case 'xl': return 'w-12 h-12 min-w-12'; // Extra large with 6px border
+    default:   return 'w-8 h-8';
   }
 };
 
 const getCheckIconSize = (size: StandardSize): number => {
   // Scale checkmark to be ~60% of checkbox size for good proportion
   switch (size) {
-    case 'xs': return 14;  // ~60% of 24px
-    case 'sm': return 18;  // ~60% of 32px
-    case 'md': return 24;  // ~60% of 40px
-    case 'lg': return 28;  // ~60% of 48px
-    case 'xl': return 28;  // ~60% of 48px
-    default:   return 24;
+    case 'xs': return 10;  // ~60% of 20px (w-5)
+    case 'sm': return 12;  // ~60% of 24px (w-6)
+    case 'md': return 16;  // ~60% of 32px (w-8)
+    case 'lg': return 20;  // ~60% of 40px (w-10)
+    case 'xl': return 24;  // ~60% of 48px (w-12)
+    default:   return 16;
   }
 };
 
@@ -104,6 +103,7 @@ export const CheckBox = (props: CheckboxProps) => {
     'appearance-none',
     'bg-background',
     'border-text-primary', // Keep dark border
+    'box-border', // Ensure borders are included in width/height
     getSizeToken(size, 'border'),
     getCheckboxDimensions(size),
     

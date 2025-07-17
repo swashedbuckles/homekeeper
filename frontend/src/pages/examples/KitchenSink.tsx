@@ -664,7 +664,7 @@ Last Service: 2024-06-15
             <div>
               <SubSectionTitle className="mb-6">Checkbox Components</SubSectionTitle>
               
-              <div className="space-y-6">
+              <Grid columns={2} spacing="lg">
                 <div>
                   <Text variant="label" weight="bold" className="block mb-3">Checkbox Sizes:</Text>
                   <div className="space-y-3">
@@ -706,7 +706,7 @@ Last Service: 2024-06-15
                     <CheckBox label="Auto-schedule recurring tasks" color="success" defaultChecked />
                   </div>
                 </div>
-              </div>
+              </Grid>
             </div>
           </Grid>
         </Card>

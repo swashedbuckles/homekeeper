@@ -23,7 +23,7 @@ export const OnboardingHome = () => {
             description="Start fresh and invite family members to join you in organizing your home maintenance."
             buttonText="Get Started"
             onClick={getStartedClicked}
-            icon={<Plus className="text-primary"/>}
+            icon={<Plus />}
           />
 
           <OptionCard 
@@ -31,7 +31,8 @@ export const OnboardingHome = () => {
             description="Have an invitation code? Join a household that's already been set up."
             buttonText="Join with Code"
             onClick={joinClicked}
-            icon={<KeyRound className="text-secondary"/>}
+            iconVariant="secondary"
+            icon={<KeyRound />}
           />
         </div>
         <div className="text-center">

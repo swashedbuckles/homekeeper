@@ -138,7 +138,7 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>((props, re
       )}
 
       {hasFeedback && (
-        <div className="mt-1 mb-2 p-3 bg-accent border-brutal-sm border-text-primary text-white">
+        <div className="mt-1 mb-2 p-3 bg-background border-brutal-sm border-text-primary text-white">
           <div className="font-mono font-bold uppercase text-sm">
             {props.validationFeedback}
           </div>

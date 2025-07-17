@@ -51,7 +51,7 @@ export const CreateHouseholdForm = () => {
 
       <TextInput
         type="text"
-        label="Household Name *"
+        label="Household Name (required)"
         placeholder="The Smith Family Home"
         testId="email-input"
         error={errors.name?.message}
@@ -59,7 +59,7 @@ export const CreateHouseholdForm = () => {
       />
 
       <TextArea
-        label="Description (optinal)"
+        label="Description (optional)"
         placeholder="Our family home..."
         testId="password-input"
         error={errors.description?.message}
@@ -82,6 +82,7 @@ export const CreateHouseholdForm = () => {
         loading={isSubmitting}
         loadingText="Creating Household..."
         testId="submit-button"
+        className="mt-2"
       >Create Household</Button>
     </form>
   );
