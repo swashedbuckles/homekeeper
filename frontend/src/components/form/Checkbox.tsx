@@ -53,6 +53,81 @@ const getCheckIconSize = (size: StandardSize): number => {
   }
 };
 
+/**
+ * Checkbox Component with neobrutalist styling and full react-hook-form integration.
+ * 
+ * Features custom checkmark overlay, multiple color variants, and all StandardSize options.
+ * Supports controlled and uncontrolled usage with proper accessibility features.
+ * 
+ * @example Basic checkbox with default styling
+ * ```tsx
+ * <CheckBox label="I agree to the terms and conditions" />
+ * ```
+ * 
+ * @example Large checkbox with custom color
+ * ```tsx
+ * <CheckBox 
+ *   label="Enable HVAC maintenance alerts"
+ *   size="lg"
+ *   color="primary"
+ * />
+ * ```
+ * 
+ * @example Controlled checkbox with state management
+ * ```tsx
+ * const [isChecked, setIsChecked] = useState(false);
+ * 
+ * <CheckBox 
+ *   label="Receive notifications"
+ *   checked={isChecked}
+ *   onChange={(e) => setIsChecked(e.target.checked)}
+ * />
+ * ```
+ * 
+ * @example With react-hook-form integration
+ * ```tsx
+ * const { register, formState: { errors } } = useForm();
+ * 
+ * <CheckBox
+ *   label="Required acceptance"
+ *   register={register('acceptance', { required: 'You must accept to continue' })}
+ * />
+ * ```
+ * 
+ * @example Different color variants
+ * ```tsx
+ * <CheckBox label="Success action" color="success" />
+ * <CheckBox label="Warning action" color="warning" />
+ * <CheckBox label="Error action" color="error" />
+ * <CheckBox label="Primary action" color="primary" />
+ * ```
+ * 
+ * @example All size variants
+ * ```tsx
+ * <CheckBox label="Extra small" size="xs" />
+ * <CheckBox label="Small" size="sm" />
+ * <CheckBox label="Medium (default)" size="md" />
+ * <CheckBox label="Large" size="lg" />
+ * <CheckBox label="Extra large" size="xl" />
+ * ```
+ * 
+ * @example Disabled states
+ * ```tsx
+ * <CheckBox label="Disabled unchecked" disabled />
+ * <CheckBox label="Disabled checked" checked disabled />
+ * ```
+ * 
+ * @param label - Accessible label text for the checkbox
+ * @param size - Size variant affecting checkbox dimensions and icon size (xs|sm|md|lg|xl)
+ * @param color - Color variant for the checked state background
+ * @param className - Additional CSS classes to apply
+ * @param testId - Test identifier for automated testing
+ * @param register - react-hook-form register function for form integration
+ * @param checked - Controlled checked state (use with onChange)
+ * @param defaultChecked - Default checked state for uncontrolled usage
+ * @param onChange - Change handler function
+ * @param disabled - Disables checkbox interaction and applies opacity
+ */
 export const CheckBox = (props: CheckboxProps) => {
   const {
     label, 

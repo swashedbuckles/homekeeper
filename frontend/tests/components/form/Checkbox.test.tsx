@@ -14,7 +14,7 @@ describe('CheckBox', () => {
     render(<CheckBox label="Default checkbox" />);
     
     const checkbox = screen.getByTestId('checkbox');
-    expect(checkbox).toHaveClass('w-10', 'h-10'); // default md size
+    expect(checkbox).toHaveClass('w-8', 'h-8'); // default md size
     expect(checkbox).toHaveClass('checked:bg-accent'); // default accent color
     expect(checkbox).not.toBeChecked();
   });
@@ -24,7 +24,7 @@ describe('CheckBox', () => {
       render(<CheckBox label="Extra small" size="xs" />);
       
       const checkbox = screen.getByRole('checkbox');
-      expect(checkbox).toHaveClass('w-6', 'h-6');
+      expect(checkbox).toHaveClass('w-5', 'h-5');
       expect(checkbox).toHaveClass('border-2');
     });
 
@@ -32,7 +32,7 @@ describe('CheckBox', () => {
       render(<CheckBox label="Small" size="sm" />);
       
       const checkbox = screen.getByRole('checkbox');
-      expect(checkbox).toHaveClass('w-8', 'h-8');
+      expect(checkbox).toHaveClass('w-6', 'h-6');
       expect(checkbox).toHaveClass('border-brutal-sm');
     });
 
@@ -40,7 +40,7 @@ describe('CheckBox', () => {
       render(<CheckBox label="Medium" size="md" />);
       
       const checkbox = screen.getByRole('checkbox');
-      expect(checkbox).toHaveClass('w-10', 'h-10');
+      expect(checkbox).toHaveClass('w-8', 'h-8');
       expect(checkbox).toHaveClass('border-brutal-md');
     });
 
@@ -48,7 +48,7 @@ describe('CheckBox', () => {
       render(<CheckBox label="Large" size="lg" />);
       
       const checkbox = screen.getByRole('checkbox');
-      expect(checkbox).toHaveClass('w-12', 'h-12');
+      expect(checkbox).toHaveClass('w-10', 'h-10');
       expect(checkbox).toHaveClass('border-brutal-lg');
     });
 

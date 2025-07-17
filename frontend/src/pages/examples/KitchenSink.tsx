@@ -22,6 +22,7 @@ import { Title } from '../../components/common/Title';
 // Form Components
 import { CheckBox } from '../../components/form/Checkbox';
 import { PasswordStrengthIndicator } from '../../components/form/PasswordStrengthIndicator';
+import { Select } from '../../components/form/Select';
 import { TextArea } from '../../components/form/TextArea';
 import { TextInput } from '../../components/form/TextInput';
 import { WideContainer } from '../../components/layout/containers/WideContainer';
@@ -107,6 +108,31 @@ const TableOfContents = () => {
 export function KitchenSink() {
   const [password, setPassword] = useState('');
   const [selectedOption, setSelectedOption] = useState<string>('');
+  
+  // Select component options
+  const countryOptions = [
+    { value: 'us', label: 'United States' },
+    { value: 'ca', label: 'Canada' },
+    { value: 'uk', label: 'United Kingdom' },
+    { value: 'au', label: 'Australia' },
+    { value: 'de', label: 'Germany' }
+  ];
+
+  const priorityOptions = [
+    { value: 'low', label: 'Low Priority' },
+    { value: 'medium', label: 'Medium Priority' },
+    { value: 'high', label: 'High Priority' },
+    { value: 'urgent', label: 'Urgent', disabled: false }
+  ];
+
+  const categoryOptions = [
+    { value: 'hvac', label: 'HVAC Systems' },
+    { value: 'plumbing', label: 'Plumbing' },
+    { value: 'electrical', label: 'Electrical' },
+    { value: 'appliances', label: 'Appliances' },
+    { value: 'exterior', label: 'Exterior Maintenance' },
+    { value: 'interior', label: 'Interior Maintenance' }
+  ];
 
   return (
     <div className="relative min-h-screen">
@@ -660,6 +686,92 @@ Last Service: 2024-06-15
                 }}
               />
               <PasswordStrengthIndicator password={password} />
+
+              <SubSectionTitle className="mb-4">Select Components</SubSectionTitle>
+              <Select 
+                label="Country" 
+                options={countryOptions}
+                placeholder="Choose your country"
+                className="mb-4"
+              />
+              <Select 
+                label="Priority Level" 
+                options={priorityOptions}
+                size="lg"
+                placeholder="Select priority"
+                className="mb-4"
+              />
+              <Select 
+                label="Error State" 
+                options={categoryOptions}
+                error="Please select a maintenance category"
+                className="mb-6"
+              />
+
+              <SubSectionTitle className="mb-4">Select Sizes (All 5 StandardSize Options)</SubSectionTitle>
+              <Select 
+                label="Extra Small Select" 
+                options={countryOptions}
+                size="xs"
+                placeholder="xs - minimal padding"
+                className="mb-3"
+              />
+              <Select 
+                label="Small Select" 
+                options={countryOptions}
+                size="sm"
+                placeholder="sm - compact size"
+                className="mb-3"
+              />
+              <Select 
+                label="Medium Select" 
+                options={countryOptions}
+                size="md"
+                placeholder="md - default size"
+                className="mb-3"
+              />
+              <Select 
+                label="Large Select" 
+                options={countryOptions}
+                size="lg"
+                placeholder="lg - prominent size"
+                className="mb-3"
+              />
+              <Select 
+                label="Extra Large Select" 
+                options={countryOptions}
+                size="xl"
+                placeholder="xl - maximum impact"
+                className="mb-4"
+              />
+
+              <SubSectionTitle className="mb-4">Select Variants</SubSectionTitle>
+              <Select 
+                label="Default Variant" 
+                options={categoryOptions}
+                variant="default"
+                placeholder="Light theme select"
+                className="mb-3"
+              />
+              <Select 
+                label="Search Variant" 
+                options={categoryOptions}
+                variant="search"
+                placeholder="Dark theme search select"
+                className="mb-4"
+              />
+
+              <SubSectionTitle className="mb-4">Select with Validation Feedback</SubSectionTitle>
+              <Select 
+                label="Maintenance Schedule" 
+                options={priorityOptions}
+                validationFeedback={
+                  <div className="flex items-center gap-2">
+                    <span className="text-accent">✓</span>
+                    Schedule preference saved
+                  </div>
+                }
+              />
             </div>
             <div>
               <SubSectionTitle className="mb-6">Checkbox Components</SubSectionTitle>
