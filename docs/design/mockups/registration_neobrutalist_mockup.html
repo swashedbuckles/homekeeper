@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HomeKeeper Registration - Neo-Brutalist Mockup</title>
+    <style>
+        :root {
+            /* Colors */
+            --color-primary: #e67e22;
+            --color-secondary: #4a6fa5;
+            --color-accent: #5d9c59;
+            --color-background: #f5f0e8;
+            --color-text-primary: #2c3e50;
+            --color-text-secondary: #7f8c8d;
+            --color-error: #e74c3c;
+            --color-warning: #f39c12;
+            --color-white: #ffffff;
+            
+            /* Brutalist styling */
+            --border-brutal-md: 4px;
+            --border-brutal-lg: 6px;
+            --shadow-offset: 6px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Monaco', 'Menlo', 'Consolas', monospace;
+            background: var(--color-background);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .mockup-container {
+            max-width: 450px;
+            width: 100%;
+            background: var(--color-white);
+            border: var(--border-brutal-md) solid var(--color-text-primary);
+            box-shadow: var(--shadow-offset) var(--shadow-offset) 0 var(--color-text-primary);
+            padding: 40px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--color-primary);
+            border: var(--border-brutal-md) solid var(--color-text-primary);
+            box-shadow: 4px 4px 0 var(--color-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: rotate(-2deg);
+        }
+
+        .logo-text {
+            font-size: 28px;
+            font-weight: 900;
+            color: var(--color-primary);
+            text-transform: uppercase;
+            letter-spacing: -1px;
+            text-shadow: 2px 2px 0 var(--color-text-primary);
+        }
+
+        .tab-navigation {
+            display: flex;
+            margin-bottom: 32px;
+            border: var(--border-brutal-md) solid var(--color-text-primary);
+        }
+
+        .tab {
+            flex: 1;
+            padding: 12px 16px;
+            background: var(--color-background);
+            border: none;
+            font-family: inherit;
+            font-size: 16px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--color-text-primary);
+        }
+
+        .tab.active {
+            background: var(--color-primary);
+            color: var(--color-white);
+            box-shadow: inset 2px 2px 0 var(--color-text-primary);
+        }
+
+        .tab:first-child {
+            border-right: var(--border-brutal-md) solid var(--color-text-primary);
+        }
+
+        .tab:hover:not(.active) {
+            background: var(--color-white);
+        }
+
+        .page-title {
+            font-size: 32px;
+            font-weight: 900;
+            color: var(--color-text-primary);
+            text-transform: uppercase;
+            letter-spacing: -1px;
+            margin-bottom: 8px;
+            transform: rotate(-1deg);
+        }
+
+        .page-subtitle {
+            font-size: 16px;
+            color: var(--color-text-secondary);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .form {
+            margin-bottom: 32px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 900;
+            color: var(--color-text-primary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .form-label .required {
+            color: var(--color-error);
+            margin-left: 4px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 16px;
+            border: var(--border-brutal-md) solid var(--color-text-primary);
+            background: var(--color-background);
+            font-family: inherit;
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--color-text-primary);
+            text-transform: uppercase;
+            box-shadow: 3px 3px 0 var(--color-text-primary);
+            transform: rotate(-0.5deg);
+            transition: all 0.2s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            transform: rotate(0deg) scale(1.02);
+            box-shadow: 6px 6px 0 var(--color-primary);
+        }
+
+        .form-input.error {
+            border-color: var(--color-error);
+            box-shadow: 3px 3px 0 var(--color-error);
+        }
+
+        .form-input.error:focus {
+            box-shadow: 6px 6px 0 var(--color-error);
+        }
+
+        .form-input::placeholder {
+            color: var(--color-text-secondary);
+            opacity: 0.7;
+        }
+
+        .password-strength {
+            margin-top: 12px;
+            padding: 12px 16px;
+            border: 3px solid var(--color-text-primary);
+            background: var(--color-background);
+            transform: rotate(0.5deg);
+        }
+
+        .strength-indicator {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 8px;
+        }
+
+        .strength-bar {
+            height: 6px;
+            flex: 1;
+            background: #ddd;
+            border: 1px solid var(--color-text-primary);
+        }
+
+        .strength-bar.weak { background: var(--color-error); }
+        .strength-bar.medium { background: var(--color-warning); }
+        .strength-bar.strong { background: var(--color-accent); }
+
+        .strength-text {
+            font-size: 12px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .strength-text.weak { color: var(--color-error); }
+        .strength-text.medium { color: var(--color-warning); }
+        .strength-text.strong { color: var(--color-accent); }
+
+        .terms-group {
+            margin-bottom: 32px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 16px;
+            border: 3px solid var(--color-text-primary);
+            background: var(--color-background);
+            transform: rotate(-0.5deg);
+        }
+
+        .checkbox {
+            width: 24px;
+            height: 24px;
+            min-width: 24px;
+            border: 3px solid var(--color-text-primary);
+            background: var(--color-white);
+            appearance: none;
+            cursor: pointer;
+            transform: rotate(5deg);
+            margin-top: 2px;
+        }
+
+        .checkbox:checked {
+            background: var(--color-accent);
+            box-shadow: 2px 2px 0 var(--color-text-primary);
+        }
+
+        .terms-text {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--color-text-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            line-height: 1.4;
+        }
+
+        .terms-link {
+            color: var(--color-secondary);
+            text-decoration: none;
+        }
+
+        .terms-link:hover {
+            color: var(--color-primary);
+            text-shadow: 1px 1px 0 var(--color-text-primary);
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 18px;
+            background: var(--color-primary);
+            border: var(--border-brutal-md) solid var(--color-text-primary);
+            color: var(--color-white);
+            font-family: inherit;
+            font-size: 18px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            box-shadow: 4px 4px 0 var(--color-text-primary);
+            transform: rotate(1deg);
+            transition: all 0.2s ease;
+            margin-bottom: 24px;
+        }
+
+        .btn-primary:hover {
+            transform: rotate(0deg) translateY(-2px);
+            box-shadow: 6px 6px 0 var(--color-text-primary);
+        }
+
+        .btn-primary:active {
+            transform: rotate(0deg) translateY(2px);
+            box-shadow: 2px 2px 0 var(--color-text-primary);
+        }
+
+        .btn-primary:disabled {
+            background: var(--color-text-secondary);
+            cursor: not-allowed;
+            transform: rotate(0deg);
+            box-shadow: 2px 2px 0 var(--color-text-primary);
+        }
+
+        .divider {
+            text-align: center;
+            margin: 32px 0;
+            position: relative;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 40%;
+            height: 3px;
+            background: var(--color-text-primary);
+        }
+
+        .divider::before {
+            left: 0;
+            transform: rotate(-1deg);
+        }
+
+        .divider::after {
+            right: 0;
+            transform: rotate(1deg);
+        }
+
+        .divider-text {
+            background: var(--color-white);
+            padding: 0 16px;
+            font-weight: 900;
+            color: var(--color-text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 14px;
+        }
+
+        .btn-social {
+            width: 100%;
+            padding: 16px;
+            background: var(--color-white);
+            border: var(--border-brutal-md) solid var(--color-text-primary);
+            color: var(--color-text-primary);
+            font-family: inherit;
+            font-size: 16px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            box-shadow: 3px 3px 0 var(--color-text-primary);
+            transform: rotate(-0.5deg);
+            transition: all 0.2s ease;
+            margin-bottom: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .btn-social:hover {
+            transform: rotate(0deg) translateY(-1px);
+            box-shadow: 4px 4px 0 var(--color-secondary);
+        }
+
+        .google-icon {
+            width: 20px;
+            height: 20px;
+            background: #4285f4;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 900;
+            font-size: 12px;
+        }
+
+        .signin-link {
+            text-align: center;
+            font-size: 14px;
+            color: var(--color-text-secondary);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .signin-link a {
+            color: var(--color-primary);
+            text-decoration: none;
+            font-weight: 900;
+        }
+
+        .signin-link a:hover {
+            text-shadow: 1px 1px 0 var(--color-text-primary);
+        }
+
+        .error-message {
+            background: var(--color-error);
+            color: var(--color-white);
+            padding: 12px 16px;
+            border: 3px solid var(--color-text-primary);
+            margin-bottom: 20px;
+            font-weight: 900;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 1px;
+            transform: rotate(-1deg);
+            box-shadow: 3px 3px 0 var(--color-text-primary);
+        }
+
+        .field-error {
+            color: var(--color-error);
+            font-size: 12px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 6px;
+            padding: 6px 12px;
+            background: rgba(231, 76, 60, 0.1);
+            border: 2px solid var(--color-error);
+            transform: rotate(-0.5deg);
+        }
+
+        .security-badge {
+            position: absolute;
+            bottom: -60px;
+            right: -20px;
+            background: var(--color-accent);
+            color: var(--color-white);
+            padding: 12px 16px;
+            border: 3px solid var(--color-text-primary);
+            font-size: 10px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transform: rotate(3deg);
+            box-shadow: 3px 3px 0 var(--color-text-primary);
+            width: 140px;
+            text-align: center;
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 480px) {
+            .mockup-container {
+                padding: 24px;
+                transform: rotate(0deg);
+                margin: 10px;
+            }
+
+            .page-title {
+                font-size: 24px;
+            }
+
+            .logo-text {
+                font-size: 20px;
+            }
+
+            .security-badge {
+                position: static;
+                transform: rotate(0deg);
+                margin-top: 20px;
+                width: 100%;
+            }
+        }
+
+        .mockup-label {
+            position: absolute;
+            top: -30px;
+            left: 0;
+            background: var(--color-primary);
+            color: var(--color-white);
+            padding: 8px 16px;
+            font-size: 12px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: 2px solid var(--color-text-primary);
+            transform: rotate(-2deg);
+            box-shadow: 2px 2px 0 var(--color-text-primary);
+        }
+
+        .container-wrapper {
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-wrapper">
+        <div class="mockup-label">Neo-Brutalist Registration</div>
+        
+        <div class="mockup-container">
+            <div class="header">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <svg width="32" height="32" viewBox="0 0 128 128">
+                            <polygon points="20,70 60,35 100,70" fill="white" />
+                            <line x1="21" y1="70" x2="99" y2="70" stroke="white" stroke-width="1" />
+                            <rect x="20" y="70" width="80" height="36" fill="white" />
+                            <rect x="76" y="40" width="18" height="26" fill="white" />
+                            <rect x="60" y="74" width="36" height="28" fill="#e67e22" />
+                            <line x1="64" y1="80" x2="90" y2="80" stroke="white" stroke-width="2" />
+                            <line x1="64" y1="85" x2="87" y2="85" stroke="white" stroke-width="2" />
+                            <line x1="64" y1="90" x2="90" y2="90" stroke="white" stroke-width="2" />
+                            <line x1="64" y1="95" x2="82" y2="95" stroke="white" stroke-width="2" />
+                        </svg>
+                    </div>
+                    <div class="logo-text">HomeKeeper</div>
+                </div>
+                
+                <div class="tab-navigation">
+                    <button class="tab">Sign In</button>
+                    <button class="tab active">Register</button>
+                </div>
+                
+                <h1 class="page-title">Create Account</h1>
+                <p class="page-subtitle">Join HomeKeeper to organize your home</p>
+            </div>
+
+            <!-- Error State Example -->
+            <!-- <div class="error-message">⚠ An account with this email already exists</div> -->
+
+            <form class="form">
+                <div class="form-group">
+                    <label class="form-label">Full Name <span class="required">*</span></label>
+                    <input type="text" class="form-input" placeholder="Enter your full name" value="">
+                    <!-- <div class="field-error">⚠ Name is required</div> -->
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Email Address <span class="required">*</span></label>
+                    <input type="email" class="form-input" placeholder="your.email@example.com" value="">
+                    <!-- <div class="field-error">⚠ Please enter a valid email</div> -->
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Password <span class="required">*</span></label>
+                    <input type="password" class="form-input" placeholder="Create a secure password" value="">
+                    
+                    <!-- Password Strength Indicator -->
+                    <div class="password-strength">
+                        <div class="strength-indicator">
+                            <div class="strength-bar weak"></div>
+                            <div class="strength-bar"></div>
+                            <div class="strength-bar"></div>
+                            <div class="strength-bar"></div>
+                        </div>
+                        <div class="strength-text weak">Weak - Add numbers and symbols</div>
+                    </div>
+                </div>
+
+                <div class="terms-group">
+                    <input type="checkbox" class="checkbox" id="terms">
+                    <label for="terms" class="terms-text">
+                        I agree to the <a href="#" class="terms-link">Terms of Service</a> and 
+                        <a href="#" class="terms-link">Privacy Policy</a>
+                    </label>
+                </div>
+
+                <button type="submit" class="btn-primary">Create Account</button>
+            </form>
+
+            <div class="divider">
+                <span class="divider-text">or</span>
+            </div>
+
+            <button class="btn-social">
+                <div class="google-icon">G</div>
+                Sign up with Google
+            </button>
+
+            <div class="signin-link">
+                Already have an account? <a href="#">Sign in here</a>
+            </div>
+
+            <div class="security-badge">
+                🔒 Secure Registration<br>
+                Data encrypted & private
+            </div>
+        </div>
+    </div>
+</body>
+</html>
