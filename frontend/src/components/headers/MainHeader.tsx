@@ -4,7 +4,7 @@ import { Z_INDEX_CLASSES } from '../../lib/constants/zIndex';
 import { getResponsivePattern } from '../../lib/design-system/sizes';
 import { DarkBgHeader } from '../common/Logo';
 import { MobileMenu } from '../layout/containers/MobileMenu';
-import { AppNavigation } from './AppNavigation';
+import { DesktopAppNavigation, MobileAppNavigation } from './AppNavigation';
 import { HeaderGradient } from './HeaderGradient';
 import { MobileMenuToggle } from './MobileMenuToggle';
 import { ProfileButton } from './ProfileButton';
@@ -45,7 +45,7 @@ export function MainHeader(_props: MainHeaderProps) {
         <div className="max-w-full mx-auto px-3 py-5">
           <div className="flex justify-between items-center gap-12">
             <DarkBgHeader />
-            <AppNavigation />
+            <DesktopAppNavigation />
 
             <div className="flex items-center gap-4">
               <SearchInput />
@@ -82,7 +82,7 @@ export function MainHeader(_props: MainHeaderProps) {
 
       { /* Overlay for Nav */}
       <MobileMenu isOpen={isMobileNavMenuOpen} onClose={closeMobileNavMenu}>
-        <AppNavigation />
+        <MobileAppNavigation />
       </MobileMenu>
 
       { /* Overlay for Profile Menu */}

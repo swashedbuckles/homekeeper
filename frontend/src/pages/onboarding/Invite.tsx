@@ -112,13 +112,10 @@ export const InviteOthers = () => {
       <ListItem
         title={invitation.email}
         subtitle={`Code: ${invitation.code}. Expires in 14 days`}
-        actions={
-          <div className="flex space-x-3">
-            <button onClick={() => handleCopy(invitation.code)} className="text-primary hover:text-text-primary text-sm font-medium">Copy</button>
-            <button onClick={() => cancelInviteMutation.mutate(invitation.id)} className="text-red-600 hover:text-red-800 text-sm font-medium">Delete</button>
-          </div>
-        }
-      />
+      >
+        <Button variant="outline" size="sm" onClick={() => handleCopy(invitation.code)}>Copy</Button>
+        <Button variant="danger" size="sm" onClick={() => cancelInviteMutation.mutate(invitation.id)}>Delete</Button>
+      </ListItem>
     );
   });
 

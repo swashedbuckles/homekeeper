@@ -14,7 +14,7 @@ export function Home() {
     logger.log('homepage Checking auth');
     context.checkAuth()
       .then(() => {});
-  }, []);
+  }, [context]);
 
   const onClick = async () => {
     try {

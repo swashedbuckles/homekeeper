@@ -1,65 +1,111 @@
-import { useLocation } from 'react-router';
+import { validateNavChildren, type AllowedNavChildren } from '../../lib/validation/children';
+import { NavItem } from './NavItem';
 
-export function AppNavigation() {
-  const location = useLocation();
+/**
+ * AppNavigation Component.
+ * 
+ * Main navigation component that uses composition to allow flexible navigation items.
+ * Automatically handles active state detection, responsive layout, and neobrutalist styling.
+ * Uses NavItem child components for maximum flexibility while maintaining type safety.
+ * 
+ * @example Horizontal navigation for desktop
+ * ```tsx
+ * <AppNavigation direction="horizontal">
+ *   <NavItem path="/dashboard">Dashboard</NavItem>
+ *   <NavItem path="/manuals">Manuals</NavItem>
+ *   <NavItem path="/maintenance">Maintenance</NavItem>
+ *   <NavItem path="/analytics">Analytics</NavItem>
+ * </AppNavigation>
+ * ```
+ * 
+ * @example Vertical navigation for mobile menus
+ * ```tsx
+ * <AppNavigation direction="vertical">
+ *   <NavItem path="/dashboard">Dashboard</NavItem>
+ *   <NavItem path="/manuals">Manuals</NavItem>
+ *   <NavItem path="/maintenance">Maintenance</NavItem>
+ * </AppNavigation>
+ * ```
+ * 
+ * @example Custom navigation items with handlers
+ * ```tsx
+ * <AppNavigation direction="horizontal">
+ *   <NavItem path="/dashboard" onClick={() => trackNavigation('dashboard')}>
+ *     Dashboard
+ *   </NavItem>
+ *   <NavItem path="/settings" className="text-error">
+ *     Admin Settings
+ *   </NavItem>
+ * </AppNavigation>
+ * ```
+ */
+export interface AppNavigationProps {
+  /** NavItem components to render in the navigation */
+  children?: AllowedNavChildren;
+  /** Layout direction for the navigation items */
+  direction?: 'horizontal' | 'vertical';
+  /** Additional CSS classes to apply to the nav container */
+  className?: string;
+  /** Test identifier for automated testing */
+  testId?: string;
+}
 
-  const activeClasses = [
-    'bg-transparent',
-    'text-primary',
-    'border-0',
-    'border-b-4',
-    'border-b-primary',
-    'font-black',
-    'uppercase',
-    'tracking-wider',
-    'px-6',
-    'py-3',
-    'brutal-transition',
-  ].join(' ');
+export const AppNavigation = ({
+  children,
+  direction = 'horizontal',
+  className = '',
+  testId = 'app-navigation'
+}: AppNavigationProps) => {
+  // Validate and extract navigation children
+  const validatedNavItems = validateNavChildren(children, 'AppNavigation');
 
-  const inactiveClasses = [
-    'bg-transparent',
-    'text-text-secondary',
-    'border-0',
-    'border-b-4',
-    'border-b-transparent',
-    'font-bold',
-    'uppercase',
-    'tracking-wider',
-    'px-6',
-    'py-3',
-    'brutal-transition',
-    'hover:text-primary',
-    'hover:border-b-primary/30'
-  ].join(' ');
+  const directionClasses = {
+    horizontal: 'flex-row',
+    vertical: 'flex-col'
+  };
 
-  const locations = [
-    {
-      name: 'Dashboard',
-      path: '/dashboard'
-    },
-    {
-      name: 'Manuals',
-      path: '/manuals'
-    },
-    {
-      name: 'Maintenance',
-      path: '/maintenance'
-    },
-    {
-      name: 'Analytics',
-      path: '/analytics',
-    },
-  ].map(path => {
-    const classes = location.pathname.startsWith(path.path) ? activeClasses : inactiveClasses;
-    return (
-      <button className={classes} key={path.path}>{path.name}</button>
-    );
-  });
-  
+  const navClasses = [
+    'flex',
+    directionClasses[direction],
+    className
+  ].filter(Boolean).join(' ');
+
   return (
-    <nav className="flex flex-col md:flex-row">
-      {...locations}
+    <nav className={navClasses} data-testid={testId}>
+      {validatedNavItems}
     </nav>
   );
-}
+};
+
+// Add displayName for better debugging
+AppNavigation.displayName = 'AppNavigation';
+
+// Export default navigation items for backward compatibility and common usage
+export const DefaultAppNavigation = () => (
+  <AppNavigation>
+    <NavItem path="/dashboard">Dashboard</NavItem>
+    <NavItem path="/manuals">Manuals</NavItem>
+    <NavItem path="/maintenance">Maintenance</NavItem>
+    <NavItem path="/analytics">Analytics</NavItem>
+  </AppNavigation>
+);
+
+// Desktop-specific navigation (horizontal layout)
+export const DesktopAppNavigation = () => (
+  <AppNavigation direction="horizontal">
+    <NavItem path="/dashboard">Dashboard</NavItem>
+    <NavItem path="/manuals">Manuals</NavItem>
+    <NavItem path="/maintenance">Maintenance</NavItem>
+    <NavItem path="/analytics">Analytics</NavItem>
+  </AppNavigation>
+);
+
+// Mobile-specific navigation (vertical layout)
+export const MobileAppNavigation = () => (
+  <AppNavigation direction="vertical">
+    <NavItem path="/dashboard">Dashboard</NavItem>
+    <NavItem path="/manuals">Manuals</NavItem>
+    <NavItem path="/maintenance">Maintenance</NavItem>
+    <NavItem path="/analytics">Analytics</NavItem>
+  </AppNavigation>
+);

@@ -7,6 +7,7 @@ import { BackgroundRectangles } from '../../components/backgrounds/BackgroundRec
 
 // Common Components
 import { BackgroundSquares } from '../../components/backgrounds/BackgroundSquares';
+import { Action } from '../../components/common/Action';
 import { Alert } from '../../components/common/Alert';
 import { BackButton } from '../../components/common/BackButton';
 import { Badge } from '../../components/common/Badge';
@@ -22,12 +23,13 @@ import { Title } from '../../components/common/Title';
 // Form Components
 import { CheckBox } from '../../components/form/Checkbox';
 import { PasswordStrengthIndicator } from '../../components/form/PasswordStrengthIndicator';
-import { Select } from '../../components/form/Select';
+import { Select, Option } from '../../components/form/Select';
 import { TextArea } from '../../components/form/TextArea';
 import { TextInput } from '../../components/form/TextInput';
 import { WideContainer } from '../../components/layout/containers/WideContainer';
 import { Inline } from '../../components/layout/Flex';
 import { Grid } from '../../components/layout/Grid';
+import { Tabs } from '../../components/layout/Tabs';
 
 // Variation Components
 import { CodeInput } from '../../components/variations/CodeInput';
@@ -56,9 +58,11 @@ const TableOfContents = () => {
     { id: 'typography', label: 'Typography' },
     { id: 'text-shadows', label: 'Text Shadows' },
     { id: 'forms', label: 'Form Components' },
+    { id: 'tabs', label: 'Tabs' },
     { id: 'alerts', label: 'Alerts' },
     { id: 'variations', label: 'Variation Components' },
     { id: 'list-items', label: 'List Items' },
+    { id: 'action-component', label: 'Action Component' },
     { id: 'backgrounds', label: 'Background Components' }
   ];
 
@@ -109,30 +113,6 @@ export function KitchenSink() {
   const [password, setPassword] = useState('');
   const [selectedOption, setSelectedOption] = useState<string>('');
   
-  // Select component options
-  const countryOptions = [
-    { value: 'us', label: 'United States' },
-    { value: 'ca', label: 'Canada' },
-    { value: 'uk', label: 'United Kingdom' },
-    { value: 'au', label: 'Australia' },
-    { value: 'de', label: 'Germany' }
-  ];
-
-  const priorityOptions = [
-    { value: 'low', label: 'Low Priority' },
-    { value: 'medium', label: 'Medium Priority' },
-    { value: 'high', label: 'High Priority' },
-    { value: 'urgent', label: 'Urgent', disabled: false }
-  ];
-
-  const categoryOptions = [
-    { value: 'hvac', label: 'HVAC Systems' },
-    { value: 'plumbing', label: 'Plumbing' },
-    { value: 'electrical', label: 'Electrical' },
-    { value: 'appliances', label: 'Appliances' },
-    { value: 'exterior', label: 'Exterior Maintenance' },
-    { value: 'interior', label: 'Interior Maintenance' }
-  ];
 
   return (
     <div className="relative min-h-screen">
@@ -544,9 +524,9 @@ Last Service: 2024-06-15
         <section id="forms">
           <SectionTitle className="mb-8">Form Components</SectionTitle>
         <Card variant="default" shadow="triple" className="p-8 mb-8">
-          <Grid columns={2} spacing="lg">
+          <Grid columns={3} spacing="lg">
             <div>
-              <SubSectionTitle className="mb-6">Text Input</SubSectionTitle>
+              <SubSectionTitle className="mb-4">Text Input</SubSectionTitle>
               <TextInput 
                 label="Email Address" 
                 type="email" 
@@ -556,7 +536,6 @@ Last Service: 2024-06-15
               <TextInput 
                 label="Password" 
                 type="password" 
-                size="lg"
                 placeholder="Enter password"
                 className="mb-4"
               />
@@ -564,43 +543,43 @@ Last Service: 2024-06-15
                 label="Error State" 
                 type="text" 
                 error="This field is required"
-                className="mb-6"
+                className="mb-4"
               />
 
-              <SubSectionTitle className="mb-4">TextInput Sizes (All 5 StandardSize Options)</SubSectionTitle>
+              <SubSectionTitle className="mb-4">Input Sizes</SubSectionTitle>
               <TextInput 
-                label="Extra Small Input" 
+                label="Extra Small" 
                 type="text" 
                 size="xs"
-                placeholder="xs - minimal padding"
+                placeholder="xs"
                 className="mb-3"
               />
               <TextInput 
-                label="Small Input" 
+                label="Small" 
                 type="text" 
                 size="sm"
-                placeholder="sm - compact size"
+                placeholder="sm"
                 className="mb-3"
               />
               <TextInput 
-                label="Medium Input" 
+                label="Medium" 
                 type="text" 
                 size="md"
-                placeholder="md - default size"
+                placeholder="md"
                 className="mb-3"
               />
               <TextInput 
-                label="Large Input" 
+                label="Large" 
                 type="text" 
                 size="lg"
-                placeholder="lg - prominent size"
+                placeholder="lg"
                 className="mb-3"
               />
               <TextInput 
-                label="Extra Large Input" 
+                label="Extra Large" 
                 type="text" 
                 size="xl"
-                placeholder="xl - maximum impact"
+                placeholder="xl"
                 className="mb-4"
               />
 
@@ -620,7 +599,7 @@ Last Service: 2024-06-15
             </div>
 
             <div>
-              <SubSectionTitle className="mb-6">Text Area</SubSectionTitle>
+              <SubSectionTitle className="mb-4">Text Area</SubSectionTitle>
               <TextArea 
                 label="Description"
                 placeholder="Tell us about your household..."
@@ -630,44 +609,44 @@ Last Service: 2024-06-15
               <TextArea 
                 label="Large Text Area"
                 size="lg"
-                placeholder="Larger text area example"
+                placeholder="Larger text area"
                 rows={6}
-                className="mb-6"
+                className="mb-4"
               />
 
-              <SubSectionTitle className="mb-4">TextArea Sizes (All 5 StandardSize Options)</SubSectionTitle>
+              <SubSectionTitle className="mb-4">TextArea Sizes</SubSectionTitle>
               <TextArea 
-                label="Extra Small TextArea"
+                label="Extra Small"
                 size="xs"
-                placeholder="xs - minimal padding, compact text"
+                placeholder="xs"
                 rows={2}
                 className="mb-3"
               />
               <TextArea 
-                label="Small TextArea"
+                label="Small"
                 size="sm"
-                placeholder="sm - compact size"
+                placeholder="sm"
                 rows={3}
                 className="mb-3"
               />
               <TextArea 
-                label="Medium TextArea"
+                label="Medium"
                 size="md"
-                placeholder="md - default size"
+                placeholder="md"
                 rows={4}
                 className="mb-3"
               />
               <TextArea 
-                label="Large TextArea"
+                label="Large"
                 size="lg"
-                placeholder="lg - prominent with larger text"
+                placeholder="lg"
                 rows={5}
                 className="mb-3"
               />
               <TextArea 
-                label="Extra Large TextArea"
+                label="Extra Large"
                 size="xl"
-                placeholder="xl - maximum impact for important forms"
+                placeholder="xl"
                 rows={6}
                 className="mb-4"
               />
@@ -686,139 +665,322 @@ Last Service: 2024-06-15
                 }}
               />
               <PasswordStrengthIndicator password={password} />
+            </div>
 
+            <div>
               <SubSectionTitle className="mb-4">Select Components</SubSectionTitle>
               <Select 
                 label="Country" 
-                options={countryOptions}
                 placeholder="Choose your country"
                 className="mb-4"
-              />
+              >
+                <Option value="us">United States</Option>
+                <Option value="ca">Canada</Option>
+                <Option value="uk">United Kingdom</Option>
+                <Option value="au">Australia</Option>
+              </Select>
               <Select 
                 label="Priority Level" 
-                options={priorityOptions}
                 size="lg"
                 placeholder="Select priority"
                 className="mb-4"
-              />
+              >
+                <Option value="low">Low Priority</Option>
+                <Option value="medium">Medium Priority</Option>
+                <Option value="high">High Priority</Option>
+                <Option value="urgent">Urgent</Option>
+              </Select>
               <Select 
                 label="Error State" 
-                options={categoryOptions}
-                error="Please select a maintenance category"
-                className="mb-6"
-              />
-
-              <SubSectionTitle className="mb-4">Select Sizes (All 5 StandardSize Options)</SubSectionTitle>
-              <Select 
-                label="Extra Small Select" 
-                options={countryOptions}
-                size="xs"
-                placeholder="xs - minimal padding"
-                className="mb-3"
-              />
-              <Select 
-                label="Small Select" 
-                options={countryOptions}
-                size="sm"
-                placeholder="sm - compact size"
-                className="mb-3"
-              />
-              <Select 
-                label="Medium Select" 
-                options={countryOptions}
-                size="md"
-                placeholder="md - default size"
-                className="mb-3"
-              />
-              <Select 
-                label="Large Select" 
-                options={countryOptions}
-                size="lg"
-                placeholder="lg - prominent size"
-                className="mb-3"
-              />
-              <Select 
-                label="Extra Large Select" 
-                options={countryOptions}
-                size="xl"
-                placeholder="xl - maximum impact"
+                error="Please select a category"
                 className="mb-4"
-              />
+              >
+                <Option value="hvac">HVAC Systems</Option>
+                <Option value="plumbing">Plumbing</Option>
+                <Option value="electrical">Electrical</Option>
+              </Select>
+
+              <SubSectionTitle className="mb-4">Select Sizes</SubSectionTitle>
+              <Select 
+                label="Extra Small" 
+                size="xs"
+                placeholder="xs"
+                className="mb-3"
+              >
+                <Option value="us">United States</Option>
+                <Option value="ca">Canada</Option>
+              </Select>
+              <Select 
+                label="Small" 
+                size="sm"
+                placeholder="sm"
+                className="mb-3"
+              >
+                <Option value="us">United States</Option>
+                <Option value="ca">Canada</Option>
+              </Select>
+              <Select 
+                label="Medium" 
+                size="md"
+                placeholder="md"
+                className="mb-3"
+              >
+                <Option value="us">United States</Option>
+                <Option value="ca">Canada</Option>
+              </Select>
+              <Select 
+                label="Large" 
+                size="lg"
+                placeholder="lg"
+                className="mb-3"
+              >
+                <Option value="us">United States</Option>
+                <Option value="ca">Canada</Option>
+              </Select>
+              <Select 
+                label="Extra Large" 
+                size="xl"
+                placeholder="xl"
+                className="mb-4"
+              >
+                <Option value="us">United States</Option>
+                <Option value="ca">Canada</Option>
+              </Select>
 
               <SubSectionTitle className="mb-4">Select Variants</SubSectionTitle>
               <Select 
                 label="Default Variant" 
-                options={categoryOptions}
                 variant="default"
-                placeholder="Light theme select"
+                placeholder="Light theme"
                 className="mb-3"
-              />
+              >
+                <Option value="hvac">HVAC</Option>
+                <Option value="plumbing">Plumbing</Option>
+              </Select>
               <Select 
                 label="Search Variant" 
-                options={categoryOptions}
                 variant="search"
-                placeholder="Dark theme search select"
+                placeholder="Dark theme"
+                className="mb-4"
+              >
+                <Option value="hvac">HVAC</Option>
+                <Option value="plumbing">Plumbing</Option>
+              </Select>
+            </div>
+          </Grid>
+
+          <SubSectionTitle className="mb-4 mt-8">Checkboxes</SubSectionTitle>
+          <Grid columns={4} spacing="lg">
+            <div>
+              <Text variant="label" weight="bold" className="block mb-3">Sizes</Text>
+              <div className="space-y-3">
+                <CheckBox label="Extra Small" size="xs" />
+                <CheckBox label="Small" size="sm" />
+                <CheckBox label="Medium" size="md" />
+                <CheckBox label="Large" size="lg" />
+                <CheckBox label="Extra Large" size="xl" />
+              </div>
+            </div>
+
+            <div>
+              <Text variant="label" weight="bold" className="block mb-3">Colors</Text>
+              <div className="space-y-3">
+                <CheckBox label="Accent" color="accent" />
+                <CheckBox label="Primary" color="primary" />
+                <CheckBox label="Secondary" color="secondary" />
+                <CheckBox label="Success" color="success" />
+                <CheckBox label="Warning" color="warning" />
+                <CheckBox label="Error" color="error" />
+                <CheckBox label="Dark" color="dark" />
+              </div>
+            </div>
+
+            <div>
+              <Text variant="label" weight="bold" className="block mb-3">States</Text>
+              <div className="space-y-3">
+                <CheckBox label="Unchecked" />
+                <CheckBox label="Checked" defaultChecked />
+                <CheckBox label="Disabled" disabled />
+                <CheckBox label="Disabled Checked" checked disabled />
+              </div>
+            </div>
+
+            <div>
+              <Text variant="label" weight="bold" className="block mb-3">Examples</Text>
+              <div className="space-y-3">
+                <CheckBox label="Enable notifications" defaultChecked />
+                <CheckBox label="Auto-save changes" defaultChecked />
+                <CheckBox label="Dark mode" />
+                <CheckBox label="Beta features" />
+              </div>
+            </div>
+          </Grid>
+        </Card>
+        </section>
+
+        {/* Tabs Section */}
+        <section id="tabs">
+          <SectionTitle className="mb-8">Tabs</SectionTitle>
+        <Card variant="default" shadow="triple" className="p-8 mb-8">
+          <SubSectionTitle className="mb-6">Basic Tabs</SubSectionTitle>
+          <Tabs defaultTab="household">
+            <Tabs.List className="mb-6">
+              <Tabs.Button value="household">Household Settings</Tabs.Button>
+              <Tabs.Button value="members">Members</Tabs.Button>
+              <Tabs.Button value="notifications">Notifications</Tabs.Button>
+            </Tabs.List>
+            <Tabs.Panel value="household" className="p-4 border-2 border-text-primary">
+              <Text variant="body" className="mb-4">
+                Configure your household preferences and general settings.
+              </Text>
+              <TextInput 
+                label="Household Name" 
+                type="text"
+                placeholder="Enter household name"
                 className="mb-4"
               />
+              <Select label="Time Zone" className="mb-4">
+                <Option value="pst">Pacific Time</Option>
+                <Option value="mst">Mountain Time</Option>
+                <Option value="cst">Central Time</Option>
+                <Option value="est">Eastern Time</Option>
+              </Select>
+              <CheckBox label="Enable automatic maintenance reminders" />
+            </Tabs.Panel>
+            <Tabs.Panel value="members" className="p-4 border-2 border-text-primary">
+              <Text variant="body" className="mb-4">
+                Manage household members and their permissions.
+              </Text>
+              <div className="space-y-4">
+                <ListItem
+                  title="John Smith (Admin)"
+                  subtitle="john@example.com • Joined 2 months ago"
+                  status="completed"
+                >
+                  <Action variant="outline">Edit Permissions</Action>
+                </ListItem>
+                <ListItem
+                  title="Sarah Smith"
+                  subtitle="sarah@example.com • Joined 1 month ago"
+                >
+                  <Action variant="primary">Manage</Action>
+                  <Action variant="outline">Remove</Action>
+                </ListItem>
+              </div>
+              <Button variant="primary" className="mt-4">
+                Invite New Member
+              </Button>
+            </Tabs.Panel>
+            <Tabs.Panel value="notifications" className="p-4 border-2 border-text-primary">
+              <Text variant="body" className="mb-4">
+                Configure how and when you receive notifications.
+              </Text>
+              <div className="space-y-4">
+                <CheckBox label="Email notifications for overdue tasks" defaultChecked />
+                <CheckBox label="Push notifications on mobile" defaultChecked />
+                <CheckBox label="Weekly maintenance summaries" />
+                <CheckBox label="Emergency alerts" defaultChecked />
+              </div>
+              <Select label="Notification Frequency" className="mt-4">
+                <Option value="immediate">Immediate</Option>
+                <Option value="hourly">Hourly Digest</Option>
+                <Option value="daily">Daily Digest</Option>
+                <Option value="weekly">Weekly Summary</Option>
+              </Select>
+            </Tabs.Panel>
+          </Tabs>
 
-              <SubSectionTitle className="mb-4">Select with Validation Feedback</SubSectionTitle>
-              <Select 
-                label="Maintenance Schedule" 
-                options={priorityOptions}
-                validationFeedback={
-                  <div className="flex items-center gap-2">
-                    <span className="text-accent">✓</span>
-                    Schedule preference saved
-                  </div>
-                }
-              />
-            </div>
+          <SubSectionTitle className="mb-6 mt-8">Size Variants</SubSectionTitle>
+          <Grid columns={2} spacing="lg">
             <div>
-              <SubSectionTitle className="mb-6">Checkbox Components</SubSectionTitle>
-              
-              <Grid columns={2} spacing="lg">
-                <div>
-                  <Text variant="label" weight="bold" className="block mb-3">Checkbox Sizes:</Text>
-                  <div className="space-y-3">
-                    <CheckBox label="Extra Small - compact forms" size="xs" />
-                    <CheckBox label="Small - minimal interfaces" size="sm" />
-                    <CheckBox label="Medium - default size (recommended)" size="md" />
-                    <CheckBox label="Large - prominent forms" size="lg" />
-                    <CheckBox label="Extra Large - maximum impact" size="xl" />
-                  </div>
-                </div>
+              <Text variant="label" weight="bold" className="block mb-2">Extra Small</Text>
+              <Tabs defaultTab="settings">
+                <Tabs.List size="xs" className="mb-4">
+                  <Tabs.Button value="settings" size="xs">Settings</Tabs.Button>
+                  <Tabs.Button value="users" size="xs">Users</Tabs.Button>
+                  <Tabs.Button value="billing" size="xs">Billing</Tabs.Button>
+                </Tabs.List>
+                <Tabs.Panel value="settings" className="p-3 bg-subtle border-2 border-text-primary">
+                  <Text variant="body" size="sm">Compact settings panel</Text>
+                </Tabs.Panel>
+                <Tabs.Panel value="users" className="p-3 bg-subtle border-2 border-text-primary">
+                  <Text variant="body" size="sm">User management</Text>
+                </Tabs.Panel>
+                <Tabs.Panel value="billing" className="p-3 bg-subtle border-2 border-text-primary">
+                  <Text variant="body" size="sm">Billing details</Text>
+                </Tabs.Panel>
+              </Tabs>
+            </div>
 
-                <div>
-                  <Text variant="label" weight="bold" className="block mb-3">Checkbox Colors:</Text>
-                  <div className="space-y-3">
-                    <CheckBox label="Accent (Green) - Default" color="accent" />
-                    <CheckBox label="Primary (Blue) - Main actions" color="primary" />
-                    <CheckBox label="Secondary (Purple) - Alternative" color="secondary" />
-                    <CheckBox label="Success (Green) - Confirmations" color="success" />
-                    <CheckBox label="Warning (Orange) - Cautions" color="warning" />
-                    <CheckBox label="Error (Red) - Destructive actions" color="error" />
-                    <CheckBox label="Dark (Black) - High contrast" color="dark" />
-                  </div>
-                </div>
+            <div>
+              <Text variant="label" weight="bold" className="block mb-2">Large</Text>
+              <Tabs defaultTab="overview">
+                <Tabs.List size="lg" className="mb-4">
+                  <Tabs.Button value="overview" size="lg">Overview</Tabs.Button>
+                  <Tabs.Button value="analytics" size="lg">Analytics</Tabs.Button>
+                  <Tabs.Button value="reports" size="lg">Reports</Tabs.Button>
+                </Tabs.List>
+                <Tabs.Panel value="overview" className="p-6 bg-subtle border-2 border-text-primary">
+                  <Text variant="body">Overview dashboard</Text>
+                </Tabs.Panel>
+                <Tabs.Panel value="analytics" className="p-6 bg-subtle border-2 border-text-primary">
+                  <Text variant="body">Analytics data</Text>
+                </Tabs.Panel>
+                <Tabs.Panel value="reports" className="p-6 bg-subtle border-2 border-text-primary">
+                  <Text variant="body">Reports section</Text>
+                </Tabs.Panel>
+              </Tabs>
+            </div>
+          </Grid>
 
-                <div>
-                  <Text variant="label" weight="bold" className="block mb-3">Disabled State:</Text>
-                  <div className="space-y-3">
-                    <CheckBox label="Disabled unchecked checkbox" color="accent" disabled />
-                    <CheckBox label="Disabled checked checkbox" color="primary" checked disabled />
-                    <CheckBox label="Large disabled checkbox" color="success" size="lg" disabled />
-                  </div>
-                </div>
+          <SubSectionTitle className="mb-6 mt-8">Tab Variants</SubSectionTitle>
+          <Grid columns={3} spacing="lg">
+            <div>
+              <Text variant="label" weight="bold" className="block mb-2">Primary</Text>
+              <Tabs defaultTab="main">
+                <Tabs.List className="mb-4">
+                  <Tabs.Button value="main" variant="primary">Main</Tabs.Button>
+                  <Tabs.Button value="secondary" variant="primary">Secondary</Tabs.Button>
+                </Tabs.List>
+                <Tabs.Panel value="main" className="p-4 bg-subtle border-2 border-text-primary">
+                  <Text variant="body">Primary content</Text>
+                </Tabs.Panel>
+                <Tabs.Panel value="secondary" className="p-4 bg-subtle border-2 border-text-primary">
+                  <Text variant="body">Secondary content</Text>
+                </Tabs.Panel>
+              </Tabs>
+            </div>
 
-                <div>
-                  <Text variant="label" weight="bold" className="block mb-3">Pre-checked Examples:</Text>
-                  <div className="space-y-3">
-                    <CheckBox label="HVAC system maintenance enabled" color="accent" defaultChecked />
-                    <CheckBox label="Receive mobile push notifications" color="primary" defaultChecked />
-                    <CheckBox label="Auto-schedule recurring tasks" color="success" defaultChecked />
-                  </div>
-                </div>
-              </Grid>
+            <div>
+              <Text variant="label" weight="bold" className="block mb-2">Secondary</Text>
+              <Tabs defaultTab="support">
+                <Tabs.List className="mb-4">
+                  <Tabs.Button value="support" variant="secondary">Support</Tabs.Button>
+                  <Tabs.Button value="docs" variant="secondary">Documentation</Tabs.Button>
+                </Tabs.List>
+                <Tabs.Panel value="support" className="p-4 bg-subtle border-2 border-text-primary">
+                  <Text variant="body">Support content</Text>
+                </Tabs.Panel>
+                <Tabs.Panel value="docs" className="p-4 bg-subtle border-2 border-text-primary">
+                  <Text variant="body">Documentation</Text>
+                </Tabs.Panel>
+              </Tabs>
+            </div>
+
+            <div>
+              <Text variant="label" weight="bold" className="block mb-2">Outline</Text>
+              <Tabs defaultTab="filters">
+                <Tabs.List className="mb-4">
+                  <Tabs.Button value="filters" variant="outline">Filters</Tabs.Button>
+                  <Tabs.Button value="search" variant="outline">Search</Tabs.Button>
+                </Tabs.List>
+                <Tabs.Panel value="filters" className="p-4 bg-subtle border-2 border-text-primary">
+                  <Text variant="body">Filter options</Text>
+                </Tabs.Panel>
+                <Tabs.Panel value="search" className="p-4 bg-subtle border-2 border-text-primary">
+                  <Text variant="body">Search results</Text>
+                </Tabs.Panel>
+              </Tabs>
             </div>
           </Grid>
         </Card>
@@ -836,13 +998,13 @@ Last Service: 2024-06-15
             <Alert variant="basic" hideIcon>Basic alert without icon.</Alert>
           </div>
 
-          <SubSectionTitle className="mt-8 mb-4">Alert Sizes (All 5 StandardSize Options)</SubSectionTitle>
+          <SubSectionTitle className="mt-8 mb-4">Alert Sizes</SubSectionTitle>
           <div className="space-y-4">
-            <Alert variant="info" size="xs">Extra small alert - minimal spacing and tiny icon</Alert>
-            <Alert variant="success" size="sm">Small alert - compact with small icon</Alert>
-            <Alert variant="warning" size="md">Medium alert - default size with standard icon</Alert>
-            <Alert variant="error" size="lg">Large alert - prominent with larger icon</Alert>
-            <Alert variant="basic" size="xl">Extra large alert - maximum impact with biggest icon</Alert>
+            <Alert variant="info" size="xs">Extra small alert</Alert>
+            <Alert variant="success" size="sm">Small alert</Alert>
+            <Alert variant="warning" size="md">Medium alert</Alert>
+            <Alert variant="error" size="lg">Large alert</Alert>
+            <Alert variant="basic" size="xl">Extra large alert</Alert>
           </div>
         </Card>
         </section>
@@ -899,44 +1061,62 @@ Last Service: 2024-06-15
               subtitle="Central Air System • 3rd Floor"
               status="urgent"
               dueDate="Due Tomorrow"
-              actions={[
-                { label: 'Mark Complete', onClick: () => alert('Marked complete'), variant: 'danger' },
-                { label: 'Reschedule', onClick: () => alert('Reschedule clicked'), variant: 'outline' }
-              ]}
-            />
+            >
+              <Action variant="danger" onClick={() => alert('Marked complete')}>
+                Mark Complete
+              </Action>
+              <Action variant="outline" onClick={() => alert('Reschedule clicked')}>
+                Reschedule
+              </Action>
+            </TaskCard>
             <TaskCard
               title="Dishwasher Deep Clean"
               subtitle="Kitchen • Monthly maintenance"
               status="completed"
               dueDate="Completed Yesterday"
-              actions={[
-                { label: 'View Report', onClick: () => alert('View report'), variant: 'accent' },
-                { label: 'Schedule Next', onClick: () => alert('Schedule next'), variant: 'outline' },
-                { label: 'View Photos', onClick: () => alert('View photos'), variant: 'outline' }
-              ]}
-            />
+            >
+              <Action variant="accent" onClick={() => alert('View report')}>
+                View Report
+              </Action>
+              <Action variant="outline" onClick={() => alert('Schedule next')}>
+                Schedule Next
+              </Action>
+              <Action variant="outline" onClick={() => alert('View photos')}>
+                View Photos
+              </Action>
+            </TaskCard>
             <TaskCard
               title="Pool Chemical Check"
               subtitle="Backyard Pool • Weekly task"
               status="normal"
               dueDate="Due in 3 Days"
-              actions={[
-                { label: 'Mark Complete', onClick: () => alert('Mark complete'), variant: 'secondary' },
-                { label: 'Details', onClick: () => alert('View details'), variant: 'outline' }
-              ]}
-            />
+            >
+              <Action variant="secondary" onClick={() => alert('Mark complete')}>
+                Mark Complete
+              </Action>
+              <Action variant="outline" onClick={() => alert('View details')}>
+                Details
+              </Action>
+            </TaskCard>
             <TaskCard
               title="Emergency Repair"
               subtitle="Water heater replacement"
               status="completed"
               dueDate="Completed Last Week"
-              actions={[
-                { label: 'View Invoice', onClick: () => alert('View invoice'), variant: 'accent' },
-                { label: 'Warranty Info', onClick: () => alert('Warranty info'), variant: 'outline' },
-                { label: 'Contact Service', onClick: () => alert('Contact service'), variant: 'outline' },
-                { label: 'Schedule Follow-up', onClick: () => alert('Schedule follow-up'), variant: 'outline' }
-              ]}
-            />
+            >
+              <Action variant="accent" onClick={() => alert('View invoice')}>
+                View Invoice
+              </Action>
+              <Action variant="outline" onClick={() => alert('Warranty info')}>
+                Warranty Info
+              </Action>
+              <Action variant="outline" onClick={() => alert('Contact service')}>
+                Contact Service
+              </Action>
+              <Action variant="outline" onClick={() => alert('Schedule follow-up')}>
+                Schedule Follow-up
+              </Action>
+            </TaskCard>
           </Grid>
         </Card>
         </section>
@@ -949,20 +1129,24 @@ Last Service: 2024-06-15
             <ListItem
               title="Review House Rules"
               subtitle="Last updated 2 days ago"
-              actions={<Button variant="primary" size="sm">Edit</Button>}
-            />
+            >
+              <Action variant="primary" onClick={() => alert('Edit clicked')}>Edit</Action>
+            </ListItem>
             <ListItem
               title="Complete Monthly Budget"
               subtitle="Due in 3 days"
               status="urgent"
-              actions={<Button variant="danger" size="sm">Complete Now</Button>}
-            />
+            >
+              <Action variant="danger" onClick={() => alert('Complete clicked')}>Complete Now</Action>
+              <Action variant="outline" onClick={() => alert('Postpone clicked')}>Postpone</Action>
+            </ListItem>
             <ListItem
               title="Schedule Maintenance"
               subtitle="HVAC check completed"
               status="completed"
-              actions={<Button variant="outline" size="sm">View Details</Button>}
-            />
+            >
+              <Action variant="outline" onClick={() => alert('View details clicked')}>View Details</Action>
+            </ListItem>
             <ListItem
               title="Update Emergency Contacts"
               subtitle="Requires attention"
@@ -970,6 +1154,89 @@ Last Service: 2024-06-15
               hover
               onClick={() => alert('List item clicked')}
             />
+          </div>
+        </Card>
+        </section>
+
+        {/* Action Component Section */}
+        <section id="action-component">
+          <SectionTitle className="mb-8">Action Component</SectionTitle>
+        <Card variant="default" shadow="triple" className="p-8 mb-12">
+          <Text variant="body" className="mb-6">
+            The Action component is a lightweight wrapper around Button with smart defaults for action contexts.
+            It automatically applies size="sm" and provides semantic meaning for action buttons.
+          </Text>
+
+          <SubSectionTitle className="mb-4">Action vs Button Comparison</SubSectionTitle>
+          <div className="space-y-4 mb-8">
+            <div>
+              <Text variant="label" weight="bold" className="block mb-2">Action Components (Auto size="sm"):</Text>
+              <div className="flex gap-3 mb-4">
+                <Action variant="primary" onClick={() => alert('Action clicked')}>Primary Action</Action>
+                <Action variant="secondary" onClick={() => alert('Action clicked')}>Secondary Action</Action>
+                <Action variant="outline" onClick={() => alert('Action clicked')}>Outline Action</Action>
+                <Action variant="danger" onClick={() => alert('Action clicked')}>Danger Action</Action>
+              </div>
+            </div>
+            
+            <div>
+              <Text variant="label" weight="bold" className="block mb-2">Button Components (Manual size="sm"):</Text>
+              <div className="flex gap-3 mb-4">
+                <Button variant="primary" size="sm" onClick={() => alert('Button clicked')}>Primary Button</Button>
+                <Button variant="secondary" size="sm" onClick={() => alert('Button clicked')}>Secondary Button</Button>
+                <Button variant="outline" size="sm" onClick={() => alert('Button clicked')}>Outline Button</Button>
+                <Button variant="danger" size="sm" onClick={() => alert('Button clicked')}>Danger Button</Button>
+              </div>
+            </div>
+          </div>
+
+          <SubSectionTitle className="mb-4">Action Size Overrides</SubSectionTitle>
+          <div className="space-y-4 mb-8">
+            <Text variant="body" className="mb-4">
+              Action components default to size="sm" but can override when needed:
+            </Text>
+            <div className="flex gap-3 items-center">
+              <Action variant="primary" size="xs" onClick={() => alert('XS Action')}>Extra Small</Action>
+              <Action variant="primary" size="sm" onClick={() => alert('SM Action')}>Small (Default)</Action>
+              <Action variant="primary" size="md" onClick={() => alert('MD Action')}>Medium</Action>
+              <Action variant="primary" size="lg" onClick={() => alert('LG Action')}>Large</Action>
+            </div>
+          </div>
+
+          <SubSectionTitle className="mb-4">Mixed Usage Patterns</SubSectionTitle>
+          <div className="space-y-6">
+            <div>
+              <Text variant="label" weight="bold" className="block mb-3">TaskCard with mixed Action/Button:</Text>
+              <TaskCard
+                title="Mixed Action Example"
+                subtitle="Demonstrates Action + Button composition"
+                status="normal"
+                dueDate="Due in 5 days"
+              >
+                <Action variant="primary" onClick={() => alert('Simple action')}>
+                  Complete Task
+                </Action>
+                <Button variant="outline" size="sm" onClick={() => alert('Complex action')}>
+                  📎 Add Attachment
+                </Button>
+                <Action variant="outline" onClick={() => alert('Another action')}>
+                  Reschedule
+                </Action>
+              </TaskCard>
+            </div>
+
+            <div>
+              <Text variant="label" weight="bold" className="block mb-3">ListItem with multiple Actions:</Text>
+              <ListItem
+                title="Multiple Actions Example"
+                subtitle="Shows how multiple actions work together"
+                status="info"
+              >
+                <Action variant="primary" onClick={() => alert('Approve')}>Approve</Action>
+                <Action variant="danger" onClick={() => alert('Reject')}>Reject</Action>
+                <Action variant="outline" onClick={() => alert('Comment')}>Comment</Action>
+              </ListItem>
+            </div>
           </div>
         </Card>
         </section>
@@ -1057,32 +1324,8 @@ Last Service: 2024-06-15
               </div>
             </div>
           </div>
-
-          <Card variant="dark" shadow="triple" className="p-8">
-            <Title variant="section" className="mb-4 text-white">
-              Background Pattern Notes
-            </Title>
-            <ul className="font-mono text-white space-y-2 text-sm">
-              <li><strong>Circles:</strong> Original soft circles (not brutalist)</li>
-              <li><strong>Grid:</strong> Sharp grid lines with brutal aesthetic</li>
-              <li><strong>Lines:</strong> Diagonal lines for dynamic movement</li>
-              <li><strong>Squares:</strong> Geometric shapes for structure</li>
-              <li><strong>Layering:</strong> Multiple patterns can be combined</li>
-              <li><strong>Colors:</strong> Patterns work on different backgrounds</li>
-            </ul>
-          </Card>
+          
         </section>
-
-        {/* Footer */}
-        <Card variant="dark" shadow="triple" className="p-8">
-          <Title variant="section" className="mb-4 text-white">
-            Kitchen Sink Complete
-          </Title>
-          <p className="font-mono text-white">
-            All base and variation components displayed above. Use this page for
-            design verification, testing, and component development.
-          </p>
-        </Card>
         </WideContainer>
       </div>
     </div>
