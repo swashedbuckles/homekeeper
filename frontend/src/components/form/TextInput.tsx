@@ -75,7 +75,7 @@ const variantStyles = {
 export const TextInput = forwardRef<HTMLInputElement, TextInputProps>((props, ref) => {
   const { 
     label, 
-    type, 
+    type = 'text', 
     placeholder, 
     error, 
     validationFeedback, 
