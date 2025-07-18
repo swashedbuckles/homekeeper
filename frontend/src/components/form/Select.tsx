@@ -2,6 +2,7 @@ import { ChevronDown } from 'lucide-react';
 import { forwardRef, useState, useRef, useEffect, Children, isValidElement } from 'react';
 import { getHoverEffectClass } from '../../lib/design-system/hover-effects';
 import { type StandardSize, getSizeToken } from '../../lib/design-system/sizes';
+import { getComponentName } from '../../lib/validation/children';
 import type { ReactNode, ReactElement } from 'react';
 import type { UseFormRegisterReturn } from 'react-hook-form';
 
@@ -302,9 +303,7 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>((props, ref) => 
       
       const isValidChild = child.type === Option;
       if (!isValidChild) {
-        const componentName = typeof child.type === 'string' 
-          ? child.type 
-          : (child.type as any)?.displayName || (child.type as any)?.name || 'Unknown';
+        const componentName = getComponentName(child.type);
           
         console.warn(
           `Select: Invalid child component <${componentName}>. ` +

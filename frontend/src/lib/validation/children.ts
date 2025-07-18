@@ -2,7 +2,7 @@ import { Children, isValidElement } from 'react';
 import { Action, type ActionProps } from '../../components/common/Action';
 import { Button, type ButtonProps } from '../../components/common/Button';
 import { NavItem, type NavItemProps } from '../../components/headers/NavItem';
-import type { ReactNode, ReactElement } from 'react';
+import type { ReactNode, ReactElement, ComponentType } from 'react';
 
 // TypeScript types for allowed action children
 export type ActionElement = ReactElement<ActionProps, typeof Action>;
@@ -14,6 +14,32 @@ export type AllowedActionChildren = AllowedActionChild | AllowedActionChild[];
 export type NavItemElement = ReactElement<NavItemProps, typeof NavItem>;
 export type AllowedNavChild = NavItemElement;
 export type AllowedNavChildren = AllowedNavChild | AllowedNavChild[];
+
+/**
+ * Type-safe utility to get a component's display name for error messages
+ * 
+ * @param componentType - The React component type
+ * @returns A string representation of the component name
+ * 
+ * @public
+ */
+export function getComponentName(componentType: string | ComponentType): string {
+  if (typeof componentType === 'string') {
+    return componentType;
+  }
+  
+  // Check for displayName first (commonly set on forwardRef components)
+  if ('displayName' in componentType && typeof componentType.displayName === 'string') {
+    return componentType.displayName;
+  }
+  
+  // Check for function name
+  if ('name' in componentType && typeof componentType.name === 'string') {
+    return componentType.name;
+  }
+  
+  return 'Unknown';
+}
 
 /**
  * Validates that children are only Action or Button components.
@@ -37,9 +63,7 @@ export const validateActionChildren = (children: ReactNode, componentName: strin
     
     const isValidChild = child.type === Action || child.type === Button;
     if (!isValidChild) {
-      const childName = typeof child.type === 'string' 
-        ? child.type 
-        : (child.type as any)?.displayName || (child.type as any)?.name || 'Unknown';
+      const childName = getComponentName(child.type);
         
       console.warn(
         `${componentName}: Invalid child component <${childName}>. ` +
@@ -73,9 +97,7 @@ export const validateNavChildren = (children: ReactNode, componentName: string):
     
     const isValidChild = child.type === NavItem;
     if (!isValidChild) {
-      const childName = typeof child.type === 'string' 
-        ? child.type 
-        : (child.type as any)?.displayName || (child.type as any)?.name || 'Unknown';
+      const childName = getComponentName(child.type);
         
       console.warn(
         `${componentName}: Invalid child component <${childName}>. ` +
