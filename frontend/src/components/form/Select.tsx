@@ -2,7 +2,7 @@ import { ChevronDown } from 'lucide-react';
 import { forwardRef, useState, useRef, useEffect, Children, isValidElement } from 'react';
 import { getHoverEffectClass } from '../../lib/design-system/hover-effects';
 import { type StandardSize, getSizeToken } from '../../lib/design-system/sizes';
-import type { ReactNode } from 'react';
+import type { ReactNode, ReactElement } from 'react';
 import type { UseFormRegisterReturn } from 'react-hook-form';
 
 export interface SelectOption {
@@ -21,9 +21,16 @@ export const Option: React.FC<OptionProps> = ({ children }) => {
   return <>{children}</>;
 };
 
+// Add displayName for better debugging
+Option.displayName = 'Option';
+
+// TypeScript types for allowed children
+type OptionElement = ReactElement<OptionProps, typeof Option>;
+type AllowedSelectChildren = OptionElement | OptionElement[];
+
 export interface SelectProps {
   label: string;
-  children: ReactNode;
+  children?: AllowedSelectChildren; // ← TypeScript validation for Option children only
   placeholder?: string;
   error?: string;
   validationFeedback?: ReactNode;
@@ -285,11 +292,28 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>((props, ref) => 
     ...restProps 
   } = props;
 
-  // Extract options from children
+  // Extract options from children with validation and helpful error messages
   const options = Children.toArray(children)
-    .filter((child): child is React.ReactElement<OptionProps> => 
-      isValidElement(child) && child.type === Option
-    )
+    .filter((child): child is React.ReactElement<OptionProps> => {
+      if (!isValidElement(child)) {
+        console.warn('Select: Non-element child found, skipping');
+        return false;
+      }
+      
+      const isValidChild = child.type === Option;
+      if (!isValidChild) {
+        const componentName = typeof child.type === 'string' 
+          ? child.type 
+          : (child.type as any)?.displayName || (child.type as any)?.name || 'Unknown';
+          
+        console.warn(
+          `Select: Invalid child component <${componentName}>. ` +
+          'Only <Option> components are allowed as children.'
+        );
+      }
+      
+      return isValidChild;
+    })
     .map(child => ({
       value: child.props.value,
       label: typeof child.props.children === 'string' ? child.props.children : String(child.props.children),
@@ -510,3 +534,6 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>((props, ref) => 
     </div>
   );
 });
+
+// Add displayName for better debugging
+Select.displayName = 'Select';

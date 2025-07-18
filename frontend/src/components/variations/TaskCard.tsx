@@ -1,40 +1,51 @@
 import { getResponsiveTextToken } from '../../lib/design-system/sizes';
-import { Button } from '../common/Button';
+import { validateActionChildren, type AllowedActionChildren } from '../../lib/validation/children';
 import { Card, type CardProps } from '../common/Card';
 
 /**
- * TaskCard component for displaying maintenance tasks with status indicators.
+ * TaskCard component for displaying maintenance tasks with action buttons.
  * 
  * Built on top of the base Card component. Shows task details with colored left borders
- * indicating urgency, due dates, and optional action buttons. Delegates all styling
- * to Card component and focuses on content structure and status semantics.
+ * indicating urgency, due dates, and action buttons via composition. Uses Action and Button
+ * child components for maximum flexibility while maintaining type safety.
  * 
- * @example
+ * @example Basic usage with Action components
  * ```tsx
- * // Urgent task with custom styling
  * <TaskCard
  *   title="Change HVAC Filter"
  *   subtitle="Central Air System • Living Room"
  *   status="urgent"
- *   dueDate="Due in 2 Days"
- *   onAction={() => markComplete(taskId)}
- *   actionLabel="Mark Done"
+ *   dueDate="Due Tomorrow"
  *   shadow="double"
  *   hover
  *   hoverEffect="lift"
- * />
+ * >
+ *   <Action variant="danger" onClick={() => markComplete(taskId)}>
+ *     Mark Complete
+ *   </Action>
+ *   <Action variant="outline" onClick={() => reschedule(taskId)}>
+ *     Reschedule
+ *   </Action>
+ * </TaskCard>
+ * ```
+ * 
+ * @example Mixed Action and Button usage
+ * ```tsx
+ * <TaskCard title="Pool Maintenance" subtitle="Chemical check" status="normal" dueDate="Due in 3 days">
+ *   <Action variant="secondary" onClick={handleComplete}>Complete</Action>
+ *   <Button variant="outline" size="sm" onClick={handleAddPhotos}>
+ *     <CameraIcon className="w-4 h-4 mr-2" />
+ *     Add Photos
+ *   </Button>
+ * </TaskCard>
  * ```
  */
 export interface TaskCardProps extends Omit<CardProps, 'children'> {
-  title :       string;
-  subtitle :    string;
-  status :      'urgent' | 'normal' | 'future' | 'completed';
-  dueDate :     string;
-  actions?:     Array<{
-    label: string;
-    onClick: () => void;
-    variant?: 'primary' | 'secondary' | 'tertiary' | 'outline' | 'danger' | 'accent';
-  }>;
+  title: string;
+  subtitle: string;
+  status: 'urgent' | 'normal' | 'future' | 'completed';
+  dueDate: string;
+  children?: AllowedActionChildren; // ← TypeScript validation for Action/Button children only
 }
 
 export const TaskCard = ({
@@ -42,10 +53,12 @@ export const TaskCard = ({
   subtitle, 
   status,
   dueDate,
-  actions,
+  children,
   className = '',
   ...cardProps
 }: TaskCardProps) => {
+  // Validate and extract action children
+  const validatedActions = validateActionChildren(children, 'TaskCard');
   // Status-specific content styling (semantic, not layout)
   const statusConfig = {
     urgent: {
@@ -88,21 +101,15 @@ export const TaskCard = ({
         {dueDate}
       </p>
       
-      {/* Actions */}
-      {actions && actions.length > 0 && (
+      {/* Render validated action children */}
+      {validatedActions.length > 0 && (
         <div className="flex flex-wrap gap-3">
-          {actions.map((action, index) => (
-            <Button
-              key={`${action.label}-${index}`}
-              variant={action.variant || (index === 0 ? config.buttonVariant : 'outline')}
-              size="sm"
-              onClick={action.onClick}
-            >
-              {action.label}
-            </Button>
-          ))}
+          {validatedActions}
         </div>
       )}
     </Card>
   );
 };
+
+// Add displayName for better debugging
+TaskCard.displayName = 'TaskCard';

@@ -1,35 +1,51 @@
 import { getHoverEffectClasses } from '../../lib/design-system/hover-effects';
-import type { ReactNode } from 'react';
+import { validateActionChildren, type AllowedActionChildren } from '../../lib/validation/children';
 
 /**
  * ListItem Component.
  * 
- * Displays a horizontal list item with optional subtitle and action buttons.
- * Features thick borders, bold typography, and optional status indicators.
+ * Displays a horizontal list item with optional subtitle and action buttons via composition.
+ * Features thick borders, bold typography, and optional status indicators. Uses Action and Button
+ * child components for maximum flexibility while maintaining type safety.
  * Perfect for lists like invitations, settings, notifications, and admin tasks.
  * 
- * @example
+ * @example Basic list item with single action
  * ```tsx
- * // Basic list item
  * <ListItem 
  *   title="Review House Rules"
  *   subtitle="Last updated 2 days ago"
- *   actions={<Button variant="primary" size="small">Edit</Button>}
- * />
+ * >
+ *   <Action variant="primary" onClick={handleEdit}>Edit</Action>
+ * </ListItem>
+ * ```
  * 
- * // List item with status
+ * @example List item with multiple actions
+ * ```tsx
  * <ListItem 
  *   title="Complete Monthly Budget"
  *   subtitle="Due in 3 days"
  *   status="urgent"
- *   actions={<Button variant="danger">Complete Now</Button>}
- * />
+ * >
+ *   <Action variant="danger" onClick={handleComplete}>Complete Now</Action>
+ *   <Action variant="outline" onClick={handlePostpone}>Postpone</Action>
+ * </ListItem>
+ * ```
+ * 
+ * @example Mixed Action and Button usage
+ * ```tsx
+ * <ListItem title="Document Review" subtitle="Needs approval">
+ *   <Action variant="primary" onClick={handleApprove}>Approve</Action>
+ *   <Button variant="outline" size="sm" onClick={handleComment}>
+ *     <MessageIcon className="w-4 h-4 mr-2" />
+ *     Comment
+ *   </Button>
+ * </ListItem>
  * ```
  */
 export interface ListItemProps {
   title: string;
   subtitle?: string;
-  actions?: ReactNode;
+  children?: AllowedActionChildren; // ← TypeScript validation for Action/Button children only
   status?: 'default' | 'urgent' | 'completed' | 'info';
   hover?: boolean;
   onClick?: () => void;
@@ -40,13 +56,15 @@ export interface ListItemProps {
 export const ListItem = ({
   title,
   subtitle,
-  actions,
+  children,
   status = 'default',
   hover = false,
   onClick,
   className = '',
   testId = 'list-item'
 }: ListItemProps) => {
+  // Validate and extract action children
+  const validatedActions = validateActionChildren(children, 'ListItem');
   const isClickable = onClick || hover;
 
   // Base styles with brutal design
@@ -96,11 +114,14 @@ export const ListItem = ({
         )}
       </div>
 
-      {actions && (
-        <div className="ml-6 flex-shrink-0">
-          {actions}
+      {validatedActions.length > 0 && (
+        <div className="ml-6 flex-shrink-0 flex gap-2">
+          {validatedActions}
         </div>
       )}
     </div>
   );
 };
+
+// Add displayName for better debugging
+ListItem.displayName = 'ListItem';

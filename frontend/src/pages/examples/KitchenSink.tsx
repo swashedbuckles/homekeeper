@@ -7,6 +7,7 @@ import { BackgroundRectangles } from '../../components/backgrounds/BackgroundRec
 
 // Common Components
 import { BackgroundSquares } from '../../components/backgrounds/BackgroundSquares';
+import { Action } from '../../components/common/Action';
 import { Alert } from '../../components/common/Alert';
 import { BackButton } from '../../components/common/BackButton';
 import { Badge } from '../../components/common/Badge';
@@ -59,6 +60,7 @@ const TableOfContents = () => {
     { id: 'alerts', label: 'Alerts' },
     { id: 'variations', label: 'Variation Components' },
     { id: 'list-items', label: 'List Items' },
+    { id: 'action-component', label: 'Action Component' },
     { id: 'backgrounds', label: 'Background Components' }
   ];
 
@@ -929,44 +931,62 @@ Last Service: 2024-06-15
               subtitle="Central Air System • 3rd Floor"
               status="urgent"
               dueDate="Due Tomorrow"
-              actions={[
-                { label: 'Mark Complete', onClick: () => alert('Marked complete'), variant: 'danger' },
-                { label: 'Reschedule', onClick: () => alert('Reschedule clicked'), variant: 'outline' }
-              ]}
-            />
+            >
+              <Action variant="danger" onClick={() => alert('Marked complete')}>
+                Mark Complete
+              </Action>
+              <Action variant="outline" onClick={() => alert('Reschedule clicked')}>
+                Reschedule
+              </Action>
+            </TaskCard>
             <TaskCard
               title="Dishwasher Deep Clean"
               subtitle="Kitchen • Monthly maintenance"
               status="completed"
               dueDate="Completed Yesterday"
-              actions={[
-                { label: 'View Report', onClick: () => alert('View report'), variant: 'accent' },
-                { label: 'Schedule Next', onClick: () => alert('Schedule next'), variant: 'outline' },
-                { label: 'View Photos', onClick: () => alert('View photos'), variant: 'outline' }
-              ]}
-            />
+            >
+              <Action variant="accent" onClick={() => alert('View report')}>
+                View Report
+              </Action>
+              <Action variant="outline" onClick={() => alert('Schedule next')}>
+                Schedule Next
+              </Action>
+              <Action variant="outline" onClick={() => alert('View photos')}>
+                View Photos
+              </Action>
+            </TaskCard>
             <TaskCard
               title="Pool Chemical Check"
               subtitle="Backyard Pool • Weekly task"
               status="normal"
               dueDate="Due in 3 Days"
-              actions={[
-                { label: 'Mark Complete', onClick: () => alert('Mark complete'), variant: 'secondary' },
-                { label: 'Details', onClick: () => alert('View details'), variant: 'outline' }
-              ]}
-            />
+            >
+              <Action variant="secondary" onClick={() => alert('Mark complete')}>
+                Mark Complete
+              </Action>
+              <Action variant="outline" onClick={() => alert('View details')}>
+                Details
+              </Action>
+            </TaskCard>
             <TaskCard
               title="Emergency Repair"
               subtitle="Water heater replacement"
               status="completed"
               dueDate="Completed Last Week"
-              actions={[
-                { label: 'View Invoice', onClick: () => alert('View invoice'), variant: 'accent' },
-                { label: 'Warranty Info', onClick: () => alert('Warranty info'), variant: 'outline' },
-                { label: 'Contact Service', onClick: () => alert('Contact service'), variant: 'outline' },
-                { label: 'Schedule Follow-up', onClick: () => alert('Schedule follow-up'), variant: 'outline' }
-              ]}
-            />
+            >
+              <Action variant="accent" onClick={() => alert('View invoice')}>
+                View Invoice
+              </Action>
+              <Action variant="outline" onClick={() => alert('Warranty info')}>
+                Warranty Info
+              </Action>
+              <Action variant="outline" onClick={() => alert('Contact service')}>
+                Contact Service
+              </Action>
+              <Action variant="outline" onClick={() => alert('Schedule follow-up')}>
+                Schedule Follow-up
+              </Action>
+            </TaskCard>
           </Grid>
         </Card>
         </section>
@@ -979,20 +999,24 @@ Last Service: 2024-06-15
             <ListItem
               title="Review House Rules"
               subtitle="Last updated 2 days ago"
-              actions={<Button variant="primary" size="sm">Edit</Button>}
-            />
+            >
+              <Action variant="primary" onClick={() => alert('Edit clicked')}>Edit</Action>
+            </ListItem>
             <ListItem
               title="Complete Monthly Budget"
               subtitle="Due in 3 days"
               status="urgent"
-              actions={<Button variant="danger" size="sm">Complete Now</Button>}
-            />
+            >
+              <Action variant="danger" onClick={() => alert('Complete clicked')}>Complete Now</Action>
+              <Action variant="outline" onClick={() => alert('Postpone clicked')}>Postpone</Action>
+            </ListItem>
             <ListItem
               title="Schedule Maintenance"
               subtitle="HVAC check completed"
               status="completed"
-              actions={<Button variant="outline" size="sm">View Details</Button>}
-            />
+            >
+              <Action variant="outline" onClick={() => alert('View details clicked')}>View Details</Action>
+            </ListItem>
             <ListItem
               title="Update Emergency Contacts"
               subtitle="Requires attention"
@@ -1000,6 +1024,89 @@ Last Service: 2024-06-15
               hover
               onClick={() => alert('List item clicked')}
             />
+          </div>
+        </Card>
+        </section>
+
+        {/* Action Component Section */}
+        <section id="action-component">
+          <SectionTitle className="mb-8">Action Component</SectionTitle>
+        <Card variant="default" shadow="triple" className="p-8 mb-12">
+          <Text variant="body" className="mb-6">
+            The Action component is a lightweight wrapper around Button with smart defaults for action contexts.
+            It automatically applies size="sm" and provides semantic meaning for action buttons.
+          </Text>
+
+          <SubSectionTitle className="mb-4">Action vs Button Comparison</SubSectionTitle>
+          <div className="space-y-4 mb-8">
+            <div>
+              <Text variant="label" weight="bold" className="block mb-2">Action Components (Auto size="sm"):</Text>
+              <div className="flex gap-3 mb-4">
+                <Action variant="primary" onClick={() => alert('Action clicked')}>Primary Action</Action>
+                <Action variant="secondary" onClick={() => alert('Action clicked')}>Secondary Action</Action>
+                <Action variant="outline" onClick={() => alert('Action clicked')}>Outline Action</Action>
+                <Action variant="danger" onClick={() => alert('Action clicked')}>Danger Action</Action>
+              </div>
+            </div>
+            
+            <div>
+              <Text variant="label" weight="bold" className="block mb-2">Button Components (Manual size="sm"):</Text>
+              <div className="flex gap-3 mb-4">
+                <Button variant="primary" size="sm" onClick={() => alert('Button clicked')}>Primary Button</Button>
+                <Button variant="secondary" size="sm" onClick={() => alert('Button clicked')}>Secondary Button</Button>
+                <Button variant="outline" size="sm" onClick={() => alert('Button clicked')}>Outline Button</Button>
+                <Button variant="danger" size="sm" onClick={() => alert('Button clicked')}>Danger Button</Button>
+              </div>
+            </div>
+          </div>
+
+          <SubSectionTitle className="mb-4">Action Size Overrides</SubSectionTitle>
+          <div className="space-y-4 mb-8">
+            <Text variant="body" className="mb-4">
+              Action components default to size="sm" but can override when needed:
+            </Text>
+            <div className="flex gap-3 items-center">
+              <Action variant="primary" size="xs" onClick={() => alert('XS Action')}>Extra Small</Action>
+              <Action variant="primary" size="sm" onClick={() => alert('SM Action')}>Small (Default)</Action>
+              <Action variant="primary" size="md" onClick={() => alert('MD Action')}>Medium</Action>
+              <Action variant="primary" size="lg" onClick={() => alert('LG Action')}>Large</Action>
+            </div>
+          </div>
+
+          <SubSectionTitle className="mb-4">Mixed Usage Patterns</SubSectionTitle>
+          <div className="space-y-6">
+            <div>
+              <Text variant="label" weight="bold" className="block mb-3">TaskCard with mixed Action/Button:</Text>
+              <TaskCard
+                title="Mixed Action Example"
+                subtitle="Demonstrates Action + Button composition"
+                status="normal"
+                dueDate="Due in 5 days"
+              >
+                <Action variant="primary" onClick={() => alert('Simple action')}>
+                  Complete Task
+                </Action>
+                <Button variant="outline" size="sm" onClick={() => alert('Complex action')}>
+                  📎 Add Attachment
+                </Button>
+                <Action variant="outline" onClick={() => alert('Another action')}>
+                  Reschedule
+                </Action>
+              </TaskCard>
+            </div>
+
+            <div>
+              <Text variant="label" weight="bold" className="block mb-3">ListItem with multiple Actions:</Text>
+              <ListItem
+                title="Multiple Actions Example"
+                subtitle="Shows how multiple actions work together"
+                status="info"
+              >
+                <Action variant="primary" onClick={() => alert('Approve')}>Approve</Action>
+                <Action variant="danger" onClick={() => alert('Reject')}>Reject</Action>
+                <Action variant="outline" onClick={() => alert('Comment')}>Comment</Action>
+              </ListItem>
+            </div>
           </div>
         </Card>
         </section>
