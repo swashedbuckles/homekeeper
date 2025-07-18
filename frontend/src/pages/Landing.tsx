@@ -38,7 +38,7 @@ export const LandingPage = () => {
             </div>
 
             <div className="relative">
-              <Card variant="default" shadow="dark" padding="lg">
+              <Card variant="default" shadow="dark" padding="lg" className="relative">
                 <Inline spacing="lg" className="items-center mb-8">
                   <div className="w-16 h-16 bg-primary border-4 border-text-primary flex items-center justify-center text-2xl font-black text-white brutal-rotate-slight-left">
                     <BookText size={32}/>
@@ -68,10 +68,10 @@ export const LandingPage = () => {
                     <p className="text-text-secondary font-bold uppercase text-sm">Collaborate with household members</p>
                   </div>
                 </Inline>
-              </Card>
 
-              <StatCard size="sm" className={`absolute -top-16 -right-8 ${getResponsivePattern('desktopUp')}`} label="Manuals Stored" value={47} variant="primary" rotation="slight-right" />
-              <StatCard size="sm" className={`absolute -bottom-24 -left-16 ${getResponsivePattern('desktopUp')}`} label="Tasks Completed" value={12} variant="accent" rotation="left" />
+                <StatCard size="sm" className={`absolute -top-16 -right-8 ${getResponsivePattern('desktopUp')}`} label="Manuals Stored" value={47} variant="primary" rotation="slight-right" />
+                <StatCard size="sm" className={`absolute -bottom-24 -left-16 ${getResponsivePattern('desktopUp')}`} label="Tasks Completed" value={12} variant="accent" rotation="left" />
+              </Card>
             </div>
           </Grid>
         </div>
