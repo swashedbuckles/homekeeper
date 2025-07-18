@@ -12,6 +12,8 @@ import {
   type ReactNode,
   type KeyboardEvent,
 } from 'react';
+import { getHoverEffectClass } from '../../lib/design-system/hover-effects';
+import { type StandardSize, getSizeToken } from '../../lib/design-system/sizes';
 
 /** @internal Tab key type for identifying tabs */
 type TabKey = string;
@@ -43,6 +45,8 @@ export interface TabsProps {
 export interface TabsListProps {
   /** React children - should contain Tabs.Button components */
   children: ReactNode;
+  /** Size variant affecting spacing and layout */
+  size?: StandardSize;
   /** Additional CSS classes to apply */
   className?: string;
 }
@@ -57,6 +61,10 @@ export interface TabsButtonProps {
   children: ReactNode;
   /** Unique identifier for this tab - must match corresponding Tabs.Panel value */
   value: string;
+  /** Visual variant affecting colors and styling */
+  variant?: 'primary' | 'secondary' | 'outline';
+  /** Size variant affecting padding, text size, and borders */
+  size?: StandardSize;
   /** Additional CSS classes to apply */
   className?: string;
   /** Whether the tab button is disabled */
@@ -191,26 +199,22 @@ export const Tabs = ({ children, defaultTab, onTabChange, activeTab: controlledT
 
       switch (event.key) {
         case 'ArrowRight': newIndex = (currentIndex + 1) % tabs.length; break;
-        case 'ArrowLeft': newIndex = currentIndex === 0 ? tabs.length - 1 : currentIndex - 1; break;
-        case 'Home': newIndex = 0; break;
-        case 'End': newIndex = tabs.length - 1; break;
+        case 'ArrowLeft':  newIndex = currentIndex === 0 ? tabs.length - 1 : currentIndex - 1; break;
+        case 'Home':       newIndex = 0; break;
+        case 'End':        newIndex = tabs.length - 1; break;
         default: return;
       }
 
       event.preventDefault();
       const newTab = tabs[newIndex];
       
-      if (isControlled) {
-        // In controlled mode, only call onTabChange
-        if (onTabChange) {
-          onTabChange(newTab);
-        }
-      } else {
-        // In uncontrolled mode, update internal state
+      if (onTabChange) {
+        onTabChange(newTab);
+      }
+      
+      // In controlled mode, only call onTabChange
+      if (!isControlled) {
         setActiveTab(newTab);
-        if (onTabChange) {
-          onTabChange(newTab);
-        }
       }
 
       const newTabRef = tabRefs.current.get(newTab);
@@ -239,25 +243,120 @@ export const Tabs = ({ children, defaultTab, onTabChange, activeTab: controlledT
   );
 };
 
+// Get spacing based on size for TabsList
+const getListSpacing = (size: StandardSize = 'md'): string => {
+  const spacingMap = {
+    xs: 'gap-1',
+    sm: 'gap-2', 
+    md: 'gap-4',
+    lg: 'gap-6',
+    xl: 'gap-8'
+  };
+  return spacingMap[size];
+};
+
 /**
- * Container for tab buttons with flex layout and gap spacing
+ * Container for tab buttons with flex layout and responsive spacing
  * 
  * @param props - The tabs list props
  * @returns JSX element
  * 
  * @public
  */
-const TabsList = ({ children, className }: TabsListProps) => {
-  const baseClasses = 'flex flex-wrap gap-4';
+const TabsList = ({ children, size = 'md', className }: TabsListProps) => {
+  const baseStyles = [
+    'flex',
+    'flex-wrap',
+    'items-center'
+  ];
+  
   const classes = [
-    baseClasses,
-    className, 
+    ...baseStyles,
+    getListSpacing(size),
+    className
   ].filter(Boolean).join(' ');
+  
   return (
     <div role="tablist" className={classes} data-testid="tabs-list">
       {children}
     </div>
   );
+};
+
+// Size variations using standardized tokens
+const getSizeStyles = (size: StandardSize): string[] => [
+  getSizeToken(size, 'paddingX'),
+  getSizeToken(size, 'paddingY'),
+  getSizeToken(size, 'text'),
+  getSizeToken(size, 'border')
+];
+
+// Base styles for all tab buttons
+const baseButtonStyles = [
+  'font-mono',
+  'font-black',
+  'uppercase',
+  'tracking-wider',
+  'brutal-transition',
+  'focus:outline-none',
+  'disabled:opacity-50',
+  'disabled:cursor-not-allowed'
+];
+
+// Variant styles for different visual states
+const variantStyles = {
+  primary: {
+    active: [
+      'bg-primary',
+      'text-white',
+      'border-text-primary',
+      'shadow-none',
+      'transform',
+      'translate-x-1',
+      'translate-y-1'
+    ],
+    inactive: [
+      'bg-transparent',
+      'text-text-primary',
+      'border-text-primary',
+      'brutal-shadow-dark'
+    ]
+  },
+  secondary: {
+    active: [
+      'bg-secondary',
+      'text-white',
+      'border-text-primary',
+      'shadow-none',
+      'transform',
+      'translate-x-1',
+      'translate-y-1'
+    ],
+    inactive: [
+      'bg-transparent',
+      'text-text-primary',
+      'border-text-primary',
+      'brutal-shadow-dark'
+    ]
+  },
+  outline: {
+    active: [
+      'bg-text-primary',
+      'text-white',
+      'border-text-primary',
+      'shadow-none',
+      'transform',
+      'translate-x-1',
+      'translate-y-1'
+    ],
+    inactive: [
+      'bg-transparent',
+      'text-text-primary',
+      'border-text-primary',
+      'hover:bg-text-primary',
+      'hover:text-white'
+    ]
+  }
 };
 
 /**
@@ -266,23 +365,24 @@ const TabsList = ({ children, className }: TabsListProps) => {
  * Features:
  * - Automatic registration for keyboard navigation
  * - ARIA attributes for accessibility
- * - Active/inactive state styling
+ * - Active/inactive state styling with design system variants
+ * - Responsive sizing with standardized tokens
  * - Click and keyboard event handling
- * - Disabled state support
+ * - Hover effects and disabled state support
  * 
  * @param props - The tab button props
  * @returns JSX element
  * 
  * @public
  */
-const TabsButton = ({ children, value, className, disabled }: TabsButtonProps) => {
+const TabsButton = ({ children, value, variant = 'primary', size = 'md', className, disabled }: TabsButtonProps) => {
   const context = useTabsContext();
   const buttonRef = useRef(null);
   const isActive = context.activeTab === value;
 
   useEffect(() => {
     if (!buttonRef.current) {
-      return () => { };
+      return () => {};
     }
 
     context.registerTab(value, buttonRef.current);
@@ -294,29 +394,28 @@ const TabsButton = ({ children, value, className, disabled }: TabsButtonProps) =
       return;
     }
 
-    if (context.isControlled) {
-      // In controlled mode, only call onTabChange
-      if (context.onTabChange) {
-        context.onTabChange(value);
-      }
-    } else {
-      // In uncontrolled mode, update internal state
+    if (context.onTabChange) {
+      context.onTabChange(value);
+    }
+
+    // In controlled mode, only call onTabChange
+    if (!context.isControlled) {
       context.setActiveTab(value);
-      if (context.onTabChange) {
-        context.onTabChange(value);
-      }
     }
   }, [value, disabled, context]);
 
   const handleKeyDown = useCallback((event: KeyboardEvent) => context.handleKeyDown(event, value), [value, context]);
 
-  const baseClasses = 'border-4 border-text-primary font-black uppercase tracking-wider brutal-transition';
-  const activeClasses = 'bg-primary text-white shadow-none transform translate-x-1 translate-y-1';
-  const inactiveClasses = 'bg-transparent text-text-primary brutal-shadow-dark';
+  // Build style classes using design system
+  const disabledStyles = disabled ? ['!opacity-50', '!cursor-not-allowed', '!hover:transform-none'] : [];
+  const hoverEffect = disabled ? 'none' : 'press-small';
+  
   const classes = [
-    baseClasses,
-    isActive ? activeClasses : inactiveClasses,
-    className,
+    ...baseButtonStyles,
+    ...getSizeStyles(size),
+    ...(isActive ? variantStyles[variant].active : variantStyles[variant].inactive),
+    ...disabledStyles,
+    className
   ].filter(Boolean).join(' ');
 
   return (
@@ -330,7 +429,7 @@ const TabsButton = ({ children, value, className, disabled }: TabsButtonProps) =
       onClick={handleClick}
       onKeyDown={handleKeyDown}
       tabIndex={isActive ? 0 : -1}
-      className={classes}
+      className={`${classes} ${getHoverEffectClass(hoverEffect)}`}
       data-testid="tabs-button-stub"
     >
       {children}

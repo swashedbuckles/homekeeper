@@ -524,9 +524,9 @@ Last Service: 2024-06-15
         <section id="forms">
           <SectionTitle className="mb-8">Form Components</SectionTitle>
         <Card variant="default" shadow="triple" className="p-8 mb-8">
-          <Grid columns={2} spacing="lg">
+          <Grid columns={3} spacing="lg">
             <div>
-              <SubSectionTitle className="mb-6">Text Input</SubSectionTitle>
+              <SubSectionTitle className="mb-4">Text Input</SubSectionTitle>
               <TextInput 
                 label="Email Address" 
                 type="email" 
@@ -536,7 +536,6 @@ Last Service: 2024-06-15
               <TextInput 
                 label="Password" 
                 type="password" 
-                size="lg"
                 placeholder="Enter password"
                 className="mb-4"
               />
@@ -544,43 +543,43 @@ Last Service: 2024-06-15
                 label="Error State" 
                 type="text" 
                 error="This field is required"
-                className="mb-6"
+                className="mb-4"
               />
 
-              <SubSectionTitle className="mb-4">TextInput Sizes (All 5 StandardSize Options)</SubSectionTitle>
+              <SubSectionTitle className="mb-4">Input Sizes</SubSectionTitle>
               <TextInput 
-                label="Extra Small Input" 
+                label="Extra Small" 
                 type="text" 
                 size="xs"
-                placeholder="xs - minimal padding"
+                placeholder="xs"
                 className="mb-3"
               />
               <TextInput 
-                label="Small Input" 
+                label="Small" 
                 type="text" 
                 size="sm"
-                placeholder="sm - compact size"
+                placeholder="sm"
                 className="mb-3"
               />
               <TextInput 
-                label="Medium Input" 
+                label="Medium" 
                 type="text" 
                 size="md"
-                placeholder="md - default size"
+                placeholder="md"
                 className="mb-3"
               />
               <TextInput 
-                label="Large Input" 
+                label="Large" 
                 type="text" 
                 size="lg"
-                placeholder="lg - prominent size"
+                placeholder="lg"
                 className="mb-3"
               />
               <TextInput 
-                label="Extra Large Input" 
+                label="Extra Large" 
                 type="text" 
                 size="xl"
-                placeholder="xl - maximum impact"
+                placeholder="xl"
                 className="mb-4"
               />
 
@@ -600,7 +599,7 @@ Last Service: 2024-06-15
             </div>
 
             <div>
-              <SubSectionTitle className="mb-6">Text Area</SubSectionTitle>
+              <SubSectionTitle className="mb-4">Text Area</SubSectionTitle>
               <TextArea 
                 label="Description"
                 placeholder="Tell us about your household..."
@@ -610,44 +609,44 @@ Last Service: 2024-06-15
               <TextArea 
                 label="Large Text Area"
                 size="lg"
-                placeholder="Larger text area example"
+                placeholder="Larger text area"
                 rows={6}
-                className="mb-6"
+                className="mb-4"
               />
 
-              <SubSectionTitle className="mb-4">TextArea Sizes (All 5 StandardSize Options)</SubSectionTitle>
+              <SubSectionTitle className="mb-4">TextArea Sizes</SubSectionTitle>
               <TextArea 
-                label="Extra Small TextArea"
+                label="Extra Small"
                 size="xs"
-                placeholder="xs - minimal padding, compact text"
+                placeholder="xs"
                 rows={2}
                 className="mb-3"
               />
               <TextArea 
-                label="Small TextArea"
+                label="Small"
                 size="sm"
-                placeholder="sm - compact size"
+                placeholder="sm"
                 rows={3}
                 className="mb-3"
               />
               <TextArea 
-                label="Medium TextArea"
+                label="Medium"
                 size="md"
-                placeholder="md - default size"
+                placeholder="md"
                 rows={4}
                 className="mb-3"
               />
               <TextArea 
-                label="Large TextArea"
+                label="Large"
                 size="lg"
-                placeholder="lg - prominent with larger text"
+                placeholder="lg"
                 rows={5}
                 className="mb-3"
               />
               <TextArea 
-                label="Extra Large TextArea"
+                label="Extra Large"
                 size="xl"
-                placeholder="xl - maximum impact for important forms"
+                placeholder="xl"
                 rows={6}
                 className="mb-4"
               />
@@ -666,7 +665,9 @@ Last Service: 2024-06-15
                 }}
               />
               <PasswordStrengthIndicator password={password} />
+            </div>
 
+            <div>
               <SubSectionTitle className="mb-4">Select Components</SubSectionTitle>
               <Select 
                 label="Country" 
@@ -677,7 +678,6 @@ Last Service: 2024-06-15
                 <Option value="ca">Canada</Option>
                 <Option value="uk">United Kingdom</Option>
                 <Option value="au">Australia</Option>
-                <Option value="de">Germany</Option>
               </Select>
               <Select 
                 label="Priority Level" 
@@ -692,167 +692,127 @@ Last Service: 2024-06-15
               </Select>
               <Select 
                 label="Error State" 
-                error="Please select a maintenance category"
-                className="mb-6"
+                error="Please select a category"
+                className="mb-4"
               >
                 <Option value="hvac">HVAC Systems</Option>
                 <Option value="plumbing">Plumbing</Option>
                 <Option value="electrical">Electrical</Option>
-                <Option value="appliances">Appliances</Option>
-                <Option value="exterior">Exterior Maintenance</Option>
-                <Option value="interior">Interior Maintenance</Option>
               </Select>
 
-              <SubSectionTitle className="mb-4">Select Sizes (All 5 StandardSize Options)</SubSectionTitle>
+              <SubSectionTitle className="mb-4">Select Sizes</SubSectionTitle>
               <Select 
-                label="Extra Small Select" 
+                label="Extra Small" 
                 size="xs"
-                placeholder="xs - minimal padding"
+                placeholder="xs"
                 className="mb-3"
               >
                 <Option value="us">United States</Option>
                 <Option value="ca">Canada</Option>
-                <Option value="uk">United Kingdom</Option>
               </Select>
               <Select 
-                label="Small Select" 
+                label="Small" 
                 size="sm"
-                placeholder="sm - compact size"
+                placeholder="sm"
                 className="mb-3"
               >
                 <Option value="us">United States</Option>
                 <Option value="ca">Canada</Option>
-                <Option value="uk">United Kingdom</Option>
               </Select>
               <Select 
-                label="Medium Select" 
+                label="Medium" 
                 size="md"
-                placeholder="md - default size"
+                placeholder="md"
                 className="mb-3"
               >
                 <Option value="us">United States</Option>
                 <Option value="ca">Canada</Option>
-                <Option value="uk">United Kingdom</Option>
               </Select>
               <Select 
-                label="Large Select" 
+                label="Large" 
                 size="lg"
-                placeholder="lg - prominent size"
+                placeholder="lg"
                 className="mb-3"
               >
                 <Option value="us">United States</Option>
                 <Option value="ca">Canada</Option>
-                <Option value="uk">United Kingdom</Option>
               </Select>
               <Select 
-                label="Extra Large Select" 
+                label="Extra Large" 
                 size="xl"
-                placeholder="xl - maximum impact"
+                placeholder="xl"
                 className="mb-4"
               >
                 <Option value="us">United States</Option>
                 <Option value="ca">Canada</Option>
-                <Option value="uk">United Kingdom</Option>
               </Select>
 
               <SubSectionTitle className="mb-4">Select Variants</SubSectionTitle>
               <Select 
                 label="Default Variant" 
                 variant="default"
-                placeholder="Light theme select"
+                placeholder="Light theme"
                 className="mb-3"
               >
-                <Option value="hvac">HVAC Systems</Option>
+                <Option value="hvac">HVAC</Option>
                 <Option value="plumbing">Plumbing</Option>
-                <Option value="electrical">Electrical</Option>
-                <Option value="appliances">Appliances</Option>
               </Select>
               <Select 
                 label="Search Variant" 
                 variant="search"
-                placeholder="Dark theme search select"
+                placeholder="Dark theme"
                 className="mb-4"
               >
-                <Option value="hvac">HVAC Systems</Option>
+                <Option value="hvac">HVAC</Option>
                 <Option value="plumbing">Plumbing</Option>
-                <Option value="electrical">Electrical</Option>
-                <Option value="appliances">Appliances</Option>
-              </Select>
-
-              <SubSectionTitle className="mb-4">Select with Validation Feedback</SubSectionTitle>
-              <Select 
-                label="Maintenance Schedule" 
-                validationFeedback={
-                  <div className="flex items-center gap-2">
-                    <span className="text-accent">✓</span>
-                    Schedule preference saved
-                  </div>
-                }
-              >
-                <Option value="low">Low Priority</Option>
-                <Option value="medium">Medium Priority</Option>
-                <Option value="high">High Priority</Option>
-                <Option value="urgent">Urgent</Option>
-              </Select>
-
-              <SubSectionTitle className="mb-4">Select with Disabled Options</SubSectionTitle>
-              <Select 
-                label="Features Available" 
-                placeholder="Select features"
-                className="mb-4"
-              >
-                <Option value="basic">Basic Features</Option>
-                <Option value="advanced">Advanced Features</Option>
-                <Option value="premium" disabled>Premium Features (Coming Soon)</Option>
-                <Option value="enterprise" disabled>Enterprise Features (Contact Sales)</Option>
               </Select>
             </div>
+          </Grid>
+
+          <SubSectionTitle className="mb-4 mt-8">Checkboxes</SubSectionTitle>
+          <Grid columns={4} spacing="lg">
             <div>
-              <SubSectionTitle className="mb-6">Checkbox Components</SubSectionTitle>
-              
-              <Grid columns={2} spacing="lg">
-                <div>
-                  <Text variant="label" weight="bold" className="block mb-3">Checkbox Sizes:</Text>
-                  <div className="space-y-3">
-                    <CheckBox label="Extra Small - compact forms" size="xs" />
-                    <CheckBox label="Small - minimal interfaces" size="sm" />
-                    <CheckBox label="Medium - default size (recommended)" size="md" />
-                    <CheckBox label="Large - prominent forms" size="lg" />
-                    <CheckBox label="Extra Large - maximum impact" size="xl" />
-                  </div>
-                </div>
+              <Text variant="label" weight="bold" className="block mb-3">Sizes</Text>
+              <div className="space-y-3">
+                <CheckBox label="Extra Small" size="xs" />
+                <CheckBox label="Small" size="sm" />
+                <CheckBox label="Medium" size="md" />
+                <CheckBox label="Large" size="lg" />
+                <CheckBox label="Extra Large" size="xl" />
+              </div>
+            </div>
 
-                <div>
-                  <Text variant="label" weight="bold" className="block mb-3">Checkbox Colors:</Text>
-                  <div className="space-y-3">
-                    <CheckBox label="Accent (Green) - Default" color="accent" />
-                    <CheckBox label="Primary (Blue) - Main actions" color="primary" />
-                    <CheckBox label="Secondary (Purple) - Alternative" color="secondary" />
-                    <CheckBox label="Success (Green) - Confirmations" color="success" />
-                    <CheckBox label="Warning (Orange) - Cautions" color="warning" />
-                    <CheckBox label="Error (Red) - Destructive actions" color="error" />
-                    <CheckBox label="Dark (Black) - High contrast" color="dark" />
-                  </div>
-                </div>
+            <div>
+              <Text variant="label" weight="bold" className="block mb-3">Colors</Text>
+              <div className="space-y-3">
+                <CheckBox label="Accent" color="accent" />
+                <CheckBox label="Primary" color="primary" />
+                <CheckBox label="Secondary" color="secondary" />
+                <CheckBox label="Success" color="success" />
+                <CheckBox label="Warning" color="warning" />
+                <CheckBox label="Error" color="error" />
+                <CheckBox label="Dark" color="dark" />
+              </div>
+            </div>
 
-                <div>
-                  <Text variant="label" weight="bold" className="block mb-3">Disabled State:</Text>
-                  <div className="space-y-3">
-                    <CheckBox label="Disabled unchecked checkbox" color="accent" disabled />
-                    <CheckBox label="Disabled checked checkbox" color="primary" checked disabled />
-                    <CheckBox label="Large disabled checkbox" color="success" size="lg" disabled />
-                  </div>
-                </div>
+            <div>
+              <Text variant="label" weight="bold" className="block mb-3">States</Text>
+              <div className="space-y-3">
+                <CheckBox label="Unchecked" />
+                <CheckBox label="Checked" defaultChecked />
+                <CheckBox label="Disabled" disabled />
+                <CheckBox label="Disabled Checked" checked disabled />
+              </div>
+            </div>
 
-                <div>
-                  <Text variant="label" weight="bold" className="block mb-3">Pre-checked Examples:</Text>
-                  <div className="space-y-3">
-                    <CheckBox label="HVAC system maintenance enabled" color="accent" defaultChecked />
-                    <CheckBox label="Receive mobile push notifications" color="primary" defaultChecked />
-                    <CheckBox label="Auto-schedule recurring tasks" color="success" defaultChecked />
-                  </div>
-                </div>
-              </Grid>
+            <div>
+              <Text variant="label" weight="bold" className="block mb-3">Examples</Text>
+              <div className="space-y-3">
+                <CheckBox label="Enable notifications" defaultChecked />
+                <CheckBox label="Auto-save changes" defaultChecked />
+                <CheckBox label="Dark mode" />
+                <CheckBox label="Beta features" />
+              </div>
             </div>
           </Grid>
         </Card>
@@ -930,49 +890,99 @@ Last Service: 2024-06-15
             </Tabs.Panel>
           </Tabs>
 
-          <SubSectionTitle className="mb-6 mt-8">Tab Styling Examples</SubSectionTitle>
-          <Tabs defaultTab="styling">
-            <Tabs.List className="mb-6 justify-center">
-              <Tabs.Button value="styling">Styling Demo</Tabs.Button>
-              <Tabs.Button value="responsive">Responsive</Tabs.Button>
-              <Tabs.Button value="accessibility">Accessibility</Tabs.Button>
-            </Tabs.List>
-            <Tabs.Panel value="styling" className="p-6 bg-subtle border-2 border-text-primary">
-              <Text variant="body" className="mb-4">
-                Tabs use the neobrutalist design system with:
-              </Text>
-              <ul className="font-mono space-y-2 ml-4">
-                <li>• Bold 4px borders</li>
-                <li>• Brutal shadows that translate on active state</li>
-                <li>• Uppercase, tracked text</li>
-                <li>• Sharp transitions</li>
-                <li>• High contrast colors</li>
-              </ul>
-            </Tabs.Panel>
-            <Tabs.Panel value="responsive" className="p-6 bg-subtle border-2 border-text-primary">
-              <Text variant="body" className="mb-4">
-                Responsive behavior includes:
-              </Text>
-              <ul className="font-mono space-y-2 ml-4">
-                <li>• Flex layout with gap spacing</li>
-                <li>• Automatic wrapping on small screens</li>
-                <li>• Touch-friendly button sizes</li>
-                <li>• Maintains visual hierarchy</li>
-              </ul>
-            </Tabs.Panel>
-            <Tabs.Panel value="accessibility" className="p-6 bg-subtle border-2 border-text-primary">
-              <Text variant="body" className="mb-4">
-                Accessibility features:
-              </Text>
-              <ul className="font-mono space-y-2 ml-4">
-                <li>• Full keyboard navigation (Arrow keys, Home/End)</li>
-                <li>• ARIA attributes (role, aria-selected, aria-controls)</li>
-                <li>• Proper tab index management</li>
-                <li>• Screen reader friendly</li>
-                <li>• Focus indicators</li>
-              </ul>
-            </Tabs.Panel>
-          </Tabs>
+          <SubSectionTitle className="mb-6 mt-8">Size Variants</SubSectionTitle>
+          <Grid columns={2} spacing="lg">
+            <div>
+              <Text variant="label" weight="bold" className="block mb-2">Extra Small</Text>
+              <Tabs defaultTab="settings">
+                <Tabs.List size="xs" className="mb-4">
+                  <Tabs.Button value="settings" size="xs">Settings</Tabs.Button>
+                  <Tabs.Button value="users" size="xs">Users</Tabs.Button>
+                  <Tabs.Button value="billing" size="xs">Billing</Tabs.Button>
+                </Tabs.List>
+                <Tabs.Panel value="settings" className="p-3 bg-subtle border-2 border-text-primary">
+                  <Text variant="body" size="sm">Compact settings panel</Text>
+                </Tabs.Panel>
+                <Tabs.Panel value="users" className="p-3 bg-subtle border-2 border-text-primary">
+                  <Text variant="body" size="sm">User management</Text>
+                </Tabs.Panel>
+                <Tabs.Panel value="billing" className="p-3 bg-subtle border-2 border-text-primary">
+                  <Text variant="body" size="sm">Billing details</Text>
+                </Tabs.Panel>
+              </Tabs>
+            </div>
+
+            <div>
+              <Text variant="label" weight="bold" className="block mb-2">Large</Text>
+              <Tabs defaultTab="overview">
+                <Tabs.List size="lg" className="mb-4">
+                  <Tabs.Button value="overview" size="lg">Overview</Tabs.Button>
+                  <Tabs.Button value="analytics" size="lg">Analytics</Tabs.Button>
+                  <Tabs.Button value="reports" size="lg">Reports</Tabs.Button>
+                </Tabs.List>
+                <Tabs.Panel value="overview" className="p-6 bg-subtle border-2 border-text-primary">
+                  <Text variant="body">Overview dashboard</Text>
+                </Tabs.Panel>
+                <Tabs.Panel value="analytics" className="p-6 bg-subtle border-2 border-text-primary">
+                  <Text variant="body">Analytics data</Text>
+                </Tabs.Panel>
+                <Tabs.Panel value="reports" className="p-6 bg-subtle border-2 border-text-primary">
+                  <Text variant="body">Reports section</Text>
+                </Tabs.Panel>
+              </Tabs>
+            </div>
+          </Grid>
+
+          <SubSectionTitle className="mb-6 mt-8">Tab Variants</SubSectionTitle>
+          <Grid columns={3} spacing="lg">
+            <div>
+              <Text variant="label" weight="bold" className="block mb-2">Primary</Text>
+              <Tabs defaultTab="main">
+                <Tabs.List className="mb-4">
+                  <Tabs.Button value="main" variant="primary">Main</Tabs.Button>
+                  <Tabs.Button value="secondary" variant="primary">Secondary</Tabs.Button>
+                </Tabs.List>
+                <Tabs.Panel value="main" className="p-4 bg-subtle border-2 border-text-primary">
+                  <Text variant="body">Primary content</Text>
+                </Tabs.Panel>
+                <Tabs.Panel value="secondary" className="p-4 bg-subtle border-2 border-text-primary">
+                  <Text variant="body">Secondary content</Text>
+                </Tabs.Panel>
+              </Tabs>
+            </div>
+
+            <div>
+              <Text variant="label" weight="bold" className="block mb-2">Secondary</Text>
+              <Tabs defaultTab="support">
+                <Tabs.List className="mb-4">
+                  <Tabs.Button value="support" variant="secondary">Support</Tabs.Button>
+                  <Tabs.Button value="docs" variant="secondary">Documentation</Tabs.Button>
+                </Tabs.List>
+                <Tabs.Panel value="support" className="p-4 bg-subtle border-2 border-text-primary">
+                  <Text variant="body">Support content</Text>
+                </Tabs.Panel>
+                <Tabs.Panel value="docs" className="p-4 bg-subtle border-2 border-text-primary">
+                  <Text variant="body">Documentation</Text>
+                </Tabs.Panel>
+              </Tabs>
+            </div>
+
+            <div>
+              <Text variant="label" weight="bold" className="block mb-2">Outline</Text>
+              <Tabs defaultTab="filters">
+                <Tabs.List className="mb-4">
+                  <Tabs.Button value="filters" variant="outline">Filters</Tabs.Button>
+                  <Tabs.Button value="search" variant="outline">Search</Tabs.Button>
+                </Tabs.List>
+                <Tabs.Panel value="filters" className="p-4 bg-subtle border-2 border-text-primary">
+                  <Text variant="body">Filter options</Text>
+                </Tabs.Panel>
+                <Tabs.Panel value="search" className="p-4 bg-subtle border-2 border-text-primary">
+                  <Text variant="body">Search results</Text>
+                </Tabs.Panel>
+              </Tabs>
+            </div>
+          </Grid>
         </Card>
         </section>
 
@@ -988,13 +998,13 @@ Last Service: 2024-06-15
             <Alert variant="basic" hideIcon>Basic alert without icon.</Alert>
           </div>
 
-          <SubSectionTitle className="mt-8 mb-4">Alert Sizes (All 5 StandardSize Options)</SubSectionTitle>
+          <SubSectionTitle className="mt-8 mb-4">Alert Sizes</SubSectionTitle>
           <div className="space-y-4">
-            <Alert variant="info" size="xs">Extra small alert - minimal spacing and tiny icon</Alert>
-            <Alert variant="success" size="sm">Small alert - compact with small icon</Alert>
-            <Alert variant="warning" size="md">Medium alert - default size with standard icon</Alert>
-            <Alert variant="error" size="lg">Large alert - prominent with larger icon</Alert>
-            <Alert variant="basic" size="xl">Extra large alert - maximum impact with biggest icon</Alert>
+            <Alert variant="info" size="xs">Extra small alert</Alert>
+            <Alert variant="success" size="sm">Small alert</Alert>
+            <Alert variant="warning" size="md">Medium alert</Alert>
+            <Alert variant="error" size="lg">Large alert</Alert>
+            <Alert variant="basic" size="xl">Extra large alert</Alert>
           </div>
         </Card>
         </section>
@@ -1314,32 +1324,8 @@ Last Service: 2024-06-15
               </div>
             </div>
           </div>
-
-          <Card variant="dark" shadow="triple" className="p-8">
-            <Title variant="section" className="mb-4 text-white">
-              Background Pattern Notes
-            </Title>
-            <ul className="font-mono text-white space-y-2 text-sm">
-              <li><strong>Circles:</strong> Original soft circles (not brutalist)</li>
-              <li><strong>Grid:</strong> Sharp grid lines with brutal aesthetic</li>
-              <li><strong>Lines:</strong> Diagonal lines for dynamic movement</li>
-              <li><strong>Squares:</strong> Geometric shapes for structure</li>
-              <li><strong>Layering:</strong> Multiple patterns can be combined</li>
-              <li><strong>Colors:</strong> Patterns work on different backgrounds</li>
-            </ul>
-          </Card>
+          
         </section>
-
-        {/* Footer */}
-        <Card variant="dark" shadow="triple" className="p-8">
-          <Title variant="section" className="mb-4 text-white">
-            Kitchen Sink Complete
-          </Title>
-          <p className="font-mono text-white">
-            All base and variation components displayed above. Use this page for
-            design verification, testing, and component development.
-          </p>
-        </Card>
         </WideContainer>
       </div>
     </div>

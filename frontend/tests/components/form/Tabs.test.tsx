@@ -157,15 +157,18 @@ describe('Tabs', () => {
 
       const buttons = screen.getAllByRole('tab');
       buttons.forEach(button => {
-        // Check for neobrutalist base classes
+        // Check for design system base classes
         expect(button).toHaveClass(
-          'border-4',
-          'border-text-primary',
+          'font-mono',
           'font-black',
           'uppercase',
           'tracking-wider',
-          'brutal-transition'
+          'brutal-transition',
+          'border-text-primary'
         );
+        
+        // Check for design system border (should have border-brutal-md from getSizeToken)
+        expect(button.className).toMatch(/border-brutal-(xs|sm|md|lg|xl)/);
       });
     });
 
