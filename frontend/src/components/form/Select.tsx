@@ -1,5 +1,5 @@
 import { ChevronDown } from 'lucide-react';
-import { forwardRef, useState, useRef, useEffect } from 'react';
+import { forwardRef, useState, useRef, useEffect, Children, isValidElement } from 'react';
 import { getHoverEffectClass } from '../../lib/design-system/hover-effects';
 import { type StandardSize, getSizeToken } from '../../lib/design-system/sizes';
 import type { ReactNode } from 'react';
@@ -11,9 +11,19 @@ export interface SelectOption {
   disabled?: boolean;
 }
 
+export interface OptionProps {
+  value: string;
+  children: ReactNode;
+  disabled?: boolean;
+}
+
+export const Option: React.FC<OptionProps> = ({ children }) => {
+  return <>{children}</>;
+};
+
 export interface SelectProps {
   label: string;
-  options: SelectOption[];
+  children: ReactNode;
   placeholder?: string;
   error?: string;
   validationFeedback?: ReactNode;
@@ -154,46 +164,52 @@ const getIconStyles = (size: StandardSize = 'md'): string => {
  * 
  * @example Basic select with options
  * ```tsx
- * const countryOptions = [
- *   { value: 'us', label: 'United States' },
- *   { value: 'ca', label: 'Canada' },
- *   { value: 'uk', label: 'United Kingdom' }
- * ];
- * 
  * <Select 
  *   label="Country" 
- *   options={countryOptions}
  *   placeholder="Choose your country"
- * />
+ * >
+ *   <Option value="us">United States</Option>
+ *   <Option value="ca">Canada</Option>
+ *   <Option value="uk">United Kingdom</Option>
+ * </Select>
  * ```
  * 
  * @example With error state
  * ```tsx
  * <Select 
  *   label="Household Role" 
- *   options={roleOptions}
  *   error="Please select your role in the household"
- * />
+ * >
+ *   <Option value="parent">Parent</Option>
+ *   <Option value="child">Child</Option>
+ *   <Option value="other">Other</Option>
+ * </Select>
  * ```
  * 
  * @example Large size for hero forms
  * ```tsx
  * <Select 
  *   label="Household Type"
- *   options={householdTypeOptions}
  *   size="lg"
  *   placeholder="Select household type"
- * />
+ * >
+ *   <Option value="single">Single Person</Option>
+ *   <Option value="family">Family</Option>
+ *   <Option value="shared">Shared Living</Option>
+ * </Select>
  * ```
  * 
  * @example Search variant (dark theme)
  * ```tsx
  * <Select 
  *   label="Filter by Category"
- *   options={categoryOptions}
  *   variant="search"
  *   placeholder="All categories"
- * />
+ * >
+ *   <Option value="cleaning">Cleaning</Option>
+ *   <Option value="maintenance">Maintenance</Option>
+ *   <Option value="shopping">Shopping</Option>
+ * </Select>
  * ```
  * 
  * @example With controlled value and change handler
@@ -202,10 +218,13 @@ const getIconStyles = (size: StandardSize = 'md'): string => {
  * 
  * <Select
  *   label="Priority Level"
- *   options={priorityOptions}
  *   value={selectedValue}
  *   onChange={(value) => setSelectedValue(value)}
- * />
+ * >
+ *   <Option value="low">Low</Option>
+ *   <Option value="medium">Medium</Option>
+ *   <Option value="high">High</Option>
+ * </Select>
  * ```
  * 
  * @example With react-hook-form
@@ -215,16 +234,19 @@ const getIconStyles = (size: StandardSize = 'md'): string => {
  * 
  * <Select
  *   label="Priority Level"
- *   options={priorityOptions}
  *   value={watchedValue}
  *   onChange={(value) => setValue('priority', value)}
  *   register={register('priority', { required: 'Priority is required' })}
  *   error={errors.priority?.message}
- * />
+ * >
+ *   <Option value="low">Low</Option>
+ *   <Option value="medium">Medium</Option>
+ *   <Option value="high">High</Option>
+ * </Select>
  * ```
  * 
  * @param label - Accessible label for the select field
- * @param options - Array of option objects with value, label, and optional disabled state
+ * @param children - Option components that define the available choices
  * @param placeholder - Placeholder text shown when no option is selected
  * @param error - Error message to display below the select
  * @param validationFeedback - Custom feedback content (e.g., success messages, progress indicators)
@@ -244,7 +266,7 @@ const getIconStyles = (size: StandardSize = 'md'): string => {
 export const Select = forwardRef<HTMLInputElement, SelectProps>((props, ref) => {
   const { 
     label, 
-    options,
+    children,
     placeholder, 
     error, 
     validationFeedback, 
@@ -262,6 +284,17 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>((props, ref) => 
     name,
     ...restProps 
   } = props;
+
+  // Extract options from children
+  const options = Children.toArray(children)
+    .filter((child): child is React.ReactElement<OptionProps> => 
+      isValidElement(child) && child.type === Option
+    )
+    .map(child => ({
+      value: child.props.value,
+      label: typeof child.props.children === 'string' ? child.props.children : String(child.props.children),
+      disabled: child.props.disabled || false
+    }));
   
   const [isOpen, setIsOpen] = useState(false);
   const [internalValue, setInternalValue] = useState(defaultValue || '');
