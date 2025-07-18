@@ -29,6 +29,7 @@ import { TextInput } from '../../components/form/TextInput';
 import { WideContainer } from '../../components/layout/containers/WideContainer';
 import { Inline } from '../../components/layout/Flex';
 import { Grid } from '../../components/layout/Grid';
+import { Tabs } from '../../components/layout/Tabs';
 
 // Variation Components
 import { CodeInput } from '../../components/variations/CodeInput';
@@ -57,6 +58,7 @@ const TableOfContents = () => {
     { id: 'typography', label: 'Typography' },
     { id: 'text-shadows', label: 'Text Shadows' },
     { id: 'forms', label: 'Form Components' },
+    { id: 'tabs', label: 'Tabs' },
     { id: 'alerts', label: 'Alerts' },
     { id: 'variations', label: 'Variation Components' },
     { id: 'list-items', label: 'List Items' },
@@ -853,6 +855,124 @@ Last Service: 2024-06-15
               </Grid>
             </div>
           </Grid>
+        </Card>
+        </section>
+
+        {/* Tabs Section */}
+        <section id="tabs">
+          <SectionTitle className="mb-8">Tabs</SectionTitle>
+        <Card variant="default" shadow="triple" className="p-8 mb-8">
+          <SubSectionTitle className="mb-6">Basic Tabs</SubSectionTitle>
+          <Tabs defaultTab="household">
+            <Tabs.List className="mb-6">
+              <Tabs.Button value="household">Household Settings</Tabs.Button>
+              <Tabs.Button value="members">Members</Tabs.Button>
+              <Tabs.Button value="notifications">Notifications</Tabs.Button>
+            </Tabs.List>
+            <Tabs.Panel value="household" className="p-4 border-2 border-text-primary">
+              <Text variant="body" className="mb-4">
+                Configure your household preferences and general settings.
+              </Text>
+              <TextInput 
+                label="Household Name" 
+                type="text"
+                placeholder="Enter household name"
+                className="mb-4"
+              />
+              <Select label="Time Zone" className="mb-4">
+                <Option value="pst">Pacific Time</Option>
+                <Option value="mst">Mountain Time</Option>
+                <Option value="cst">Central Time</Option>
+                <Option value="est">Eastern Time</Option>
+              </Select>
+              <CheckBox label="Enable automatic maintenance reminders" />
+            </Tabs.Panel>
+            <Tabs.Panel value="members" className="p-4 border-2 border-text-primary">
+              <Text variant="body" className="mb-4">
+                Manage household members and their permissions.
+              </Text>
+              <div className="space-y-4">
+                <ListItem
+                  title="John Smith (Admin)"
+                  subtitle="john@example.com • Joined 2 months ago"
+                  status="completed"
+                >
+                  <Action variant="outline">Edit Permissions</Action>
+                </ListItem>
+                <ListItem
+                  title="Sarah Smith"
+                  subtitle="sarah@example.com • Joined 1 month ago"
+                >
+                  <Action variant="primary">Manage</Action>
+                  <Action variant="outline">Remove</Action>
+                </ListItem>
+              </div>
+              <Button variant="primary" className="mt-4">
+                Invite New Member
+              </Button>
+            </Tabs.Panel>
+            <Tabs.Panel value="notifications" className="p-4 border-2 border-text-primary">
+              <Text variant="body" className="mb-4">
+                Configure how and when you receive notifications.
+              </Text>
+              <div className="space-y-4">
+                <CheckBox label="Email notifications for overdue tasks" defaultChecked />
+                <CheckBox label="Push notifications on mobile" defaultChecked />
+                <CheckBox label="Weekly maintenance summaries" />
+                <CheckBox label="Emergency alerts" defaultChecked />
+              </div>
+              <Select label="Notification Frequency" className="mt-4">
+                <Option value="immediate">Immediate</Option>
+                <Option value="hourly">Hourly Digest</Option>
+                <Option value="daily">Daily Digest</Option>
+                <Option value="weekly">Weekly Summary</Option>
+              </Select>
+            </Tabs.Panel>
+          </Tabs>
+
+          <SubSectionTitle className="mb-6 mt-8">Tab Styling Examples</SubSectionTitle>
+          <Tabs defaultTab="styling">
+            <Tabs.List className="mb-6 justify-center">
+              <Tabs.Button value="styling">Styling Demo</Tabs.Button>
+              <Tabs.Button value="responsive">Responsive</Tabs.Button>
+              <Tabs.Button value="accessibility">Accessibility</Tabs.Button>
+            </Tabs.List>
+            <Tabs.Panel value="styling" className="p-6 bg-subtle border-2 border-text-primary">
+              <Text variant="body" className="mb-4">
+                Tabs use the neobrutalist design system with:
+              </Text>
+              <ul className="font-mono space-y-2 ml-4">
+                <li>• Bold 4px borders</li>
+                <li>• Brutal shadows that translate on active state</li>
+                <li>• Uppercase, tracked text</li>
+                <li>• Sharp transitions</li>
+                <li>• High contrast colors</li>
+              </ul>
+            </Tabs.Panel>
+            <Tabs.Panel value="responsive" className="p-6 bg-subtle border-2 border-text-primary">
+              <Text variant="body" className="mb-4">
+                Responsive behavior includes:
+              </Text>
+              <ul className="font-mono space-y-2 ml-4">
+                <li>• Flex layout with gap spacing</li>
+                <li>• Automatic wrapping on small screens</li>
+                <li>• Touch-friendly button sizes</li>
+                <li>• Maintains visual hierarchy</li>
+              </ul>
+            </Tabs.Panel>
+            <Tabs.Panel value="accessibility" className="p-6 bg-subtle border-2 border-text-primary">
+              <Text variant="body" className="mb-4">
+                Accessibility features:
+              </Text>
+              <ul className="font-mono space-y-2 ml-4">
+                <li>• Full keyboard navigation (Arrow keys, Home/End)</li>
+                <li>• ARIA attributes (role, aria-selected, aria-controls)</li>
+                <li>• Proper tab index management</li>
+                <li>• Screen reader friendly</li>
+                <li>• Focus indicators</li>
+              </ul>
+            </Tabs.Panel>
+          </Tabs>
         </Card>
         </section>
 
