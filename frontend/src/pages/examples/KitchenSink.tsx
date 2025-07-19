@@ -17,6 +17,7 @@ import { Code } from '../../components/common/Code';
 import { ListItem } from '../../components/common/ListItem';
 import { Modal } from '../../components/common/Modal';
 import { Stats } from '../../components/common/Stats';
+import { Step, Steps } from '../../components/common/Steps';
 import { Text } from '../../components/common/Text';
 import { TextLink } from '../../components/common/TextLink';
 import { Title } from '../../components/common/Title';
@@ -61,6 +62,7 @@ const TableOfContents = () => {
     { id: 'text-shadows', label: 'Text Shadows' },
     { id: 'forms', label: 'Form Components' },
     { id: 'tabs', label: 'Tabs' },
+    { id: 'steps', label: 'Steps' },
     { id: 'alerts', label: 'Alerts' },
     { id: 'variations', label: 'Variation Components' },
     { id: 'list-items', label: 'List Items' },
@@ -1048,6 +1050,79 @@ Last Service: 2024-06-15
               </Tabs>
             </div>
           </Grid>
+        </Card>
+        </section>
+
+        {/* Steps Section */}
+        <section id="steps">
+          <SectionTitle className="mb-8">Steps</SectionTitle>
+        <Card variant="default" shadow="triple" className="p-8 mb-8">
+          <SubSectionTitle className="mb-6">Progress Steps Component</SubSectionTitle>
+          <Text variant="body" className="mb-6">
+            Progress steps show a multi-step process with numbered indicators and connecting lines. 
+            Perfect for forms, onboarding, or task workflows. Automatically handles positioning and status styling.
+          </Text>
+
+          <div className="space-y-8">
+            <div>
+              <Text variant="label" weight="bold" className="block mb-4">Task Creation Workflow:</Text>
+              <Steps>
+                <Step completed>Task Info</Step>
+                <Step active>Equipment</Step>
+                <Step>Schedule</Step>
+                <Step>Notifications</Step>
+              </Steps>
+            </div>
+
+            <div>
+              <Text variant="label" weight="bold" className="block mb-4">Onboarding Process:</Text>
+              <Steps>
+                <Step completed>Create Account</Step>
+                <Step completed>Verify Email</Step>
+                <Step active>Set Up Profile</Step>
+                <Step>Join Household</Step>
+                <Step>Complete Setup</Step>
+              </Steps>
+            </div>
+
+            <div>
+              <Text variant="label" weight="bold" className="block mb-4">Error State Example:</Text>
+              <Steps>
+                <Step completed>Validate Data</Step>
+                <Step error>Process Payment</Step>
+                <Step>Send Confirmation</Step>
+              </Steps>
+            </div>
+
+            <div>
+              <Text variant="label" weight="bold" className="block mb-4">Simple Two-Step Process:</Text>
+              <Steps>
+                <Step completed>Login</Step>
+                <Step active>Dashboard</Step>
+              </Steps>
+            </div>
+
+            <div>
+              <Text variant="label" weight="bold" className="block mb-4">All Completed:</Text>
+              <Steps>
+                <Step completed>Setup</Step>
+                <Step completed>Configuration</Step>
+                <Step completed>Testing</Step>
+                <Step completed>Launch</Step>
+              </Steps>
+            </div>
+          </div>
+
+          <div className="mt-8 p-4 bg-subtle border-2 border-text-primary">
+            <Text variant="label" weight="bold" className="block mb-2">Usage Notes:</Text>
+            <div className="space-y-2 text-sm font-mono">
+              <Text variant="body" size="sm">• <Code>completed</Code> - Green background, shows progress</Text>
+              <Text variant="body" size="sm">• <Code>active</Code> - Orange background with shadow, current step</Text>
+              <Text variant="body" size="sm">• <Code>error</Code> - Red background, indicates failure</Text>
+              <Text variant="body" size="sm">• Lines automatically show as completed when previous step is done</Text>
+              <Text variant="body" size="sm">• Responsive layout with centered alignment</Text>
+            </div>
+          </div>
         </Card>
         </section>
 
