@@ -15,6 +15,7 @@ import { Button } from '../../components/common/Button';
 import { Card } from '../../components/common/Card';
 import { Code } from '../../components/common/Code';
 import { ListItem } from '../../components/common/ListItem';
+import { Modal } from '../../components/common/Modal';
 import { Stats } from '../../components/common/Stats';
 import { Text } from '../../components/common/Text';
 import { TextLink } from '../../components/common/TextLink';
@@ -55,6 +56,7 @@ const TableOfContents = () => {
   const sections = [
     { id: 'buttons', label: 'Buttons' },
     { id: 'cards', label: 'Cards' },
+    { id: 'modals', label: 'Modals' },
     { id: 'typography', label: 'Typography' },
     { id: 'text-shadows', label: 'Text Shadows' },
     { id: 'forms', label: 'Form Components' },
@@ -112,6 +114,7 @@ const TableOfContents = () => {
 export function KitchenSink() {
   const [password, setPassword] = useState('');
   const [selectedOption, setSelectedOption] = useState<string>('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
   
 
   return (
@@ -262,6 +265,68 @@ export function KitchenSink() {
               <p className="font-mono text-white">Dark + Accent Border + Triple Shadow</p>
             </Card>
           </Grid>
+        </Card>
+        </section>
+
+        {/* Modals Section */}
+        <section id="modals">
+          <SectionTitle className="mb-8">Modals</SectionTitle>
+        <Card variant="default" shadow="triple" className="p-8 mb-12">
+          <SubSectionTitle className="mb-6">Basic Modal</SubSectionTitle>
+          <div className="space-y-4 mb-8">
+            <Text variant="body" className="mb-4">
+              Click the button below to open a modal dialog. Test keyboard navigation (Escape to close), 
+              focus management, and click-outside-to-close functionality.
+            </Text>
+            <Button 
+              variant="primary" 
+              onClick={() => setIsModalOpen(true)}
+            >
+              Open Modal
+            </Button>
+          </div>
+
+          {/* Modal Component */}
+          <Modal 
+            isOpen={isModalOpen} 
+            onClose={() => setIsModalOpen(false)}
+            ariaLabelledBy="modal-title"
+          >
+            <div className="p-8 max-w-lg">
+              <Title variant="subsection" className="mb-4">
+                Example Modal
+              </Title>
+              <Text variant="body" className="mb-6">
+                This is a sample modal dialog. It demonstrates the modal component with proper 
+                accessibility features, focus management, and neobrutalist styling.
+              </Text>
+              <div className="space-y-4 mb-6">
+                <TextInput 
+                  type="text"
+                  label="Sample Input" 
+                  placeholder="Type something..."
+                />
+                <CheckBox label="Sample checkbox option" />
+              </div>
+              <div className="flex gap-3 justify-end">
+                <Button 
+                  variant="outline" 
+                  onClick={() => setIsModalOpen(false)}
+                >
+                  Cancel
+                </Button>
+                <Button 
+                  variant="primary" 
+                  onClick={() => {
+                    alert('Confirmed!');
+                    setIsModalOpen(false);
+                  }}
+                >
+                  Confirm
+                </Button>
+              </div>
+            </div>
+          </Modal>
         </Card>
         </section>
 
