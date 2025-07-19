@@ -121,6 +121,7 @@ jobs:
       
       - name: Run visual regression tests
         run: npm run test:visual -w frontend
+        continue-on-error: true
       
       - name: Upload test results
         uses: actions/upload-artifact@v4

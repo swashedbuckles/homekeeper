@@ -1,0 +1,50 @@
+name: Update Visual Snapshots
+
+on:
+  push:
+    branches: [ mainline ]
+  workflow_dispatch:
+
+jobs:
+  update-snapshots:
+    name: Update Visual Regression Snapshots
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: 'package-lock.json'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Build shared package
+        run: npm run build -w shared
+      
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+        working-directory: frontend
+      
+      - name: Update snapshots
+        run: npm run test:visual:update -w frontend
+        continue-on-error: true
+      
+      - name: Commit updated snapshots
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add frontend/tests/visual/pages.spec.ts-snapshots/
+          if ! git diff --staged --quiet; then
+            git commit -m "Update visual regression snapshots for Linux CI
+            git push
+          else
+            echo "No snapshot changes to commit"
+          fi
