@@ -9,6 +9,8 @@ jobs:
   update-snapshots:
     name: Update Visual Regression Snapshots
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     
     steps:
       - name: Checkout code
