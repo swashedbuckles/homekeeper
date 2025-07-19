@@ -1113,14 +1113,47 @@ Last Service: 2024-06-15
             </div>
           </div>
 
-          <div className="mt-8 p-4 bg-subtle border-2 border-text-primary">
-            <Text variant="label" weight="bold" className="block mb-2">Usage Notes:</Text>
-            <div className="space-y-2 text-sm font-mono">
-              <Text variant="body" size="sm">• <Code>completed</Code> - Green background, shows progress</Text>
-              <Text variant="body" size="sm">• <Code>active</Code> - Orange background with shadow, current step</Text>
-              <Text variant="body" size="sm">• <Code>error</Code> - Red background, indicates failure</Text>
-              <Text variant="body" size="sm">• Lines automatically show as completed when previous step is done</Text>
-              <Text variant="body" size="sm">• Responsive layout with centered alignment</Text>
+          <SubSectionTitle className="mb-6 mt-8">Vertical Orientation</SubSectionTitle>
+          <Text variant="body" className="mb-6">
+            Perfect for sidebars, mobile interfaces, or detailed workflows. The vertical layout places 
+            indicators and labels side-by-side with connecting lines running vertically.
+          </Text>
+
+          <Grid columns={2} spacing="lg">
+            <div>
+              <Text variant="label" weight="bold" className="block mb-4">Navigation Sidebar:</Text>
+              <Steps orientation="vertical">
+                <Step completed>Dashboard</Step>
+                <Step completed>Profile Setup</Step>
+                <Step active>Security Settings</Step>
+                <Step>Preferences</Step>
+                <Step>Help & Support</Step>
+              </Steps>
+            </div>
+
+            <div>
+              <Text variant="label" weight="bold" className="block mb-4">Installation Progress:</Text>
+              <Steps orientation="vertical">
+                <Step completed>Download</Step>
+                <Step completed>Install Dependencies</Step>
+                <Step completed>Configure Database</Step>
+                <Step error>Start Services</Step>
+                <Step>Run Tests</Step>
+                <Step>Deploy</Step>
+              </Steps>
+            </div>
+          </Grid>
+
+          <div className="mt-8">
+            <Text variant="label" weight="bold" className="block mb-4">Mobile Onboarding Flow:</Text>
+            <div className="max-w-sm mx-auto">
+              <Steps orientation="vertical">
+                <Step completed>Welcome</Step>
+                <Step completed>Create Account</Step>
+                <Step active>Verify Phone</Step>
+                <Step>Set Preferences</Step>
+                <Step>Start Using App</Step>
+              </Steps>
             </div>
           </div>
         </Card>

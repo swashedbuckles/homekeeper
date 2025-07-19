@@ -248,4 +248,97 @@ describe('Steps Component', () => {
       expect(screen.getByText('Complete Profile')).toBeInTheDocument();
     });
   });
+
+  describe('Vertical Orientation', () => {
+    it('renders steps vertically when orientation is vertical', () => {
+      const { container } = render(
+        <Steps orientation="vertical">
+          <Step>Step 1</Step>
+          <Step active>Step 2</Step>
+          <Step>Step 3</Step>
+        </Steps>
+      );
+
+      const stepsContainer = container.firstChild;
+      expect(stepsContainer).toHaveClass('max-w-md');
+      
+      // Should not have the horizontal layout classes
+      expect(container.querySelector('.justify-between')).not.toBeInTheDocument();
+    });
+
+    it('renders vertical lines between steps', () => {
+      const { container } = render(
+        <Steps orientation="vertical">
+          <Step completed>Step 1</Step>
+          <Step active>Step 2</Step>
+          <Step>Step 3</Step>
+        </Steps>
+      );
+
+      // Should have vertical lines (w-1 instead of h-1)
+      const lines = container.querySelectorAll('.w-1.flex-1');
+      expect(lines).toHaveLength(2);
+    });
+
+    it('applies correct vertical line styling', () => {
+      const { container } = render(
+        <Steps orientation="vertical">
+          <Step completed>Step 1</Step>
+          <Step active>Step 2</Step>
+          <Step>Step 3</Step>
+        </Steps>
+      );
+
+      const lines = container.querySelectorAll('.w-1.flex-1');
+      
+      // First line should be completed (green)
+      expect(lines[0]).toHaveClass('bg-accent');
+      
+      // Second line should not be completed (gray)
+      expect(lines[1]).toHaveClass('bg-text-secondary');
+    });
+
+    it('positions labels correctly in vertical layout', () => {
+      render(
+        <Steps orientation="vertical">
+          <Step>Step 1</Step>
+          <Step active>Step 2</Step>
+          <Step>Step 3</Step>
+        </Steps>
+      );
+
+      const activeLabel = screen.getByText('Step 2');
+      expect(activeLabel).toHaveClass('text-primary', 'py-3');
+      
+      const inactiveLabel = screen.getByText('Step 1');
+      expect(inactiveLabel).toHaveClass('text-text-secondary', 'py-3');
+    });
+
+    it('defaults to horizontal when no orientation provided', () => {
+      const { container } = render(
+        <Steps>
+          <Step>Step 1</Step>
+          <Step>Step 2</Step>
+        </Steps>
+      );
+
+      const stepsContainer = container.firstChild;
+      expect(stepsContainer).toHaveClass('max-w-3xl', 'mx-auto');
+    });
+
+    it('handles single step in vertical orientation', () => {
+      const { container } = render(
+        <Steps orientation="vertical">
+          <Step active>Only Step</Step>
+        </Steps>
+      );
+
+      expect(screen.getByText('1')).toBeInTheDocument();
+      expect(screen.getByText('Only Step')).toBeInTheDocument();
+      
+      // Should not have any connecting lines
+      const lines = container.querySelectorAll('.w-1.flex-1');
+      expect(lines).toHaveLength(0);
+    });
+  });
 });

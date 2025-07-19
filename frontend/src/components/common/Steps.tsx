@@ -25,6 +25,8 @@ export interface StepProps {
 export interface StepsProps {
   /** Step components to display in the progress indicator */
   children: ReactNode;
+  /** Layout orientation for the steps */
+  orientation?: 'horizontal' | 'vertical';
 }
 
 /**
@@ -94,18 +96,26 @@ const StepIndicator = ({position, completed, active, error}: StepIndicatorProps)
 interface StepLineProps {
   /** Whether this line should show as completed */
   completed?: boolean;
+  /** Layout orientation for the line */
+  orientation?: 'horizontal' | 'vertical';
 }
 
 /**
  * Connecting line between step indicators
  * 
  * @param props - StepLineProps
- * @returns Styled horizontal line
+ * @returns Styled horizontal or vertical line
  * 
  * @internal
  */
-const StepLine = ({completed}: StepLineProps) => {
+const StepLine = ({completed, orientation = 'horizontal'}: StepLineProps) => {
   const backgroundClass = completed ? 'bg-accent' : 'bg-text-secondary';
+  
+  if (orientation === 'vertical') {
+    return (
+      <div className={`w-1 flex-1 ${backgroundClass} border-2 border-text-primary my-2`}></div>
+    );
+  }
   
   return (
     <div className={`flex-1 h-1 ${backgroundClass} border-2 border-text-primary`}></div>
@@ -143,26 +153,37 @@ export const Step = ({children}: StepProps) => {
 
 /**
  * Progress steps container component following neobrutalist design principles.
- * Displays a horizontal series of numbered step indicators with connecting lines,
- * and step labels below. Automatically handles positioning and status styling.
+ * Displays a series of numbered step indicators with connecting lines,
+ * and step labels. Supports both horizontal and vertical orientations.
+ * Automatically handles positioning and status styling.
  * 
  * Features:
  * - Automatic step numbering (1, 2, 3, ...)
  * - Visual status indicators (completed, active, error)
  * - Connecting lines that show progress
+ * - Horizontal and vertical layout options
  * - Responsive layout with proper spacing
  * - Neobrutalist styling with thick borders and bold typography
  * 
  * @param props - StepsProps
  * @returns Complete step progress indicator
  * 
- * @example Basic usage
+ * @example Basic horizontal usage
  * ```tsx
  * <Steps>
  *   <Step completed>Task Info</Step>
  *   <Step active>Equipment</Step>
  *   <Step>Schedule</Step>
  *   <Step>Notifications</Step>
+ * </Steps>
+ * ```
+ * 
+ * @example Vertical layout
+ * ```tsx
+ * <Steps orientation="vertical">
+ *   <Step completed>Create Account</Step>
+ *   <Step active>Set Up Profile</Step>
+ *   <Step>Join Household</Step>
  * </Steps>
  * ```
  * 
@@ -177,13 +198,52 @@ export const Step = ({children}: StepProps) => {
  * 
  * @public
  */
-export const Steps = ({children}: StepsProps) => {
+export const Steps = ({children, orientation = 'horizontal'}: StepsProps) => {
   if(!children) {
     return null;
   }
 
   const stepArray = Children.toArray(children).filter(isValidElement) as ReactElement<StepProps>[];
 
+  if (orientation === 'vertical') {
+    return (
+      <div className="w-full max-w-md">
+        {stepArray.map((step, index) => {
+          const isLastStep = index === stepArray.length - 1;
+          const isCompleted = step.props.completed;
+          const isActive = step.props.active;
+          const textColor = isActive ? 'text-primary' : 'text-text-secondary';
+          
+          return (
+            <div key={index} className="flex">
+              {/* Indicator and line column */}
+              <div className="flex flex-col items-center mr-4">
+                <StepIndicator 
+                  position={index + 1}
+                  completed={isCompleted}
+                  active={isActive}
+                  error={step.props.error}
+                />
+                {!isLastStep && (
+                  <StepLine 
+                    completed={isCompleted && !isActive} 
+                    orientation="vertical"
+                  />
+                )}
+              </div>
+              
+              {/* Label column */}
+              <div className={`font-mono font-bold uppercase text-sm ${textColor} py-3`}>
+                {step.props.children}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
+
+  // Horizontal layout (default)
   return (
     <div className="w-full max-w-3xl mx-auto">
       {/* Indicators and lines row */}
