@@ -43,7 +43,7 @@ jobs:
           git config --local user.name "GitHub Action"
           git add frontend/tests/visual/pages.spec.ts-snapshots/
           if ! git diff --staged --quiet; then
-            git commit -m "Update visual regression snapshots for Linux CI
+            git commit -m "Update visual regression snapshots for Linux CI"
             git push
           else
             echo "No snapshot changes to commit"
