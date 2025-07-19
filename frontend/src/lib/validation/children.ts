@@ -1,8 +1,11 @@
 import { Children, isValidElement } from 'react';
+
 import { Action, type ActionProps } from '../../components/common/Action';
 import { Button, type ButtonProps } from '../../components/common/Button';
 import { Step, type StepProps} from '../../components/common/Steps';
+import { Option, type OptionProps } from '../../components/form/Option';
 import { NavItem, type NavItemProps } from '../../components/headers/NavItem';
+
 import type { ReactNode, ReactElement, ComponentType } from 'react';
 
 // TypeScript types for allowed action children
@@ -19,6 +22,11 @@ export type AllowedNavChildren = AllowedNavChild | AllowedNavChild[];
 export type StepElement = ReactElement<StepProps, typeof Step>;
 export type AllowedStepsChild = StepElement;
 export type AllowedStepsChildren = AllowedStepsChild | AllowedStepsChild[];
+
+// TypeScript types for allowed select children
+export type OptionElement = ReactElement<OptionProps, typeof Option>;
+export type AllowedSelectChild = OptionElement;
+export type AllowedSelectChildren = AllowedSelectChild | AllowedSelectChild[];
 
 /**
  * Type-safe utility to get a component's display name for error messages
@@ -131,6 +139,36 @@ export const validateNavChildren = (children: ReactNode, componentName: string):
     [NavItem as ComponentType<NavItemProps>],
     ['NavItem']
   ) as AllowedNavChild[];
+};
+
+/**
+ * Validates that children are only Option components and extracts their props as plain objects.
+ * Provides helpful console warnings for invalid children while gracefully filtering them out.
+ * 
+ * @param children - React children to validate
+ * @param componentName - Name of the parent component for error messages
+ * @returns Array of option objects with value, label, and disabled properties
+ * 
+ * @example
+ * ```tsx
+ * const options = validateSelectChildren(children, 'Select');
+ * // Returns: [{ value: 'us', label: 'United States', disabled: false }, ...]
+ * ```
+ */
+export const validateSelectChildren = (children: ReactNode, componentName: string): Array<{value: string, label: string, disabled: boolean}> => {
+  return validateChildren(
+    children,
+    componentName,
+    [Option as ComponentType<OptionProps>],
+    ['Option'],
+    (child: ReactElement) => ({
+      value: (child as AllowedSelectChild).props.value,
+      label: typeof (child as AllowedSelectChild).props.children === 'string' 
+        ? (child as AllowedSelectChild).props.children as string
+        : String((child as AllowedSelectChild).props.children),
+      disabled: (child as AllowedSelectChild).props.disabled || false
+    })
+  );
 };
 
 /**
