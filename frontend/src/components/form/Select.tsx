@@ -1,9 +1,9 @@
 import { ChevronDown } from 'lucide-react';
-import { forwardRef, useState, useRef, useEffect, Children, isValidElement } from 'react';
+import { forwardRef, useState, useRef, useEffect } from 'react';
 import { getHoverEffectClass } from '../../lib/design-system/hover-effects';
 import { type StandardSize, getSizeToken } from '../../lib/design-system/sizes';
-import { getComponentName } from '../../lib/validation/children';
-import type { ReactNode, ReactElement } from 'react';
+import { validateSelectChildren, type AllowedSelectChildren } from '../../lib/validation/children';
+import type { ReactNode } from 'react';
 import type { UseFormRegisterReturn } from 'react-hook-form';
 
 export interface SelectOption {
@@ -12,26 +12,13 @@ export interface SelectOption {
   disabled?: boolean;
 }
 
-export interface OptionProps {
-  value: string;
-  children: ReactNode;
-  disabled?: boolean;
-}
+// Re-export Option component and types for convenience
+export { Option, type OptionProps } from './Option';
 
-export const Option: React.FC<OptionProps> = ({ children }) => {
-  return <>{children}</>;
-};
-
-// Add displayName for better debugging
-Option.displayName = 'Option';
-
-// TypeScript types for allowed children
-type OptionElement = ReactElement<OptionProps, typeof Option>;
-type AllowedSelectChildren = OptionElement | OptionElement[];
 
 export interface SelectProps {
   label: string;
-  children?: AllowedSelectChildren; // ← TypeScript validation for Option children only
+  children?: AllowedSelectChildren;
   placeholder?: string;
   error?: string;
   validationFeedback?: ReactNode;
@@ -294,30 +281,7 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>((props, ref) => 
   } = props;
 
   // Extract options from children with validation and helpful error messages
-  const options = Children.toArray(children)
-    .filter((child): child is React.ReactElement<OptionProps> => {
-      if (!isValidElement(child)) {
-        console.warn('Select: Non-element child found, skipping');
-        return false;
-      }
-      
-      const isValidChild = child.type === Option;
-      if (!isValidChild) {
-        const componentName = getComponentName(child.type);
-          
-        console.warn(
-          `Select: Invalid child component <${componentName}>. ` +
-          'Only <Option> components are allowed as children.'
-        );
-      }
-      
-      return isValidChild;
-    })
-    .map(child => ({
-      value: child.props.value,
-      label: typeof child.props.children === 'string' ? child.props.children : String(child.props.children),
-      disabled: child.props.disabled || false
-    }));
+  const options = validateSelectChildren(children, 'Select');
   
   const [isOpen, setIsOpen] = useState(false);
   const [internalValue, setInternalValue] = useState(defaultValue || '');
