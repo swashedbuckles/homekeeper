@@ -123,7 +123,7 @@ describe('Select Component', () => {
       </Select>
     );
 
-    expect(screen.getByText('⚠ This field is required')).toBeInTheDocument();
+    expect(screen.getByText('This field is required')).toBeInTheDocument();
   });
 
   it('shows validation feedback when provided', () => {

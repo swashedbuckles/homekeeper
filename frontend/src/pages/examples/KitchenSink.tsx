@@ -28,10 +28,16 @@ import { PasswordStrengthIndicator } from '../../components/form/PasswordStrengt
 import { Select, Option } from '../../components/form/Select';
 import { TextArea } from '../../components/form/TextArea';
 import { TextInput } from '../../components/form/TextInput';
+
+// Choice Components  
 import { WideContainer } from '../../components/layout/containers/WideContainer';
 import { Inline } from '../../components/layout/Flex';
 import { Grid } from '../../components/layout/Grid';
 import { Tabs } from '../../components/layout/Tabs';
+import { DefaultChoice } from '../../components/variants/DefaultChoice';
+import { FilterChoice } from '../../components/variants/FilterChoice';
+import { IconChoice } from '../../components/variants/IconChoice';
+import { PriorityChoice } from '../../components/variants/PriorityChoice';
 
 // Variation Components
 import { CodeInput } from '../../components/variations/CodeInput';
@@ -63,6 +69,7 @@ const TableOfContents = () => {
     { id: 'forms', label: 'Form Components' },
     { id: 'tabs', label: 'Tabs' },
     { id: 'steps', label: 'Steps' },
+    { id: 'choices', label: 'Choice Components' },
     { id: 'alerts', label: 'Alerts' },
     { id: 'variations', label: 'Variation Components' },
     { id: 'list-items', label: 'List Items' },
@@ -117,6 +124,29 @@ export function KitchenSink() {
   const [password, setPassword] = useState('');
   const [selectedOption, setSelectedOption] = useState<string>('');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  
+  // Choice component states
+  const [category, setCategory] = useState('');
+  const [priority, setPriority] = useState('');
+  const [filters, setFilters] = useState<string[]>([]);
+  const [frequency, setFrequency] = useState('');
+  
+  // Choice onChange handlers
+  const handleCategoryChange = (value: string | string[]) => {
+    setCategory(Array.isArray(value) ? value[0] || '' : value);
+  };
+  
+  const handlePriorityChange = (value: string | string[]) => {
+    setPriority(Array.isArray(value) ? value[0] || '' : value);
+  };
+  
+  const handleFiltersChange = (value: string | string[]) => {
+    setFilters(Array.isArray(value) ? value : [value].filter(Boolean));
+  };
+  
+  const handleFrequencyChange = (value: string | string[]) => {
+    setFrequency(Array.isArray(value) ? value[0] || '' : value);
+  };
   
 
   return (
@@ -1154,6 +1184,127 @@ Last Service: 2024-06-15
                 <Step>Set Preferences</Step>
                 <Step>Start Using App</Step>
               </Steps>
+            </div>
+          </div>
+        </Card>
+        </section>
+
+        {/* Choice Section */}
+        <section id="choices">
+          <SectionTitle className="mb-8">Choice Components</SectionTitle>
+        
+        <Card variant="default" shadow="triple" className="p-8 mb-8">
+          <SubSectionTitle className="mb-6">Default Choice</SubSectionTitle>
+          
+          <div className="space-y-8">
+            <div>
+              <Text variant="label" weight="bold" className="block mb-4">Category Selection:</Text>
+              <DefaultChoice name="category" value={category} onChange={handleCategoryChange}>
+                <Option value="cleaning">Cleaning</Option>
+                <Option value="maintenance">Maintenance</Option>
+                <Option value="shopping">Shopping</Option>
+                <Option value="repairs">Repairs</Option>
+              </DefaultChoice>
+            </div>
+
+            <div>
+              <Text variant="label" weight="bold" className="block mb-4">Multiple Selection:</Text>
+              <DefaultChoice name="tags" multiple value={filters} onChange={handleFiltersChange}>
+                <Option value="urgent">Urgent</Option>
+                <Option value="easy">Easy Task</Option>
+                <Option value="weekly">Weekly</Option>
+                <Option value="monthly">Monthly</Option>
+              </DefaultChoice>
+            </div>
+
+            <div>
+              <Text variant="label" weight="bold" className="block mb-4">Vertical Layout:</Text>
+              <DefaultChoice name="settings" orientation="vertical">
+                <Option value="notifications">Enable Notifications</Option>
+                <Option value="reminders">Daily Reminders</Option>
+                <Option value="sharing">Share Progress</Option>
+              </DefaultChoice>
+            </div>
+          </div>
+        </Card>
+
+        <Card variant="default" shadow="triple" className="p-8 mb-8">
+          <SubSectionTitle className="mb-6">Priority Choice</SubSectionTitle>
+          
+          <div className="space-y-8">
+            <div>
+              <Text variant="label" weight="bold" className="block mb-4">Task Priority:</Text>
+              <PriorityChoice name="priority" value={priority} onChange={handlePriorityChange}>
+                <Option value="low">Low</Option>
+                <Option value="medium">Medium</Option>
+                <Option value="high">High</Option>
+              </PriorityChoice>
+            </div>
+
+            <div>
+              <Text variant="label" weight="bold" className="block mb-4">Issue Severity:</Text>
+              <PriorityChoice name="severity">
+                <Option value="low">Minor</Option>
+                <Option value="medium">Major</Option>
+                <Option value="high">Critical</Option>
+              </PriorityChoice>
+            </div>
+          </div>
+        </Card>
+
+        <Card variant="default" shadow="triple" className="p-8 mb-8">
+          <SubSectionTitle className="mb-6">Filter Choice</SubSectionTitle>
+          
+          <div className="space-y-8">
+            <div>
+              <Text variant="label" weight="bold" className="block mb-4">Status Filters:</Text>
+              <FilterChoice name="statusFilters" multiple>
+                <Option value="all">All</Option>
+                <Option value="overdue">Overdue</Option>
+                <Option value="due-soon">Due Soon</Option>
+                <Option value="upcoming">Upcoming</Option>
+                <Option value="completed">Completed</Option>
+              </FilterChoice>
+            </div>
+
+            <div>
+              <Text variant="label" weight="bold" className="block mb-4">Category Filters:</Text>
+              <FilterChoice name="categoryFilters" multiple>
+                <Option value="cleaning">Cleaning</Option>
+                <Option value="maintenance">Maintenance</Option>
+                <Option value="shopping">Shopping</Option>
+                <Option value="repairs">Repairs</Option>
+              </FilterChoice>
+            </div>
+          </div>
+        </Card>
+
+        <Card variant="default" shadow="triple" className="p-8 mb-8">
+          <SubSectionTitle className="mb-6">Icon Choice</SubSectionTitle>
+          
+          <div className="space-y-8">
+            <div>
+              <Text variant="label" weight="bold" className="block mb-4">Frequency Selection:</Text>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <IconChoice name="frequency" value={frequency} onChange={handleFrequencyChange}>
+                  <Option value="once">One Time</Option>
+                  <Option value="recurring">Recurring</Option>
+                  <Option value="usage">Based on Usage</Option>
+                  <Option value="condition">Condition Based</Option>
+                </IconChoice>
+              </div>
+            </div>
+
+            <div>
+              <Text variant="label" weight="bold" className="block mb-4">Time Periods:</Text>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <IconChoice name="timeframe">
+                  <Option value="daily">Daily</Option>
+                  <Option value="weekly">Weekly</Option>
+                  <Option value="monthly">Monthly</Option>
+                  <Option value="yearly">Yearly</Option>
+                </IconChoice>
+              </div>
             </div>
           </div>
         </Card>

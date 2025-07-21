@@ -1,82 +1,53 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useState, cloneElement, type JSX } from 'react';
 
-import { getHoverEffectClass } from '../../lib/design-system/hover-effects';
 import { validateOptionChildren, type ValidatedOption, type AllowedOptionChildren } from '../../lib/validation/children';
 import { Text } from './Text';
 
 import type { StandardSize } from '../../lib/design-system/sizes';
 import type { UseFormRegisterReturn } from 'react-hook-form';
 
-export interface ChoiceProps {
+export interface OptionRenderProps {
+  option: ValidatedOption;
+  isSelected: boolean;
+  isDisabled: boolean;
+  onClick: () => void;
+}
+
+export interface ChoiceCoreProps {
   name: string;
   multiple?: boolean;
   value?: string | string[];
-  defaultValue: string | string[];
+  defaultValue?: string | string[];
   onChange?: (value: string | string[]) => void;
   children: AllowedOptionChildren;
+  renderOption: (props: OptionRenderProps) => JSX.Element;
+  label?: string;
+  error?: string;
   size?: StandardSize;
+  orientation?: 'horizontal' | 'vertical';
   disabled?: boolean;
   className?: string;
   testId?: string;
-
   register?: UseFormRegisterReturn;
-}
-
-function RenderOptions(options: ValidatedOption[], currentValue: string[], handleClick: (value: string) => void) {
-  return options.map(option => {
-    const isSelected = currentValue.indexOf(option.value) > -1;
-    const isDisabled = option.disabled;
-
-    const baseStyles = [
-      'font-mono',
-      'font-black',
-      'uppercase',
-      'px-4',
-      'py-2',
-      'border-4',
-      'border-text-primary',
-      'brutal-transition',
-      'focus:outline-none'
-    ];
-
-    const stateStyles = isSelected 
-      ? ['bg-accent', 'text-white', 'brutal-shadow-dark']
-      : ['bg-white', 'text-text-primary', 'hover:bg-primary', 'hover:text-white'];
-
-    const interactionStyles = isDisabled 
-      ? ['opacity-50', 'cursor-not-allowed', '!hover:transform-none']
-      : [getHoverEffectClass('press-small')];
-
-    const optionStyles = [
-      ...baseStyles,
-      ...stateStyles,
-      ...interactionStyles
-    ].filter(Boolean).join(' ');
-
-    return (
-      <button 
-        disabled={isDisabled} 
-        onClick={() => handleClick(option.value)}
-        key={option.value}
-        className={optionStyles}
-      >
-        {option.label}
-      </button>);
-  });
 }
 
 function arrayify<T>(value: T | T[]) {
   return Array.isArray(value) ? value : [value];
 }
 
-export const Choice = ({
+export const ChoiceCore = ({
   name, 
   multiple, 
   defaultValue, 
   onChange, 
   children,
   value: controlledValue,
-}: ChoiceProps) => {
+  renderOption,
+  label,
+  error,
+  orientation = 'horizontal',
+  className,
+}: ChoiceCoreProps) => {
   // Handle internal value as array, no matter what, to simplify logic. 
   // for non-multiple, we just return the array head.
   const [internalValue, setInternalValue] = useState(defaultValue ? arrayify(defaultValue) : []);
@@ -84,7 +55,8 @@ export const Choice = ({
   // Use controlled value if provided, otherwise use internal state
   const currentValue = controlledValue !== undefined ? arrayify(controlledValue) : internalValue;
 
-  const options = validateOptionChildren(children, 'Choice');
+  const options = validateOptionChildren(children, 'ChoiceCore');
+  
   const handleClick = useCallback((optionValue: string) => {
     let newValue: string[];
     
@@ -110,12 +82,50 @@ export const Choice = ({
     }
   }, [currentValue, multiple, controlledValue, onChange]);
 
+  const renderOptions = () => {
+    return options.map(option => {
+      const isSelected = currentValue.indexOf(option.value) > -1;
+      const isDisabled = option.disabled;
+      const onClick = () => handleClick(option.value);
+
+      const element = renderOption({
+        option,
+        isSelected,
+        isDisabled,
+        onClick
+      });
+
+      // Clone element to add key prop
+      return cloneElement(element, { key: option.value });
+    });
+  };
+
+  const containerClassName = [
+    'w-full',
+    className
+  ].filter(Boolean).join(' ');
+
+  const optionsClassName = orientation === 'vertical' 
+    ? 'flex flex-col gap-2'
+    : 'flex flex-wrap gap-2';
+
   return (
-    <div className="w-full">
-      <Text variant="label" size="lg" className="block mb-2">{name}</Text>
-      <div className="flex flex-wrap gap-2">
-        {RenderOptions(options, currentValue, handleClick)}
+    <div className={containerClassName}>
+      {(label || name) && (
+        <Text variant="label" size="lg" className="block mb-2">
+          {label || name}
+        </Text>
+      )}
+      <div className={optionsClassName}>
+        {renderOptions()}
       </div>
+      {error && (
+        <div className="mt-1 mb-2 p-3 bg-error border-brutal-sm border-text-primary text-white">
+          <div className="font-mono font-bold uppercase text-sm">
+            ⚠ {error}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
