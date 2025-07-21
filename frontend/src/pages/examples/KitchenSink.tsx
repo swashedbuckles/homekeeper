@@ -16,6 +16,7 @@ import { Card } from '../../components/common/Card';
 import { Code } from '../../components/common/Code';
 import { ListItem } from '../../components/common/ListItem';
 import { Modal } from '../../components/common/Modal';
+import { ProgressBar } from '../../components/common/ProgressBar';
 import { Stats } from '../../components/common/Stats';
 import { Step, Steps } from '../../components/common/Steps';
 import { Text } from '../../components/common/Text';
@@ -69,6 +70,7 @@ const TableOfContents = () => {
     { id: 'forms', label: 'Form Components' },
     { id: 'tabs', label: 'Tabs' },
     { id: 'steps', label: 'Steps' },
+    { id: 'progress', label: 'Progress Components' },
     { id: 'choices', label: 'Choice Components' },
     { id: 'alerts', label: 'Alerts' },
     { id: 'variations', label: 'Variation Components' },
@@ -1184,6 +1186,79 @@ Last Service: 2024-06-15
                 <Step>Set Preferences</Step>
                 <Step>Start Using App</Step>
               </Steps>
+            </div>
+          </div>
+        </Card>
+        </section>
+
+        {/* Progress Components Section */}
+        <section id="progress">
+          <SectionTitle className="mb-8">Progress Components</SectionTitle>
+        
+        <Card variant="default" shadow="triple" className="p-8 mb-8">
+          <SubSectionTitle className="mb-6">Progress Bars</SubSectionTitle>
+          <Text variant="body" className="mb-6">
+            Progress bars provide visual feedback for task completion, file uploads, and system status. 
+            Based on design mockup specifications with 8px height standard and brutal styling.
+          </Text>
+
+          <div className="space-y-8">
+            <div>
+              <Text variant="label" weight="bold" className="block mb-4">Basic Progress Bars:</Text>
+              <div className="space-y-4">
+                <ProgressBar value={25} label="Getting Started" />
+                <ProgressBar value={50} label="In Progress" variant="secondary" />
+                <ProgressBar value={75} label="Almost Done" variant="accent" />
+                <ProgressBar value={100} label="Complete" variant="success" />
+              </div>
+            </div>
+
+            <div>
+              <Text variant="label" weight="bold" className="block mb-4">With Percentage Display:</Text>
+              <div className="space-y-4">
+                <ProgressBar value={35} showPercentage variant="primary" />
+                <ProgressBar value={68} showPercentage variant="secondary" />
+                <ProgressBar value={90} showPercentage variant="accent" />
+              </div>
+            </div>
+
+            <div>
+              <Text variant="label" weight="bold" className="block mb-4">Equipment Status (Mockup Style):</Text>
+              <div className="space-y-4">
+                <ProgressBar value={25} label="HVAC Filter - Overdue" variant="error" showPercentage />
+                <ProgressBar value={65} label="Water Heater - Due Soon" variant="warning" showPercentage />
+                <ProgressBar value={85} label="Dishwasher - On Track" variant="success" showPercentage />
+                <ProgressBar value={100} label="Pool Pump - Complete" variant="accent" showPercentage />
+              </div>
+            </div>
+
+            <div>
+              <Text variant="label" weight="bold" className="block mb-4">Size Variants:</Text>
+              <div className="space-y-4">
+                <ProgressBar value={70} label="Extra Small" size="xs" variant="primary" />
+                <ProgressBar value={70} label="Small" size="sm" variant="secondary" />
+                <ProgressBar value={70} label="Medium (Standard)" size="md" variant="accent" />
+                <ProgressBar value={70} label="Large" size="lg" variant="primary" />
+                <ProgressBar value={70} label="Extra Large" size="xl" variant="secondary" />
+              </div>
+            </div>
+
+            <div>
+              <Text variant="label" weight="bold" className="block mb-4">File Upload Progress:</Text>
+              <div className="space-y-4">
+                <ProgressBar value={0} label="manual_hvac_filter.pdf - Preparing..." variant="secondary" />
+                <ProgressBar value={45} label="dishwasher_manual.pdf - Uploading..." variant="primary" showPercentage />
+                <ProgressBar value={100} label="pool_maintenance.pdf - Complete!" variant="success" showPercentage />
+              </div>
+            </div>
+
+            <div>
+              <Text variant="label" weight="bold" className="block mb-4">Custom Max Values:</Text>
+              <div className="space-y-4">
+                <ProgressBar value={3} max={5} label="Task 3 of 5 Complete" showPercentage variant="accent" />
+                <ProgressBar value={750} max={1000} label="750 of 1000 Points" showPercentage variant="primary" />
+                <ProgressBar value={8} max={12} label="8 of 12 Months" showPercentage variant="secondary" />
+              </div>
             </div>
           </div>
         </Card>
