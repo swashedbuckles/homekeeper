@@ -1,24 +1,17 @@
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, TriangleAlert } from 'lucide-react';
 import { forwardRef, useState, useRef, useEffect } from 'react';
 import { getHoverEffectClass } from '../../lib/design-system/hover-effects';
 import { type StandardSize, getSizeToken } from '../../lib/design-system/sizes';
-import { validateSelectChildren, type AllowedSelectChildren } from '../../lib/validation/children';
+import { validateOptionChildren, type AllowedOptionChildren } from '../../lib/validation/children';
 import type { ReactNode } from 'react';
 import type { UseFormRegisterReturn } from 'react-hook-form';
-
-export interface SelectOption {
-  value: string;
-  label: string;
-  disabled?: boolean;
-}
 
 // Re-export Option component and types for convenience
 export { Option, type OptionProps } from './Option';
 
-
 export interface SelectProps {
   label: string;
-  children?: AllowedSelectChildren;
+  children?: AllowedOptionChildren;
   placeholder?: string;
   error?: string;
   validationFeedback?: ReactNode;
@@ -281,7 +274,7 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>((props, ref) => 
   } = props;
 
   // Extract options from children with validation and helpful error messages
-  const options = validateSelectChildren(children, 'Select');
+  const options = validateOptionChildren(children, 'Select');
   
   const [isOpen, setIsOpen] = useState(false);
   const [internalValue, setInternalValue] = useState(defaultValue || '');
@@ -482,7 +475,7 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>((props, ref) => 
       {hasError && (
         <div className="mt-1 mb-2 p-3 bg-error border-brutal-sm border-text-primary text-white">
           <div className="font-mono font-bold uppercase text-sm">
-            ⚠ {error}
+            <TriangleAlert /> {error}
           </div>
         </div>
       )}
