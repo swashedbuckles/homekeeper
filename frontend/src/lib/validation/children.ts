@@ -25,8 +25,9 @@ export type AllowedStepsChildren = AllowedStepsChild | AllowedStepsChild[];
 
 // TypeScript types for allowed select children
 export type OptionElement = ReactElement<OptionProps, typeof Option>;
-export type AllowedSelectChild = OptionElement;
-export type AllowedSelectChildren = AllowedSelectChild | AllowedSelectChild[];
+export type AllowedOptionChild = OptionElement;
+export type AllowedOptionChildren = AllowedOptionChild | AllowedOptionChild[];
+export type ValidatedOption = {value: string, label: string, disabled: boolean};
 
 /**
  * Type-safe utility to get a component's display name for error messages
@@ -151,22 +152,22 @@ export const validateNavChildren = (children: ReactNode, componentName: string):
  * 
  * @example
  * ```tsx
- * const options = validateSelectChildren(children, 'Select');
+ * const options = validateOptionChildren(children, 'Select');
  * // Returns: [{ value: 'us', label: 'United States', disabled: false }, ...]
  * ```
  */
-export const validateSelectChildren = (children: ReactNode, componentName: string): Array<{value: string, label: string, disabled: boolean}> => {
+export const validateOptionChildren = (children: ReactNode, componentName: string): Array<ValidatedOption> => {
   return validateChildren(
     children,
     componentName,
     [Option as ComponentType<OptionProps>],
     ['Option'],
     (child: ReactElement) => ({
-      value: (child as AllowedSelectChild).props.value,
-      label: typeof (child as AllowedSelectChild).props.children === 'string' 
-        ? (child as AllowedSelectChild).props.children as string
-        : String((child as AllowedSelectChild).props.children),
-      disabled: (child as AllowedSelectChild).props.disabled || false
+      value: (child as AllowedOptionChild).props.value,
+      label: typeof (child as AllowedOptionChild).props.children === 'string' 
+        ? (child as AllowedOptionChild).props.children as string
+        : String((child as AllowedOptionChild).props.children),
+      disabled: (child as AllowedOptionChild).props.disabled || false
     })
   );
 };
