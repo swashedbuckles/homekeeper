@@ -2,6 +2,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter, Route, Routes } from 'react-router';
 
 import { Root } from './components/Root';
+import { AuthInitializer } from './context/AuthInitializer';
 import { AuthProvider } from './context/AuthProvider';
 import { HouseholdProvider } from './context/HouseholdProvider';
 import { AuthStatus } from './lib/types/authStatus';
@@ -26,7 +27,7 @@ const QUERY_RETRIES = 1;
 
 export function App() {
   const initialAuthState = {
-    authStatus: AuthStatus.CHECKING,
+    authStatus: AuthStatus.UNKNOWN,
     user: null,
   };
 
@@ -43,36 +44,37 @@ export function App() {
     },
   });
 
-
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider initialState={initialAuthState}>
-        <HouseholdProvider>
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Root />}>
-                <Route index element={<LandingPage />} />
-                <Route path="login" element={<Login />} />
-                <Route path="register" element={<Register />} />
-              </Route>
-              <Route path="/debug" element={<Root />}>
-                <Route path="home" element={<Home />} />
-                <Route path="kitchen-sink" element={<KitchenSink />} />
-                <Route path="layout" element={<LayoutExamples />} />
-              </Route>
-              <Route path="/onboarding">
-                <Route index element={<OnboardingHome />} />
-                <Route path="create" element={<CreateHousehold />} />
-                <Route path="join" element={<JoinHousehold />} />
-                <Route path="invite" element={<InviteOthers />} />
-                <Route path="success" element={<OnboardingSuccess />} />
-              </Route>
-              <Route path="/dashboard" element={<Root />}>
-                <Route index element={<Dashboard />} />
-              </Route>
-            </Routes>
-          </BrowserRouter>
-        </HouseholdProvider>
+        <AuthInitializer>
+          <HouseholdProvider>
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<Root />}>
+                  <Route index element={<LandingPage />} />
+                  <Route path="login" element={<Login />} />
+                  <Route path="register" element={<Register />} />
+                </Route>
+                <Route path="/debug" element={<Root />}>
+                  <Route path="home" element={<Home />} />
+                  <Route path="kitchen-sink" element={<KitchenSink />} />
+                  <Route path="layout" element={<LayoutExamples />} />
+                </Route>
+                <Route path="/onboarding">
+                  <Route index element={<OnboardingHome />} />
+                  <Route path="create" element={<CreateHousehold />} />
+                  <Route path="join" element={<JoinHousehold />} />
+                  <Route path="invite" element={<InviteOthers />} />
+                  <Route path="success" element={<OnboardingSuccess />} />
+                </Route>
+                <Route path="/dashboard" element={<Root />}>
+                  <Route index element={<Dashboard />} />
+                </Route>
+              </Routes>
+            </BrowserRouter>
+          </HouseholdProvider>
+        </AuthInitializer>
       </AuthProvider>
     </QueryClientProvider>
   );

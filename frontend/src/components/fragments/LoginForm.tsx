@@ -30,9 +30,12 @@ export const LoginForm = ({onSuccess}: LoginFormProps) => {
         onSuccess(user);
       }
     } catch (error) {
-      logger.error(error);
+      logger.error('Error: ', error);
       if (error instanceof ApiError) {
-        if (error.statusCode === 401) {
+        console.log(error.statusCode);
+        if (error.statusCode === 400) {
+          setServerError('Invalid email or password.');
+        } else if (error.statusCode === 401) {
           setServerError('Invalid email or password.');
         } else if (error.statusCode === 429) {
           setServerError('Too many login attempts. Please try again later.');

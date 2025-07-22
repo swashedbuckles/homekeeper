@@ -36,7 +36,7 @@ export async function makeRequest(url: string, options: RequestInit = {}): Promi
   try {
     return await invokeFetch(url, options);
   } catch (error) {
-    if(isApiError(error) && error.statusCode === 401) {
+    if(needsJWT(url) && isApiError(error) && error.statusCode === 401) {
       await refreshJwt();
       return await invokeFetch(url, options);
     }
@@ -128,6 +128,20 @@ async function getCsrfToken(): Promise<string> {
 
 export function clearCsrfToken(): void {
   csrfToken = '';
+}
+
+function needsJWT(url: string): boolean {
+  // Extract the path from the full URL
+  try {
+    const urlObj = new URL(url);
+    const path = urlObj.pathname;
+    const isAuthEndpoint = AUTH_ENDPOINTS.some(authPath => path.startsWith(authPath));
+    return !isAuthEndpoint;
+  } catch {
+    // If URL parsing fails, assume it's already a path
+    const isAuthEndpoint = AUTH_ENDPOINTS.some(authPath => url.startsWith(authPath));
+    return !isAuthEndpoint;
+  }
 }
 
 function needsCSRF(endpoint: string, method: string): boolean {

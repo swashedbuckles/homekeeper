@@ -10,7 +10,7 @@ type AuthProviderProps = {
 };
 
 const DEFAULT_INITIAL_STATE = {
-  authStatus: AuthStatus.CHECKING,
+  authStatus: AuthStatus.UNKNOWN,
   user: null,
 };
 

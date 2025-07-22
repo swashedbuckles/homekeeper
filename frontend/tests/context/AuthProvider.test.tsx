@@ -35,7 +35,7 @@ describe('AuthProvider', () => {
   describe('initialization', () => {
     it('should provide default initial state', () => {
       const defaultInitialState = {
-        authStatus: AuthStatus.CHECKING,
+        authStatus: AuthStatus.UNKNOWN,
         user: null,
       };
 
@@ -45,7 +45,7 @@ describe('AuthProvider', () => {
         </AuthProvider>
       );
 
-      expect(screen.getByTestId('auth-status')).toHaveTextContent(AuthStatus.CHECKING);
+      expect(screen.getByTestId('auth-status')).toHaveTextContent(AuthStatus.UNKNOWN);
       expect(screen.getByTestId('user-email')).toHaveTextContent('no-user');
     });
 
@@ -240,7 +240,7 @@ describe('AuthProvider', () => {
 
       const { getByTestId } = render(
         <AuthProvider initialState={{
-          authStatus: AuthStatus.CHECKING,
+          authStatus: AuthStatus.UNKNOWN,
           user: null,
         }}>
           <TransitionTestComponent />
@@ -248,7 +248,7 @@ describe('AuthProvider', () => {
       );
 
       // Initial state
-      expect(screen.getByTestId('current-status')).toHaveTextContent(AuthStatus.CHECKING);
+      expect(screen.getByTestId('current-status')).toHaveTextContent(AuthStatus.UNKNOWN);
 
       // Start login process
       await getByTestId('start-login').click();

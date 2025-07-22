@@ -14,18 +14,18 @@ describe('useAuth', () => {
   });
 
   describe('initial state', () => {
-    it('should initialize with CHECKING status', () => {
+    it('should initialize with UNKNOWN status', () => {
       const { result } = renderHook(() => useAuth(), {
         wrapper: ({ children }) => (
-          <TestAuthProvider initialAuthStatus={AuthStatus.CHECKING}>
+          <TestAuthProvider initialAuthStatus={AuthStatus.UNKNOWN}>
             {children}
           </TestAuthProvider>
         ),
       });
 
-      expect(result.current.authStatus).toBe(AuthStatus.CHECKING);
+      expect(result.current.authStatus).toBe(AuthStatus.UNKNOWN);
       expect(result.current.user).toBeNull();
-      expect(result.current.isLoading).toBe(true);
+      expect(result.current.isLoading).toBe(false);
       expect(result.current.isAuthenticated).toBe(false);
     });
 
@@ -76,7 +76,7 @@ describe('useAuth', () => {
 
       const { result } = renderHook(() => useAuth(), {
         wrapper: ({ children }) => (
-          <TestAuthProvider initialAuthStatus={AuthStatus.CHECKING}>
+          <TestAuthProvider initialAuthStatus={AuthStatus.UNKNOWN}>
             {children}
           </TestAuthProvider>
         ),
@@ -104,7 +104,7 @@ describe('useAuth', () => {
 
       const { result } = renderHook(() => useAuth(), {
         wrapper: ({ children }) => (
-          <TestAuthProvider initialAuthStatus={AuthStatus.CHECKING}>
+          <TestAuthProvider initialAuthStatus={AuthStatus.UNKNOWN}>
             {children}
           </TestAuthProvider>
         ),
