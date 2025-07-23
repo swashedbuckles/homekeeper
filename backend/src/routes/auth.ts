@@ -6,6 +6,7 @@ import {
   RATE_LIMIT_MAX_REQUESTS,
   RATE_LIMIT_WINDOW_MS,
 } from '../constants';
+import { getPasswordConfig } from '../config/password';
 
 import { getCsrfToken } from '../controllers/auth/csrf';
 import { getLogin, postLogin } from '../controllers/auth/login';
@@ -40,7 +41,7 @@ router.post(
   limiter,
   validateBody('email').isEmail(),
   validateBody('name').isString().notEmpty(),
-  validateBody('password').isString().notEmpty().isStrongPassword(),
+  validateBody('password').isString().notEmpty().isStrongPassword(getPasswordConfig()),
   handleValidation,
   postRegister
 );

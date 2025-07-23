@@ -18,6 +18,7 @@ describe('AuthInitializer', () => {
       user: null,
       isLoading: false,
       isAuthenticated: false,
+      isKnown: false,
       login: vi.fn(),
       logout: vi.fn(),
     });
