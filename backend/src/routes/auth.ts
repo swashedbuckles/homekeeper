@@ -14,8 +14,9 @@ import { postLogout } from '../controllers/auth/logout';
 import { getRefresh } from '../controllers/auth/refresh';
 import { getRegister, postRegister } from '../controllers/auth/register';
 import { getWhoami } from '../controllers/auth/whoami';
+import { getValidate } from '../controllers/auth/validate';
 
-import { optionalAuth }     from '../middleware/auth';
+import { optionalAuth, requireAuth } from '../middleware/auth';
 import { handleValidation } from '../middleware/validation';
 
 export const router = Router();
@@ -49,6 +50,8 @@ router.post(
 router.post('/logout', postLogout);
 
 router.get('/whoami', optionalAuth, getWhoami) ;
+
+router.get('/validate', requireAuth, getValidate);
 
 router.post('/refresh', getRefresh);
 
