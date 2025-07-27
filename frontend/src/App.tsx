@@ -1,6 +1,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter, Route, Routes } from 'react-router';
 
+import { AuthRouteGuard } from './components/auth/AuthRouteGuard';
 import { Root } from './components/Root';
 import { AuthInitializer } from './context/AuthInitializer';
 import { AuthProvider } from './context/AuthProvider';
@@ -52,9 +53,9 @@ export function App() {
             <BrowserRouter>
               <Routes>
                 <Route path="/" element={<Root />}>
-                  <Route index element={<LandingPage />} />
-                  <Route path="login" element={<Login />} />
-                  <Route path="register" element={<Register />} />
+                  <Route index element={<AuthRouteGuard publicRoute><LandingPage /></AuthRouteGuard>} />
+                  <Route path="login" element={<AuthRouteGuard publicRoute><Login /></AuthRouteGuard>} />
+                  <Route path="register" element={<AuthRouteGuard publicRoute><Register /></AuthRouteGuard>} />
                 </Route>
                 <Route path="/debug" element={<Root />}>
                   <Route path="home" element={<Home />} />
@@ -62,14 +63,14 @@ export function App() {
                   <Route path="layout" element={<LayoutExamples />} />
                 </Route>
                 <Route path="/onboarding">
-                  <Route index element={<OnboardingHome />} />
-                  <Route path="create" element={<CreateHousehold />} />
-                  <Route path="join" element={<JoinHousehold />} />
-                  <Route path="invite" element={<InviteOthers />} />
-                  <Route path="success" element={<OnboardingSuccess />} />
+                  <Route index element={<AuthRouteGuard requireAuth><OnboardingHome /></AuthRouteGuard>} />
+                  <Route path="create" element={<AuthRouteGuard requireAuth><CreateHousehold /></AuthRouteGuard>} />
+                  <Route path="join" element={<AuthRouteGuard requireAuth><JoinHousehold /></AuthRouteGuard>} />
+                  <Route path="invite" element={<AuthRouteGuard requireAuth><InviteOthers /></AuthRouteGuard>} />
+                  <Route path="success" element={<AuthRouteGuard requireAuth><OnboardingSuccess /></AuthRouteGuard>} />
                 </Route>
                 <Route path="/dashboard" element={<Root />}>
-                  <Route index element={<Dashboard />} />
+                  <Route index element={<AuthRouteGuard requireAuth><Dashboard /></AuthRouteGuard>} />
                 </Route>
               </Routes>
             </BrowserRouter>
