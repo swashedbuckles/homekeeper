@@ -9,7 +9,7 @@ import { InvitationsSeeder } from './invitations.seeder';
 import { SeederRunner } from './seeder';
 import { UsersSeeder } from './users.seeder';
 
-dotenv.config({path: path.resolve(__dirname, '../../', '.env')});
+dotenv.config({path: path.resolve(__dirname, '../../', '.env.local')});
 
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/homekeeper';
 
