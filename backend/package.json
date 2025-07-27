@@ -15,7 +15,11 @@
     "lint": "eslint .",
     "lint:watch": "eslint . --watch",
     "lint:fix": "eslint . --fix",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "seed": "ts-node seeds/index.ts",
+    "seed:clear": "ts-node seeds/index.ts --clear",
+    "seed:quiet": "ts-node seeds/index.ts --quiet",
+    "seed:minimal": "ts-node seeds/seed-minimal.ts"
   },
   "dependencies": {
     "@homekeeper/shared": "*",
