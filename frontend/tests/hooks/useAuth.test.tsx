@@ -112,15 +112,20 @@ describe('useAuth', () => {
 
     it('should refresh token and retry when session validation fails with 401', async () => {
       const mockUser = createMockUser();
-      
+      let call = 0;
+
       // Mock first validation call fails with 401
       fetchMock.route({
         url: 'path:/auth/validate',
         allowRelativeUrls: true,
-        response: [
-          { status: 401, body: { error: 'Token expired' } }, // First call fails
-          { data: { valid: true } } // Second call (after refresh) succeeds
-        ]
+        response: (arg0) => { 
+          if(call === 0) {
+            call++;
+            return {status: 401, body: { error: 'Token expired' }};
+          }
+
+          return {status: 200, body: {response: 'ok'}}
+        }
       });
 
       // Mock successful token refresh

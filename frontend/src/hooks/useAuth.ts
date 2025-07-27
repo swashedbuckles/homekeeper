@@ -22,6 +22,7 @@ export function useAuth() {
   const checkAuth = async () => { 
     logger.log('#checkAuth');
     const originalStatus = context.authStatus;
+    console.log('original', originalStatus);
     actions.setAuthStatus(AuthStatus.CHECKING);
 
     try {

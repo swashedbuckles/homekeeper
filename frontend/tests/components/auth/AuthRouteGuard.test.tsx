@@ -20,6 +20,12 @@ vi.mock('react-router', async () => {
   };
 });
 
+// Mock useAuth hook
+const mockUseAuth = vi.fn();
+vi.mock('../../../src/hooks/useAuth', () => ({
+  useAuth: () => mockUseAuth(),
+}));
+
 describe('AuthRouteGuard', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -27,28 +33,34 @@ describe('AuthRouteGuard', () => {
 
   describe('prop validation', () => {
     it('should throw error when neither requireAuth nor publicRoute is specified', () => {
+      mockUseAuth.mockReturnValue({
+        authStatus: AuthStatus.LOGGED_IN,
+        isLoading: false,
+      });
+
       expect(() => {
         render(
           <MemoryRouter>
-            <TestAuthProvider initialAuthStatus={AuthStatus.LOGGED_IN}>
-              <AuthRouteGuard>
-                <div>Content</div>
-              </AuthRouteGuard>
-            </TestAuthProvider>
+            <AuthRouteGuard>
+              <div>Content</div>
+            </AuthRouteGuard>
           </MemoryRouter>
         );
       }).toThrow('You did not configure route guard properly');
     });
 
     it('should throw error when both requireAuth and publicRoute are specified', () => {
+      mockUseAuth.mockReturnValue({
+        authStatus: AuthStatus.LOGGED_IN,
+        isLoading: false,
+      });
+
       expect(() => {
         render(
           <MemoryRouter>
-            <TestAuthProvider initialAuthStatus={AuthStatus.LOGGED_IN}>
-              <AuthRouteGuard requireAuth publicRoute>
-                <div>Content</div>
-              </AuthRouteGuard>
-            </TestAuthProvider>
+            <AuthRouteGuard requireAuth publicRoute>
+              <div>Content</div>
+            </AuthRouteGuard>
           </MemoryRouter>
         );
       }).toThrow('You did not configure route guard properly');
@@ -64,13 +76,16 @@ describe('AuthRouteGuard', () => {
 
     loadingStates.forEach(status => {
       it(`should show loading spinner for ${status} status`, () => {
+        mockUseAuth.mockReturnValue({
+          authStatus: status,
+          isLoading: true,
+        });
+
         render(
           <MemoryRouter>
-            <TestAuthProvider initialAuthStatus={status}>
-              <AuthRouteGuard requireAuth>
-                <div>Protected Content</div>
-              </AuthRouteGuard>
-            </TestAuthProvider>
+            <AuthRouteGuard requireAuth>
+              <div>Protected Content</div>
+            </AuthRouteGuard>
           </MemoryRouter>
         );
 
@@ -82,18 +97,16 @@ describe('AuthRouteGuard', () => {
 
   describe('requireAuth routes', () => {
     it('should render children when authenticated', () => {
-      const mockUser = createMockUser();
+      mockUseAuth.mockReturnValue({
+        authStatus: AuthStatus.LOGGED_IN,
+        isLoading: false,
+      });
 
       render(
         <MemoryRouter>
-          <TestAuthProvider 
-            initialAuthStatus={AuthStatus.LOGGED_IN}
-            initialUser={mockUser}
-          >
-            <AuthRouteGuard requireAuth>
-              <div>Protected Content</div>
-            </AuthRouteGuard>
-          </TestAuthProvider>
+          <AuthRouteGuard requireAuth>
+            <div>Protected Content</div>
+          </AuthRouteGuard>
         </MemoryRouter>
       );
 
@@ -102,13 +115,16 @@ describe('AuthRouteGuard', () => {
     });
 
     it('should redirect to home when not authenticated', () => {
+      mockUseAuth.mockReturnValue({
+        authStatus: AuthStatus.LOGGED_OUT,
+        isLoading: false,
+      });
+
       render(
         <MemoryRouter>
-          <TestAuthProvider initialAuthStatus={AuthStatus.LOGGED_OUT}>
-            <AuthRouteGuard requireAuth>
-              <div>Protected Content</div>
-            </AuthRouteGuard>
-          </TestAuthProvider>
+          <AuthRouteGuard requireAuth>
+            <div>Protected Content</div>
+          </AuthRouteGuard>
         </MemoryRouter>
       );
 
@@ -121,13 +137,16 @@ describe('AuthRouteGuard', () => {
 
   describe('publicRoute routes', () => {
     it('should render children when not authenticated', () => {
+      mockUseAuth.mockReturnValue({
+        authStatus: AuthStatus.LOGGED_OUT,
+        isLoading: false,
+      });
+
       render(
         <MemoryRouter>
-          <TestAuthProvider initialAuthStatus={AuthStatus.LOGGED_OUT}>
-            <AuthRouteGuard publicRoute>
-              <div>Public Content</div>
-            </AuthRouteGuard>
-          </TestAuthProvider>
+          <AuthRouteGuard publicRoute>
+            <div>Public Content</div>
+          </AuthRouteGuard>
         </MemoryRouter>
       );
 
@@ -136,18 +155,16 @@ describe('AuthRouteGuard', () => {
     });
 
     it('should redirect to dashboard when authenticated', () => {
-      const mockUser = createMockUser();
+      mockUseAuth.mockReturnValue({
+        authStatus: AuthStatus.LOGGED_IN,
+        isLoading: false,
+      });
 
       render(
         <MemoryRouter>
-          <TestAuthProvider 
-            initialAuthStatus={AuthStatus.LOGGED_IN}
-            initialUser={mockUser}
-          >
-            <AuthRouteGuard publicRoute>
-              <div>Public Content</div>
-            </AuthRouteGuard>
-          </TestAuthProvider>
+          <AuthRouteGuard publicRoute>
+            <div>Public Content</div>
+          </AuthRouteGuard>
         </MemoryRouter>
       );
 
@@ -160,13 +177,16 @@ describe('AuthRouteGuard', () => {
 
   describe('edge cases', () => {
     it('should handle UNKNOWN status as loading', () => {
+      mockUseAuth.mockReturnValue({
+        authStatus: AuthStatus.UNKNOWN,
+        isLoading: true, // UNKNOWN should be treated as loading
+      });
+
       render(
         <MemoryRouter>
-          <TestAuthProvider initialAuthStatus={AuthStatus.UNKNOWN}>
-            <AuthRouteGuard requireAuth>
-              <div>Protected Content</div>
-            </AuthRouteGuard>
-          </TestAuthProvider>
+          <AuthRouteGuard requireAuth>
+            <div>Protected Content</div>
+          </AuthRouteGuard>
         </MemoryRouter>
       );
 

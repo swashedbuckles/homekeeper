@@ -98,7 +98,6 @@ export async function apiRequest<T>(endpoint: string, options: RequestInit = {})
     credentials: 'include',
   };
 
-
   try {
     const response = await makeRequest(url, config);
     logger.log('[API REQ]: response ok for: ', url);
