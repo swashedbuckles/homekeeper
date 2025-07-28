@@ -11,6 +11,7 @@ const isEmptyObject = (value: unknown): boolean => {
     && Object.keys(value).length === 0;
 };
 
+let isChecking = false; // prevent duplicate checks before status updates. 
 export function useAuth() {
   const context = useContext(AuthContext);
   const actions = useContext(AuthActionsContext);
@@ -22,7 +23,11 @@ export function useAuth() {
   const checkAuth = async () => { 
     logger.log('#checkAuth');
     const originalStatus = context.authStatus;
-    console.log('original', originalStatus);
+    if(originalStatus === AuthStatus.CHECKING || isChecking) {
+      return;
+    }
+    
+    isChecking = true;
     actions.setAuthStatus(AuthStatus.CHECKING);
 
     try {
@@ -42,6 +47,8 @@ export function useAuth() {
     } catch(error) {
       logger.error('#checkAuth: Session validation failed', error);
       actions.setAuthStatus(AuthStatus.LOGGED_OUT);
+    } finally {
+      isChecking = false;
     }
   };
 
