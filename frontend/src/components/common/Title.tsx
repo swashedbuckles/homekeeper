@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 
-type TitleVariant = 'page' | 'section' | 'subsection';
+type TitleVariant = 'hero' | 'page' | 'section' | 'subsection';
 
 /**
  * Title Component.
@@ -37,13 +37,26 @@ type TitleVariant = 'page' | 'section' | 'subsection';
  * </Title>
  * ```
  */
+
+/**
+ * Props for Title component
+ * 
+ * @public
+ */
 export interface TitleProps {
+  /** Content to display in the title element */
   children: ReactNode;
+  /** Title variant that determines sizing and semantic HTML tag */
   variant?: TitleVariant;
+  /** Additional CSS classes to apply */
   className?: string;
+  /** Optional description text to display below the title */
   description?: string;
+  /** Text shadow style to apply for visual emphasis */
   textShadow?: 'none' | 'orange' | 'dark' | 'orange-dark' | 'dark-orange';
+  /** Rotation angle for visual interest */
   rotation?: 'none' | 'left' | 'right' | 'slight-left' | 'slight-right';
+  /** Test identifier for automated testing */
   testId?: string;
 }
 
@@ -53,15 +66,23 @@ const baseStyles = [
   'uppercase',
   'tracking-wide',
   'text-text-primary',
-  'leading-tight'
+  'leading-none'
 ];
 
 const variantStyles = {
-  page: [
+  hero: [
     'text-5xl',
     'md:text-7xl',
     'lg:text-8xl',
     'mb-6'
+  ],
+  page: [
+    'text-4xl',
+    'sm:text-5xl',
+    'md:text-6xl',
+    'lg:text-7xl',
+    'mb-4',
+    'md:mb-6'
   ],
   section: [
     'text-3xl',
@@ -86,21 +107,25 @@ const getTextShadowClass = (
   // Use size-appropriate shadows for each variant
   const shadowMap = {
     orange: {
+      hero:       'brutal-text-shadow',         // 4px orange
       page:       'brutal-text-shadow',         // 4px orange
       section:    'brutal-text-shadow-small',   // 2px orange  
       subsection: 'brutal-text-shadow-tiny'     // 1px orange
     },
     dark: {
+      hero:       'brutal-text-shadow-simple',   // 2px dark
       page:       'brutal-text-shadow-simple',   // 2px dark
       section:    'brutal-text-shadow-simple',   // 2px dark
       subsection: 'brutal-text-shadow-simple'    // 2px dark
     },
     'orange-dark': {
+      hero:       'brutal-text-shadow-double',   // 4px orange + 8px dark
       page:       'brutal-text-shadow-double',   // 4px orange + 8px dark
       section:    'brutal-text-shadow-double',   // 4px orange + 8px dark  
       subsection: 'brutal-text-shadow-double'    // 4px orange + 8px dark
     },
     'dark-orange': {
+      hero:       'brutal-text-shadow-double-reverse',   // 4px dark + 8px orange
       page:       'brutal-text-shadow-double-reverse',   // 4px dark + 8px orange
       section:    'brutal-text-shadow-double-reverse',   // 4px dark + 8px orange
       subsection: 'brutal-text-shadow-double-reverse'    // 4px dark + 8px orange
@@ -125,6 +150,7 @@ const rotationStyles = {
 };
 
 const variantTags = {
+  hero: 'h1',
   page: 'h1',
   section: 'h2', 
   subsection: 'h3'
