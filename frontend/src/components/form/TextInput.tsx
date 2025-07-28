@@ -3,17 +3,33 @@ import { type StandardSize, getSizeToken } from '../../lib/design-system/sizes';
 import type { HTMLInputTypeAttribute, ReactNode, InputHTMLAttributes } from 'react';
 import type { UseFormRegisterReturn } from 'react-hook-form';
 
+/**
+ * Props for TextInput component
+ * 
+ * @public
+ */
 export interface TextInputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'className' | 'size'> {
+  /** Label text displayed above the input field */
   label: string;
+  /** HTML input type attribute (text, email, password, etc.) */
   type: HTMLInputTypeAttribute;
+  /** Placeholder text shown when input is empty */
   placeholder?: string;
+  /** Error message to display below the input when validation fails */
   error?: string;
+  /** Custom validation feedback content (e.g., password strength indicator) */
   validationFeedback?: ReactNode;
+  /** react-hook-form register function for form integration */
   register?: UseFormRegisterReturn;
+  /** Test identifier for automated testing */
   testId?: string;
+  /** Additional CSS classes to apply */
   className?: string;
+  /** Whether this input is part of a grouped form layout */
   grouped?: boolean;
+  /** Size variant affecting padding, text size, and border thickness */
   size?: StandardSize;
+  /** Visual variant (default: white background, search: dark background) */
   variant?: 'default' | 'search';
 };
 

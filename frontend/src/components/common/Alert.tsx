@@ -2,13 +2,24 @@ import { Info, CircleX, TriangleAlert, Check, Megaphone } from 'lucide-react';
 import { type StandardSize, getSizeToken, getResponsiveTextToken } from '../../lib/design-system/sizes';
 import type { ReactNode } from 'react';
 
+/**
+ * Props for Alert component
+ * 
+ * @public
+ */
 export interface AlertProps {
-  children :  ReactNode;
+  /** Content to display within the alert message */
+  children: ReactNode;
+  /** Additional CSS classes to apply */
   className?: string;
-  hideIcon?:  boolean;
-  icon?:      ReactNode;
-  variant?:   'info' | 'warning' | 'error' | 'success' | 'basic';
-  size?:      StandardSize;
+  /** Whether to hide the default variant icon */
+  hideIcon?: boolean;
+  /** Custom icon to display instead of the default variant icon */
+  icon?: ReactNode;
+  /** Alert variant that determines color scheme and default icon */
+  variant?: 'info' | 'warning' | 'error' | 'success' | 'basic';
+  /** Size variant affecting padding, text size, and icon dimensions */
+  size?: StandardSize;
 }
 
 const variantStyles = {

@@ -6,10 +6,19 @@ import { Card } from './Card';
 
 import type { ReactNode, KeyboardEvent } from 'react';
 
+/**
+ * Props for Modal component
+ * 
+ * @public
+ */
 export interface ModalProps {
+  /** Whether the modal is currently open and visible */
   isOpen: boolean;
+  /** Function called when the modal should be closed (escape key, backdrop click) */
   onClose?: () => void;
+  /** Content to display inside the modal */
   children: ReactNode;
+  /** ID of the element that labels the modal for accessibility */
   ariaLabelledBy?: string;
 }
 
