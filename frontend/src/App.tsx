@@ -21,6 +21,7 @@ import { OnboardingHome } from './pages/onboarding/Home';
 import { InviteOthers } from './pages/onboarding/Invite';
 import { JoinHousehold } from './pages/onboarding/Join';
 import { OnboardingSuccess } from './pages/onboarding/Success';
+import { Settings } from './pages/Settings';
 
 /** @todo setup constants file for front-end */
 const FIVE_MINUTES = 5 * 60 * 1000;
@@ -71,6 +72,9 @@ export function App() {
                 </Route>
                 <Route path="/dashboard" element={<Root />}>
                   <Route index element={<AuthRouteGuard requireAuth><Dashboard /></AuthRouteGuard>} />
+                </Route>
+                <Route path="/settings" element={<Root />}>
+                  <Route index element={<AuthRouteGuard requireAuth><Settings /></AuthRouteGuard>} />
                 </Route>
               </Routes>
             </BrowserRouter>
