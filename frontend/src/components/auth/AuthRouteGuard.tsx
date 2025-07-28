@@ -2,7 +2,6 @@ import { Navigate } from 'react-router';
 import { useAuth } from '../../hooks/useAuth';
 import { AuthStatus } from '../../lib/types/authStatus';
 
-const IS_DEV = !import.meta.env.PROD;
 
 interface AuthRouteGuardProps {
   children: React.ReactNode;
@@ -16,6 +15,8 @@ export function AuthRouteGuard({ children, requireAuth = false, publicRoute = fa
   }
 
   const { authStatus, isLoading } = useAuth();
+  const IS_DEV = !import.meta.env.PROD;
+
 
   if (isLoading) {
     return (

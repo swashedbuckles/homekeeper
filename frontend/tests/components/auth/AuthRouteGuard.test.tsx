@@ -27,7 +27,13 @@ vi.mock('../../../src/hooks/useAuth', () => ({
 describe('AuthRouteGuard', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.stubEnv('NODE_ENV', 'production');
+    vi.stubEnv('PROD', true);
   });
+
+  afterEach(() => {
+    vi.unstubAllEnvs();
+  })
 
   describe('prop validation', () => {
     it('should throw error when neither requireAuth nor publicRoute is specified', () => {
