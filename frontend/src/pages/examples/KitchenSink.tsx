@@ -1,5 +1,7 @@
 import { Home, Key } from 'lucide-react';
 import { useState } from 'react';
+
+// Backgrounds
 import { BackgroundCircles } from '../../components/backgrounds/BackgroundCircles';
 import { BackgroundGrid } from '../../components/backgrounds/BackgroundGrid';
 import { BackgroundLines } from '../../components/backgrounds/BackgroundLines';
@@ -30,25 +32,23 @@ import { Select, Option } from '../../components/form/Select';
 import { TextArea } from '../../components/form/TextArea';
 import { TextInput } from '../../components/form/TextInput';
 
-// Choice Components  
+// Layout Components
 import { WideContainer } from '../../components/layout/containers/WideContainer';
 import { Inline } from '../../components/layout/Flex';
 import { Grid } from '../../components/layout/Grid';
 import { Tabs } from '../../components/layout/Tabs';
-import { DefaultChoice } from '../../components/variants/DefaultChoice';
-import { FilterChoice } from '../../components/variants/FilterChoice';
-import { IconChoice } from '../../components/variants/IconChoice';
-import { PriorityChoice } from '../../components/variants/PriorityChoice';
 
 // Variation Components
 import { CodeInput } from '../../components/variations/CodeInput';
+import { DefaultChoice } from '../../components/variations/DefaultChoice';
+import { FilterChoice } from '../../components/variations/FilterChoice';
+import { IconChoice } from '../../components/variations/IconChoice';
 import { OptionCard } from '../../components/variations/OptionCard';
+import { PriorityChoice } from '../../components/variations/PriorityChoice';
 import { SectionTitle } from '../../components/variations/SectionTitle';
 import { StatCard } from '../../components/variations/StatCard';
 import { SubSectionTitle } from '../../components/variations/SubSectionTitle';
 import { TaskCard } from '../../components/variations/TaskCard';
-
-// Container Components
 
 /**
  * KitchenSink Page - Comprehensive display of all base and variation components.
@@ -372,6 +372,7 @@ export function KitchenSink() {
             <div>
               <SubSectionTitle className="mb-4">Title Components</SubSectionTitle>
               <div className="space-y-4">
+                <Title variant="hero" className="mb-2">Hero Title (New!)</Title>
                 <Title variant="page" className="mb-2">Page Title</Title>
                 <Title variant="section" className="mb-2">Section Title</Title>
                 <Title variant="subsection" className="mb-2">Subsection Title</Title>
@@ -384,6 +385,8 @@ export function KitchenSink() {
               <div className="space-y-4">
                 <div>
                   <Text variant="label" weight="bold" className="block mb-2">Body Text Variants:</Text>
+                  <Text variant="body" size="3xl" className="block mb-2">3XL body text - hero content and major headings (New!)</Text>
+                  <Text variant="body" size="2xl" className="block mb-2">2XL body text - prominent content and subheadings (New!)</Text>
                   <Text variant="body" size="lg" className="block mb-2">Large body text - perfect for introductions and important content</Text>
                   <Text variant="body" size="md" className="block mb-2">Medium body text - standard content and descriptions</Text>
                   <Text variant="body" size="sm" className="block mb-2">Small body text - compact content and fine print</Text>
@@ -391,6 +394,8 @@ export function KitchenSink() {
                 
                 <div>
                   <Text variant="label" weight="bold" className="block mb-2">Caption Text:</Text>
+                  <Text variant="caption" size="3xl" color="secondary" className="block mb-1">3XL caption - prominent metadata (New!)</Text>
+                  <Text variant="caption" size="2xl" color="secondary" className="block mb-1">2XL caption - large metadata (New!)</Text>
                   <Text variant="caption" size="lg" color="secondary" className="block mb-1">Large caption - metadata and timestamps</Text>
                   <Text variant="caption" size="md" color="secondary" className="block mb-1">Medium caption - standard metadata</Text>
                   <Text variant="caption" size="sm" color="secondary" className="block mb-1">Small caption - compact metadata</Text>
@@ -398,6 +403,8 @@ export function KitchenSink() {
 
                 <div>
                   <Text variant="label" weight="bold" className="block mb-2">Label Text:</Text>
+                  <Text variant="label" size="3xl" weight="bold" uppercase className="block mb-1">3XL Bold Uppercase Label (New!)</Text>
+                  <Text variant="label" size="2xl" weight="bold" className="block mb-1">2XL Bold Label (New!)</Text>
                   <Text variant="label" weight="bold" uppercase className="block mb-1">Bold Uppercase Label</Text>
                   <Text variant="label" weight="normal" className="block mb-1">Normal Label Text</Text>
                   <Text variant="label" weight="bold" color="error" className="block mb-1">Error Label</Text>
@@ -544,6 +551,9 @@ Last Service: 2024-06-15
             <div>
               <SubSectionTitle className="mb-4">No Shadows</SubSectionTitle>
               <div className="space-y-6">
+                <Title variant="hero" textShadow="none">
+                  Hero Title (No Shadow) - New!
+                </Title>
                 <Title variant="page" textShadow="none">
                   Page Title (No Shadow)
                 </Title>
@@ -559,6 +569,9 @@ Last Service: 2024-06-15
             <div>
               <SubSectionTitle className="mb-4">Orange Shadows</SubSectionTitle>
               <div className="space-y-6">
+                <Title variant="hero" textShadow="orange">
+                  Hero Title - Orange Shadow (New!)
+                </Title>
                 <Title variant="page" textShadow="orange">
                   Page Title - Orange Shadow
                 </Title>
@@ -574,6 +587,9 @@ Last Service: 2024-06-15
             <div>
               <SubSectionTitle className="mb-4">Dark Shadows</SubSectionTitle>
               <div className="space-y-6">
+                <Title variant="hero" textShadow="dark">
+                  Hero Title - Dark Shadow (New!)
+                </Title>
                 <Title variant="page" textShadow="dark">
                   Page Title - Dark Shadow
                 </Title>
@@ -589,6 +605,9 @@ Last Service: 2024-06-15
             <div>
               <SubSectionTitle className="mb-4">Orange-Dark Double Shadows</SubSectionTitle>
               <div className="space-y-6">
+                <Title variant="hero" textShadow="orange-dark">
+                  Hero Title - Orange + Dark Double (New!)
+                </Title>
                 <Title variant="page" textShadow="orange-dark">
                   Page Title - Orange + Dark Double
                 </Title>
@@ -604,6 +623,9 @@ Last Service: 2024-06-15
             <div>
               <SubSectionTitle className="mb-4">Dark-Orange Double Shadows</SubSectionTitle>
               <div className="space-y-6">
+                <Title variant="hero" textShadow="dark-orange">
+                  Hero Title - Dark + Orange Double (New!)
+                </Title>
                 <Title variant="page" textShadow="dark-orange">
                   Page Title - Dark + Orange Double
                 </Title>

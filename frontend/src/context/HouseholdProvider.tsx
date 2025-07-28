@@ -51,7 +51,7 @@ export const HouseholdProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     if (!activeHouseholdId && userHouseholds?.length) {
-      const defaultHousehold = user?.preferences.defaultHouseholdId 
+      const defaultHousehold = user?.preferences?.defaultHouseholdId 
         ? userHouseholds.find(h => h.id === user.preferences.defaultHouseholdId)
         : userHouseholds[0];
       
@@ -59,7 +59,7 @@ export const HouseholdProvider = ({ children }: { children: ReactNode }) => {
         setActiveHouseholdId(defaultHousehold.id);
       }
     }
-  }, [userHouseholds, user?.preferences.defaultHouseholdId, activeHouseholdId]);
+  }, [userHouseholds, user?.preferences?.defaultHouseholdId, activeHouseholdId]);
 
 
   const contextValue: HouseholdContextType = {

@@ -53,6 +53,12 @@ test.describe('Page Visual Regression Tests', () => {
     await expect(page).toHaveScreenshot('dashboard.png', {fullPage: true});
   });
 
+  test('Settings', async ({ page }) => {
+    await page.goto('/settings');
+    await page.waitForLoadState('networkidle');
+    await expect(page).toHaveScreenshot('settings.png', {fullPage: true});
+  });
+
   test('Debug kitchen sink', async ({ page }) => {
     await page.goto('/debug/kitchen-sink');
     await page.waitForLoadState('networkidle');

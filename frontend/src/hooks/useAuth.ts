@@ -11,6 +11,7 @@ const isEmptyObject = (value: unknown): boolean => {
     && Object.keys(value).length === 0;
 };
 
+let isChecking = false; // prevent duplicate checks before status updates. 
 export function useAuth() {
   const context = useContext(AuthContext);
   const actions = useContext(AuthActionsContext);
@@ -22,23 +23,32 @@ export function useAuth() {
   const checkAuth = async () => { 
     logger.log('#checkAuth');
     const originalStatus = context.authStatus;
+    if(originalStatus === AuthStatus.CHECKING || isChecking) {
+      return;
+    }
+    
+    isChecking = true;
     actions.setAuthStatus(AuthStatus.CHECKING);
 
     try {
-      logger.log('#checkAuth: make request');
+      logger.log('#checkAuth: validate session');
+      await authRequest.validateSession();
+      
+      logger.log('#checkAuth: session valid, get profile');
       const result = await authRequest.getProfile();
       if(result.data != null && !isEmptyObject(result.data)) {
         logger.log('#checkAuth got a user!');
         actions.setAuthStatus(AuthStatus.LOGGED_IN);
         actions.setUser(result.data);
       } else {
-        logger.log('#checkAuth: no user');
+        logger.log('#checkAuth: session valid but no user data');
         actions.setAuthStatus(AuthStatus.LOGGED_OUT);
       }
     } catch(error) {
-      logger.error('#checkAuth: Error', error);
-      actions.setAuthStatus(originalStatus);  // return from whence we came
-      throw error; 
+      logger.error('#checkAuth: Session validation failed', error);
+      actions.setAuthStatus(AuthStatus.LOGGED_OUT);
+    } finally {
+      isChecking = false;
     }
   };
 

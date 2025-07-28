@@ -1,4 +1,4 @@
-import { useLocation } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import type { ReactNode } from 'react';
 
 /**
@@ -50,6 +50,8 @@ export const NavItem = ({
   testId
 }: NavItemProps) => {
   const location = useLocation();
+  const navigate = useNavigate();
+
   // More precise path matching: exact match or starts with path + '/'
   const isActive = location.pathname === path || 
     (path !== '/' && location.pathname.startsWith(path + '/'));
@@ -89,10 +91,18 @@ export const NavItem = ({
     className
   ].filter(Boolean).join(' ');
 
+  const handleClick = () => {
+    if(onClick) {
+      onClick();
+    }
+
+    navigate(path);
+  };
+
   return (
     <button 
       className={buttonClasses}
-      onClick={onClick}
+      onClick={handleClick}
       data-testid={testId}
     >
       {children}

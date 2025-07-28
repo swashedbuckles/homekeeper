@@ -1,7 +1,7 @@
 import { Plus, KeyRound } from 'lucide-react';
 
 import { useNavigate, Link } from 'react-router';
-import { PageTitle } from '../../components/common/Title';
+import { Title } from '../../components/common/Title';
 import { OptionCard } from '../../components/variations/OptionCard';
 
 export const OnboardingHome = () => {
@@ -14,7 +14,7 @@ export const OnboardingHome = () => {
     <div id="decision" className="screen active">
       <div className="max-w-md mx-auto px-4 py-8">
         <div className="text-center mb-8">
-          <PageTitle description="Let's get your household organized. How would you like to start?">Welcome to HomeKeeper!</PageTitle>
+          <Title description="Let's get your household organized. How would you like to start?">Welcome to HomeKeeper!</Title>
         </div>
 
         <div className="space-y-4 mb-8">

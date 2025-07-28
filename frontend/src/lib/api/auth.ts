@@ -23,3 +23,7 @@ export function logout() {
 export function getProfile() {
   return apiRequest<SafeUser>('/auth/whoami');
 }
+
+export function validateSession() {
+  return apiRequest('/auth/validate');
+}

@@ -83,16 +83,14 @@ services:
   localstack:
     image: localstack/localstack:latest
     ports:
-      - "4566:4566"      # LocalStack endpoint
-      - "4510-4559:4510-4559"  # external services port range
+      - "4566:4566"
+      - "4510-4559:4510-4559"
     environment:
       - SERVICES=s3
       - DEBUG=1
-      - DATA_DIR=/tmp/localstack/data
       - DOCKER_HOST=unix:///var/run/docker.sock
       - AWS_DEFAULT_REGION=${AWS_REGION}
     volumes:
-      - localstack_data:/tmp/localstack
       - ./localstack-init:/docker-entrypoint-initaws.d
       - /var/run/docker.sock:/var/run/docker.sock
   

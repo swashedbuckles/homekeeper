@@ -6,6 +6,7 @@ import {
   RATE_LIMIT_MAX_REQUESTS,
   RATE_LIMIT_WINDOW_MS,
 } from '../constants';
+import { getPasswordConfig } from '../config/password';
 
 import { getCsrfToken } from '../controllers/auth/csrf';
 import { getLogin, postLogin } from '../controllers/auth/login';
@@ -13,8 +14,9 @@ import { postLogout } from '../controllers/auth/logout';
 import { getRefresh } from '../controllers/auth/refresh';
 import { getRegister, postRegister } from '../controllers/auth/register';
 import { getWhoami } from '../controllers/auth/whoami';
+import { getValidate } from '../controllers/auth/validate';
 
-import { optionalAuth }     from '../middleware/auth';
+import { optionalAuth, requireAuth } from '../middleware/auth';
 import { handleValidation } from '../middleware/validation';
 
 export const router = Router();
@@ -40,7 +42,7 @@ router.post(
   limiter,
   validateBody('email').isEmail(),
   validateBody('name').isString().notEmpty(),
-  validateBody('password').isString().notEmpty().isStrongPassword(),
+  validateBody('password').isString().notEmpty().isStrongPassword(getPasswordConfig()),
   handleValidation,
   postRegister
 );
@@ -48,6 +50,8 @@ router.post(
 router.post('/logout', postLogout);
 
 router.get('/whoami', optionalAuth, getWhoami) ;
+
+router.get('/validate', requireAuth, getValidate);
 
 router.post('/refresh', getRefresh);
 

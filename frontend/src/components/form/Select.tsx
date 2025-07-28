@@ -9,23 +9,45 @@ import type { UseFormRegisterReturn } from 'react-hook-form';
 // Re-export Option component and types for convenience
 export { Option, type OptionProps } from './Option';
 
+/**
+ * Props for Select component
+ * 
+ * @public
+ */
 export interface SelectProps {
+  /** Accessible label for the select field */
   label: string;
+  /** Option components that define the available choices */
   children?: AllowedOptionChildren;
+  /** Placeholder text shown when no option is selected */
   placeholder?: string;
+  /** Error message to display below the select */
   error?: string;
+  /** Custom validation feedback content */
   validationFeedback?: ReactNode;
+  /** react-hook-form register function for form integration */
   register?: UseFormRegisterReturn;
+  /** Test identifier for automated testing */
   testId?: string;
+  /** Additional CSS classes to apply */
   className?: string;
+  /** Whether this select is part of a grouped form layout */
   grouped?: boolean;
+  /** Size variant affecting padding, text size, and borders */
   size?: StandardSize;
+  /** Visual variant (default: light theme, search: dark theme) */
   variant?: 'default' | 'search';
+  /** Controlled value (use with onChange) */
   value?: string;
+  /** Default value for uncontrolled usage */
   defaultValue?: string;
+  /** Change handler function called with selected value */
   onChange?: (value: string) => void;
+  /** Blur handler function */
   onBlur?: () => void;
+  /** Whether the select is disabled and non-interactive */
   disabled?: boolean;
+  /** Name attribute for form submission */
   name?: string;
 }
 

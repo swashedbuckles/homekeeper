@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import { FilterChoice } from '../../../src/components/variants/FilterChoice';
+import { FilterChoice } from '../../../src/components/variations/FilterChoice';
 import { Option } from '../../../src/components/form/Option';
 
 describe('FilterChoice', () => {

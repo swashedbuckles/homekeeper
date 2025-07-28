@@ -14,18 +14,18 @@ describe('useAuth', () => {
   });
 
   describe('initial state', () => {
-    it('should initialize with CHECKING status', () => {
+    it('should initialize with UNKNOWN status', () => {
       const { result } = renderHook(() => useAuth(), {
         wrapper: ({ children }) => (
-          <TestAuthProvider initialAuthStatus={AuthStatus.CHECKING}>
+          <TestAuthProvider initialAuthStatus={AuthStatus.UNKNOWN}>
             {children}
           </TestAuthProvider>
         ),
       });
 
-      expect(result.current.authStatus).toBe(AuthStatus.CHECKING);
+      expect(result.current.authStatus).toBe(AuthStatus.UNKNOWN);
       expect(result.current.user).toBeNull();
-      expect(result.current.isLoading).toBe(true);
+      expect(result.current.isLoading).toBe(false);
       expect(result.current.isAuthenticated).toBe(false);
     });
 
@@ -65,9 +65,17 @@ describe('useAuth', () => {
   });
 
   describe('checkAuth', () => {
-    it('should successfully check authentication and set user', async () => {
+    it('should successfully validate session and get user profile', async () => {
       const mockUser = createMockUser();
       
+      // Mock successful session validation
+      fetchMock.route({
+        url: 'path:/auth/validate',
+        allowRelativeUrls: true,
+        response: { data: { valid: true } }
+      });
+
+      // Mock successful profile fetch
       fetchMock.route({
         url: 'path:/auth/whoami',
         allowRelativeUrls: true,
@@ -76,7 +84,7 @@ describe('useAuth', () => {
 
       const { result } = renderHook(() => useAuth(), {
         wrapper: ({ children }) => (
-          <TestAuthProvider initialAuthStatus={AuthStatus.CHECKING}>
+          <TestAuthProvider initialAuthStatus={AuthStatus.UNKNOWN}>
             {children}
           </TestAuthProvider>
         ),
@@ -90,21 +98,104 @@ describe('useAuth', () => {
         expect(result.current.authStatus).toBe(AuthStatus.LOGGED_IN);
         expect(result.current.user).toEqual(mockUser);
       });
+
+      // Verify both calls were made
+      const validateCall = fetchMock.callHistory.calls().find(call => 
+        call.url.includes('/auth/validate')
+      );
+      const profileCall = fetchMock.callHistory.calls().find(call => 
+        call.url.includes('/auth/whoami')
+      );
+      expect(validateCall).toBeTruthy();
+      expect(profileCall).toBeTruthy();
     });
 
-    it('should handle authentication check failure', async () => {
+    it('should refresh token and retry when session validation fails with 401', async () => {
+      const mockUser = createMockUser();
+      let call = 0;
+
+      // Mock first validation call fails with 401
+      fetchMock.route({
+        url: 'path:/auth/validate',
+        allowRelativeUrls: true,
+        response: (_arg0) => { 
+          if(call === 0) {
+            call++;
+            return {status: 401, body: { error: 'Token expired' }};
+          }
+
+          return {status: 200, body: {response: 'ok'}}
+        }
+      });
+
+      // Mock successful token refresh
+      fetchMock.route({
+        url: 'path:/auth/refresh',
+        allowRelativeUrls: true,
+        response: { message: 'Token refreshed' }
+      });
+
+      // Mock successful profile fetch
       fetchMock.route({
         url: 'path:/auth/whoami',
         allowRelativeUrls: true,
+        response: { data: mockUser }
+      });
+
+      const { result } = renderHook(() => useAuth(), {
+        wrapper: ({ children }) => (
+          <TestAuthProvider initialAuthStatus={AuthStatus.UNKNOWN}>
+            {children}
+          </TestAuthProvider>
+        ),
+      });
+
+      await act(async () => {
+        await result.current.checkAuth();
+      });
+
+      await waitFor(() => {
+        expect(result.current.authStatus).toBe(AuthStatus.LOGGED_IN);
+        expect(result.current.user).toEqual(mockUser);
+      });
+
+      // Verify refresh was called
+      const refreshCall = fetchMock.callHistory.calls().find(call => 
+        call.url.includes('/auth/refresh')
+      );
+      expect(refreshCall).toBeTruthy();
+
+      // Verify validation was called twice (before and after refresh)
+      const validateCalls = fetchMock.callHistory.calls().filter(call => 
+        call.url.includes('/auth/validate')
+      );
+      expect(validateCalls).toHaveLength(2);
+    });
+
+    it('should set LOGGED_OUT when session validation fails and refresh also fails', async () => {
+      // Mock failed session validation
+      fetchMock.route({
+        url: 'path:/auth/validate',
+        allowRelativeUrls: true,
         response: {
-          status: 200,
-          body: { data: {} }
+          status: 401,
+          body: { error: 'Token expired' }
+        }
+      });
+
+      // Mock failed refresh (session completely expired)
+      fetchMock.route({
+        url: 'path:/auth/refresh',
+        allowRelativeUrls: true,
+        response: {
+          status: 205,
+          body: { error: 'Session expired' }
         }
       });
 
       const { result } = renderHook(() => useAuth(), {
         wrapper: ({ children }) => (
-          <TestAuthProvider initialAuthStatus={AuthStatus.CHECKING}>
+          <TestAuthProvider initialAuthStatus={AuthStatus.UNKNOWN}>
             {children}
           </TestAuthProvider>
         ),
@@ -118,29 +209,44 @@ describe('useAuth', () => {
         expect(result.current.authStatus).toBe(AuthStatus.LOGGED_OUT);
         expect(result.current.user).toBeNull();
       });
+
+      // Verify refresh was attempted
+      const refreshCall = fetchMock.callHistory.calls().find(call => 
+        call.url.includes('/auth/refresh')
+      );
+      expect(refreshCall).toBeTruthy();
     });
 
-    it('should handle network errors during auth check', async () => {
+    it('should handle session valid but no user data', async () => {
+      // Mock successful session validation
+      fetchMock.route({
+        url: 'path:/auth/validate',
+        allowRelativeUrls: true,
+        response: { data: { valid: true } }
+      });
+
+      // Mock profile with empty data
       fetchMock.route({
         url: 'path:/auth/whoami',
         allowRelativeUrls: true,
-        response: Promise.reject(new Error('Network error'))
+        response: { data: {} }
       });
 
       const { result } = renderHook(() => useAuth(), {
         wrapper: ({ children }) => (
-          <TestAuthProvider initialAuthStatus={AuthStatus.LOGGED_OUT}>
+          <TestAuthProvider initialAuthStatus={AuthStatus.UNKNOWN}>
             {children}
           </TestAuthProvider>
         ),
       });
 
       await act(async () => {
-        await result.current.checkAuth().catch(() => {});
+        await result.current.checkAuth();
       });
 
       await waitFor(() => {
         expect(result.current.authStatus).toBe(AuthStatus.LOGGED_OUT);
+        expect(result.current.user).toBeNull();
       });
     });
   });

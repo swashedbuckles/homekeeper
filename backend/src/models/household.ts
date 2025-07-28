@@ -13,14 +13,14 @@ export interface IHousehold {
 
 export interface IHouseholdMethods {
   serialize(this: HouseholdDocument): SerializedHousehold;
-  addMember(member: string, role: HouseholdRoles): Promise<HouseholdDocument>;
+  addMember(member: string | Types.ObjectId, role: HouseholdRoles): Promise<HouseholdDocument>;
   removeMember(member: string): Promise<HouseholdDocument>;
-  hasMember(member: string): boolean;
+  hasMember(member: string | Types.ObjectId): boolean;
   getMembers(): Promise<MemberDetail[]>;
 }
 
 export interface IHouseholdModel extends Model<IHousehold, object, IHouseholdMethods> {
-  createHousehold(name: string, owner: string, description?: string): Promise<HouseholdDocument>;
+  createHousehold(name: string, owner: string | Types.ObjectId, description?: string): Promise<HouseholdDocument>;
   findByMember(member: string): Promise<HouseholdDocument[]>;
   findByOwner(owner: string): Promise<HouseholdDocument[]>;
 }
@@ -118,12 +118,12 @@ const householdSchema = new Schema<IHousehold, IHouseholdModel, IHouseholdMethod
       return members;
     },
 
-    hasMember(this: HouseholdDocument, member: string): boolean {
+    hasMember(this: HouseholdDocument , member: string | Types.ObjectId): boolean {
       const asObjectId = new Types.ObjectId(member);
       return this.members.includes(asObjectId);
     },
 
-    async addMember(this: HouseholdDocument, member: string, role: HouseholdRoles): Promise<HouseholdDocument> {
+    async addMember(this: HouseholdDocument, member: string | Types.ObjectId, role: HouseholdRoles): Promise<HouseholdDocument> {
       const asObjectId = new Types.ObjectId(member);
 
       if (this.hasMember(member)) {

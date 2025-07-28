@@ -40,21 +40,14 @@ describe('auth API', () => {
         }
       });
 
-      fetchMock.route({
-        url: 'path:/auth/refresh',
-        response: {
-          status: 205,
-        }
-      });
-
       await expect(login('wrong@example.com', 'wrongpass')).rejects.toThrow(ApiError);
       
       try {
         await login('wrong@example.com', 'wrongpass');
       } catch (error) {
         expect(error).toBeInstanceOf(ApiError);
-        expect((error as ApiError).statusCode).toBe(205);
-        expect((error as ApiError).message).toBe('Session expired, please log in again');
+        expect((error as ApiError).statusCode).toBe(401);
+        expect((error as ApiError).message).toBe('Invalid credentials');
       }
     });
 

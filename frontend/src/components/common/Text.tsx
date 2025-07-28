@@ -1,9 +1,9 @@
 import { type StandardColor, getTextColor } from '../../lib/design-system/colors';
-import { type StandardSize, getResponsiveTextToken } from '../../lib/design-system/sizes';
+import { type TypographySize, getResponsiveTextToken } from '../../lib/design-system/sizes';
 import type { ReactNode } from 'react';
 
 type TextVariant = 'body' | 'caption' | 'label';
-type TextSize = StandardSize;
+type TextSize = TypographySize;
 type TextWeight = 'normal' | 'bold' | 'black';
 type TextColor = StandardColor;
 
@@ -32,27 +32,41 @@ type TextColor = StandardColor;
  * </Text>
  * ```
  */
+
+/**
+ * Props for Text component
+ * 
+ * @public
+ */
 export interface TextProps {
+  /** Content to display in the text element */
   children: ReactNode;
+  /** Text variant that determines semantic purpose and base styling */
   variant?: TextVariant;
+  /** Size of the text using typography scale */
   size?: TextSize;
+  /** Font weight for the text */
   weight?: TextWeight;
+  /** Color variant for the text */
   color?: TextColor;
+  /** Additional CSS classes to apply */
   className?: string;
+  /** Whether to transform text to uppercase */
   uppercase?: boolean;
+  /** Test identifier for automated testing */
   testId?: string;
 }
 
 const baseStyles = [
   'font-mono',
-  'leading-relaxed'
+  'leading-normal'
 ];
 
 
-const getSizeStyles = (size: StandardSize, variant: TextVariant): string[] => {
+const getSizeStyles = (size: TypographySize, variant: TextVariant): string[] => {
   // Get smaller size for caption and label variants
-  const getSmallerSize = (currentSize: StandardSize): StandardSize => {
-    const sizeOrder: StandardSize[] = ['xs', 'sm', 'md', 'lg', 'xl'];
+  const getSmallerSize = (currentSize: TypographySize): TypographySize => {
+    const sizeOrder: TypographySize[] = ['xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl'];
     const currentIndex = sizeOrder.indexOf(currentSize);
     return currentIndex > 0 ? sizeOrder[currentIndex - 1] : currentSize;
   };

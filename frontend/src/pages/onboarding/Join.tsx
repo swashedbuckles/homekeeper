@@ -1,7 +1,7 @@
 import { Alert } from '../../components/common/Alert';
 import { BackButton } from '../../components/common/BackButton';
 import { Text } from '../../components/common/Text';
-import { PageTitle } from '../../components/common/Title';
+import { Title } from '../../components/common/Title';
 import { JoinHouseholdForm } from '../../components/fragments/JoinHouseholdForm';
 
 export const JoinHousehold = () => {
@@ -11,7 +11,7 @@ export const JoinHousehold = () => {
       <div className="max-w-md mx-auto px-4 py-8">
         <div className="mb-6">
           <BackButton />
-          <PageTitle description="Enter the invitation code you received to join an existing household.">Join a household</PageTitle>
+          <Title description="Enter the invitation code you received to join an existing household.">Join a household</Title>
         </div>
 
         <JoinHouseholdForm />

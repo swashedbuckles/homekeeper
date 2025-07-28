@@ -2,21 +2,33 @@ import { getHoverEffectClass } from '../../lib/design-system/hover-effects';
 import { type StandardSize, getSizeToken } from '../../lib/design-system/sizes';
 import type { ReactNode } from 'react';
 
+/**
+ * Props for Button component
+ * 
+ * @public
+ */
 export interface ButtonProps {
+  /** Visual style variant affecting colors and behavior */
   variant?: 'primary' | 'secondary' | 'tertiary' | 'outline' | 'text' | 'danger' | 'accent';
+  /** Size variant affecting padding, text size, and border thickness */
   size?: StandardSize;
+  /** Whether the button is disabled and non-interactive */
   disabled?: boolean;
-  /** whether to display loading text / spinner */
+  /** Whether to display loading text and spinner */
   loading?: boolean;
+  /** Custom text to show during loading state */
   loadingText?: string;
-  /** button usage */
+  /** HTML button type for form submission */
   type?: 'button' | 'submit' | 'reset';
-  /** set button to full-width of its parent? */
+  /** Whether to expand button to full width of container */
   full?: boolean;
+  /** Click handler function */
   onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
-
+  /** Test identifier for automated testing */
   testId?: string;
+  /** Additional CSS classes to apply */
   className?: string;
+  /** Button content (text, icons, etc.) */
   children: ReactNode;
 }
 

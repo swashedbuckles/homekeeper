@@ -20,17 +20,33 @@ import type { ReactNode } from 'react';
  * </Card>
  * ```
  */
+/**
+ * Props for Card component
+ * 
+ * @public
+ */
 export interface CardProps {
+  /** Content to display inside the card */
   children: ReactNode;
+  /** Visual variant that determines background color and styling theme */
   variant?: 'default' | 'subtle' | 'primary' | 'secondary' | 'accent' | 'danger' | 'dark';
+  /** Interior padding size for the card content */
   padding?: 'sm' | 'md' | 'lg';
+  /** Shadow style to apply for depth and emphasis */
   shadow?: 'none' | 'primary' | 'secondary' | 'accent' | 'dark' | 'error' | 'double' | 'double-white' | 'triple';
+  /** Border color variant for the card outline */
   border?: 'default' | 'white' | 'primary' | 'secondary' | 'accent' | 'dark' | 'error';
+  /** Rotation angle for visual interest and brutal design aesthetic */
   rotation?: 'none' | 'left' | 'right' | 'slight-left' | 'slight-right';
+  /** Whether to enable hover effects on the card */
   hover?: boolean;
+  /** Type of hover effect to apply when hover is enabled */
   hoverEffect?: HoverEffect;
+  /** Click handler for interactive cards */
   onClick?: () => void;
+  /** Additional CSS classes to apply */
   className?: string;
+  /** Test identifier for automated testing */
   testId?: string;
 }
 

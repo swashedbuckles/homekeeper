@@ -6,12 +6,23 @@ import { Text } from '../common/Text';
 import type { InputHTMLAttributes } from 'react';
 import type { UseFormRegisterReturn } from 'react-hook-form';
 
+/**
+ * Props for CheckBox component
+ * 
+ * @public
+ */
 export interface CheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'className' | 'size'> {
+  /** Accessible label text for the checkbox */
   label: string;
+  /** Additional CSS classes to apply */
   className?: string;
+  /** react-hook-form register function for form integration */
   register?: UseFormRegisterReturn;
+  /** Test identifier for automated testing */
   testId?: string;
+  /** Size variant affecting checkbox dimensions and icon size */
   size?: StandardSize;
+  /** Color variant for the checked state background */
   color?: StandardColor;
 }
 

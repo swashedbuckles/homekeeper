@@ -1,5 +1,6 @@
 export const AuthStatus = {
-  CHECKING:    'CHECKING',      // Initial app load, checking if user is logged in
+  UNKNOWN:     'UNKNOWN',       // Initial app load, error state
+  CHECKING:    'CHECKING',      // Checking if user is logged in
   LOGGING_IN:  'LOGGING_IN',    // Login form submitted, waiting for response
   LOGGING_OUT: 'LOGGING_OUT',   // Logout initiated, clearing session
   LOGGED_IN:   'LOGGED_IN',     // User is authenticated

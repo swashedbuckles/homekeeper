@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import { PriorityChoice } from '../../../src/components/variants/PriorityChoice';
+import { PriorityChoice } from '../../../src/components/variations/PriorityChoice';
 import { Option } from '../../../src/components/form/Option';
 
 describe('PriorityChoice', () => {

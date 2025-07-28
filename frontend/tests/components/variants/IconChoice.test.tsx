@@ -1,7 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { Calendar, Wrench } from 'lucide-react';
-import { IconChoice } from '../../../src/components/variants/IconChoice';
+import { IconChoice } from '../../../src/components/variations/IconChoice';
 import { Option } from '../../../src/components/form/Option';
 
 describe('IconChoice', () => {

@@ -144,6 +144,31 @@ describe('Auth Routes', () => {
     });
   });
 
+  describe('GET /auth/validate', () => {
+    it('should return 200 when authenticated', async () => {
+      const mockUser: SafeUser = {
+        id: 'user-123',
+        email: 'test@example.com',
+        name: 'Test User',
+      } as SafeUser;
+
+      mockAuthenticatedUser(mockUser);
+
+      const response = await request.get('/auth/validate');
+
+      expect(response.status).toBe(200);
+      expect(response.body.data.valid).toBe(true);
+    });
+
+    it('should return 401 when not authenticated', async () => {
+      mockAuthenticationError();
+
+      const response = await request.get('/auth/validate');
+
+      expect(response.status).toBe(401);
+    });
+  });
+
   describe('GET /auth/csrf-token', () => {
     it('should return CSRF token and set cookie for anonymous users', async () => {
       mockAuthenticatedUser(null);

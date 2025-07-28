@@ -10,6 +10,7 @@ import {
 import {
   type HydratedDocument,
   type Model,
+  type Types,
   Schema,
   model
 } from 'mongoose';
@@ -24,13 +25,13 @@ export interface IInvitationMethods {
 }
 
 export interface IInvitation extends Omit<InvitationInterface, 'householdId' | 'invitedBy'> {
-  householdId: Schema.Types.ObjectId;
-  invitedBy: Schema.Types.ObjectId;
+  householdId: Types.ObjectId;
+  invitedBy: Types.ObjectId;
 }
 
 type UserDetails = { email: string, role: string, name?: string };
 export interface IInvitationModel extends Model<IInvitation, object, IInvitationMethods> {
-  createInvitation(userDetails: UserDetails, householdId: string | Schema.Types.ObjectId, userId: string | Schema.Types.ObjectId): Promise<InvitationDocument>;
+  createInvitation(userDetails: UserDetails, householdId: string | Types.ObjectId, userId: string | Types.ObjectId): Promise<InvitationDocument>;
 }
 
 export type InvitationDocument = HydratedDocument<IInvitation, IInvitationMethods>;
@@ -82,7 +83,7 @@ const invitationSchema = new Schema<IInvitation, IInvitationModel, IInvitationMe
   toObject: { virtuals: true },
 
   statics: {
-    async createInvitation(userDetails: UserDetails, householdId: string | Schema.Types.ObjectId, invitedBy: string | Schema.Types.ObjectId) {
+    async createInvitation(userDetails: UserDetails, householdId: string | Types.ObjectId, invitedBy: string | Types.ObjectId) {
       const document = new this({
         name: userDetails.name ?? '',
         email: userDetails.email,

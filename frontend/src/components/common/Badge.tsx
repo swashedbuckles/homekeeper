@@ -31,12 +31,24 @@ type BadgeSize = StandardSize;
  * </Badge>
  * ```
  */
+
+/**
+ * Props for Badge component
+ * 
+ * @public
+ */
 export interface BadgeProps {
+  /** Content to display within the badge */
   children: ReactNode;
+  /** Badge variant affecting shape and styling (status: rectangular, count: circular) */
   variant?: BadgeVariant;
+  /** Color variant determining background and shadow colors */
   color?: BadgeColor;
+  /** Size variant affecting padding, text size, and border thickness */
   size?: BadgeSize;
+  /** Additional CSS classes to apply */
   className?: string;
+  /** Test identifier for automated testing */
   testId?: string;
 }
 

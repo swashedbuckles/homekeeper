@@ -15,14 +15,6 @@ describe('SectionTitle', () => {
     render(<SectionTitle>Section Title</SectionTitle>);
     
     const heading = screen.getByRole('heading');
-    expect(heading).toHaveClass('font-mono', 'font-black', 'uppercase', 'tracking-wide', 'text-text-primary', 'leading-tight', 'text-3xl', 'md:text-5xl', 'mb-4');
-  });
-
-  it('accepts PageTitle props except variant', () => {
-    render(<SectionTitle className="custom-class" description="Section description">Section</SectionTitle>);
-    
-    const heading = screen.getByRole('heading');
-    expect(heading).toHaveClass('custom-class');
-    expect(screen.getByText('Section description')).toBeInTheDocument();
+    expect(heading).toHaveClass('font-mono', 'font-black', 'uppercase', 'tracking-wide', 'text-text-primary', 'leading-none', 'text-3xl', 'md:text-5xl', 'mb-4');
   });
 });

@@ -229,6 +229,55 @@ describe('apiClient', () => {
         });
       });
 
+      it('should NOT attempt refresh for auth endpoints on 401', async () => {
+        fetchMock.route({
+          url: 'path:/auth/login',
+          method: 'POST',
+          response: { status: 401, body: { error: 'Invalid credentials' } }
+        });
+
+        await expect(apiRequest('/auth/login', { method: 'POST' })).rejects.toThrow(ApiError);
+        
+        // Should not attempt refresh for auth endpoints
+        expect(fetchMock.callHistory.calls('path:/auth/refresh').length).toBe(0);
+        expect(fetchMock.callHistory.calls('path:/auth/login').length).toBe(1);
+      });
+
+      it('should NOT attempt refresh for auth/register endpoint on 401', async () => {
+        fetchMock.route({
+          url: 'path:/auth/register',
+          method: 'POST',
+          response: { status: 401, body: { error: 'Registration failed' } }
+        });
+
+        await expect(apiRequest('/auth/register', { method: 'POST' })).rejects.toThrow(ApiError);
+        
+        expect(fetchMock.callHistory.calls('path:/auth/refresh').length).toBe(0);
+      });
+
+      it('should NOT attempt refresh for auth/logout endpoint on 401', async () => {
+        fetchMock.route({
+          url: 'path:/auth/logout',
+          method: 'POST',
+          response: { status: 401, body: { error: 'Logout failed' } }
+        });
+
+        await expect(apiRequest('/auth/logout', { method: 'POST' })).rejects.toThrow(ApiError);
+        
+        expect(fetchMock.callHistory.calls('path:/auth/refresh').length).toBe(0);
+      });
+
+      it('should NOT attempt refresh for csrf-token endpoint on 401', async () => {
+        fetchMock.route({
+          url: 'path:/auth/csrf-token',
+          response: { status: 401, body: { error: 'Unauthorized' } }
+        });
+
+        await expect(apiRequest('/auth/csrf-token')).rejects.toThrow(ApiError);
+        
+        expect(fetchMock.callHistory.calls('path:/auth/refresh').length).toBe(0);
+      });
+
       it('should retry request after 401 and successful refresh', async () => {
         fetchMock.once({
           url: 'path:/protected',
