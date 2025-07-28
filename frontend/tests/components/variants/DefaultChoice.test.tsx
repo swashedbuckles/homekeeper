@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import { DefaultChoice } from '../../../src/components/variants/DefaultChoice';
+import { DefaultChoice } from '../../../src/components/variations/DefaultChoice';
 import { Option } from '../../../src/components/form/Option';
 
 describe('DefaultChoice', () => {

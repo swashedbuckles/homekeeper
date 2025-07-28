@@ -64,6 +64,27 @@ describe('Text', () => {
       
       expect(text).toHaveClass('text-base', 'md:text-lg'); // responsive large size
     });
+
+    it('renders extra large size correctly', () => {
+      render(<Text size="xl">Extra large text</Text>);
+      const text = screen.getByTestId('text');
+      
+      expect(text).toHaveClass('text-lg', 'md:text-xl'); // responsive extra large size
+    });
+
+    it('renders 2xl size correctly', () => {
+      render(<Text size="2xl">2XL text</Text>);
+      const text = screen.getByTestId('text');
+      
+      expect(text).toHaveClass('text-xl', 'md:text-2xl'); // responsive 2xl size
+    });
+
+    it('renders 3xl size correctly', () => {
+      render(<Text size="3xl">3XL text</Text>);
+      const text = screen.getByTestId('text');
+      
+      expect(text).toHaveClass('text-2xl', 'md:text-3xl'); // responsive 3xl size
+    });
   });
 
   describe('weights', () => {
@@ -159,7 +180,7 @@ describe('Text', () => {
     render(<Text>Base styles</Text>);
     const text = screen.getByTestId('text');
     
-    expect(text).toHaveClass('font-mono', 'leading-relaxed');
+    expect(text).toHaveClass('font-mono', 'leading-normal');
   });
 
   describe('real-world usage examples', () => {

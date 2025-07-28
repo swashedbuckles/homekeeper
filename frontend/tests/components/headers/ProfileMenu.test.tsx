@@ -1,19 +1,46 @@
 import { screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
+import userEvent from '@testing-library/user-event';
 import { AuthStatus } from '../../../src/lib/types/authStatus';
 import { ProfileMenu } from '../../../src/components/headers/ProfileMenu';
 import { renderWithAuth } from '../../helpers/testProviderUtils';
 import { createMockUser } from '../../helpers/testUtils';
+import { useAuth } from '../../../src/hooks/useAuth';
 
-// Mock household hook
+// Mock household hook, react-router, and useAuth
 const mockUseHousehold = vi.fn();
+const mockNavigate = vi.fn();
+const mockLogout = vi.fn();
+const mockUseAuth = vi.mocked(useAuth);
+
 vi.mock('../../../src/hooks/useHousehold', () => ({
   useHousehold: () => mockUseHousehold()
+}));
+
+vi.mock('react-router', () => ({
+  useNavigate: () => mockNavigate
+}));
+
+// We'll mock useAuth to return our mock logout but still allow the test to control the user
+vi.mock('../../../src/hooks/useAuth', () => ({
+  useAuth: vi.fn()
 }));
 
 describe('ProfileMenu', () => {
   beforeEach(() => {
     mockUseHousehold.mockClear();
+    mockNavigate.mockClear();
+    mockLogout.mockClear();
+    
+    // Default mock setup for useAuth
+    mockUseAuth.mockReturnValue({
+      user: null,
+      logout: mockLogout,
+      // Add other properties as needed
+      authStatus: AuthStatus.LOGGED_OUT,
+      checkAuth: vi.fn(),
+      login: vi.fn()
+    });
   });
 
   it('displays user name and household when available', () => {
@@ -21,6 +48,13 @@ describe('ProfileMenu', () => {
     const mockHousehold = { id: 'house-1', name: 'The Doe Family' };
     
     mockUseHousehold.mockReturnValue({ activeHousehold: mockHousehold });
+    mockUseAuth.mockReturnValue({
+      user: mockUser,
+      logout: mockLogout,
+      authStatus: AuthStatus.LOGGED_IN,
+      checkAuth: vi.fn(),
+      login: vi.fn()
+    });
     
     renderWithAuth(
       <ProfileMenu />,
@@ -60,6 +94,13 @@ describe('ProfileMenu', () => {
   it('renders all menu items', () => {
     const mockUser = createMockUser();
     mockUseHousehold.mockReturnValue({ activeHousehold: null });
+    mockUseAuth.mockReturnValue({
+      user: mockUser,
+      logout: mockLogout,
+      authStatus: AuthStatus.LOGGED_IN,
+      checkAuth: vi.fn(),
+      login: vi.fn()
+    });
     
     renderWithAuth(
       <ProfileMenu />,
@@ -74,6 +115,13 @@ describe('ProfileMenu', () => {
   it('renders icons for each menu item', () => {
     const mockUser = createMockUser();
     mockUseHousehold.mockReturnValue({ activeHousehold: null });
+    mockUseAuth.mockReturnValue({
+      user: mockUser,
+      logout: mockLogout,
+      authStatus: AuthStatus.LOGGED_IN,
+      checkAuth: vi.fn(),
+      login: vi.fn()
+    });
     
     const { container } = renderWithAuth(
       <ProfileMenu />,
@@ -88,6 +136,13 @@ describe('ProfileMenu', () => {
   it('applies correct styling classes to container', () => {
     const mockUser = createMockUser();
     mockUseHousehold.mockReturnValue({ activeHousehold: null });
+    mockUseAuth.mockReturnValue({
+      user: mockUser,
+      logout: mockLogout,
+      authStatus: AuthStatus.LOGGED_IN,
+      checkAuth: vi.fn(),
+      login: vi.fn()
+    });
     
     const { container } = renderWithAuth(
       <ProfileMenu />,
@@ -108,6 +163,13 @@ describe('ProfileMenu', () => {
   it('applies correct styling to header section', () => {
     const mockUser = createMockUser({ name: 'Test User' });
     mockUseHousehold.mockReturnValue({ activeHousehold: { name: 'Test House' } });
+    mockUseAuth.mockReturnValue({
+      user: mockUser,
+      logout: mockLogout,
+      authStatus: AuthStatus.LOGGED_IN,
+      checkAuth: vi.fn(),
+      login: vi.fn()
+    });
     
     renderWithAuth(
       <ProfileMenu />,
@@ -129,6 +191,13 @@ describe('ProfileMenu', () => {
   it('applies correct styling to menu items', () => {
     const mockUser = createMockUser();
     mockUseHousehold.mockReturnValue({ activeHousehold: null });
+    mockUseAuth.mockReturnValue({
+      user: mockUser,
+      logout: mockLogout,
+      authStatus: AuthStatus.LOGGED_IN,
+      checkAuth: vi.fn(),
+      login: vi.fn()
+    });
     
     renderWithAuth(
       <ProfileMenu />,
@@ -155,6 +224,13 @@ describe('ProfileMenu', () => {
   it('applies special styling to logout item', () => {
     const mockUser = createMockUser();
     mockUseHousehold.mockReturnValue({ activeHousehold: null });
+    mockUseAuth.mockReturnValue({
+      user: mockUser,
+      logout: mockLogout,
+      authStatus: AuthStatus.LOGGED_IN,
+      checkAuth: vi.fn(),
+      login: vi.fn()
+    });
     
     renderWithAuth(
       <ProfileMenu />,
@@ -174,6 +250,13 @@ describe('ProfileMenu', () => {
   it('renders divider between menu sections', () => {
     const mockUser = createMockUser();
     mockUseHousehold.mockReturnValue({ activeHousehold: null });
+    mockUseAuth.mockReturnValue({
+      user: mockUser,
+      logout: mockLogout,
+      authStatus: AuthStatus.LOGGED_IN,
+      checkAuth: vi.fn(),
+      login: vi.fn()
+    });
     
     const { container } = renderWithAuth(
       <ProfileMenu />,
@@ -182,5 +265,147 @@ describe('ProfileMenu', () => {
     
     const divider = container.querySelector('.h-1.bg-text-primary');
     expect(divider).toBeInTheDocument();
+  });
+
+  describe('Navigation Functionality', () => {
+    it('navigates to settings when settings item is clicked', async () => {
+      const user = userEvent.setup();
+      const mockUser = createMockUser();
+      mockUseHousehold.mockReturnValue({ activeHousehold: null });
+      mockUseAuth.mockReturnValue({
+        user: mockUser,
+        logout: mockLogout,
+        authStatus: AuthStatus.LOGGED_IN,
+        checkAuth: vi.fn(),
+        login: vi.fn()
+      });
+      
+      renderWithAuth(
+        <ProfileMenu />,
+        { authStatus: AuthStatus.LOGGED_IN, user: mockUser }
+      );
+      
+      const settingsItem = screen.getByText('Settings');
+      await user.click(settingsItem);
+      
+      expect(mockNavigate).toHaveBeenCalledWith('/settings');
+    });
+  });
+
+  describe('Logout Modal Functionality', () => {
+    it('shows modal when logout is clicked', async () => {
+      const user = userEvent.setup();
+      const mockUser = createMockUser();
+      mockUseHousehold.mockReturnValue({ activeHousehold: null });
+      mockUseAuth.mockReturnValue({
+        user: mockUser,
+        logout: mockLogout,
+        authStatus: AuthStatus.LOGGED_IN,
+        checkAuth: vi.fn(),
+        login: vi.fn()
+      });
+      
+      renderWithAuth(
+        <ProfileMenu />,
+        { authStatus: AuthStatus.LOGGED_IN, user: mockUser }
+      );
+      
+      const logoutItem = screen.getByText('Logout');
+      await user.click(logoutItem);
+      
+      expect(screen.getByText('Confirm Logout')).toBeInTheDocument();
+      expect(screen.getByText('Are you sure you want to logout? We\'ll miss you!')).toBeInTheDocument();
+      expect(screen.getByText('Cancel')).toBeInTheDocument();
+      expect(screen.getByText('Confirm')).toBeInTheDocument();
+    });
+
+    it('closes modal when cancel is clicked', async () => {
+      const user = userEvent.setup();
+      const mockUser = createMockUser();
+      mockUseHousehold.mockReturnValue({ activeHousehold: null });
+      mockUseAuth.mockReturnValue({
+        user: mockUser,
+        logout: mockLogout,
+        authStatus: AuthStatus.LOGGED_IN,
+        checkAuth: vi.fn(),
+        login: vi.fn()
+      });
+      
+      renderWithAuth(
+        <ProfileMenu />,
+        { authStatus: AuthStatus.LOGGED_IN, user: mockUser }
+      );
+      
+      // Open modal
+      const logoutItem = screen.getByText('Logout');
+      await user.click(logoutItem);
+      
+      expect(screen.getByText('Confirm Logout')).toBeInTheDocument();
+      
+      // Close modal
+      const cancelButton = screen.getByText('Cancel');
+      await user.click(cancelButton);
+      
+      expect(screen.queryByText('Confirm Logout')).not.toBeInTheDocument();
+    });
+
+    it('calls logout and closes modal when confirm is clicked', async () => {
+      const user = userEvent.setup();
+      const mockUser = createMockUser();
+      mockUseHousehold.mockReturnValue({ activeHousehold: null });
+      mockUseAuth.mockReturnValue({
+        user: mockUser,
+        logout: mockLogout,
+        authStatus: AuthStatus.LOGGED_IN,
+        checkAuth: vi.fn(),
+        login: vi.fn()
+      });
+      
+      renderWithAuth(
+        <ProfileMenu />,
+        { 
+          authStatus: AuthStatus.LOGGED_IN, 
+          user: mockUser
+        }
+      );
+      
+      // Open modal
+      const logoutItem = screen.getByText('Logout');
+      await user.click(logoutItem);
+      
+      expect(screen.getByText('Confirm Logout')).toBeInTheDocument();
+      
+      // Confirm logout
+      const confirmButton = screen.getByText('Confirm');
+      await user.click(confirmButton);
+      
+      expect(mockLogout).toHaveBeenCalledTimes(1);
+      expect(screen.queryByText('Confirm Logout')).not.toBeInTheDocument();
+    });
+
+    it('modal has correct accessibility attributes', async () => {
+      const user = userEvent.setup();
+      const mockUser = createMockUser();
+      mockUseHousehold.mockReturnValue({ activeHousehold: null });
+      mockUseAuth.mockReturnValue({
+        user: mockUser,
+        logout: mockLogout,
+        authStatus: AuthStatus.LOGGED_IN,
+        checkAuth: vi.fn(),
+        login: vi.fn()
+      });
+      
+      renderWithAuth(
+        <ProfileMenu />,
+        { authStatus: AuthStatus.LOGGED_IN, user: mockUser }
+      );
+      
+      const logoutItem = screen.getByText('Logout');
+      await user.click(logoutItem);
+      
+      const modal = screen.getByRole('dialog');
+      expect(modal).toHaveAttribute('aria-modal', 'true');
+      expect(modal).toHaveAttribute('aria-labelledby', 'modal-title');
+    });
   });
 });

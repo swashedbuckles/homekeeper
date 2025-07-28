@@ -89,6 +89,8 @@ describe('sizes design system', () => {
         expect(RESPONSIVE_TEXT_TOKENS.md).toBe('text-sm md:text-base');
         expect(RESPONSIVE_TEXT_TOKENS.lg).toBe('text-base md:text-lg');
         expect(RESPONSIVE_TEXT_TOKENS.xl).toBe('text-lg md:text-xl');
+        expect(RESPONSIVE_TEXT_TOKENS['2xl']).toBe('text-xl md:text-2xl');
+        expect(RESPONSIVE_TEXT_TOKENS['3xl']).toBe('text-2xl md:text-3xl');
       });
 
       it('should use md: breakpoint for scaling', () => {
@@ -184,6 +186,8 @@ describe('sizes design system', () => {
         expect(getResponsiveTextToken('md')).toBe('text-sm md:text-base');
         expect(getResponsiveTextToken('lg')).toBe('text-base md:text-lg');
         expect(getResponsiveTextToken('xl')).toBe('text-lg md:text-xl');
+        expect(getResponsiveTextToken('2xl')).toBe('text-xl md:text-2xl');
+        expect(getResponsiveTextToken('3xl')).toBe('text-2xl md:text-3xl');
       });
     });
 

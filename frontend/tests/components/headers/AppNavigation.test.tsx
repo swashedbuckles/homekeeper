@@ -1,16 +1,19 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
+import userEvent from '@testing-library/user-event';
 import { BrowserRouter } from 'react-router';
 import { AppNavigation, DefaultAppNavigation, DesktopAppNavigation, MobileAppNavigation } from '../../../src/components/headers/AppNavigation';
 import { NavItem } from '../../../src/components/headers/NavItem';
 
-// Mock useLocation to control current path
+// Mock useLocation and useNavigate for testing
 const mockLocation = vi.fn();
+const mockNavigate = vi.fn();
 vi.mock('react-router', async () => {
   const actual = await vi.importActual('react-router');
   return {
     ...actual,
-    useLocation: () => mockLocation()
+    useLocation: () => mockLocation(),
+    useNavigate: () => mockNavigate
   };
 });
 
@@ -25,6 +28,7 @@ const renderWithRouter = (component: React.ReactElement) => {
 describe('AppNavigation', () => {
   beforeEach(() => {
     mockLocation.mockClear();
+    mockNavigate.mockClear();
   });
 
   describe('Composition Pattern', () => {
@@ -185,6 +189,94 @@ describe('AppNavigation', () => {
       
       const settingsButton = screen.getByText('Settings');
       expect(settingsButton).toHaveClass('hover:text-primary', 'hover:border-b-primary/30');
+    });
+  });
+
+  describe('Navigation Functionality', () => {
+    it('navigates to the specified path when nav item is clicked', async () => {
+      const user = userEvent.setup();
+      mockLocation.mockReturnValue({ pathname: '/dashboard' });
+      
+      renderWithRouter(
+        <AppNavigation>
+          <NavItem path="/dashboard">Dashboard</NavItem>
+          <NavItem path="/settings">Settings</NavItem>
+        </AppNavigation>
+      );
+      
+      const settingsButton = screen.getByText('Settings');
+      await user.click(settingsButton);
+      
+      expect(mockNavigate).toHaveBeenCalledWith('/settings');
+    });
+
+    it('calls onClick handler when provided before navigating', async () => {
+      const user = userEvent.setup();
+      const mockOnClick = vi.fn();
+      mockLocation.mockReturnValue({ pathname: '/dashboard' });
+      
+      renderWithRouter(
+        <AppNavigation>
+          <NavItem path="/dashboard">Dashboard</NavItem>
+          <NavItem path="/settings" onClick={mockOnClick}>Settings</NavItem>
+        </AppNavigation>
+      );
+      
+      const settingsButton = screen.getByText('Settings');
+      await user.click(settingsButton);
+      
+      expect(mockOnClick).toHaveBeenCalledTimes(1);
+      expect(mockNavigate).toHaveBeenCalledWith('/settings');
+    });
+
+    it('navigates even when onClick is not provided', async () => {
+      const user = userEvent.setup();
+      mockLocation.mockReturnValue({ pathname: '/dashboard' });
+      
+      renderWithRouter(
+        <AppNavigation>
+          <NavItem path="/dashboard">Dashboard</NavItem>
+          <NavItem path="/settings">Settings</NavItem>
+        </AppNavigation>
+      );
+      
+      const dashboardButton = screen.getByText('Dashboard');
+      await user.click(dashboardButton);
+      
+      expect(mockNavigate).toHaveBeenCalledWith('/dashboard');
+    });
+
+    it('handles multiple nav items with different onClick handlers', async () => {
+      const user = userEvent.setup();
+      const mockOnClickSettings = vi.fn();
+      const mockOnClickDashboard = vi.fn();
+      mockLocation.mockReturnValue({ pathname: '/dashboard' });
+      
+      renderWithRouter(
+        <AppNavigation>
+          <NavItem path="/dashboard" onClick={mockOnClickDashboard}>Dashboard</NavItem>
+          <NavItem path="/settings" onClick={mockOnClickSettings}>Settings</NavItem>
+        </AppNavigation>
+      );
+      
+      // Click settings
+      const settingsButton = screen.getByText('Settings');
+      await user.click(settingsButton);
+      
+      expect(mockOnClickSettings).toHaveBeenCalledTimes(1);
+      expect(mockOnClickDashboard).not.toHaveBeenCalled();
+      expect(mockNavigate).toHaveBeenCalledWith('/settings');
+      
+      // Reset and click dashboard
+      mockNavigate.mockClear();
+      mockOnClickSettings.mockClear();
+      
+      const dashboardButton = screen.getByText('Dashboard');
+      await user.click(dashboardButton);
+      
+      expect(mockOnClickDashboard).toHaveBeenCalledTimes(1);
+      expect(mockOnClickSettings).not.toHaveBeenCalled();
+      expect(mockNavigate).toHaveBeenCalledWith('/dashboard');
     });
   });
 
