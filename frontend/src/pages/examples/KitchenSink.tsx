@@ -1,5 +1,7 @@
 import { Home, Key } from 'lucide-react';
 import { useState } from 'react';
+
+// Backgrounds
 import { BackgroundCircles } from '../../components/backgrounds/BackgroundCircles';
 import { BackgroundGrid } from '../../components/backgrounds/BackgroundGrid';
 import { BackgroundLines } from '../../components/backgrounds/BackgroundLines';
@@ -30,25 +32,23 @@ import { Select, Option } from '../../components/form/Select';
 import { TextArea } from '../../components/form/TextArea';
 import { TextInput } from '../../components/form/TextInput';
 
-// Choice Components  
+// Layout Components
 import { WideContainer } from '../../components/layout/containers/WideContainer';
 import { Inline } from '../../components/layout/Flex';
 import { Grid } from '../../components/layout/Grid';
 import { Tabs } from '../../components/layout/Tabs';
-import { DefaultChoice } from '../../components/variants/DefaultChoice';
-import { FilterChoice } from '../../components/variants/FilterChoice';
-import { IconChoice } from '../../components/variants/IconChoice';
-import { PriorityChoice } from '../../components/variants/PriorityChoice';
 
 // Variation Components
 import { CodeInput } from '../../components/variations/CodeInput';
+import { DefaultChoice } from '../../components/variations/DefaultChoice';
+import { FilterChoice } from '../../components/variations/FilterChoice';
+import { IconChoice } from '../../components/variations/IconChoice';
 import { OptionCard } from '../../components/variations/OptionCard';
+import { PriorityChoice } from '../../components/variations/PriorityChoice';
 import { SectionTitle } from '../../components/variations/SectionTitle';
 import { StatCard } from '../../components/variations/StatCard';
 import { SubSectionTitle } from '../../components/variations/SubSectionTitle';
 import { TaskCard } from '../../components/variations/TaskCard';
-
-// Container Components
 
 /**
  * KitchenSink Page - Comprehensive display of all base and variation components.
