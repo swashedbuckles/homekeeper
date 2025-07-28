@@ -7,27 +7,27 @@ import { Card } from '../../components/common/Card';
 import { Text } from '../../components/common/Text';
 import { TextArea } from '../../components/form/TextArea';
 import { TextInput } from '../../components/form/TextInput';
+import { Grid } from '../../components/layout/Grid';
 
 import { useHousehold } from '../../hooks/useHousehold';
 
 export const HouseholdDetailsForm = () => {
   const hContext = useHousehold();
-  const formHook = useForm({resolver: zodResolver(householdSchema)});
-  const { register, handleSubmit, formState: { errors, isSubmitting }} = formHook;
-  
+  const formHook = useForm({ resolver: zodResolver(householdSchema) });
+  const { register, handleSubmit, formState: { errors, isSubmitting } } = formHook;
+
   console.log('H', hContext.activeHousehold);
-  
+
   const onSubmit = async (formData: HouseholdDescription) => {
-    if(isSubmitting) {
+    if (isSubmitting) {
       return;
     }
     console.log('onSubmit: ', formData);
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <Text size="lg" weight="black" className="block">Household Details</Text>
-      <div className="flex">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 md:space-y-8">
+      <Grid columns={2} spacing="lg">
         <TextInput 
           type="text" 
           label="Household Name" 
@@ -37,6 +37,7 @@ export const HouseholdDetailsForm = () => {
           register={register('name')}
         />
 
+        {/** @todo TextInput disabled should look more disabled */}
         <TextInput 
           type="text" 
           label="Created Date" 
@@ -45,20 +46,20 @@ export const HouseholdDetailsForm = () => {
           disabled
           value={Date.now().toLocaleString()}
         />
-
-        <TextArea
-          label="Description (optional)"
-          placeholder="Our family home..."
-          testId="password-input"
-          error={errors.description?.message}
-          register={register('description')}
-        />
-      </div>
+      </Grid>
+        
+      <TextArea
+        label="Description (optional)"
+        placeholder="Our family home..."
+        testId="password-input"
+        error={errors.description?.message}
+        register={register('description')}
+      />
       <div>
         <Button size="lg" variant="primary" type="submit">Save Changes</Button>
         <Button size="lg" variant="tertiary">Cancel</Button>
       </div>
-    </form>
+    </form >
   );
 };
 
@@ -66,6 +67,7 @@ export const HouseholdSettings = () => {
   return (
     <>
       <Card shadow="double">
+        <Text size="lg" weight="black" className="block">Household Details</Text>
         <HouseholdDetailsForm />
       </Card>
       <Card className="mt-12" rotation="slight-left" shadow="error" variant="danger">

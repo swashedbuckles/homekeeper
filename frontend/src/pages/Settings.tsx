@@ -1,9 +1,12 @@
-import { Card } from '../components/common/Card';
 import { Text } from '../components/common/Text';
 import { Title } from '../components/common/Title';
 import { WideContainer } from '../components/layout/containers/WideContainer';
 import { Tabs } from '../components/layout/Tabs';
+
+import { AccountSettings } from './settings/Account';
 import { HouseholdSettings } from './settings/Household';
+import { InvitesSettings } from './settings/Invites';
+import { MembersSettings } from './settings/Members';
 
 export interface SettingsProps { }
 
@@ -25,12 +28,10 @@ export const Settings = (_props: SettingsProps) => {
           <Tabs.Button size="lg" value="invites">Invites</Tabs.Button>
           <Tabs.Button size="lg" value="account">Account</Tabs.Button>
         </Tabs.List>
-        <Tabs.Panel value="household" className="p-4">
-          <HouseholdSettings />
-        </Tabs.Panel>
-        <Tabs.Panel value="members" className="p-4"><Card>members</Card></Tabs.Panel>
-        <Tabs.Panel value="invites" className="p-4"><Card>invites</Card></Tabs.Panel>
-        <Tabs.Panel value="account" className="p-4"><Card>account</Card></Tabs.Panel>
+        <Tabs.Panel value="household" className="p-4"><HouseholdSettings /></Tabs.Panel>
+        <Tabs.Panel value="members" className="p-4"><MembersSettings /></Tabs.Panel>
+        <Tabs.Panel value="invites" className="p-4"><InvitesSettings /></Tabs.Panel>
+        <Tabs.Panel value="account" className="p-4"><AccountSettings /></Tabs.Panel>
       </Tabs>
     </WideContainer>
   );
