@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import { Button } from '../../components/common/Button';
 import { Card } from '../../components/common/Card';
 import { Text } from '../../components/common/Text';
+import { Title } from '../../components/common/Title';
 import { TextArea } from '../../components/form/TextArea';
 import { TextInput } from '../../components/form/TextInput';
 import { Grid } from '../../components/layout/Grid';
@@ -67,7 +68,7 @@ export const HouseholdSettings = () => {
   return (
     <>
       <Card shadow="double">
-        <Text size="lg" weight="black" className="block">Household Details</Text>
+        <Title variant="section">Household Details</Title>
         <HouseholdDetailsForm />
       </Card>
       <Card className="mt-12" rotation="slight-left" shadow="error" variant="danger">

@@ -3,6 +3,7 @@ import { Button } from '../../components/common/Button';
 import { Card } from '../../components/common/Card';
 import { Code } from '../../components/common/Code';
 import { Text } from '../../components/common/Text';
+import { Title } from '../../components/common/Title';
 import { Select, Option } from '../../components/form/Select';
 import { TextArea } from '../../components/form/TextArea';
 import { TextInput } from '../../components/form/TextInput';
@@ -67,11 +68,11 @@ export const InvitesSettings = () => {
   return (
     <Grid columns={2} spacing="lg">
       <Card shadow="double">
-        <h2 className="text-2xl md:text-3xl font-black uppercase mb-6 md:mb-8 text-text-primary">Send New Invite</h2>
+        <Title variant="section">Send New Invite</Title>
         <SendNewInviteForm />
       </Card>
       <Card shadow="double">
-        <h2 className="text-2xl md:text-3xl font-black uppercase mb-6 md:mb-8 text-text-primary">Pending Invitations</h2>
+        <Title variant="section">Pending Invitations</Title>
         <div className="space-y-8">
           <InviteListItem email="emma@example.com" role="member" expirationDays={4} code="XYZ789AB" rotation="slight-left"/>
           <InviteListItem email="tom@example.com" role="guest" expirationDays={6} code="QRS456CD" rotation="slight-right"/>
