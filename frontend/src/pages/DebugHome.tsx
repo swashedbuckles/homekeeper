@@ -4,7 +4,7 @@ import { useAuth } from '../hooks/useAuth';
 import { apiRequest } from '../lib/apiClient';
 import { UI as logger } from '../lib/logger';
 
-export function Home() {
+export function DebugHome() {
   
   logger.log('homepage');
   const [msg, setMsg] = useState('');

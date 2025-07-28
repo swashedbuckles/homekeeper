@@ -2,6 +2,8 @@ import { Navigate } from 'react-router';
 import { useAuth } from '../../hooks/useAuth';
 import { AuthStatus } from '../../lib/types/authStatus';
 
+const IS_DEV = !import.meta.env.PROD;
+
 interface AuthRouteGuardProps {
   children: React.ReactNode;
   requireAuth?: boolean;
@@ -28,11 +30,11 @@ export function AuthRouteGuard({ children, requireAuth = false, publicRoute = fa
 
   const isAuthenticated = authStatus === AuthStatus.LOGGED_IN;
 
-  if (requireAuth && !isAuthenticated) {
+  if (!IS_DEV && requireAuth && !isAuthenticated) {
     return <Navigate to="/" replace />;
   }
 
-  if (!requireAuth && isAuthenticated) {
+  if (!IS_DEV && !requireAuth && isAuthenticated) {
     return <Navigate to="/dashboard" replace />;
   }
 

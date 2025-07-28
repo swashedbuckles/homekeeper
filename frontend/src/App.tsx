@@ -12,9 +12,9 @@ import { Login } from './pages/auth/Login';
 import { Register } from './pages/auth/Register';
 import { Dashboard } from './pages/Dashboard';
 
+import { DebugHome } from './pages/DebugHome';
 import { KitchenSink } from './pages/examples/KitchenSink';
 import { LayoutExamples } from './pages/examples/LayoutExamples';
-import { Home } from './pages/Home';
 import { LandingPage } from './pages/Landing';
 import { CreateHousehold } from './pages/onboarding/Create';
 import { OnboardingHome } from './pages/onboarding/Home';
@@ -59,7 +59,7 @@ export function App() {
                   <Route path="register" element={<AuthRouteGuard publicRoute><Register /></AuthRouteGuard>} />
                 </Route>
                 <Route path="/debug" element={<Root />}>
-                  <Route path="home" element={<Home />} />
+                  <Route path="home" element={<DebugHome />} />
                   <Route path="kitchen-sink" element={<KitchenSink />} />
                   <Route path="layout" element={<LayoutExamples />} />
                 </Route>

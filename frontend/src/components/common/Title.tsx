@@ -188,7 +188,3 @@ export const Title = ({
     </div>
   );
 };
-
-// Keep PageTitle as alias for backward compatibility
-export const PageTitle = Title;
-export type PageTitleProps = TitleProps;

@@ -7,7 +7,7 @@ import { z } from 'zod';
 import { Button } from '../../components/common/Button';
 import { Card } from '../../components/common/Card';
 import { ListItem } from '../../components/common/ListItem';
-import { PageTitle } from '../../components/common/Title';
+import { Title } from '../../components/common/Title';
 import { TextInput } from '../../components/form/TextInput';
 import { SectionTitle } from '../../components/variations/SectionTitle';
 import { useHousehold } from '../../hooks/useHousehold';
@@ -124,7 +124,7 @@ export const InviteOthers = () => {
     <div id="invite" className="screen">
       <div className="max-w-md mx-auto px-4 py-8">
         <div className="mb-6">
-          <PageTitle description="Generate invitation codes to share with family members.">Invite Others</PageTitle>
+          <Title description="Generate invitation codes to share with family members.">Invite Others</Title>
         </div>
 
         <Card variant="default" className="flex-row mb-6">

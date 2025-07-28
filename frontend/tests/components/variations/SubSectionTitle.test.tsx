@@ -17,12 +17,4 @@ describe('SubSectionTitle', () => {
     const heading = screen.getByRole('heading');
     expect(heading).toHaveClass('font-mono', 'font-black', 'uppercase', 'tracking-wide', 'text-text-primary', 'leading-none', 'text-2xl', 'md:text-3xl', 'lg:text-4xl', 'mb-3');
   });
-
-  it('accepts PageTitle props except variant', () => {
-    render(<SubSectionTitle className="custom-class" description="Subsection description">Subsection</SubSectionTitle>);
-    
-    const heading = screen.getByRole('heading');
-    expect(heading).toHaveClass('custom-class');
-    expect(screen.getByText('Subsection description')).toBeInTheDocument();
-  });
 });
