@@ -10,3 +10,4 @@ export {householdSchema, inviteSchema} from './schemas/household.js';
 
 export {HOUSEHOLD_ROLES, HOUSEHOLD_ROLE, type HouseholdRoles} from './constants/roles.js';
 export {INVITATION_STATUSES, INVITATION_STATUS, type InvitationStatus} from './constants/status.js';
+export {getPasswordRequirements, createPasswordSchema} from './config/password.js';
