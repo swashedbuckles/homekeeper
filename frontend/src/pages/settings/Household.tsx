@@ -14,13 +14,18 @@ export const HouseholdDetailsForm = () => {
   const hContext = useHousehold();
   const formHook = useForm({resolver: zodResolver(householdSchema)});
   const { register, handleSubmit, formState: { errors, isSubmitting }} = formHook;
-
+  
+  console.log('H', hContext.activeHousehold);
+  
   const onSubmit = async (formData: HouseholdDescription) => {
+    if(isSubmitting) {
+      return;
+    }
     console.log('onSubmit: ', formData);
   };
 
   return (
-    <form>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <Text size="lg" weight="black" className="block">Household Details</Text>
       <div className="flex">
         <TextInput 
@@ -50,7 +55,7 @@ export const HouseholdDetailsForm = () => {
         />
       </div>
       <div>
-        <Button size="lg" variant="primary">Save Changes</Button>
+        <Button size="lg" variant="primary" type="submit">Save Changes</Button>
         <Button size="lg" variant="tertiary">Cancel</Button>
       </div>
     </form>

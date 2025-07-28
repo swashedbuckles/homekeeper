@@ -4,8 +4,6 @@ import { describe, it, expect, vi } from 'vitest';
 
 import { AuthRouteGuard } from '../../../src/components/auth/AuthRouteGuard';
 import { AuthStatus } from '../../../src/lib/types/authStatus';
-import { TestAuthProvider } from '../../helpers/testProviderUtils';
-import { createMockUser } from '../../helpers/testUtils';
 
 // Mock Navigate component to track redirects
 const mockNavigate = vi.fn();

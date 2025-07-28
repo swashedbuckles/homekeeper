@@ -118,7 +118,7 @@ describe('useAuth', () => {
       fetchMock.route({
         url: 'path:/auth/validate',
         allowRelativeUrls: true,
-        response: (arg0) => { 
+        response: (_arg0) => { 
           if(call === 0) {
             call++;
             return {status: 401, body: { error: 'Token expired' }};

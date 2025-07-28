@@ -36,10 +36,12 @@ describe('ProfileMenu', () => {
     mockUseAuth.mockReturnValue({
       user: null,
       logout: mockLogout,
-      // Add other properties as needed
       authStatus: AuthStatus.LOGGED_OUT,
       checkAuth: vi.fn(),
-      login: vi.fn()
+      login: vi.fn(),
+      isLoading: false,
+      isKnown: false,
+      isAuthenticated: false
     });
   });
 
@@ -53,7 +55,10 @@ describe('ProfileMenu', () => {
       logout: mockLogout,
       authStatus: AuthStatus.LOGGED_IN,
       checkAuth: vi.fn(),
-      login: vi.fn()
+      login: vi.fn(),
+      isLoading: false,
+      isKnown: false,
+      isAuthenticated: false
     });
     
     renderWithAuth(
@@ -99,7 +104,10 @@ describe('ProfileMenu', () => {
       logout: mockLogout,
       authStatus: AuthStatus.LOGGED_IN,
       checkAuth: vi.fn(),
-      login: vi.fn()
+      login: vi.fn(),
+      isLoading: false,
+      isKnown: false,
+      isAuthenticated: false
     });
     
     renderWithAuth(
@@ -120,7 +128,10 @@ describe('ProfileMenu', () => {
       logout: mockLogout,
       authStatus: AuthStatus.LOGGED_IN,
       checkAuth: vi.fn(),
-      login: vi.fn()
+      login: vi.fn(),
+      isLoading: false,
+      isKnown: false,
+      isAuthenticated: false
     });
     
     const { container } = renderWithAuth(
@@ -141,7 +152,10 @@ describe('ProfileMenu', () => {
       logout: mockLogout,
       authStatus: AuthStatus.LOGGED_IN,
       checkAuth: vi.fn(),
-      login: vi.fn()
+      login: vi.fn(),
+      isLoading: false,
+      isKnown: false,
+      isAuthenticated: false
     });
     
     const { container } = renderWithAuth(
@@ -168,7 +182,10 @@ describe('ProfileMenu', () => {
       logout: mockLogout,
       authStatus: AuthStatus.LOGGED_IN,
       checkAuth: vi.fn(),
-      login: vi.fn()
+      login: vi.fn(),
+      isLoading: false,
+      isKnown: false,
+      isAuthenticated: false
     });
     
     renderWithAuth(
@@ -196,7 +213,10 @@ describe('ProfileMenu', () => {
       logout: mockLogout,
       authStatus: AuthStatus.LOGGED_IN,
       checkAuth: vi.fn(),
-      login: vi.fn()
+      login: vi.fn(),
+      isLoading: false,
+      isKnown: false,
+      isAuthenticated: false
     });
     
     renderWithAuth(
@@ -229,7 +249,10 @@ describe('ProfileMenu', () => {
       logout: mockLogout,
       authStatus: AuthStatus.LOGGED_IN,
       checkAuth: vi.fn(),
-      login: vi.fn()
+      login: vi.fn(),
+      isLoading: false,
+      isKnown: false,
+      isAuthenticated: false
     });
     
     renderWithAuth(
@@ -255,7 +278,10 @@ describe('ProfileMenu', () => {
       logout: mockLogout,
       authStatus: AuthStatus.LOGGED_IN,
       checkAuth: vi.fn(),
-      login: vi.fn()
+      login: vi.fn(),
+      isLoading: false,
+      isKnown: false,
+      isAuthenticated: false
     });
     
     const { container } = renderWithAuth(
@@ -277,7 +303,10 @@ describe('ProfileMenu', () => {
         logout: mockLogout,
         authStatus: AuthStatus.LOGGED_IN,
         checkAuth: vi.fn(),
-        login: vi.fn()
+        login: vi.fn(),
+        isLoading: false,
+        isKnown: false,
+        isAuthenticated: false
       });
       
       renderWithAuth(
@@ -302,7 +331,10 @@ describe('ProfileMenu', () => {
         logout: mockLogout,
         authStatus: AuthStatus.LOGGED_IN,
         checkAuth: vi.fn(),
-        login: vi.fn()
+        login: vi.fn(),
+        isLoading: false,
+        isKnown: false,
+        isAuthenticated: false
       });
       
       renderWithAuth(
@@ -328,7 +360,10 @@ describe('ProfileMenu', () => {
         logout: mockLogout,
         authStatus: AuthStatus.LOGGED_IN,
         checkAuth: vi.fn(),
-        login: vi.fn()
+        login: vi.fn(),
+        isLoading: false,
+        isKnown: false,
+        isAuthenticated: false
       });
       
       renderWithAuth(
@@ -358,7 +393,10 @@ describe('ProfileMenu', () => {
         logout: mockLogout,
         authStatus: AuthStatus.LOGGED_IN,
         checkAuth: vi.fn(),
-        login: vi.fn()
+        login: vi.fn(),
+        isLoading: false,
+        isKnown: false,
+        isAuthenticated: false
       });
       
       renderWithAuth(
@@ -392,7 +430,10 @@ describe('ProfileMenu', () => {
         logout: mockLogout,
         authStatus: AuthStatus.LOGGED_IN,
         checkAuth: vi.fn(),
-        login: vi.fn()
+        login: vi.fn(),
+        isLoading: false,
+        isKnown: false,
+        isAuthenticated: false
       });
       
       renderWithAuth(
