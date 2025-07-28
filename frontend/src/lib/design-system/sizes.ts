@@ -104,7 +104,9 @@ export const RESPONSIVE_TEXT_TOKENS = {
   sm: 'text-xs md:text-sm',                   // xs → sm
   md: 'text-sm md:text-base',                 // sm → base
   lg: 'text-base md:text-lg',                 // base → lg
-  xl: 'text-lg md:text-xl'                    // lg → xl
+  xl: 'text-lg md:text-xl',                   // lg → xl
+  '2xl': 'text-xl md:text-2xl',               // xl → 2xl
+  '3xl': 'text-2xl md:text-3xl'               // 2xl → 3xl
 } as const;
 
 /**
@@ -232,14 +234,15 @@ export function getSizeToken(
 /**
  * Get responsive text size token with mobile-first scaling
  * 
- * @param size - The standard size
+ * @param size - The typography size
  * @returns The corresponding responsive CSS classes
  * 
  * @example
  * getResponsiveTextToken('md') // Returns 'text-sm md:text-base'
  * getResponsiveTextToken('lg') // Returns 'text-base md:text-lg'
+ * getResponsiveTextToken('2xl') // Returns 'text-xl md:text-2xl'
  */
-export function getResponsiveTextToken(size: StandardSize): string {
+export function getResponsiveTextToken(size: TypographySize): string {
   return RESPONSIVE_TEXT_TOKENS[size];
 }
 
