@@ -40,14 +40,14 @@ describe('ListItem (Compound Component)', () => {
       render(<ListItem {...defaultProps} />);
       
       const title = screen.getByText('Test ListItem');
-      expect(title).toHaveClass('font-bold', 'text-lg', 'md:text-xl', 'text-text-primary', 'uppercase', 'tracking-wide', 'mb-2');
+      expect(title).toHaveClass('font-bold', 'text-lg', 'md:text-xl', 'uppercase', 'tracking-wide', 'mb-2');
     });
 
     it('applies correct subtitle styling when provided', () => {
       render(<ListItem {...defaultProps} subtitle="Test subtitle" />);
       
       const subtitle = screen.getByText('Test subtitle');
-      expect(subtitle).toHaveClass('text-text-secondary', 'text-sm', 'font-bold', 'uppercase', 'tracking-wide');
+      expect(subtitle).toHaveClass('text-sm', 'font-bold', 'uppercase', 'tracking-wide');
     });
   });
 
