@@ -290,6 +290,7 @@ const Actions: FC<ActionsProps> = ({ className = '', children }) => {
   const actionsStyles = [
     'ml-6 flex-shrink-0 flex gap-2', // Spacing and flex layout
     'flex-col sm:flex-row', // Stack on mobile, row on desktop
+    'w-full md:w-auto',
     className
   ].filter(Boolean).join(' ');
 
@@ -306,6 +307,7 @@ const Content: FC<ActionsProps> = ({ className = '', children }) => {
   const contentStyles = [
     'ml-6 flex-shrink-0 flex gap-2', // Spacing and flex layout
     'flex-col sm:flex-row', // Stack on mobile, row on desktop
+    'w-full md:w-auto',
     className
   ].filter(Boolean).join(' ');
 
@@ -350,7 +352,7 @@ const ListItem: FC<ListItemProps> & {
 
   // Base styles with brutal design system
   const baseStyles = [
-    'flex', 'items-center', 'justify-between', // Layout
+    'flex', 'flex-col', 'md:flex-row', 'items-start md:items-center', 'justify-between', // Layout
     'p-4 md:p-6', // Responsive padding
     // 'bg-white', // Background
     'border-4 md:border-6 border-text-primary', // Brutal borders
@@ -424,9 +426,11 @@ const ListItem: FC<ListItemProps> & {
         )}
       </div>
 
+      <div className="flex-1">
       {content}
       {/* Actions section - only renders if actions compound component provided */}
       {actions}
+      </div>
     </div>
   );
 };

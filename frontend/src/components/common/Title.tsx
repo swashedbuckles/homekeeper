@@ -90,7 +90,7 @@ const variantStyles = {
     'mb-4'
   ],
   subsection: [
-    'text-2xl',
+    'text-3xl',
     'md:text-3xl',
     'lg:text-4xl',
     'mb-3'

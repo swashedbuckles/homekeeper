@@ -129,10 +129,8 @@ export const InviteOthers = () => {
 
         <Card variant="default" className="flex-row mb-6">
           <div className="flex space-x-2 items-end">
-            <div className="flex-1">
-              <TextInput ref={emailRef} label="Invite Someone" placeholder="Enter email address" type="email" grouped />
-            </div>
-            <Button variant="primary" className="px-4" onClick={handleAdd}>Add</Button>
+            <TextInput ref={emailRef} label="Invite Someone" placeholder="Enter email address" type="email" grouped />
+            <Button variant="primary" className="px-4 mb-4" onClick={handleAdd}>Add</Button>
           </div>
         </Card>
 

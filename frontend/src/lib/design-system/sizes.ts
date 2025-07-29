@@ -203,10 +203,10 @@ export const CONTAINER_WIDTH_TOKENS = {
  * Provides consistent spacing hierarchy for content sections
  */
 export const CONTAINER_SPACING_TOKENS = {
-  sm: 'py-8',   // 2rem / 32px
-  md: 'py-10',  // 2.5rem / 40px
-  lg: 'py-16',  // 4rem / 64px
-  xl: 'py-20'   // 5rem / 80px
+  sm: 'py-2 md:py-8',   // 2rem / 32px
+  md: 'py-4 md:py-10',  // 2.5rem / 40px
+  lg: 'py-6 md:py-16',  // 4rem / 64px
+  xl: 'py-8 md:py-20'   // 5rem / 80px
 } as const;
 
 // =====================================

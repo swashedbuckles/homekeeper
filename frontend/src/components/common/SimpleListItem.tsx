@@ -69,7 +69,9 @@ export const SimpleListItem = ({
 
   // Base styles with brutal design
   const baseStyles = [
-    'flex', 'items-center', 'justify-between',
+    'flex', 'justify-between',
+    'items-start md:items-center',
+    'flex-col md:flex-row',
     'p-6',
     'bg-white',
     'border-brutal-lg', 'border-text-primary',
@@ -115,7 +117,7 @@ export const SimpleListItem = ({
       </div>
 
       {validatedActions.length > 0 && (
-        <div className="ml-6 flex-shrink-0 flex gap-2">
+        <div className="mt-4 md:mt-auto md:ml-6 flex-shrink-0 flex gap-2">
           {validatedActions}
         </div>
       )}
