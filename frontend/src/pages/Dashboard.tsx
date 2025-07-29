@@ -33,7 +33,7 @@ export function Dashboard() {
 
   return (
     <WideContainer>
-      <div className="w-1/2">
+      <div className="w-1/2 mt-4">
         <Title variant="hero" textShadow="orange"> Welcome back{name}!</Title>
       </div>
       <Card className="w-fit" shadow="primary" padding="sm" variant="subtle">
@@ -61,7 +61,7 @@ export function Dashboard() {
       {/** activity */}
       <Grid columns={2} spacing="xl" className="mt-12">
         <section>
-          <Title variant="subsection" className={`!text-primary ${getResponsiveTextToken('xl')} brutal-text-shadow-simple mb-6`}>
+          <Title variant="subsection" className={'!text-primary brutal-text-shadow-simple mb-6'}>
             Upcoming <br />
             Maintenance
           </Title>

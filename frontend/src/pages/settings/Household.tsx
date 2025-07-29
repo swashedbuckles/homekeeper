@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import { Button } from '../../components/common/Button';
 import { Card } from '../../components/common/Card';
 import { Text } from '../../components/common/Text';
+import { Title } from '../../components/common/Title';
 import { TextArea } from '../../components/form/TextArea';
 import { TextInput } from '../../components/form/TextInput';
 import { Grid } from '../../components/layout/Grid';
@@ -56,8 +57,8 @@ export const HouseholdDetailsForm = () => {
         register={register('description')}
       />
       <div>
-        <Button size="lg" variant="primary" type="submit">Save Changes</Button>
-        <Button size="lg" variant="tertiary">Cancel</Button>
+        <Button size="lg" className="w-full md:w-fit" variant="primary" type="submit">Save Changes</Button>
+        <Button size="lg" className="ml-auto md:ml-4 mt-4 md:mt-auto w-full md:w-fit" variant="tertiary">Cancel</Button>
       </div>
     </form >
   );
@@ -67,14 +68,14 @@ export const HouseholdSettings = () => {
   return (
     <>
       <Card shadow="double">
-        <Text size="lg" weight="black" className="block">Household Details</Text>
+        <Title variant="section">Household Details</Title>
         <HouseholdDetailsForm />
       </Card>
       <Card className="mt-12" rotation="slight-left" shadow="error" variant="danger">
         <Text variant="body" size="2xl" weight="black" color="white" uppercase className="block mb-4 md:mb-6">
           Danger Zone
         </Text>
-        <Card className="mt-4 ml-10 mr-10" shadow="none">
+        <Card className="mt-4" shadow="none">
           <Text variant="body" size="lg" weight="black" color="dark" uppercase className="block mb-3 md:mb-4">
             Delete Household
           </Text>
@@ -90,7 +91,7 @@ export const HouseholdSettings = () => {
             be undone.
           </Text>
           <div className="mt-4">
-            <Button variant="danger" size="xl">
+            <Button variant="danger" size="lg">
               Delete Household
             </Button>
           </div>

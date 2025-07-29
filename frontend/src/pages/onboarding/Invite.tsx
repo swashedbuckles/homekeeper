@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router';
 import { z } from 'zod';
 import { Button } from '../../components/common/Button';
 import { Card } from '../../components/common/Card';
-import { ListItem } from '../../components/common/ListItem';
+import { SimpleListItem } from '../../components/common/SimpleListItem';
 import { Title } from '../../components/common/Title';
 import { TextInput } from '../../components/form/TextInput';
 import { SectionTitle } from '../../components/variations/SectionTitle';
@@ -109,13 +109,13 @@ export const InviteOthers = () => {
   const pendingInvitations = invitations.map(invitation => {
 
     return (
-      <ListItem
+      <SimpleListItem
         title={invitation.email}
         subtitle={`Code: ${invitation.code}. Expires in 14 days`}
       >
         <Button variant="outline" size="sm" onClick={() => handleCopy(invitation.code)}>Copy</Button>
         <Button variant="danger" size="sm" onClick={() => cancelInviteMutation.mutate(invitation.id)}>Delete</Button>
-      </ListItem>
+      </SimpleListItem>
     );
   });
 
@@ -129,10 +129,8 @@ export const InviteOthers = () => {
 
         <Card variant="default" className="flex-row mb-6">
           <div className="flex space-x-2 items-end">
-            <div className="flex-1">
-              <TextInput ref={emailRef} label="Invite Someone" placeholder="Enter email address" type="email" grouped />
-            </div>
-            <Button variant="primary" className="px-4" onClick={handleAdd}>Add</Button>
+            <TextInput ref={emailRef} label="Invite Someone" placeholder="Enter email address" type="email" grouped />
+            <Button variant="primary" className="px-4 mb-4" onClick={handleAdd}>Add</Button>
           </div>
         </Card>
 

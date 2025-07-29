@@ -154,10 +154,10 @@ describe('sizes design system', () => {
 
     describe('CONTAINER_SPACING_TOKENS', () => {
       it('should map spacing sizes to padding classes', () => {
-        expect(CONTAINER_SPACING_TOKENS.sm).toBe('py-8');
-        expect(CONTAINER_SPACING_TOKENS.md).toBe('py-10');
-        expect(CONTAINER_SPACING_TOKENS.lg).toBe('py-16');
-        expect(CONTAINER_SPACING_TOKENS.xl).toBe('py-20');
+        expect(CONTAINER_SPACING_TOKENS.sm).toBe('py-2 md:py-8');
+        expect(CONTAINER_SPACING_TOKENS.md).toBe('py-4 md:py-10');
+        expect(CONTAINER_SPACING_TOKENS.lg).toBe('py-6 md:py-16');
+        expect(CONTAINER_SPACING_TOKENS.xl).toBe('py-8 md:py-20');
       });
     });
   });
@@ -225,10 +225,10 @@ describe('sizes design system', () => {
 
     describe('getContainerSpacing', () => {
       it('should return padding classes for spacing sizes', () => {
-        expect(getContainerSpacing('sm')).toBe('py-8');
-        expect(getContainerSpacing('md')).toBe('py-10');
-        expect(getContainerSpacing('lg')).toBe('py-16');
-        expect(getContainerSpacing('xl')).toBe('py-20');
+        expect(getContainerSpacing('sm')).toBe('py-2 md:py-8');
+        expect(getContainerSpacing('md')).toBe('py-4 md:py-10');
+        expect(getContainerSpacing('lg')).toBe('py-6 md:py-16');
+        expect(getContainerSpacing('xl')).toBe('py-8 md:py-20');
       });
     });
 

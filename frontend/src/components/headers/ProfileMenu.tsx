@@ -93,7 +93,7 @@ export function ProfileMenu() {
           <Text variant="body" className="mb-6">
             Are you sure you want to logout? We'll miss you!
           </Text>
-          <div className="flex gap-3 justify-end">
+          <div className="mt-4 flex gap-3 justify-end">
             <Button 
               variant="outline" 
               onClick={() => setIsModalOpen(false)}

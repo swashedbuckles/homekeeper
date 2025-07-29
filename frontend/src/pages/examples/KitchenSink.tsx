@@ -17,8 +17,10 @@ import { Button } from '../../components/common/Button';
 import { Card } from '../../components/common/Card';
 import { Code } from '../../components/common/Code';
 import { ListItem } from '../../components/common/ListItem';
+import { MediaCard } from '../../components/common/MediaCard';
 import { Modal } from '../../components/common/Modal';
 import { ProgressBar } from '../../components/common/ProgressBar';
+import { SimpleListItem } from '../../components/common/SimpleListItem';
 import { Stats } from '../../components/common/Stats';
 import { Step, Steps } from '../../components/common/Steps';
 import { Text } from '../../components/common/Text';
@@ -75,6 +77,8 @@ const TableOfContents = () => {
     { id: 'alerts', label: 'Alerts' },
     { id: 'variations', label: 'Variation Components' },
     { id: 'list-items', label: 'List Items' },
+    { id: 'new-list-items', label: 'New List Items (Compound)' },
+    { id: 'media-cards', label: 'Media Cards (Compound)' },
     { id: 'action-component', label: 'Action Component' },
     { id: 'backgrounds', label: 'Background Components' }
   ];
@@ -458,30 +462,207 @@ export function KitchenSink() {
             </div>
 
             <div>
-              <SubSectionTitle className="mb-4">Stats Components</SubSectionTitle>
-              <Grid columns={3} spacing="lg">
-                <Stats 
-                  value={47} 
-                  label="Total Manuals" 
-                  subtitle="+3 This Month"
-                  size="lg" 
-                  color="primary"
-                />
-                <Stats 
-                  value="$2,340" 
-                  label="Saved This Year" 
-                  subtitle="vs $1,890 last year"
-                  size="md" 
-                  color="accent"
-                />
-                <Stats 
-                  value={12} 
-                  label="Due This Week" 
-                  subtitle="3 overdue"
-                  size="sm" 
-                  color="error"
-                />
-              </Grid>
+              <SubSectionTitle className="mb-4">Stats Components (Enhanced)</SubSectionTitle>
+              <Text variant="body" size="sm" className="mb-6">
+                Enhanced Stats component now supports progress indicators for completion percentages, health scores, and other metrics.
+              </Text>
+              
+              <div className="space-y-8">
+                <div>
+                  <Text variant="label" weight="bold" className="block mb-4">Basic Stats (No Progress):</Text>
+                  <Grid columns={3} spacing="lg">
+                    <Stats 
+                      value={47} 
+                      label="Total Manuals" 
+                      subtitle="+3 This Month"
+                      size="lg" 
+                      color="primary"
+                    />
+                    <Stats 
+                      value="$2,340" 
+                      label="Saved This Year" 
+                      subtitle="vs $1,890 last year"
+                      size="md" 
+                      color="accent"
+                    />
+                    <Stats 
+                      value={12} 
+                      label="Due This Week" 
+                      subtitle="3 overdue"
+                      size="sm" 
+                      color="error"
+                    />
+                  </Grid>
+                </div>
+
+                <div>
+                  <Text variant="label" weight="bold" className="block mb-4">Equipment Health with Progress:</Text>
+                  <Grid columns={3} spacing="lg">
+                    <Stats 
+                      value="94%" 
+                      label="HVAC System Health" 
+                      subtitle="Last service: 2 months ago"
+                      size="lg" 
+                      color="accent"
+                      progressValue={94}
+                      progressColor="accent"
+                    />
+                    <Stats 
+                      value="67%" 
+                      label="Pool Equipment" 
+                      subtitle="Filter needs attention"
+                      size="md" 
+                      color="primary"
+                      progressValue={67}
+                      progressColor="primary"
+                    />
+                    <Stats 
+                      value="23%" 
+                      label="Kitchen Appliances" 
+                      subtitle="Multiple issues"
+                      size="sm" 
+                      color="error"
+                      progressValue={23}
+                      progressColor="error"
+                    />
+                  </Grid>
+                </div>
+
+                <div>
+                  <Text variant="label" weight="bold" className="block mb-4">Task Completion Progress:</Text>
+                  <Grid columns={4} spacing="lg">
+                    <Stats 
+                      value="8/10" 
+                      label="Daily Tasks" 
+                      subtitle="Almost done!"
+                      size="md" 
+                      color="accent"
+                      progressValue={80}
+                      progressColor="accent"
+                    />
+                    <Stats 
+                      value="15/25" 
+                      label="Weekly Tasks" 
+                      subtitle="On track"
+                      size="md" 
+                      color="secondary"
+                      progressValue={60}
+                      progressColor="secondary"
+                    />
+                    <Stats 
+                      value="3/20" 
+                      label="Monthly Goals" 
+                      subtitle="Need to catch up"
+                      size="md" 
+                      color="primary"
+                      progressValue={15}
+                      progressColor="primary"
+                    />
+                    <Stats 
+                      value="12/12" 
+                      label="Annual Tasks" 
+                      subtitle="Complete!"
+                      size="md" 
+                      color="accent"
+                      progressValue={100}
+                      progressColor="accent"
+                    />
+                  </Grid>
+                </div>
+
+                <div>
+                  <Text variant="label" weight="bold" className="block mb-4">Different Progress Colors:</Text>
+                  <Grid columns={4} spacing="lg">
+                    <Stats 
+                      value="85%" 
+                      label="Success Metric" 
+                      subtitle="Excellent performance"
+                      size="sm" 
+                      color="accent"
+                      progressValue={85}
+                      progressColor="accent"
+                    />
+                    <Stats 
+                      value="45%" 
+                      label="Warning Zone" 
+                      subtitle="Needs attention"
+                      size="sm" 
+                      color="primary"
+                      progressValue={45}
+                      progressColor="primary"
+                    />
+                    <Stats 
+                      value="15%" 
+                      label="Critical Status" 
+                      subtitle="Immediate action"
+                      size="sm" 
+                      color="error"
+                      progressValue={15}
+                      progressColor="error"
+                    />
+                    <Stats 
+                      value="72%" 
+                      label="Information" 
+                      subtitle="Regular status"
+                      size="sm" 
+                      color="secondary"
+                      progressValue={72}
+                      progressColor="secondary"
+                    />
+                  </Grid>
+                </div>
+
+                <div>
+                  <Text variant="label" weight="bold" className="block mb-4">Size Variants with Progress:</Text>
+                  <div className="space-y-6">
+                    <Stats 
+                      value="92%" 
+                      label="Extra Large Display" 
+                      subtitle="Prominent dashboard metric"
+                      size="xl" 
+                      color="primary"
+                      progressValue={92}
+                      progressColor="primary"
+                    />
+                    <Stats 
+                      value="78%" 
+                      label="Large Dashboard Stat" 
+                      subtitle="Main section display"
+                      size="lg" 
+                      color="accent"
+                      progressValue={78}
+                      progressColor="accent"
+                    />
+                    <Stats 
+                      value="64%" 
+                      label="Medium Card Metric" 
+                      subtitle="Standard component size"
+                      size="md" 
+                      color="secondary"
+                      progressValue={64}
+                      progressColor="secondary"
+                    />
+                    <Stats 
+                      value="41%" 
+                      label="Small Inline Stat" 
+                      subtitle="Compact display"
+                      size="sm" 
+                      color="primary"
+                      progressValue={41}
+                      progressColor="primary"
+                    />
+                    <Stats 
+                      value="29%" 
+                      label="Extra Small" 
+                      subtitle="Minimal space"
+                      size="xs" 
+                      color="error"
+                      progressValue={29}
+                      progressColor="error"
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
 
             <div>
@@ -973,20 +1154,20 @@ Last Service: 2024-06-15
                 Manage household members and their permissions.
               </Text>
               <div className="space-y-4">
-                <ListItem
+                <SimpleListItem
                   title="John Smith (Admin)"
                   subtitle="john@example.com • Joined 2 months ago"
                   status="completed"
                 >
                   <Action variant="outline">Edit Permissions</Action>
-                </ListItem>
-                <ListItem
+                </SimpleListItem>
+                <SimpleListItem
                   title="Sarah Smith"
                   subtitle="sarah@example.com • Joined 1 month ago"
                 >
                   <Action variant="primary">Manage</Action>
                   <Action variant="outline">Remove</Action>
-                </ListItem>
+                </SimpleListItem>
               </div>
               <Button variant="primary" className="mt-4">
                 Invite New Member
@@ -1547,28 +1728,28 @@ Last Service: 2024-06-15
           <SectionTitle className="mb-8">List Items</SectionTitle>
         <Card variant="default" shadow="triple" className="p-8 mb-12">
           <div className="space-y-4">
-            <ListItem
+            <SimpleListItem
               title="Review House Rules"
               subtitle="Last updated 2 days ago"
             >
               <Action variant="primary" onClick={() => alert('Edit clicked')}>Edit</Action>
-            </ListItem>
-            <ListItem
+            </SimpleListItem>
+            <SimpleListItem
               title="Complete Monthly Budget"
               subtitle="Due in 3 days"
               status="urgent"
             >
               <Action variant="danger" onClick={() => alert('Complete clicked')}>Complete Now</Action>
               <Action variant="outline" onClick={() => alert('Postpone clicked')}>Postpone</Action>
-            </ListItem>
-            <ListItem
+            </SimpleListItem>
+            <SimpleListItem
               title="Schedule Maintenance"
               subtitle="HVAC check completed"
               status="completed"
             >
               <Action variant="outline" onClick={() => alert('View details clicked')}>View Details</Action>
-            </ListItem>
-            <ListItem
+            </SimpleListItem>
+            <SimpleListItem
               title="Update Emergency Contacts"
               subtitle="Requires attention"
               status="info"
@@ -1576,6 +1757,446 @@ Last Service: 2024-06-15
               onClick={() => alert('List item clicked')}
             />
           </div>
+        </Card>
+        </section>
+
+        {/* New List Items Section */}
+        <section id="new-list-items">
+          <SectionTitle className="mb-8">New List Items (Compound Components)</SectionTitle>
+        <Card variant="default" shadow="triple" className="p-8 mb-12">
+          <Text variant="body" className="mb-6">
+            NewListItem uses the compound component pattern for flexible layouts. It conditionally renders 
+            avatar, badges, and actions based on which compound components are provided as children.
+          </Text>
+
+          <SubSectionTitle className="mb-6">Basic Usage</SubSectionTitle>
+          <div className="space-y-4 mb-8">
+            <ListItem title="Simple Task" subtitle="Basic description">
+              <ListItem.Actions>
+                <Action variant="primary">Complete</Action>
+              </ListItem.Actions>
+            </ListItem>
+
+            <ListItem title="Task with Badge" subtitle="Shows status indicator">
+              <ListItem.Badge variant="primary">In Progress</ListItem.Badge>
+              <ListItem.Actions>
+                <Action variant="primary">Continue</Action>
+                <Action variant="outline">Pause</Action>
+              </ListItem.Actions>
+            </ListItem>
+          </div>
+
+          <SubSectionTitle className="mb-6">Member List Examples</SubSectionTitle>
+          <div className="space-y-4 mb-8">
+            <ListItem title="John Smith" subtitle="john@example.com • Admin" status="completed">
+              <ListItem.Avatar color="primary">JS</ListItem.Avatar>
+              <ListItem.Badge variant="accent">Admin</ListItem.Badge>
+              <ListItem.Actions>
+                <Action variant="outline">Edit Permissions</Action>
+              </ListItem.Actions>
+            </ListItem>
+
+            <ListItem title="Sarah Johnson" subtitle="sarah@example.com • Member">
+              <ListItem.Avatar color="secondary">SJ</ListItem.Avatar>
+              <ListItem.Badge variant="secondary">Member</ListItem.Badge>
+              <ListItem.Actions>
+                <Action variant="primary">Manage</Action>
+                <Action variant="outline">Remove</Action>
+              </ListItem.Actions>
+            </ListItem>
+
+            <ListItem title="Mike Wilson (Pending)" subtitle="mike.wilson@example.com • Invited 2 days ago" status="urgent">
+              <ListItem.Avatar color="default">MW</ListItem.Avatar>
+              <ListItem.Badge variant="danger">Pending</ListItem.Badge>
+              <ListItem.Actions>
+                <Action variant="primary">Resend Invite</Action>
+                <Action variant="outline">Cancel</Action>
+              </ListItem.Actions>
+            </ListItem>
+          </div>
+
+          <SubSectionTitle className="mb-6">Task/Equipment Examples</SubSectionTitle>
+          <div className="space-y-4 mb-8">
+            <ListItem title="HVAC Filter Change" subtitle="Carrier Air Handler • Basement" status="urgent">
+              <ListItem.Avatar color="secondary">🔥</ListItem.Avatar>
+              <ListItem.Badge variant="danger">5 Days Overdue</ListItem.Badge>
+              <ListItem.Actions>
+                <Action variant="primary">Mark Complete</Action>
+                <Action variant="outline">Reschedule</Action>
+              </ListItem.Actions>
+            </ListItem>
+
+            <ListItem title="Pool Chemical Test" subtitle="Backyard Pool • Weekly maintenance" status="info">
+              <ListItem.Avatar color="accent">🏊</ListItem.Avatar>
+              <ListItem.Badge variant="secondary">Weekly</ListItem.Badge>
+              <ListItem.Badge variant="accent">Due Soon</ListItem.Badge>
+              <ListItem.Actions>
+                <Action variant="primary">Complete</Action>
+                <Action variant="outline">View History</Action>
+              </ListItem.Actions>
+            </ListItem>
+
+            <ListItem title="Dishwasher Deep Clean" subtitle="Kitchen • Monthly task" status="completed">
+              <ListItem.Avatar color="primary">🍽️</ListItem.Avatar>
+              <ListItem.Badge variant="success">Completed</ListItem.Badge>
+              <ListItem.Actions>
+                <Action variant="outline">View Report</Action>
+                <Action variant="outline">Schedule Next</Action>
+              </ListItem.Actions>
+            </ListItem>
+          </div>
+
+          <SubSectionTitle className="mb-6">Notification Examples</SubSectionTitle>
+          <div className="space-y-4 mb-8">
+            <ListItem title="Task Reminder" subtitle="HVAC filter change is overdue" status="urgent">
+              <ListItem.Avatar color="danger">⚠️</ListItem.Avatar>
+              <ListItem.Badge variant="danger">Urgent</ListItem.Badge>
+              <ListItem.Actions>
+                <Action variant="primary">View Task</Action>
+                <Action variant="outline">Dismiss</Action>
+              </ListItem.Actions>
+            </ListItem>
+
+            <ListItem title="New Member Joined" subtitle="Sarah Johnson joined your household" status="completed">
+              <ListItem.Avatar color="accent">👋</ListItem.Avatar>
+              <ListItem.Badge variant="success">New</ListItem.Badge>
+              <ListItem.Actions>
+                <Action variant="primary">Welcome</Action>
+                <Action variant="outline">View Profile</Action>
+              </ListItem.Actions>
+            </ListItem>
+
+            <ListItem title="System Update" subtitle="HomeKeeper v2.1 is now available" status="info">
+              <ListItem.Avatar color="primary">🔄</ListItem.Avatar>
+              <ListItem.Badge variant="primary">Update</ListItem.Badge>
+              <ListItem.Actions>
+                <Action variant="primary">Update Now</Action>
+                <Action variant="outline">Learn More</Action>
+              </ListItem.Actions>
+            </ListItem>
+          </div>
+
+          <SubSectionTitle className="mb-6">History/Activity Examples</SubSectionTitle>
+          <div className="space-y-4 mb-8">
+            <ListItem title="Task Completed" subtitle="Pool chemical test • 2 hours ago">
+              <ListItem.Avatar color="accent">✅</ListItem.Avatar>
+              <ListItem.Badge variant="success">Completed</ListItem.Badge>
+              <ListItem.Actions>
+                <Action variant="outline">View Details</Action>
+              </ListItem.Actions>
+            </ListItem>
+
+            <ListItem title="Manual Uploaded" subtitle="Samsung refrigerator manual • Yesterday">
+              <ListItem.Avatar color="primary">📄</ListItem.Avatar>
+              <ListItem.Badge variant="secondary">PDF</ListItem.Badge>
+              <ListItem.Actions>
+                <Action variant="primary">View Manual</Action>
+                <Action variant="outline">Share</Action>
+              </ListItem.Actions>
+            </ListItem>
+
+            <ListItem title="Member Activity" subtitle="John Smith updated 3 tasks • 3 days ago">
+              <ListItem.Avatar color="secondary">👤</ListItem.Avatar>
+              <ListItem.Badge variant="accent">Batch Update</ListItem.Badge>
+              <ListItem.Actions>
+                <Action variant="outline">View Changes</Action>
+              </ListItem.Actions>
+            </ListItem>
+          </div>
+
+          <SubSectionTitle className="mb-6">Status Variants</SubSectionTitle>
+          <div className="space-y-4 mb-8">
+            <ListItem title="Default Status" subtitle="No special border styling">
+              <ListItem.Avatar color="default">📋</ListItem.Avatar>
+              <ListItem.Actions>
+                <Action variant="outline">View</Action>
+              </ListItem.Actions>
+            </ListItem>
+
+            <ListItem title="Urgent Status" subtitle="Red left border for high priority" status="urgent">
+              <ListItem.Avatar color="danger">🚨</ListItem.Avatar>
+              <ListItem.Badge variant="danger">Urgent</ListItem.Badge>
+              <ListItem.Actions>
+                <Action variant="primary">Handle Now</Action>
+              </ListItem.Actions>
+            </ListItem>
+
+            <ListItem title="Completed Status" subtitle="Green left border for finished items" status="completed">
+              <ListItem.Avatar color="accent">✅</ListItem.Avatar>
+              <ListItem.Badge variant="success">Done</ListItem.Badge>
+              <ListItem.Actions>
+                <Action variant="outline">View Report</Action>
+              </ListItem.Actions>
+            </ListItem>
+
+            <ListItem title="Info Status" subtitle="Blue left border for informational items" status="info">
+              <ListItem.Avatar color="secondary">ℹ️</ListItem.Avatar>
+              <ListItem.Badge variant="secondary">Info</ListItem.Badge>
+              <ListItem.Actions>
+                <Action variant="outline">Learn More</Action>
+              </ListItem.Actions>
+            </ListItem>
+          </div>
+
+          <SubSectionTitle className="mb-6">Interactive Examples</SubSectionTitle>
+          <div className="space-y-4">
+            <ListItem 
+              title="Clickable Item" 
+              subtitle="Entire item is clickable with hover effects"
+              hover
+              onClick={() => alert('NewListItem clicked!')}
+            >
+              <ListItem.Avatar color="primary">🖱️</ListItem.Avatar>
+              <ListItem.Badge variant="primary">Interactive</ListItem.Badge>
+            </ListItem>
+
+            <ListItem 
+              title="Mixed Interactions" 
+              subtitle="Item click + individual actions"
+              onClick={() => alert('Item background clicked!')}
+            >
+              <ListItem.Avatar color="secondary">🎯</ListItem.Avatar>
+              <ListItem.Badge variant="secondary">Mixed</ListItem.Badge>
+              <ListItem.Actions>
+                <Action variant="primary" onClick={(e) => { e.stopPropagation(); alert('Action clicked!'); }}>
+                  Action Button
+                </Action>
+              </ListItem.Actions>
+            </ListItem>
+          </div>
+
+          <SubSectionTitle className="mb-6">Shadow Control Examples</SubSectionTitle>
+          <Text variant="body" size="sm" className="mb-4">
+            Buttons automatically size their shadows based on button size. Use shadow=false for cleaner list layouts.
+          </Text>
+          <div className="space-y-4">
+            <ListItem title="Default Shadows" subtitle="Standard button shadows based on size">
+              <ListItem.Avatar color="primary">⚡</ListItem.Avatar>
+              <ListItem.Badge variant="secondary">Default</ListItem.Badge>
+              <ListItem.Actions>
+                <Action variant="primary">Primary (sm shadow)</Action>
+                <Action variant="outline">Outline (no shadow)</Action>
+              </ListItem.Actions>
+            </ListItem>
+
+            <ListItem title="No Shadows" subtitle="Cleaner appearance for list contexts">
+              <ListItem.Avatar color="secondary">🎯</ListItem.Avatar>
+              <ListItem.Badge variant="primary">No Shadow</ListItem.Badge>
+              <ListItem.Actions>
+                <Action variant="primary" shadow={false}>Primary (no shadow)</Action>
+                <Action variant="secondary" shadow={false}>Secondary (no shadow)</Action>
+                <Action variant="outline">Outline (already no shadow)</Action>
+              </ListItem.Actions>
+            </ListItem>
+
+            <ListItem title="Mixed Shadow Usage" subtitle="Demonstrating selective shadow control">
+              <ListItem.Avatar color="accent">🔀</ListItem.Avatar>
+              <ListItem.Badge variant="accent">Mixed</ListItem.Badge>
+              <ListItem.Actions>
+                <Action variant="primary" shadow={false}>No Shadow</Action>
+                <Action variant="secondary">With Shadow</Action>
+                <Action variant="outline">Natural (no shadow)</Action>
+              </ListItem.Actions>
+            </ListItem>
+          </div>
+        </Card>
+        </section>
+
+        {/* Media Cards Section */}
+        <section id="media-cards">
+          <SectionTitle className="mb-8">Media Cards (Compound Components)</SectionTitle>
+        <Card variant="default" shadow="triple" className="p-8 mb-12">
+          <Text variant="body" className="mb-6">
+            MediaCard uses compound components for flexible card layouts. Designed as a container 
+            for other interactive elements rather than being interactive itself. Perfect for grid displays.
+          </Text>
+
+          <SubSectionTitle className="mb-6">Manual Cards</SubSectionTitle>
+          <Grid columns={3} spacing="lg" className="mb-8">
+            <MediaCard title="Samsung Refrigerator" subtitle="Model: RF28T5001SR" variant="default">
+              <MediaCard.Badge variant="secondary">Kitchen</MediaCard.Badge>
+              <p className="text-sm mb-4">30-page manual covering installation, operation, and maintenance procedures.</p>
+              <Button variant="primary" size="sm">View Manual</Button>
+            </MediaCard>
+
+            <MediaCard title="Carrier HVAC System" subtitle="Model: 25HCB6 • Basement" variant="primary">
+              <MediaCard.Avatar color="secondary">🔥</MediaCard.Avatar>
+              <MediaCard.Badge variant="accent">PDF</MediaCard.Badge>
+              <p className="text-sm mb-4 text-white">Installation and service manual for central air conditioning unit.</p>
+              <Button variant="outline" size="sm">Download PDF</Button>
+            </MediaCard>
+
+            <MediaCard title="Pool Pump Manual" subtitle="Hayward Super Pump" variant="accent" rotation="slight-left">
+              <MediaCard.Avatar color="primary">🏊</MediaCard.Avatar>
+              <MediaCard.Badge variant="primary">Maintenance</MediaCard.Badge>
+              <p className="text-sm mb-4 text-white">Complete guide for pool pump operation and troubleshooting.</p>
+              <div className="flex gap-2">
+                <Button variant="outline" size="sm">View</Button>
+                <Button variant="outline" size="sm">Share</Button>
+              </div>
+            </MediaCard>
+          </Grid>
+
+          <SubSectionTitle className="mb-6">Equipment Display Cards</SubSectionTitle>
+          <Grid columns={2} spacing="lg" className="mb-8">
+            <MediaCard title="HVAC System Status" subtitle="Carrier FV4CNF006 • Basement" variant="secondary" shadow="primary">
+              <MediaCard.Avatar color="accent">🔥</MediaCard.Avatar>
+              <MediaCard.Badge variant="success">Healthy</MediaCard.Badge>
+              <div className="space-y-3">
+                <div className="text-white">
+                  <p className="text-sm font-bold">Last Maintenance: 3 months ago</p>
+                  <p className="text-sm">Next Service: Due in 2 months</p>
+                  <p className="text-sm">Filter Status: Good</p>
+                </div>
+                <div className="flex gap-2">
+                  <Button variant="outline" size="sm">Schedule Service</Button>
+                  <Button variant="outline" size="sm">View History</Button>
+                </div>
+              </div>
+            </MediaCard>
+
+            <MediaCard title="Pool Equipment" subtitle="Hayward System • Backyard" variant="dark" rotation="slight-right">
+              <MediaCard.Avatar color="secondary">🏊</MediaCard.Avatar>
+              <MediaCard.Badge variant="primary">Active</MediaCard.Badge>
+              <div className="space-y-3">
+                <div className="text-white">
+                  <p className="text-sm font-bold">Pump Status: Running</p>
+                  <p className="text-sm">Chemical Levels: Balanced</p>
+                  <p className="text-sm">Temperature: 78°F</p>
+                </div>
+                <div className="flex gap-2">
+                  <Button variant="primary" size="sm">Check Chemistry</Button>
+                  <Button variant="outline" size="sm">View Logs</Button>
+                </div>
+              </div>
+            </MediaCard>
+          </Grid>
+
+          <SubSectionTitle className="mb-6">Dashboard Stats Widgets</SubSectionTitle>
+          <Grid columns={3} spacing="lg" className="mb-8">
+            <MediaCard title="Active Tasks" subtitle="47 total items" variant="primary" rotation="slight-left" shadow="dark">
+              <MediaCard.Avatar color="accent">📋</MediaCard.Avatar>
+              <div className="text-center text-white">
+                <div className="text-4xl font-black mb-2">47</div>
+                <p className="text-sm">12 overdue • 35 upcoming</p>
+              </div>
+              <Button variant="outline" size="sm" className="mt-4">View All Tasks</Button>
+            </MediaCard>
+
+            <MediaCard title="Completed This Month" subtitle="Progress tracking" variant="accent" shadow="primary">
+              <MediaCard.Avatar color="primary">✅</MediaCard.Avatar>
+              <div className="text-center text-white">
+                <div className="text-4xl font-black mb-2">23</div>
+                <p className="text-sm">↑ 15% from last month</p>
+              </div>
+              <Button variant="outline" size="sm" className="mt-4">View Report</Button>
+            </MediaCard>
+
+            <MediaCard title="Equipment Health" subtitle="Overall system status" variant="secondary" rotation="slight-right">
+              <MediaCard.Avatar color="accent">⚙️</MediaCard.Avatar>
+              <MediaCard.Badge variant="success">Good</MediaCard.Badge>
+              <div className="text-center text-white">
+                <div className="text-4xl font-black mb-2">94%</div>
+                <p className="text-sm">2 items need attention</p>
+              </div>
+              <Button variant="outline" size="sm" className="mt-4">View Details</Button>
+            </MediaCard>
+          </Grid>
+
+          <SubSectionTitle className="mb-6">Variant Showcase</SubSectionTitle>
+          <Grid columns={3} spacing="lg" className="mb-8">
+            <MediaCard title="Default Variant" subtitle="Light background" variant="default">
+              <MediaCard.Badge variant="secondary">Standard</MediaCard.Badge>
+              <p className="text-sm mb-4">Clean, minimal appearance for general content.</p>
+            </MediaCard>
+
+            <MediaCard title="Primary Variant" subtitle="Brand orange" variant="primary">
+              <MediaCard.Badge variant="accent">Featured</MediaCard.Badge>
+              <p className="text-sm mb-4 text-white">Eye-catching orange background for important content.</p>
+            </MediaCard>
+
+            <MediaCard title="Danger Variant" subtitle="Alert styling" variant="danger">
+              <MediaCard.Badge variant="secondary">Alert</MediaCard.Badge>
+              <p className="text-sm mb-4 text-white">Red background for warnings and critical information.</p>
+            </MediaCard>
+          </Grid>
+
+          <SubSectionTitle className="mb-6">Rotation & Shadow Effects</SubSectionTitle>
+          <Grid columns={4} spacing="lg" className="mb-8">
+            <MediaCard title="No Rotation" subtitle="Standard alignment" variant="accent" rotation="none">
+              <MediaCard.Avatar color="primary">📐</MediaCard.Avatar>
+            </MediaCard>
+
+            <MediaCard title="Slight Left" subtitle="Subtle tilt" variant="primary" rotation="slight-left">
+              <MediaCard.Avatar color="accent">↺</MediaCard.Avatar>
+            </MediaCard>
+
+            <MediaCard title="Slight Right" subtitle="Gentle angle" variant="secondary" rotation="slight-right">
+              <MediaCard.Avatar color="danger">↻</MediaCard.Avatar>
+            </MediaCard>
+
+            <MediaCard title="Left Rotation" subtitle="More pronounced" variant="danger" rotation="left">
+              <MediaCard.Avatar color="secondary">🔄</MediaCard.Avatar>
+            </MediaCard>
+          </Grid>
+
+          <SubSectionTitle className="mb-6">Complex Content Examples</SubSectionTitle>
+          <Grid columns={2} spacing="lg" className="mb-8">
+            <MediaCard title="Task Assignment Card" subtitle="Multi-member collaboration" variant="default" shadow="dark">
+              <MediaCard.Badge variant="primary">Team Task</MediaCard.Badge>
+              <div className="space-y-3">
+                <p className="text-sm">Assigned to: John, Sarah, Mike</p>
+                <div className="flex -space-x-2">
+                  <div className="w-8 h-8 bg-primary text-white text-xs font-bold rounded border-2 border-white flex items-center justify-center">J</div>
+                  <div className="w-8 h-8 bg-secondary text-white text-xs font-bold rounded border-2 border-white flex items-center justify-center">S</div>
+                  <div className="w-8 h-8 bg-accent text-white text-xs font-bold rounded border-2 border-white flex items-center justify-center">M</div>
+                </div>
+                <div className="flex gap-2">
+                  <Button variant="primary" size="sm">Assign More</Button>
+                  <Button variant="outline" size="sm">View Details</Button>
+                </div>
+              </div>
+            </MediaCard>
+
+            <MediaCard title="Maintenance Schedule" subtitle="Upcoming service dates" variant="secondary" rotation="slight-left">
+              <MediaCard.Avatar color="primary">📅</MediaCard.Avatar>
+              <MediaCard.Badge variant="accent">Scheduled</MediaCard.Badge>
+              <div className="space-y-2 text-white">
+                <div className="text-sm">
+                  <span className="font-bold">Next:</span> HVAC Filter (Mar 15)
+                </div>
+                <div className="text-sm">
+                  <span className="font-bold">Upcoming:</span> Pool Service (Mar 20)
+                </div>
+                <div className="text-sm">
+                  <span className="font-bold">Later:</span> Appliance Check (Apr 1)
+                </div>
+                <Button variant="outline" size="sm" className="mt-3">Manage Schedule</Button>
+              </div>
+            </MediaCard>
+          </Grid>
+
+          <SubSectionTitle className="mb-6">Badge Combinations</SubSectionTitle>
+          <Grid columns={3} spacing="lg">
+            <MediaCard title="Multiple Badges" subtitle="Various status indicators" variant="default">
+              <MediaCard.Badge variant="primary">Priority</MediaCard.Badge>
+              <MediaCard.Badge variant="secondary">HVAC</MediaCard.Badge>
+              <MediaCard.Badge variant="success">Completed</MediaCard.Badge>
+              <p className="text-sm mt-3">Cards can display multiple badges that automatically wrap.</p>
+            </MediaCard>
+
+            <MediaCard title="Category Tags" subtitle="Organized by type" variant="primary">
+              <MediaCard.Badge variant="accent">Kitchen</MediaCard.Badge>
+              <MediaCard.Badge variant="secondary">Appliance</MediaCard.Badge>
+              <p className="text-sm mt-3 text-white">Use badges to categorize and filter content.</p>
+            </MediaCard>
+
+            <MediaCard title="Status Indicators" subtitle="Current state display" variant="accent">
+              <MediaCard.Badge variant="danger">Overdue</MediaCard.Badge>
+              <MediaCard.Badge variant="primary">High Priority</MediaCard.Badge>
+              <p className="text-sm mt-3 text-white">Visual status helps users quickly identify important items.</p>
+            </MediaCard>
+          </Grid>
         </Card>
         </section>
 
@@ -1648,7 +2269,7 @@ Last Service: 2024-06-15
 
             <div>
               <Text variant="label" weight="bold" className="block mb-3">ListItem with multiple Actions:</Text>
-              <ListItem
+              <SimpleListItem
                 title="Multiple Actions Example"
                 subtitle="Shows how multiple actions work together"
                 status="info"
@@ -1656,7 +2277,7 @@ Last Service: 2024-06-15
                 <Action variant="primary" onClick={() => alert('Approve')}>Approve</Action>
                 <Action variant="danger" onClick={() => alert('Reject')}>Reject</Action>
                 <Action variant="outline" onClick={() => alert('Comment')}>Comment</Action>
-              </ListItem>
+              </SimpleListItem>
             </div>
           </div>
         </Card>

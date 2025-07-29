@@ -2,7 +2,9 @@ import { Alert } from '../../components/common/Alert';
 import { Button } from '../../components/common/Button';
 import { Card } from '../../components/common/Card';
 import { Code } from '../../components/common/Code';
+import { MediaCard } from '../../components/common/MediaCard';
 import { Text } from '../../components/common/Text';
+import { Title } from '../../components/common/Title';
 import { Select, Option } from '../../components/form/Select';
 import { TextArea } from '../../components/form/TextArea';
 import { TextInput } from '../../components/form/TextInput';
@@ -24,16 +26,17 @@ export const SendNewInviteForm = () => {
   );
 };
 
-export interface InviteListItemProps {
+export interface InvitationProps {
   email: string;
   code: string;
   role: 'admin' | 'owner' | 'member' | 'guest';
   expirationDays: number;
   rotation?: 'none' | 'left' | 'right' | 'slight-left' | 'slight-right';
 }
-type variant_t = 'default' | 'subtle' | 'primary' | 'secondary' | 'accent' | 'danger' | 'dark';
-export const InviteListItem = ({email, code, role, rotation, expirationDays}: InviteListItemProps) => {
-  const VARIANTS_BY_ROLE: Record<HouseholdRoles, variant_t> = {
+type Variants = 'default' | 'primary' | 'secondary' | 'accent' | 'danger' | 'dark';
+
+export const Invitation = ({email, code, role, rotation, expirationDays}: InvitationProps) => {
+  const VARIANTS_BY_ROLE: Record<HouseholdRoles, Variants> = {
     owner: 'primary',
     admin: 'dark',
     member: 'secondary', 
@@ -43,10 +46,9 @@ export const InviteListItem = ({email, code, role, rotation, expirationDays}: In
   const cardVariant = VARIANTS_BY_ROLE[role];
 
   return (
-    <Card variant={cardVariant} rotation={rotation}>
+    <MediaCard title={email} variant={cardVariant} rotation={rotation}>
       <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
         <div className="flex-1">
-          <h3 className="font-black text-white uppercase text-sm md:text-lg">{email}</h3>
           <p className="text-white font-bold uppercase text-xs md:text-sm mt-2">
             Code: <Code size="xs">{code}</Code>
           </p>
@@ -59,7 +61,7 @@ export const InviteListItem = ({email, code, role, rotation, expirationDays}: In
           <Button variant="danger">Cancel</Button>
         </div>
       </div>
-    </Card>
+    </MediaCard>
   );
 };
 
@@ -67,16 +69,16 @@ export const InvitesSettings = () => {
   return (
     <Grid columns={2} spacing="lg">
       <Card shadow="double">
-        <h2 className="text-2xl md:text-3xl font-black uppercase mb-6 md:mb-8 text-text-primary">Send New Invite</h2>
+        <Title variant="section">Send New Invite</Title>
         <SendNewInviteForm />
       </Card>
       <Card shadow="double">
-        <h2 className="text-2xl md:text-3xl font-black uppercase mb-6 md:mb-8 text-text-primary">Pending Invitations</h2>
+        <Title variant="section">Pending Invitations</Title>
         <div className="space-y-8">
-          <InviteListItem email="emma@example.com" role="member" expirationDays={4} code="XYZ789AB" rotation="slight-left"/>
-          <InviteListItem email="tom@example.com" role="guest" expirationDays={6} code="QRS456CD" rotation="slight-right"/>
+          <Invitation email="emma@example.com" role="member" expirationDays={4} code="XYZ789AB" rotation="slight-left"/>
+          <Invitation email="tom@example.com" role="guest" expirationDays={6} code="QRS456CD" rotation="slight-right"/>
         </div>
-        <Alert className="mt-4 md:mt-6 p-3 md:p-4" variant="warning">
+        <Alert className="mt-8 md:mt-16 p-3 md:p-4" variant="info">
           <Text className="text-white">Invitation codes expire after 7 days. Resend if needed.</Text>
         </Alert>
       </Card>

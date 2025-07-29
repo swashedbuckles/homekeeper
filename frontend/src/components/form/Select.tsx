@@ -16,7 +16,7 @@ export { Option, type OptionProps } from './Option';
  */
 export interface SelectProps {
   /** Accessible label for the select field */
-  label: string;
+  label?: string;
   /** Option components that define the available choices */
   children?: AllowedOptionChildren;
   /** Placeholder text shown when no option is selected */
@@ -275,7 +275,7 @@ const getIconStyles = (size: StandardSize = 'md'): string => {
  */
 export const Select = forwardRef<HTMLInputElement, SelectProps>((props, ref) => {
   const { 
-    label, 
+    label='', 
     children,
     placeholder, 
     error, 
@@ -407,8 +407,15 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>((props, ref) => 
   const iconColor = variant === 'search' ? 'text-white' : 'text-text-primary';
   const hoverEffect = disabled ? 'none' : 'press-small';
 
+  const getContainerMargin = (grouped: boolean, size: StandardSize) => {
+    const full = grouped ? '' : 'w-full';
+    const margin = size === 'sm' || size === 'xs' ? 'mb-2' : 'mb-4';
+
+    return `${full} ${margin}`;
+  };
+
   return (
-    <div className={grouped ? 'mb-4' : 'w-full mb-4'}>
+    <div className={getContainerMargin(grouped ?? false, size)}>
       <label
         htmlFor={selectId}
         className="block font-mono font-black text-text-primary uppercase mb-2 text-lg tracking-wide"
