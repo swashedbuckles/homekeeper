@@ -29,6 +29,16 @@ import type { ReactNode } from 'react';
  *   <Action variant="outline" onClick={handleReschedule}>Reschedule</Action>
  * </TaskCard>
  * ```
+ * 
+ * @example Controlling shadows for list item actions
+ * ```tsx
+ * <NewListItem title="Task Item" subtitle="Description">
+ *   <NewListItem.Actions>
+ *     <Action variant="primary" shadow={false}>No Shadow</Action>
+ *     <Action variant="outline">Default (no shadow for outline)</Action>
+ *   </NewListItem.Actions>
+ * </NewListItem>
+ * ```
  */
 export interface ActionProps extends Omit<ButtonProps, 'size'> {
   /** Button content */

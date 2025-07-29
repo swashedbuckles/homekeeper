@@ -12,6 +12,8 @@ export interface ButtonProps {
   variant?: 'primary' | 'secondary' | 'tertiary' | 'outline' | 'text' | 'danger' | 'accent';
   /** Size variant affecting padding, text size, and border thickness */
   size?: StandardSize;
+  /** Whether to show shadow - automatically sized based on button size */
+  shadow?: boolean;
   /** Whether the button is disabled and non-interactive */
   disabled?: boolean;
   /** Whether to display loading text and spinner */
@@ -50,46 +52,52 @@ const getSizeStyles = (size: StandardSize): string[] => [
   getSizeToken(size, 'border')
 ];
 
+// Shadow size mapping based on button size
+const getShadowClass = (size: StandardSize): string => {
+  const shadowMap = {
+    xs: 'brutal-shadow-dark-sm',
+    sm: 'brutal-shadow-dark-sm', 
+    md: 'brutal-shadow-dark',
+    lg: 'brutal-shadow-dark',
+    xl: 'brutal-shadow-dark'
+  };
+  return shadowMap[size];
+};
 
-// Variant styles - colors and borders
+
+// Variant styles - colors and borders (shadows applied conditionally)
 const variantStyles = {
   primary: [
     'bg-primary',
     'text-white',
-    'border-text-primary',
-    'brutal-shadow-dark'
+    'border-text-primary'
   ],
   secondary: [
     'bg-secondary',
     'text-white',
-    'border-text-primary',
-    'brutal-shadow-dark'
+    'border-text-primary'
   ],
   tertiary: [
     'bg-white',
     'text-text-primary',
-    'border-text-primary',
-    'brutal-shadow-dark',
+    'border-text-primary'
   ],
   outline: [
     'bg-transparent',
     'text-text-primary',
     'border-text-primary',
-    // 'brutal-shadow-dark',
     'hover:bg-text-primary',
     'hover:text-white'
   ],
   danger: [
     'bg-error',
     'text-white',
-    'border-text-primary',
-    'brutal-shadow-dark'
+    'border-text-primary'
   ],
   accent: [
     'bg-accent',
     'text-white',
-    'border-text-primary',
-    'brutal-shadow-dark'
+    'border-text-primary'
   ],
   text: [
     'bg-transparent',
@@ -148,6 +156,7 @@ const variantStyles = {
  *   - `danger`: Red background, destructive actions
  *   - `text`: No background/border, minimal styling
  * @param size - Button size affecting padding and text size
+ * @param shadow - Whether to show shadow (auto-sized: sm for xs/sm buttons, lg for md/lg/xl)
  * @param loading - Shows spinner and loading text, disables interaction
  * @param loadingText - Custom text to show during loading state
  * @param full - Expands button to full width of container
@@ -161,6 +170,7 @@ const variantStyles = {
 export const Button = ({
   variant = 'primary',
   size = 'md',
+  shadow,
   disabled = false,
   loading = false,
   loadingText = 'Loading...',
@@ -173,12 +183,20 @@ export const Button = ({
 }: ButtonProps) => {
   const isDisabled = disabled || loading;
 
+  // Determine if shadow should be applied
+  // Default to shadow for most variants, except outline and text which default to no shadow
+  const shouldShowShadow = shadow !== undefined 
+    ? shadow 
+    : variant !== 'outline' && variant !== 'text';
 
   // Handle disabled state - override hover effects
   const disabledStyles = isDisabled ? [
     '!hover:transform-none',
     '!hover:shadow-[var(--shadow-brutal-lg)_var(--shadow-dark)]'
   ] : [];
+
+  // Apply shadow based on button size if shadow is enabled
+  const shadowStyles = shouldShowShadow ? [getShadowClass(size)] : [];
 
   const hoverEffect = (size === 'xs' || size === 'sm') ? 'press-small' : 'press';
   const hoverClass  = !isDisabled ? getHoverEffectClass(hoverEffect) : '';
@@ -187,6 +205,7 @@ export const Button = ({
     ...baseStyles,
     ...getSizeStyles(size),
     ...variantStyles[variant],
+    ...shadowStyles,
     ...disabledStyles,
     hoverClass,
     full ? 'w-full' : '',

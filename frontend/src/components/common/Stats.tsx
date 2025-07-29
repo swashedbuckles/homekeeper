@@ -1,5 +1,6 @@
 import { type StandardColor, getTextColor } from '../../lib/design-system/colors';
 import { type StandardSize, getSizeToken } from '../../lib/design-system/sizes';
+import { ProgressBar } from './ProgressBar';
 import type { ReactNode } from 'react';
 
 type StatsSize = StandardSize;
@@ -10,33 +11,72 @@ type StatsColor = StandardColor;
  * 
  * Displays large numeric values with labels in brutal design style.
  * Perfect for dashboard statistics, counts, and key metrics.
- * Uses large, bold typography with optional color variants.
+ * Uses large, bold typography with optional color variants and progress indicators.
  * 
- * @example
+ * @example Basic stat
  * ```tsx
- * // Large stat for dashboard
  * <Stats value={47} label="Total Manuals" size="large" />
+ * ```
  * 
- * // Currency stat with color
- * <Stats value="$2,340" label="Saved This Year" color="accent" />
+ * @example Stat with progress bar
+ * ```tsx
+ * <Stats 
+ *   value="94%" 
+ *   label="Equipment Health" 
+ *   progressValue={94}
+ *   progressColor="accent"
+ * />
+ * ```
  * 
- * // Small stat with subtitle
+ * @example Complex stat with subtitle and progress
+ * ```tsx
  * <Stats 
  *   value={12} 
  *   label="Due This Week" 
  *   subtitle="+3 from last week"
  *   size="small" 
- *   color="error" 
+ *   color="error"
+ *   progressValue={75}
+ *   progressColor="primary"
  * />
  * ```
  */
 export interface StatsProps {
+  /** The main value to display (number, string, or React component) */
   value: ReactNode;
+  
+  /** Label text displayed below the value */
   label: string;
+  
+  /** Optional subtitle text displayed below the label */
   subtitle?: string;
+  
+  /** Size variant controlling text size and spacing */
   size?: StatsSize;
+  
+  /** Color theme for the value text */
   color?: StatsColor;
+  
+  /** 
+   * Optional progress value (0-100) to display a progress bar below the content.
+   * When provided, shows a progress indicator for completion percentages,
+   * health scores, or other metrics that have a completion state.
+   */
+  progressValue?: number;
+  
+  /** 
+   * Color theme for the progress bar
+   * - `accent`: Green progress bar for positive metrics (health, completion)
+   * - `primary`: Orange progress bar for caution metrics (due soon, medium health)
+   * - `error`: Red progress bar for urgent metrics (overdue, critical health)  
+   * - `secondary`: Blue progress bar for informational metrics
+   */
+  progressColor?: StandardColor;
+  
+  /** Additional CSS classes to apply to the root element */
   className?: string;
+  
+  /** Test identifier for automated testing. Defaults to 'stats' */
   testId?: string;
 }
 
@@ -84,12 +124,15 @@ const getColorStyles = (color: StandardColor) => ({
   subtitle: color === 'white' ? 'text-white/80': getTextColor('secondary')
 });
 
+
 export const Stats = ({
   value,
   label,
   subtitle,
   size = 'md',
   color = 'primary',
+  progressValue,
+  progressColor = 'primary',
   className = '',
   testId = 'stats'
 }: StatsProps) => {
@@ -135,6 +178,16 @@ export const Stats = ({
       {subtitle && (
         <div className={subtitleClassName}>
           {subtitle}
+        </div>
+      )}
+      {progressValue !== undefined && (
+        <div className="mt-4">
+          <ProgressBar 
+            value={progressValue}
+            variant={progressColor}
+            size="xs"
+            showPercentage={false}
+          />
         </div>
       )}
     </div>
