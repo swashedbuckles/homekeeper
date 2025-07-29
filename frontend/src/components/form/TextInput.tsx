@@ -113,12 +113,20 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>((props, re
     'focus:brutal-shadow-error'
   ] : [];
 
+  const disabledStyles = inputProps.disabled ? [
+    'bg-background',
+    'text-text-secondary',
+    'cursor-not-allowed',
+    'opacity-60'
+  ] : [];
+
   const inputStyles = [
     ...(grouped ? [] : ['w-full']),
     ...baseStyles,
     ...getSizeStyles(size || 'md'),
     ...variantStyles[variant || 'default'],
     ...errorStyles,
+    ...disabledStyles,
     className
   ].filter(Boolean).join(' ');
 
