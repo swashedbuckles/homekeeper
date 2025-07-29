@@ -42,7 +42,7 @@ import { validateActionChildren, type AllowedActionChildren } from '../../lib/va
  * </ListItem>
  * ```
  */
-export interface ListItemProps {
+export interface SimpleListItemProps {
   title: string;
   subtitle?: string;
   children?: AllowedActionChildren; // ← TypeScript validation for Action/Button children only
@@ -53,7 +53,7 @@ export interface ListItemProps {
   testId?: string;
 }
 
-export const ListItem = ({
+export const SimpleListItem = ({
   title,
   subtitle,
   children,
@@ -62,7 +62,7 @@ export const ListItem = ({
   onClick,
   className = '',
   testId = 'list-item'
-}: ListItemProps) => {
+}: SimpleListItemProps) => {
   // Validate and extract action children
   const validatedActions = validateActionChildren(children, 'ListItem');
   const isClickable = onClick || hover;
@@ -124,4 +124,4 @@ export const ListItem = ({
 };
 
 // Add displayName for better debugging
-ListItem.displayName = 'ListItem';
+SimpleListItem.displayName = 'ListItem';
