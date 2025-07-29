@@ -33,7 +33,8 @@ describe('ListItem (Compound Component)', () => {
       const { container } = render(<ListItem {...defaultProps} />);
       
       const wrapper = container.firstChild as HTMLElement;
-      expect(wrapper).toHaveClass('flex', 'items-center', 'justify-between', 'p-4', 'md:p-6', 'bg-white', 'font-mono');
+      expect(wrapper).toHaveClass('flex', 'flex-col', 'md:flex-row', 'items-start', 'md:items-center', 'justify-between');
+      expect(wrapper).toHaveClass('p-4', 'md:p-6', 'bg-white', 'font-mono');
     });
 
     it('applies correct title styling', () => {
@@ -390,7 +391,8 @@ describe('ListItem (Compound Component)', () => {
       
       const avatar = screen.getByText('AV');
       const avatarContainer = avatar.parentElement?.parentElement;
-      expect(avatarContainer).toHaveClass('flex items-center justify-between p-4 md:p-6 bg-white border-4 md:border-6 border-text-primary font-mono');
+      expect(avatarContainer).toHaveClass('flex', 'flex-col', 'md:flex-row', 'items-start', 'md:items-center', 'justify-between');
+      expect(avatarContainer).toHaveClass('p-4', 'md:p-6', 'bg-white', 'border-4', 'md:border-6', 'border-text-primary', 'font-mono');
     });
 
     it('handles responsive design classes correctly', () => {

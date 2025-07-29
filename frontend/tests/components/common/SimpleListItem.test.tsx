@@ -5,7 +5,7 @@ import { SimpleListItem } from '../../../src/components/common/SimpleListItem';
 import { Action } from '../../../src/components/common/Action';
 import { Button } from '../../../src/components/common/Button';
 
-describe('ListItem', () => {
+describe('SimpleListItem', () => {
   const defaultProps = {
     title: 'Test Action'
   };
@@ -75,7 +75,7 @@ describe('ListItem', () => {
     const { container } = render(<SimpleListItem {...defaultProps} />);
     
     const wrapper = container.firstChild as HTMLElement;
-    expect(wrapper).toHaveClass('flex', 'items-center', 'justify-between', 'p-6', 'bg-white', 'border-brutal-lg', 'border-text-primary', 'font-mono');
+    expect(wrapper).toHaveClass('flex', 'items-start', 'md:items-center', 'justify-between', 'p-6', 'bg-white', 'border-brutal-lg', 'border-text-primary', 'font-mono');
   });
 
   it('applies correct title styling', () => {

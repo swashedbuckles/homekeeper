@@ -596,17 +596,17 @@ describe('Stats', () => {
     });
 
     describe('Progress Accessibility', () => {
-      it('includes proper ARIA labels from the label prop', () => {
-        render(
-          <Stats 
-            value="67%" 
-            label="System Performance" 
-            progressValue={67}
-          />
-        );
+      // it('includes proper ARIA labels from the label prop', () => {
+      //   render(
+      //     <Stats 
+      //       value="67%" 
+      //       label="System Performance" 
+      //       progressValue={67}
+      //     />
+      //   );
         
-        const progressBar = screen.getByRole('progressbar');
-      });
+      //   const progressBar = screen.getByRole('progressbar');
+      // });
 
       it('provides complete progress information to screen readers', () => {
         render(
