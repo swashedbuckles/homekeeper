@@ -17,6 +17,7 @@ import { Button } from '../../components/common/Button';
 import { Card } from '../../components/common/Card';
 import { Code } from '../../components/common/Code';
 import { ListItem } from '../../components/common/ListItem';
+import { LoadingIndicator } from '../../components/common/LoadingIndicator';
 import { MediaCard } from '../../components/common/MediaCard';
 import { Modal } from '../../components/common/Modal';
 import { ProgressBar } from '../../components/common/ProgressBar';
@@ -72,6 +73,7 @@ const TableOfContents = () => {
     { id: 'forms', label: 'Form Components' },
     { id: 'tabs', label: 'Tabs' },
     { id: 'steps', label: 'Steps' },
+    { id: 'loading', label: 'Loading Indicators' },
     { id: 'progress', label: 'Progress Components' },
     { id: 'choices', label: 'Choice Components' },
     { id: 'alerts', label: 'Alerts' },
@@ -1392,6 +1394,84 @@ Last Service: 2024-06-15
             </div>
           </div>
         </Card>
+        </section>
+
+        {/* Loading Indicators Section */}
+        <section id="loading">
+          <SectionTitle className="mb-8">Loading Indicators</SectionTitle>
+          
+          <Card variant="default" shadow="triple" className="p-8 mb-8">
+            <SubSectionTitle className="mb-6">LoadingIndicator Component</SubSectionTitle>
+            <Text variant="body" className="mb-6">
+              Neo-brutalist loading indicators featuring chunky square pulsars with thick borders and bold colors.
+              Replaces traditional circular spinners with geometric shapes that match the brutal design aesthetic.
+            </Text>
+            
+            <div className="space-y-8">
+              <div>
+                <Text variant="label" weight="bold" className="block mb-4">Size Variants:</Text>
+                <div className="flex items-center gap-8">
+                  <div className="text-center">
+                    <LoadingIndicator size="sm" inline />
+                    <Text variant="caption" className="block mt-2">Small</Text>
+                  </div>
+                  <div className="text-center">
+                    <LoadingIndicator size="md" inline />
+                    <Text variant="caption" className="block mt-2">Medium (Default)</Text>
+                  </div>
+                  <div className="text-center">
+                    <LoadingIndicator size="lg" inline />
+                    <Text variant="caption" className="block mt-2">Large</Text>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <Text variant="label" weight="bold" className="block mb-4">Color Variants:</Text>
+                <div className="flex items-center gap-8">
+                  <div className="text-center">
+                    <LoadingIndicator variant="default" inline />
+                    <Text variant="caption" className="block mt-2">Default (Multi-color)</Text>
+                  </div>
+                  <div className="text-center">
+                    <LoadingIndicator variant="primary" inline />
+                    <Text variant="caption" className="block mt-2">Primary</Text>
+                  </div>
+                  <div className="text-center">
+                    <LoadingIndicator variant="secondary" inline />
+                    <Text variant="caption" className="block mt-2">Secondary</Text>
+                  </div>
+                  <div className="text-center">
+                    <LoadingIndicator variant="accent" inline />
+                    <Text variant="caption" className="block mt-2">Accent</Text>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <Text variant="label" weight="bold" className="block mb-4">With Custom Messages:</Text>
+                <div className="space-y-4">
+                  <LoadingIndicator message="Loading dashboard..." inline />
+                  <LoadingIndicator size="sm" message="Saving changes..." inline />
+                  <LoadingIndicator size="lg" variant="primary" message="Processing request..." inline />
+                </div>
+              </div>
+
+              <div>
+                <Text variant="label" weight="bold" className="block mb-4">Full-Screen Mode (Demo):</Text>
+                <Text variant="caption" className="block mb-4 text-text-secondary">
+                  This shows how the component appears in full-screen mode (like in AuthRouteGuard)
+                </Text>
+                <Card variant="subtle" className="p-0 h-64 relative overflow-hidden">
+                  <div className="h-full flex items-center justify-center">
+                    <div className="text-center">
+                      <LoadingIndicator size="md" inline message="Loading..." />
+                    </div>
+                  </div>
+                </Card>
+              </div>
+            </div>
+          </Card>
         </section>
 
         {/* Progress Components Section */}

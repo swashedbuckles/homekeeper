@@ -93,6 +93,7 @@ describe('AuthRouteGuard', () => {
           </MemoryRouter>
         );
 
+        expect(screen.getByTestId('loading-indicator')).toBeInTheDocument();
         expect(screen.getByText('Loading...')).toBeInTheDocument();
         expect(screen.queryByText('Protected Content')).not.toBeInTheDocument();
       });
@@ -194,6 +195,7 @@ describe('AuthRouteGuard', () => {
         </MemoryRouter>
       );
 
+      expect(screen.getByTestId('loading-indicator')).toBeInTheDocument();
       expect(screen.getByText('Loading...')).toBeInTheDocument();
       expect(screen.queryByText('Protected Content')).not.toBeInTheDocument();
     });
