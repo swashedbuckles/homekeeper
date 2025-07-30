@@ -277,7 +277,7 @@ const MediaCard: FC<MediaCardProps> & {
   // Base styles with brutal design system
   const baseStyles = [
     'block', // Block display for card layout
-    'p-6', // Standard padding
+    'p-4 md:p-6', // Responsive padding
     'border-4 md:border-6 border-text-primary', // Brutal borders
     'font-mono' // Typography
   ];
@@ -332,7 +332,7 @@ const MediaCard: FC<MediaCardProps> & {
       )}
 
       {/* Header section with avatar and title/subtitle */}
-      <div className="flex gap-4 mb-4">
+      <div className="flex gap-3 md:gap-4 mb-4">
         {/* Avatar column - only renders if avatar provided */}
         {avatar && (
           <div className="flex-shrink-0">

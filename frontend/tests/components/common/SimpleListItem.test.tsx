@@ -82,7 +82,7 @@ describe('SimpleListItem', () => {
     render(<SimpleListItem {...defaultProps} />);
     
     const title = screen.getByText('Test Action');
-    expect(title).toHaveClass('font-bold', 'text-xl', 'text-text-primary', 'uppercase', 'tracking-wide', 'mb-2');
+    expect(title).toHaveClass('font-bold', 'text-lg', 'md:text-xl', 'text-text-primary', 'uppercase', 'tracking-wide', 'mb-2');
   });
 
   it('applies correct subtitle styling when provided', () => {

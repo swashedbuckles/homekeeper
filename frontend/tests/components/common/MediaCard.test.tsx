@@ -31,7 +31,7 @@ describe('MediaCard (Compound Component)', () => {
       const { container } = render(<MediaCard {...defaultProps} />);
       
       const wrapper = container.firstChild as HTMLElement;
-      expect(wrapper).toHaveClass('block', 'p-6', 'border-4', 'md:border-6', 'border-text-primary', 'font-mono');
+      expect(wrapper).toHaveClass('block', 'p-4', 'border-4', 'md:p-6', 'md:border-6', 'border-text-primary', 'font-mono');
     });
 
     it('applies correct title styling', () => {
@@ -232,7 +232,7 @@ describe('MediaCard (Compound Component)', () => {
       
       // Both should be in the same flex container
       const headerContainer = avatarContainer?.parentElement;
-      expect(headerContainer).toHaveClass('flex', 'gap-4', 'mb-4');
+      expect(headerContainer).toHaveClass('flex', 'gap-3', 'md:gap-4', 'mb-4');
     });
 
     it('applies different color variants correctly', () => {
@@ -392,7 +392,7 @@ describe('MediaCard (Compound Component)', () => {
       expect(children[0]).toContainElement(screen.getByText('Top Badge'));
       
       // Second child should be header container
-      expect(children[1]).toHaveClass('flex', 'gap-4', 'mb-4');
+      expect(children[1]).toHaveClass('flex', 'gap-3', 'md:gap-4', 'mb-4');
       expect(children[1]).toContainElement(screen.getByText('🔧'));
       expect(children[1]).toContainElement(screen.getByText('Test MediaCard'));
       expect(children[1]).toContainElement(screen.getByText('Card subtitle'));
@@ -414,7 +414,7 @@ describe('MediaCard (Compound Component)', () => {
       // Header should still exist but without avatar column
       const title = screen.getByText('Test MediaCard');
       const headerContainer = title.parentElement?.parentElement;
-      expect(headerContainer).toHaveClass('flex', 'gap-4', 'mb-4');
+      expect(headerContainer).toHaveClass('flex', 'gap-3', 'md:gap-4', 'mb-4');
       
       // Should not have avatar column
       expect(screen.queryByText('🔧')).not.toBeInTheDocument();
@@ -432,7 +432,7 @@ describe('MediaCard (Compound Component)', () => {
       
       // Should have header container even without avatar
       const headerContainer = title.parentElement?.parentElement;
-      expect(headerContainer).toHaveClass('flex', 'gap-4', 'mb-4');
+      expect(headerContainer).toHaveClass('flex', 'gap-3', 'md:gap-4', 'mb-4');
     });
   });
 

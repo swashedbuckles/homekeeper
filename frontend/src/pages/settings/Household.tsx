@@ -57,8 +57,8 @@ export const HouseholdDetailsForm = () => {
         register={register('description')}
       />
       <div>
-        <Button size="lg" className="w-full md:w-fit" variant="primary" type="submit">Save Changes</Button>
-        <Button size="lg" className="ml-auto md:ml-4 mt-4 md:mt-auto w-full md:w-fit" variant="tertiary">Cancel</Button>
+        <Button size="lg" className="w-full sm:w-fit" variant="primary" type="submit">Save Changes</Button>
+        <Button size="lg" className="ml-auto sm:ml-4 mt-4 sm:mt-auto w-full sm:w-fit" variant="tertiary">Cancel</Button>
       </div>
     </form >
   );

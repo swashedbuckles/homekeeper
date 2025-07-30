@@ -33,7 +33,7 @@ export function Dashboard() {
 
   return (
     <WideContainer>
-      <div className="w-1/2 mt-4">
+      <div className="w-full md:w-1/2 mt-4">
         <Title variant="hero" textShadow="orange"> Welcome back{name}!</Title>
       </div>
       <Card className="w-fit" shadow="primary" padding="sm" variant="subtle">

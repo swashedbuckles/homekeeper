@@ -22,7 +22,7 @@ export function ProfileMenu() {
     'border-4 border-text-primary',
     'md:brutal-shadow-secondary',
     'md:brutal-rotate-tiny-right',
-    'md:min-w-60'
+    'min-w-64 md:min-w-60'
   ].join(' ');
 
   const dropdownHeaderClasses = [

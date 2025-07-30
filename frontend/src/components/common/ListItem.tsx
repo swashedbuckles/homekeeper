@@ -399,7 +399,7 @@ const ListItem: FC<ListItemProps> & {
     >
       {/* Avatar section - only renders if avatar compound component provided */}
       {avatar && (
-        <div className="mr-4 md:mr-6">
+        <div className="mb-3 md:mb-0 md:mr-6">
           {avatar}
         </div>
       )}
@@ -426,7 +426,7 @@ const ListItem: FC<ListItemProps> & {
         )}
       </div>
 
-      <div className="flex-1">
+      <div className="mt-3 md:mt-0 w-full md:w-auto">
       {content}
       {/* Actions section - only renders if actions compound component provided */}
       {actions}

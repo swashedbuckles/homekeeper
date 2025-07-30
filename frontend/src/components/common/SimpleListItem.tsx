@@ -106,7 +106,7 @@ export const SimpleListItem = ({
       data-testid={testId}
     >
       <div className="flex-1">
-        <div className="font-bold text-xl text-text-primary uppercase tracking-wide mb-2">
+        <div className="font-bold text-lg md:text-xl text-text-primary uppercase tracking-wide mb-2">
           {title}
         </div>
         {subtitle && (
@@ -117,7 +117,7 @@ export const SimpleListItem = ({
       </div>
 
       {validatedActions.length > 0 && (
-        <div className="mt-4 md:mt-auto md:ml-6 flex-shrink-0 flex gap-2">
+        <div className="mt-4 md:mt-0 md:ml-6 flex-shrink-0 flex gap-2 flex-col sm:flex-row">
           {validatedActions}
         </div>
       )}
