@@ -77,7 +77,7 @@ export function MainHeader(_props: MainHeaderProps) {
         data-profile-menu
         className={`absolute right-5 mt-2 top-full ${isDesktopProfileMenuOpen ? getResponsivePattern('tabletUp') : 'hidden'} ${Z_INDEX_CLASSES.MOBILE_MENU}`}
       >
-        <ProfileMenu />
+        <ProfileMenu onClose={() => setIsDesktopProfileMenuOpen(false)} />
       </div>
 
       { /* Overlay for Nav */}
@@ -87,7 +87,7 @@ export function MainHeader(_props: MainHeaderProps) {
 
       { /* Overlay for Profile Menu */}
       <MobileMenu isOpen={isMobileProfileMenuOpen} onClose={closeMobileProfileMenu} noPadding>
-        <ProfileMenu />
+        <ProfileMenu onClose={closeMobileProfileMenu} />
       </MobileMenu>
     </header>
   );

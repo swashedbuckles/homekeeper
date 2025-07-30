@@ -11,7 +11,12 @@ import { Modal } from '../common/Modal';
 import { Text } from '../common/Text';
 import { Title } from '../common/Title';
 
-export function ProfileMenu() {
+export interface ProfileMenuProps {
+  /** Optional callback to close the menu when items are clicked */
+  onClose?: () => void;
+}
+
+export function ProfileMenu({ onClose }: ProfileMenuProps = {}) {
   const { user, logout } = useAuth();
   const { activeHousehold } = useHousehold();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -64,14 +69,17 @@ export function ProfileMenu() {
         <span className="text-xs opacity-80">{activeHousehold?.name ?? 'HOUSEHOLD'}</span>
       </div>
 
-      <div className={dropdownItemClasses}>
+      <div className={dropdownItemClasses} onClick={() => onClose?.()}>
         <span className="text-lg"><House /></span>
         Switch Household
       </div>
 
       <div className={dropdownDividerClasses}></div>
 
-      <div className={dropdownItemClasses} onClick={() => navigate('/settings')}>
+      <div className={dropdownItemClasses} onClick={() => {
+        navigate('/settings');
+        onClose?.();
+      }}>
         <span className="text-lg"><Settings /></span>
         Settings
       </div>
@@ -105,6 +113,7 @@ export function ProfileMenu() {
               onClick={() => {
                 logout();
                 setIsModalOpen(false);
+                onClose?.();
               }}
             >
               Confirm
