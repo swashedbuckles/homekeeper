@@ -1,8 +1,8 @@
-import { type StandardSize, getSizeToken } from '../../lib/design-system/sizes';
+import { type ExtendedSize, getSizeToken } from '../../lib/design-system/sizes';
 import type { ReactNode } from 'react';
 
 type GridColumns = 1 | 2 | 3 | 4 | 5 | 6 | 12;
-type GridSpacing = StandardSize;
+type GridSpacing = ExtendedSize;
 type GridAlignment = 'start' | 'center' | 'end' | 'stretch';
 
 /**

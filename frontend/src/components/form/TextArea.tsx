@@ -46,6 +46,7 @@ export interface TextAreaProps {
   rows?: number;
   size?: StandardSize;
   grouped?: boolean;
+  disabled?: boolean;
 }
 
 const baseStyles = [
@@ -82,11 +83,19 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>((props, r
     'focus:brutal-shadow-error'
   ] : [];
 
+  const disabledStyles = props.disabled ? [
+    'bg-background',
+    'text-text-secondary',
+    'cursor-not-allowed',
+    'opacity-60'
+  ] : [];
+
   const textareaStyles = [
     ...(props.grouped ? [] : ['w-full']),
     ...baseStyles,
     ...getSizeStyles(props.size || 'md'),
     ...errorStyles,
+    ...disabledStyles,
     props.className
   ].filter(Boolean).join(' ');
 
@@ -94,7 +103,9 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>((props, r
     <div className={props.grouped ? '' : 'w-full'}>
       <label
         htmlFor={inputId}
-        className="block font-mono font-black text-text-primary uppercase mb-2 text-lg tracking-wide"
+        className={`block font-mono font-black uppercase mb-2 text-lg tracking-wide ${
+          props.disabled ? 'text-text-secondary opacity-60' : 'text-text-primary'
+        }`}
       >
         {props.label}
         {props.register?.required && (
@@ -109,6 +120,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>((props, r
         className={textareaStyles}
         rows={props.rows ?? DEFAULT_ROWS}
         data-testid={props.testId}
+        disabled={props.disabled}
         {...props.register}
       />
 

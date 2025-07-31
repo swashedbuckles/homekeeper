@@ -54,13 +54,12 @@ const getSidebarWidth = (width: SidebarWidth): string => {
   return widthMap[width];
 };
 
-const getLayoutClasses = (variant: LayoutVariant, sidebarWidth: SidebarWidth): string => {
+const getLayoutClasses = (variant: LayoutVariant): string => {
   const baseClasses = 'min-h-screen flex';
-  const sidebarWidthClass = getSidebarWidth(sidebarWidth);
   
   const variantClasses = {
-    'sidebar-left':  `${baseClasses} ${sidebarWidthClass} flex-row`,
-    'sidebar-right': `${baseClasses} ${sidebarWidthClass} flex-row-reverse`, 
+    'sidebar-left':  `${baseClasses} flex-row`,
+    'sidebar-right': `${baseClasses} flex-row-reverse`, 
     'equal': `${baseClasses} flex-row`
   };
   
@@ -70,13 +69,13 @@ const getLayoutClasses = (variant: LayoutVariant, sidebarWidth: SidebarWidth): s
 export const TwoColumnLayout = ({
   children,
   variant = 'sidebar-left',
-  sidebarWidth = 'medium',
+  // sidebarWidth = 'medium',
   spacing = 'md',
   // sidebarCollapsible = true,
   className = '',
   testId = 'two-column-layout'
 }: TwoColumnLayoutProps) => {
-  const layoutClasses = getLayoutClasses(variant, sidebarWidth);
+  const layoutClasses = getLayoutClasses(variant);
   const spacingClass = getSizeToken(spacing, 'spacing');
   
   const containerClasses = [
@@ -97,19 +96,74 @@ interface SidebarProps {
   children: ReactNode;
   className?: string;
   sticky?: boolean;
+  width?: SidebarWidth;
+  /** Visual variant that determines background color and styling theme */
+  variant?: 'default' | 'subtle' | 'primary' | 'secondary' | 'accent' | 'danger' | 'dark';
+  /** Shadow style to apply for depth and emphasis */
+  shadow?: 'none' | 'primary' | 'secondary' | 'accent' | 'dark' | 'error' | 'double' | 'double-white' | 'triple';
 }
 
 TwoColumnLayout.Sidebar = ({ 
   children, 
   className = '',
-  sticky = true 
+  sticky = true,
+  width = 'medium',
+  variant = 'default',
+  shadow = 'dark'
 }: SidebarProps) => {
+  // Background variant styles (matching Card component)
+  const variantStyles = {
+    default: [
+      'bg-white',
+      'text-text-primary'
+    ],
+    subtle: [
+      'bg-background',
+      'text-text-primary'
+    ],
+    primary: [
+      'bg-primary',
+      'text-white'
+    ],
+    secondary: [
+      'bg-secondary', 
+      'text-white'
+    ],
+    accent: [
+      'bg-accent',
+      'text-white'
+    ],
+    danger: [
+      'bg-error',
+      'text-white'
+    ],
+    dark: [
+      'bg-dark',
+      'text-white'
+    ]
+  };
+
+  // Shadow styles (matching Card component)
+  const shadowStyles = {
+    none: '',
+    primary:        'brutal-shadow-primary',
+    secondary:      'brutal-shadow-secondary',
+    accent:         'brutal-shadow-accent',
+    dark:           'brutal-shadow-dark',
+    error:          'brutal-shadow-error',
+    double:         'brutal-shadow-double',
+    'double-white': 'brutal-shadow-double-white',
+    triple:         'brutal-shadow-triple'
+  };
+
+  const sidebarWidthClass = getSidebarWidth(width);
   const sidebarClasses = [
     'shrink-0',
+    sidebarWidthClass,
     'border-r-4',
-    'border-text-primary', 
-    'bg-white',
-    'brutal-shadow-dark',
+    'border-text-primary',
+    ...variantStyles[variant],
+    shadowStyles[shadow],
     sticky ? 'sticky top-0 h-screen overflow-y-auto' : '',
     // Mobile responsiveness - show on tablet and up
     getResponsivePattern('tabletUp'),

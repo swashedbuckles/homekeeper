@@ -288,7 +288,7 @@ const Actions: FC<ActionsProps> = ({ className = '', children }) => {
   }
 
   const actionsStyles = [
-    'ml-6 flex-shrink-0 flex gap-2', // Spacing and flex layout
+    'md:ml-6 flex-shrink-0 flex gap-2', // Spacing and flex layout
     'flex-col sm:flex-row', // Stack on mobile, row on desktop
     'w-full md:w-auto',
     className

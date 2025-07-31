@@ -16,6 +16,12 @@
 export type StandardSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 
 /**
+ * Extended size scale including 'none' option
+ * Used by layout components that need zero spacing
+ */
+export type ExtendedSize = 'none' | StandardSize;
+
+/**
  * Container width sizes (for NarrowContainer)
  * Covers mobile-first to medium layouts with seamless progression
  */
@@ -48,6 +54,15 @@ export type TypographySize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl';
  * Used across all components for visual consistency
  */
 export const SIZE_TOKENS = {
+  none: {
+    padding:  'p-0',
+    paddingX: 'px-0',
+    paddingY: 'py-0',
+    text:     'text-xs',        // fallback text size
+    border:   'border-0',
+    spacing:  'gap-0',
+    icon:     'w-0 h-0'         // fallback icon size
+  },
   xs: {
     padding:  'p-2',
     paddingX: 'px-2',
@@ -114,6 +129,15 @@ export const RESPONSIVE_TEXT_TOKENS = {
  * Used for components that need responsive padding, margins, and gaps
  */
 export const RESPONSIVE_SPACING_TOKENS = {
+  none: {
+    padding: 'p-0',                           // no spacing on all breakpoints
+    paddingX: 'px-0',
+    paddingY: 'py-0',
+    margin: 'm-0',
+    marginX: 'mx-0', 
+    marginY: 'my-0',
+    gap: 'gap-0'
+  },
   xs: {
     padding: 'p-2',                           // xs on all breakpoints
     paddingX: 'px-2',
@@ -225,8 +249,8 @@ export const CONTAINER_SPACING_TOKENS = {
  * getSizeToken('lg', 'text') // Returns 'text-lg'
  */
 export function getSizeToken(
-  size: StandardSize, 
-  aspect: keyof typeof SIZE_TOKENS[StandardSize]
+  size: ExtendedSize, 
+  aspect: keyof typeof SIZE_TOKENS[ExtendedSize]
 ): string {
   return SIZE_TOKENS[size][aspect];
 }
