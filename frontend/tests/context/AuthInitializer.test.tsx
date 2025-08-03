@@ -9,47 +9,56 @@ vi.mock('../../src/hooks/useAuth');
 const mockCheckAuth = vi.fn();
 const mockUseAuth = vi.mocked(useAuth);
 
+// Helper function to create mock auth state
+const createMockAuthState = (overrides = {}) => ({
+  checkAuth: mockCheckAuth,
+  authStatus: 'UNKNOWN' as const,
+  user: null,
+  isLoading: false,
+  isAuthenticated: false,
+  isKnown: false,
+  login: vi.fn(),
+  logout: vi.fn(),
+  ...overrides
+});
+
+// Helper function to render AuthInitializer with children
+const renderAuthInitializer = (children: React.ReactNode, authStateOverrides = {}) => {
+  mockUseAuth.mockReturnValue(createMockAuthState(authStateOverrides));
+  return render(<AuthInitializer>{children}</AuthInitializer>);
+};
+
 describe('AuthInitializer', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockUseAuth.mockReturnValue({
-      checkAuth: mockCheckAuth,
-      authStatus: 'UNKNOWN',
-      user: null,
-      isLoading: false,
-      isAuthenticated: false,
-      isKnown: false,
-      login: vi.fn(),
-      logout: vi.fn(),
+  });
+
+  const authInitializerTests = [
+    {
+      name: 'should call checkAuth on mount',
+      children: <div data-testid="child">Test Child</div>,
+      assertion: () => {
+        expect(mockCheckAuth).toHaveBeenCalledTimes(1);
+      }
+    },
+    {
+      name: 'should render children',
+      children: <div data-testid="child">Test Child</div>,
+      assertion: (getByTestId: any) => {
+        expect(getByTestId('child')).toHaveTextContent('Test Child');
+      }
+    }
+  ];
+
+  authInitializerTests.forEach(({ name, children, assertion }) => {
+    it(name, () => {
+      const result = renderAuthInitializer(children);
+      assertion(result.getByTestId);
     });
   });
 
-  it('should call checkAuth on mount', () => {
-    render(
-      <AuthInitializer>
-        <div data-testid="child">Test Child</div>
-      </AuthInitializer>
-    );
-
-    expect(mockCheckAuth).toHaveBeenCalledTimes(1);
-  });
-
-  it('should render children', () => {
-    const { getByTestId } = render(
-      <AuthInitializer>
-        <div data-testid="child">Test Child</div>
-      </AuthInitializer>
-    );
-
-    expect(getByTestId('child')).toHaveTextContent('Test Child');
-  });
-
   it('should only call checkAuth once even if re-rendered', () => {
-    const { rerender } = render(
-      <AuthInitializer>
-        <div>Initial</div>
-      </AuthInitializer>
-    );
+    const { rerender } = renderAuthInitializer(<div>Initial</div>);
 
     expect(mockCheckAuth).toHaveBeenCalledTimes(1);
 

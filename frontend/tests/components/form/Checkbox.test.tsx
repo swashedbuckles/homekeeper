@@ -1,6 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { CheckBox } from '../../../src/components/form/Checkbox';
+import { expectElementToHaveClasses } from '../../helpers/testHelpers';
 
 describe('CheckBox', () => {
   it('renders label correctly', () => {
@@ -20,211 +21,193 @@ describe('CheckBox', () => {
   });
 
   describe('sizes', () => {
-    it('renders xs size correctly', () => {
-      render(<CheckBox label="Extra small" size="xs" />);
-      
-      const checkbox = screen.getByRole('checkbox');
-      expect(checkbox).toHaveClass('w-5', 'h-5');
-      expect(checkbox).toHaveClass('border-2');
-    });
+    const sizeTests = [
+      {
+        size: 'xs',
+        props: { label: 'Extra small', size: 'xs' as const },
+        expectedClasses: ['w-5', 'h-5', 'border-2']
+      },
+      {
+        size: 'sm', 
+        props: { label: 'Small', size: 'sm' as const },
+        expectedClasses: ['w-6', 'h-6', 'border-brutal-sm']
+      },
+      {
+        size: 'md',
+        props: { label: 'Medium', size: 'md' as const },
+        expectedClasses: ['w-8', 'h-8', 'border-brutal-md']
+      },
+      {
+        size: 'lg',
+        props: { label: 'Large', size: 'lg' as const },
+        expectedClasses: ['w-10', 'h-10', 'border-brutal-lg']
+      },
+      {
+        size: 'xl',
+        props: { label: 'Extra large', size: 'xl' as const },
+        expectedClasses: ['w-12', 'h-12', 'border-brutal-lg']
+      }
+    ];
 
-    it('renders sm size correctly', () => {
-      render(<CheckBox label="Small" size="sm" />);
-      
-      const checkbox = screen.getByRole('checkbox');
-      expect(checkbox).toHaveClass('w-6', 'h-6');
-      expect(checkbox).toHaveClass('border-brutal-sm');
-    });
-
-    it('renders md size correctly', () => {
-      render(<CheckBox label="Medium" size="md" />);
-      
-      const checkbox = screen.getByRole('checkbox');
-      expect(checkbox).toHaveClass('w-8', 'h-8');
-      expect(checkbox).toHaveClass('border-brutal-md');
-    });
-
-    it('renders lg size correctly', () => {
-      render(<CheckBox label="Large" size="lg" />);
-      
-      const checkbox = screen.getByRole('checkbox');
-      expect(checkbox).toHaveClass('w-10', 'h-10');
-      expect(checkbox).toHaveClass('border-brutal-lg');
-    });
-
-    it('renders xl size correctly', () => {
-      render(<CheckBox label="Extra large" size="xl" />);
-      
-      const checkbox = screen.getByRole('checkbox');
-      expect(checkbox).toHaveClass('w-12', 'h-12');
-      expect(checkbox).toHaveClass('border-brutal-lg');
+    sizeTests.forEach(({ size, props, expectedClasses }) => {
+      it(`renders ${size} size correctly`, () => {
+        render(<CheckBox {...props} />);
+        
+        const checkbox = screen.getByRole('checkbox');
+        expectElementToHaveClasses(checkbox, expectedClasses);
+      });
     });
   });
 
   describe('colors', () => {
-    it('renders accent color correctly', () => {
-      render(<CheckBox label="Accent" color="accent" />);
-      
-      const checkbox = screen.getByRole('checkbox');
-      expect(checkbox).toHaveClass('checked:bg-accent');
-    });
+    const colorTests = [
+      { color: 'accent', expectedClass: 'checked:bg-accent' },
+      { color: 'primary', expectedClass: 'checked:bg-primary' },
+      { color: 'error', expectedClass: 'checked:bg-error' },
+      { color: 'success', expectedClass: 'checked:bg-success' }
+    ];
 
-    it('renders primary color correctly', () => {
-      render(<CheckBox label="Primary" color="primary" />);
-      
-      const checkbox = screen.getByRole('checkbox');
-      expect(checkbox).toHaveClass('checked:bg-primary');
-    });
-
-    it('renders error color correctly', () => {
-      render(<CheckBox label="Error" color="error" />);
-      
-      const checkbox = screen.getByRole('checkbox');
-      expect(checkbox).toHaveClass('checked:bg-error');
-    });
-
-    it('renders success color correctly', () => {
-      render(<CheckBox label="Success" color="success" />);
-      
-      const checkbox = screen.getByRole('checkbox');
-      expect(checkbox).toHaveClass('checked:bg-success');
+    colorTests.forEach(({ color, expectedClass }) => {
+      it(`renders ${color} color correctly`, () => {
+        render(<CheckBox label={color.charAt(0).toUpperCase() + color.slice(1)} color={color as any} />);
+        
+        const checkbox = screen.getByRole('checkbox');
+        expect(checkbox).toHaveClass(expectedClass);
+      });
     });
   });
 
-  describe('controlled behavior', () => {
-    it('respects controlled checked prop', () => {
-      render(<CheckBox label="Controlled" checked={true} onChange={vi.fn()} />);
-      
-      const checkbox = screen.getByRole('checkbox');
-      expect(checkbox).toBeChecked();
+  describe('behavior patterns', () => {
+    describe('controlled mode', () => {
+      const controlledTests = [
+        {
+          name: 'respects controlled checked prop',
+          props: { label: 'Controlled', checked: true, onChange: vi.fn() },
+          test: (checkbox: HTMLElement) => expect(checkbox).toBeChecked()
+        },
+        {
+          name: 'calls onChange when clicked',
+          props: { label: 'Controlled', checked: false, onChange: vi.fn() },
+          test: (checkbox: HTMLElement, props: any) => {
+            fireEvent.click(checkbox);
+            expect(props.onChange).toHaveBeenCalledTimes(1);
+          }
+        }
+      ];
+
+      controlledTests.forEach(({ name, props, test }) => {
+        it(name, () => {
+          render(<CheckBox {...props} />);
+          const checkbox = screen.getByRole('checkbox');
+          test(checkbox, props);
+        });
+      });
+
+      it('updates checked state when props change', () => {
+        const { rerender } = render(<CheckBox label="Controlled" checked={false} onChange={vi.fn()} />);
+        
+        let checkbox = screen.getByRole('checkbox');
+        expect(checkbox).not.toBeChecked();
+        
+        rerender(<CheckBox label="Controlled" checked={true} onChange={vi.fn()} />);
+        checkbox = screen.getByRole('checkbox');
+        expect(checkbox).toBeChecked();
+      });
     });
 
-    it('calls onChange when clicked in controlled mode', () => {
-      const handleChange = vi.fn();
-      render(<CheckBox label="Controlled" checked={false} onChange={handleChange} />);
-      
-      const checkbox = screen.getByRole('checkbox');
-      fireEvent.click(checkbox);
-      
-      expect(handleChange).toHaveBeenCalledTimes(1);
-      // Just check that onChange was called, the exact event structure is implementation detail
-      expect(handleChange).toHaveBeenCalled();
-    });
+    describe('uncontrolled mode', () => {
+      it('toggles state when clicked', () => {
+        render(<CheckBox label="Uncontrolled" />);
+        
+        const checkbox = screen.getByRole('checkbox');
+        expect(checkbox).not.toBeChecked();
+        
+        fireEvent.click(checkbox);
+        expect(checkbox).toBeChecked();
+        
+        fireEvent.click(checkbox);
+        expect(checkbox).not.toBeChecked();
+      });
 
-    it('updates checked state in controlled mode', () => {
-      const { rerender } = render(<CheckBox label="Controlled" checked={false} onChange={vi.fn()} />);
-      
-      let checkbox = screen.getByRole('checkbox');
-      expect(checkbox).not.toBeChecked();
-      
-      rerender(<CheckBox label="Controlled" checked={true} onChange={vi.fn()} />);
-      checkbox = screen.getByRole('checkbox');
-      expect(checkbox).toBeChecked();
-    });
-  });
-
-  describe('uncontrolled behavior', () => {
-    it('toggles state when clicked in uncontrolled mode', () => {
-      render(<CheckBox label="Uncontrolled" />);
-      
-      const checkbox = screen.getByRole('checkbox');
-      expect(checkbox).not.toBeChecked();
-      
-      fireEvent.click(checkbox);
-      expect(checkbox).toBeChecked();
-      
-      fireEvent.click(checkbox);
-      expect(checkbox).not.toBeChecked();
-    });
-
-    it('starts checked with defaultChecked', () => {
-      render(<CheckBox label="Default checked" defaultChecked />);
-      
-      const checkbox = screen.getByRole('checkbox');
-      expect(checkbox).toBeChecked();
-    });
-
-    it('can be unchecked when defaultChecked', () => {
-      render(<CheckBox label="Default checked" defaultChecked />);
-      
-      const checkbox = screen.getByRole('checkbox');
-      expect(checkbox).toBeChecked();
-      
-      fireEvent.click(checkbox);
-      expect(checkbox).not.toBeChecked();
+      it('respects defaultChecked prop', () => {
+        render(<CheckBox label="Default checked" defaultChecked />);
+        
+        const checkbox = screen.getByRole('checkbox');
+        expect(checkbox).toBeChecked();
+        
+        fireEvent.click(checkbox);
+        expect(checkbox).not.toBeChecked();
+      });
     });
   });
 
   describe('disabled state', () => {
-    it('renders disabled styling', () => {
-      render(<CheckBox label="Disabled" disabled />);
-      
-      const checkbox = screen.getByRole('checkbox');
-      expect(checkbox).toBeDisabled();
-      expect(checkbox).toHaveClass('cursor-not-allowed', 'opacity-50');
-    });
-
-    it('does not respond to clicks when disabled', () => {
+    it('applies disabled styling and behavior', () => {
       const handleChange = vi.fn();
       render(<CheckBox label="Disabled" disabled onChange={handleChange} />);
       
       const checkbox = screen.getByRole('checkbox');
-      fireEvent.click(checkbox);
+      const label = checkbox.closest('label');
       
+      expect(checkbox).toBeDisabled();
+      expectElementToHaveClasses(checkbox, ['cursor-not-allowed', 'opacity-50']);
+      expectElementToHaveClasses(label!, ['cursor-not-allowed', 'opacity-50']);
+      
+      fireEvent.click(checkbox);
       expect(handleChange).not.toHaveBeenCalled();
       expect(checkbox).not.toBeChecked();
-    });
-
-    it('applies disabled styling to label', () => {
-      render(<CheckBox label="Disabled" disabled />);
-      
-      const label = screen.getByRole('checkbox').closest('label');
-      expect(label).toHaveClass('cursor-not-allowed', 'opacity-50');
     });
   });
 
   describe('checkmark visibility', () => {
-    it('shows checkmark when checked', () => {
-      render(<CheckBox label="Checked" checked={true} onChange={vi.fn()} />);
-      
-      // Check for checkmark icon container
-      const checkmarkContainer = screen.getByRole('checkbox').parentElement?.querySelector('.opacity-100');
-      expect(checkmarkContainer).toBeInTheDocument();
-    });
+    const visibilityTests = [
+      { checked: true, expectedOpacity: 'opacity-100', description: 'shows checkmark when checked' },
+      { checked: false, expectedOpacity: 'opacity-0', description: 'hides checkmark when unchecked' }
+    ];
 
-    it('hides checkmark when unchecked', () => {
-      render(<CheckBox label="Unchecked" checked={false} onChange={vi.fn()} />);
-      
-      // Check for checkmark icon container
-      const checkmarkContainer = screen.getByRole('checkbox').parentElement?.querySelector('.opacity-0');
-      expect(checkmarkContainer).toBeInTheDocument();
+    visibilityTests.forEach(({ checked, expectedOpacity, description }) => {
+      it(description, () => {
+        render(<CheckBox label="Test" checked={checked} onChange={vi.fn()} />);
+        
+        const checkmarkContainer = screen.getByRole('checkbox').parentElement?.querySelector(`.${expectedOpacity}`);
+        expect(checkmarkContainer).toBeInTheDocument();
+      });
     });
   });
 
-  describe('custom props', () => {
-    it('applies custom className', () => {
-      render(<CheckBox label="Custom" className="custom-class" />);
-      
-      const checkbox = screen.getByRole('checkbox');
-      expect(checkbox).toHaveClass('custom-class');
+  describe('integration and customization', () => {
+    const customTests = [
+      {
+        name: 'applies custom className',
+        props: { label: 'Custom', className: 'custom-class' },
+        test: () => {
+          const checkbox = screen.getByRole('checkbox');
+          expect(checkbox).toHaveClass('custom-class');
+        }
+      },
+      {
+        name: 'uses custom testId',
+        props: { label: 'Custom test', testId: 'custom-checkbox' },
+        test: () => expect(screen.getByTestId('custom-checkbox')).toBeInTheDocument()
+      },
+      {
+        name: 'passes through native props',
+        props: { label: 'Native props', name: 'test-name', value: 'test-value' },
+        test: () => {
+          const checkbox = screen.getByRole('checkbox');
+          expect(checkbox).toHaveAttribute('name', 'test-name');
+          expect(checkbox).toHaveAttribute('value', 'test-value');
+        }
+      }
+    ];
+
+    customTests.forEach(({ name, props, test }) => {
+      it(name, () => {
+        render(<CheckBox {...props} />);
+        test();
+      });
     });
 
-    it('uses custom testId', () => {
-      render(<CheckBox label="Custom test" testId="custom-checkbox" />);
-      
-      expect(screen.getByTestId('custom-checkbox')).toBeInTheDocument();
-    });
-
-    it('passes through native props', () => {
-      render(<CheckBox label="Native props" name="test-name" value="test-value" />);
-      
-      const checkbox = screen.getByRole('checkbox');
-      expect(checkbox).toHaveAttribute('name', 'test-name');
-      expect(checkbox).toHaveAttribute('value', 'test-value');
-    });
-  });
-
-  describe('form integration', () => {
     it('works with react-hook-form register', () => {
       const mockRegister = {
         name: 'terms',
@@ -240,31 +223,44 @@ describe('CheckBox', () => {
     });
   });
 
-  it('applies base styles consistently', () => {
-    render(<CheckBox label="Base styles" />);
-    
-    const checkbox = screen.getByRole('checkbox');
-    expect(checkbox).toHaveClass(
-      'appearance-none',
-      'bg-background',
-      'border-text-primary',
-      'cursor-pointer'
-    );
-  });
-
-  describe('focus styles', () => {
-    it('applies focus styles when not disabled', () => {
-      render(<CheckBox label="Focusable" />);
+  describe('styling and accessibility', () => {
+    it('applies base styles consistently', () => {
+      render(<CheckBox label="Base styles" />);
       
       const checkbox = screen.getByRole('checkbox');
-      expect(checkbox).toHaveClass('focus:outline-none', 'focus:ring-2', 'focus:ring-primary');
+      expectElementToHaveClasses(checkbox, [
+        'appearance-none', 'bg-background', 'border-text-primary', 'cursor-pointer'
+      ]);
     });
 
-    it('does not apply focus styles when disabled', () => {
-      render(<CheckBox label="Disabled focus" disabled />);
-      
-      const checkbox = screen.getByRole('checkbox');
-      expect(checkbox).not.toHaveClass('focus:outline-none', 'focus:ring-2', 'focus:ring-primary');
+    const focusTests = [
+      {
+        name: 'applies focus styles when enabled',
+        props: { label: 'Focusable' },
+        expectedClasses: ['focus:outline-none', 'focus:ring-2', 'focus:ring-primary'],
+        shouldHave: true
+      },
+      {
+        name: 'does not apply focus styles when disabled',
+        props: { label: 'Disabled focus', disabled: true },
+        expectedClasses: ['focus:outline-none', 'focus:ring-2', 'focus:ring-primary'],
+        shouldHave: false
+      }
+    ];
+
+    focusTests.forEach(({ name, props, expectedClasses, shouldHave }) => {
+      it(name, () => {
+        render(<CheckBox {...props} />);
+        const checkbox = screen.getByRole('checkbox');
+        
+        expectedClasses.forEach(className => {
+          if (shouldHave) {
+            expect(checkbox).toHaveClass(className);
+          } else {
+            expect(checkbox).not.toHaveClass(className);
+          }
+        });
+      });
     });
   });
 });

@@ -21,15 +21,28 @@ describe('ProgressBar', () => {
     expect(progressBar).toHaveAttribute('aria-valuemax', '150');
   });
 
-  it('clamps values outside valid range', () => {
-    const { rerender } = render(<ProgressBar value={150} max={100} />);
-    
-    let progressBar = screen.getByRole('progressbar');
-    expect(progressBar).toHaveAttribute('aria-valuenow', '100');
+  describe('Value Clamping', () => {
+    const clampingTests = [
+      {
+        name: 'clamps value above maximum to max value',
+        props: { value: 150, max: 100 },
+        expectedValue: '100'
+      },
+      {
+        name: 'clamps negative value to zero',
+        props: { value: -10, max: 100 },
+        expectedValue: '0'
+      }
+    ];
 
-    rerender(<ProgressBar value={-10} max={100} />);
-    progressBar = screen.getByRole('progressbar');
-    expect(progressBar).toHaveAttribute('aria-valuenow', '0');
+    clampingTests.forEach(({ name, props, expectedValue }) => {
+      it(name, () => {
+        render(<ProgressBar {...props} />);
+        
+        const progressBar = screen.getByRole('progressbar');
+        expect(progressBar).toHaveAttribute('aria-valuenow', expectedValue);
+      });
+    });
   });
 
   it('renders label when provided', () => {
@@ -41,50 +54,79 @@ describe('ProgressBar', () => {
     expect(progressBar).toHaveAttribute('aria-label', 'Upload Progress');
   });
 
-  it('shows percentage text for medium size and above', () => {
-    render(<ProgressBar value={75} showPercentage size="md" />);
-    
-    expect(screen.getByText('75%')).toBeInTheDocument();
+  describe('Percentage Display', () => {
+    const percentageTests = [
+      {
+        name: 'shows percentage text for medium size and above',
+        props: { value: 75, showPercentage: true, size: 'md' as const },
+        expectedText: '75%',
+        shouldShow: true
+      },
+      {
+        name: 'shows percentage text for large size',
+        props: { value: 60, showPercentage: true, size: 'lg' as const },
+        expectedText: '60%',
+        shouldShow: true
+      },
+      {
+        name: 'shows percentage text for extra large size',
+        props: { value: 80, showPercentage: true, size: 'xl' as const },
+        expectedText: '80%',
+        shouldShow: true
+      },
+      {
+        name: 'suppresses percentage text for extra small size',
+        props: { value: 75, showPercentage: true, size: 'xs' as const },
+        expectedText: '75%',
+        shouldShow: false
+      },
+      {
+        name: 'suppresses percentage text for small size',
+        props: { value: 75, showPercentage: true, size: 'sm' as const },
+        expectedText: '75%',
+        shouldShow: false
+      },
+      {
+        name: 'does not show percentage text when showPercentage is false',
+        props: { value: 75, showPercentage: false, size: 'lg' as const },
+        expectedText: '75%',
+        shouldShow: false
+      }
+    ];
+
+    percentageTests.forEach(({ name, props, expectedText, shouldShow }) => {
+      it(name, () => {
+        render(<ProgressBar {...props} />);
+        
+        if (shouldShow) {
+          expect(screen.getByText(expectedText)).toBeInTheDocument();
+        } else {
+          expect(screen.queryByText(expectedText)).not.toBeInTheDocument();
+        }
+      });
+    });
   });
 
-  it('shows percentage text for large and extra large sizes', () => {
-    const { rerender } = render(
-      <ProgressBar value={60} showPercentage size="lg" />
-    );
-    
-    expect(screen.getByText('60%')).toBeInTheDocument();
+  describe('Percentage Calculations', () => {
+    const calculationTests = [
+      {
+        name: 'calculates percentage correctly with custom max',
+        props: { value: 30, max: 60, showPercentage: true, size: 'md' as const },
+        expectedText: '50%'
+      },
+      {
+        name: 'rounds percentage to nearest integer',
+        props: { value: 33, max: 100, showPercentage: true, size: 'md' as const },
+        expectedText: '33%'
+      }
+    ];
 
-    rerender(<ProgressBar value={80} showPercentage size="xl" />);
-    expect(screen.getByText('80%')).toBeInTheDocument();
-  });
-
-  it('suppresses percentage text for extra small and small sizes', () => {
-    const { rerender } = render(
-      <ProgressBar value={75} showPercentage size="xs" />
-    );
-    
-    expect(screen.queryByText('75%')).not.toBeInTheDocument();
-
-    rerender(<ProgressBar value={75} showPercentage size="sm" />);
-    expect(screen.queryByText('75%')).not.toBeInTheDocument();
-  });
-
-  it('does not show percentage text when showPercentage is false', () => {
-    render(<ProgressBar value={75} showPercentage={false} size="lg" />);
-    
-    expect(screen.queryByText('75%')).not.toBeInTheDocument();
-  });
-
-  it('calculates percentage correctly with custom max', () => {
-    render(<ProgressBar value={30} max={60} showPercentage size="md" />);
-    
-    expect(screen.getByText('50%')).toBeInTheDocument();
-  });
-
-  it('rounds percentage to nearest integer', () => {
-    render(<ProgressBar value={33} max={100} showPercentage size="md" />);
-    
-    expect(screen.getByText('33%')).toBeInTheDocument();
+    calculationTests.forEach(({ name, props, expectedText }) => {
+      it(name, () => {
+        render(<ProgressBar {...props} />);
+        expect(screen.getByText(expectedText)).toBeInTheDocument();
+      });
+    });
   });
 
   it('applies custom className when provided', () => {
@@ -94,17 +136,22 @@ describe('ProgressBar', () => {
     expect(container).toHaveClass('custom-class');
   });
 
-  it('renders with different color variants', () => {
-    const { rerender } = render(
-      <ProgressBar value={50} variant="primary" />
-    );
-    
-    let progressBar = screen.getByRole('progressbar');
-    expect(progressBar.firstChild).toHaveClass('bg-primary');
+  describe('Color Variants', () => {
+    const variantTests = [
+      { variant: 'primary', expectedClass: 'bg-primary' },
+      { variant: 'secondary', expectedClass: 'bg-secondary' },
+      { variant: 'accent', expectedClass: 'bg-accent' },
+      { variant: 'success', expectedClass: 'bg-accent' } // success maps to bg-accent in design system
+    ];
 
-    rerender(<ProgressBar value={50} variant="secondary" />);
-    progressBar = screen.getByRole('progressbar');
-    expect(progressBar.firstChild).toHaveClass('bg-secondary');
+    variantTests.forEach(({ variant, expectedClass }) => {
+      it(`renders with ${variant} color variant`, () => {
+        render(<ProgressBar value={50} variant={variant as any} />);
+        
+        const progressBar = screen.getByRole('progressbar');
+        expect(progressBar.firstChild).toHaveClass(expectedClass);
+      });
+    });
   });
 
   it('maintains consistent height for same size regardless of text', () => {

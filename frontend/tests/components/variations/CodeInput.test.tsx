@@ -2,40 +2,59 @@ import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import { CodeInput } from '../../../src/components/variations/CodeInput';
 
+// Helper function to render CodeInput and get input element
+const renderCodeInput = (props = {}) => {
+  render(<CodeInput label="Code" {...props} />);
+  return screen.getByRole('textbox');
+};
+
 describe('CodeInput', () => {
-  it('renders with text input type', () => {
-    render(<CodeInput label="Verification Code" />);
-    
-    const input = screen.getByRole('textbox');
-    expect(input).toHaveAttribute('type', 'text');
-  });
+  const codeInputTests = [
+    {
+      name: 'renders with text input type',
+      props: { label: 'Verification Code' },
+      test: (input: HTMLElement) => {
+        expect(input).toHaveAttribute('type', 'text');
+      }
+    },
+    {
+      name: 'applies mono font styling',
+      props: {},
+      test: (input: HTMLElement) => {
+        const expectedClasses = ['text-center', 'tracking-widest', 'uppercase', 'font-black', 'text-2xl', 'font-mono'];
+        expectedClasses.forEach(className => {
+          expect(input).toHaveClass(className);
+        });
+      }
+    },
+    {
+      name: 'accepts TextInput props',
+      props: { placeholder: 'Enter code' },
+      test: () => {
+        expect(screen.getByText('Code')).toBeInTheDocument();
+        expect(screen.getByPlaceholderText('Enter code')).toBeInTheDocument();
+      }
+    },
+    {
+      name: 'applies default maxLength',
+      props: {},
+      test: (input: HTMLElement) => {
+        expect(input).toBeInTheDocument();
+      }
+    },
+    {
+      name: 'applies custom maxLength when provided',
+      props: { maxLength: 6 },
+      test: (input: HTMLElement) => {
+        expect(input).toBeInTheDocument();
+      }
+    }
+  ];
 
-  it('applies mono font styling', () => {
-    render(<CodeInput label="Code" />);
-    
-    const input = screen.getByRole('textbox');
-    expect(input).toHaveClass('text-center', 'tracking-widest', 'uppercase', 'font-black', 'text-2xl', 'font-mono');
-  });
-
-  it('accepts TextInput props', () => {
-    render(<CodeInput label="Code" placeholder="Enter code" />);
-    
-    expect(screen.getByText('Code')).toBeInTheDocument();
-    expect(screen.getByPlaceholderText('Enter code')).toBeInTheDocument();
-  });
-
-  it('applies default maxLength', () => {
-    render(<CodeInput label="Code" />);
-    
-    const input = screen.getByRole('textbox');
-    // Note: maxLength would need to be checked via props if TextInput supports it
-    expect(input).toBeInTheDocument();
-  });
-
-  it('applies custom maxLength when provided', () => {
-    render(<CodeInput label="Code" maxLength={6} />);
-    
-    const input = screen.getByRole('textbox');
-    expect(input).toBeInTheDocument();
+  codeInputTests.forEach(({ name, props, test }) => {
+    it(name, () => {
+      const input = renderCodeInput(props);
+      test(input);
+    });
   });
 });

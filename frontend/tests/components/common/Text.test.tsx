@@ -2,233 +2,187 @@ import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import { Text } from '../../../src/components/common/Text';
 
+// Helper function to render Text and get text element
+const renderText = (children = 'Test Text', props = {}) => {
+  render(<Text {...props}>{children}</Text>);
+  return screen.getByTestId(props.testId || 'text');
+};
+
 describe('Text', () => {
   it('renders children correctly', () => {
-    render(<Text>Test Text</Text>);
+    renderText();
     expect(screen.getByText('Test Text')).toBeInTheDocument();
   });
 
   it('renders with default props', () => {
-    render(<Text>Default Text</Text>);
-    const text = screen.getByTestId('text');
-    
-    expect(text).toHaveClass('text-sm', 'md:text-base'); // responsive default size medium
-    expect(text).toHaveClass('text-text-primary'); // default color dark
+    const text = renderText('Default Text');
+    expect(text).toHaveClass('text-sm', 'md:text-base', 'text-text-primary');
   });
+
+  const variantTests = [
+    {
+      name: 'renders body variant correctly',
+      variant: 'body',
+      expectedClasses: ['text-sm', 'md:text-base']
+    },
+    {
+      name: 'renders caption variant correctly',
+      variant: 'caption',
+      expectedClasses: ['text-xs', 'md:text-sm']
+    },
+    {
+      name: 'renders label variant correctly',
+      variant: 'label',
+      expectedClasses: ['text-xs', 'md:text-sm', 'tracking-wide']
+    }
+  ];
 
   describe('variants', () => {
-    it('renders body variant correctly', () => {
-      render(<Text variant="body">Body text</Text>);
-      const text = screen.getByTestId('text');
-      
-      expect(text.tagName).toBe('SPAN');
-      expect(text).toHaveClass('text-sm', 'md:text-base'); // responsive sizing
-    });
-
-    it('renders caption variant correctly', () => {
-      render(<Text variant="caption">Caption text</Text>);
-      const text = screen.getByTestId('text');
-      
-      expect(text.tagName).toBe('SPAN');
-      expect(text).toHaveClass('text-xs', 'md:text-sm'); // smaller size with responsive scaling
-    });
-
-    it('renders label variant correctly', () => {
-      render(<Text variant="label">Label text</Text>);
-      const text = screen.getByTestId('text');
-      
-      expect(text.tagName).toBe('SPAN');
-      expect(text).toHaveClass('text-xs', 'md:text-sm'); // smaller size with responsive scaling
-      expect(text).toHaveClass('tracking-wide'); // label specific styling
+    variantTests.forEach(({ name, variant, expectedClasses }) => {
+      it(name, () => {
+        const text = renderText(`${variant} text`, { variant });
+        
+        expect(text.tagName).toBe('SPAN');
+        expectedClasses.forEach(className => {
+          expect(text).toHaveClass(className);
+        });
+      });
     });
   });
+
+  const sizeTests = [
+    { name: 'renders small size correctly', size: 'sm', expectedClasses: ['text-xs', 'md:text-sm'] },
+    { name: 'renders medium size correctly', size: 'md', expectedClasses: ['text-sm', 'md:text-base'] },
+    { name: 'renders large size correctly', size: 'lg', expectedClasses: ['text-base', 'md:text-lg'] },
+    { name: 'renders extra large size correctly', size: 'xl', expectedClasses: ['text-lg', 'md:text-xl'] },
+    { name: 'renders 2xl size correctly', size: '2xl', expectedClasses: ['text-xl', 'md:text-2xl'] },
+    { name: 'renders 3xl size correctly', size: '3xl', expectedClasses: ['text-2xl', 'md:text-3xl'] }
+  ];
 
   describe('sizes', () => {
-    it('renders small size correctly', () => {
-      render(<Text size="sm">Small text</Text>);
-      const text = screen.getByTestId('text');
-      
-      expect(text).toHaveClass('text-xs', 'md:text-sm'); // responsive small size
-    });
-
-    it('renders medium size correctly', () => {
-      render(<Text size="md">Medium text</Text>);
-      const text = screen.getByTestId('text');
-      
-      expect(text).toHaveClass('text-sm', 'md:text-base'); // responsive medium size
-    });
-
-    it('renders large size correctly', () => {
-      render(<Text size="lg">Large text</Text>);
-      const text = screen.getByTestId('text');
-      
-      expect(text).toHaveClass('text-base', 'md:text-lg'); // responsive large size
-    });
-
-    it('renders extra large size correctly', () => {
-      render(<Text size="xl">Extra large text</Text>);
-      const text = screen.getByTestId('text');
-      
-      expect(text).toHaveClass('text-lg', 'md:text-xl'); // responsive extra large size
-    });
-
-    it('renders 2xl size correctly', () => {
-      render(<Text size="2xl">2XL text</Text>);
-      const text = screen.getByTestId('text');
-      
-      expect(text).toHaveClass('text-xl', 'md:text-2xl'); // responsive 2xl size
-    });
-
-    it('renders 3xl size correctly', () => {
-      render(<Text size="3xl">3XL text</Text>);
-      const text = screen.getByTestId('text');
-      
-      expect(text).toHaveClass('text-2xl', 'md:text-3xl'); // responsive 3xl size
+    sizeTests.forEach(({ name, size, expectedClasses }) => {
+      it(name, () => {
+        const text = renderText(`${size} text`, { size });
+        expectedClasses.forEach(className => {
+          expect(text).toHaveClass(className);
+        });
+      });
     });
   });
+
+  const weightTests = [
+    { name: 'renders normal weight correctly', weight: 'normal', expectedClass: 'font-normal' },
+    { name: 'renders bold weight correctly', weight: 'bold', expectedClass: 'font-bold' },
+    { name: 'renders black weight correctly', weight: 'black', expectedClass: 'font-black' }
+  ];
 
   describe('weights', () => {
-    it('renders normal weight correctly', () => {
-      render(<Text weight="normal">Normal weight</Text>);
-      const text = screen.getByTestId('text');
-      
-      expect(text).toHaveClass('font-normal');
-    });
-
-    it('renders bold weight correctly', () => {
-      render(<Text weight="bold">Bold weight</Text>);
-      const text = screen.getByTestId('text');
-      
-      expect(text).toHaveClass('font-bold');
-    });
-
-    it('renders black weight correctly', () => {
-      render(<Text weight="black">Black weight</Text>);
-      const text = screen.getByTestId('text');
-      
-      expect(text).toHaveClass('font-black');
+    weightTests.forEach(({ name, weight, expectedClass }) => {
+      it(name, () => {
+        const text = renderText(`${weight} weight`, { weight });
+        expect(text).toHaveClass(expectedClass);
+      });
     });
   });
+
+  const colorTests = [
+    { name: 'renders primary color correctly', color: 'primary', expectedClass: 'text-primary' },
+    { name: 'renders secondary color correctly', color: 'secondary', expectedClass: 'text-text-secondary' },
+    { name: 'renders dark color correctly', color: 'dark', expectedClass: 'text-text-primary' },
+    { name: 'renders error color correctly', color: 'error', expectedClass: 'text-error' },
+    { name: 'renders white color correctly', color: 'white', expectedClass: 'text-white' }
+  ];
 
   describe('colors', () => {
-    it('renders primary color correctly', () => {
-      render(<Text color="primary">Primary color</Text>);
-      const text = screen.getByTestId('text');
-      
-      expect(text).toHaveClass('text-primary');
-    });
-
-    it('renders secondary color correctly', () => {
-      render(<Text color="secondary">Secondary color</Text>);
-      const text = screen.getByTestId('text');
-      
-      expect(text).toHaveClass('text-text-secondary');
-    });
-
-    it('renders dark color correctly', () => {
-      render(<Text color="dark">Dark color</Text>);
-      const text = screen.getByTestId('text');
-      
-      expect(text).toHaveClass('text-text-primary');
-    });
-
-    it('renders error color correctly', () => {
-      render(<Text color="error">Error color</Text>);
-      const text = screen.getByTestId('text');
-      
-      expect(text).toHaveClass('text-error');
-    });
-
-    it('renders white color correctly', () => {
-      render(<Text color="white">White color</Text>);
-      const text = screen.getByTestId('text');
-      
-      expect(text).toHaveClass('text-white');
+    colorTests.forEach(({ name, color, expectedClass }) => {
+      it(name, () => {
+        const text = renderText(`${color} color`, { color });
+        expect(text).toHaveClass(expectedClass);
+      });
     });
   });
+
+  const uppercaseTests = [
+    { name: 'applies uppercase when true', uppercase: true, shouldHaveClass: true },
+    { name: 'does not apply uppercase when false', uppercase: false, shouldHaveClass: false }
+  ];
 
   describe('uppercase prop', () => {
-    it('applies uppercase when true', () => {
-      render(<Text uppercase>Uppercase text</Text>);
-      const text = screen.getByTestId('text');
-      
-      expect(text).toHaveClass('uppercase');
-    });
-
-    it('does not apply uppercase when false', () => {
-      render(<Text uppercase={false}>Normal case</Text>);
-      const text = screen.getByTestId('text');
-      
-      expect(text).not.toHaveClass('uppercase');
+    uppercaseTests.forEach(({ name, uppercase, shouldHaveClass }) => {
+      it(name, () => {
+        const text = renderText('case text', { uppercase });
+        if (shouldHaveClass) {
+          expect(text).toHaveClass('uppercase');
+        } else {
+          expect(text).not.toHaveClass('uppercase');
+        }
+      });
     });
   });
 
-  it('applies custom className', () => {
-    render(<Text className="custom-class">Custom class</Text>);
-    const text = screen.getByTestId('text');
-    
-    expect(text).toHaveClass('custom-class');
+  const propTests = [
+    {
+      name: 'applies custom className',
+      props: { className: 'custom-class' },
+      test: (text: HTMLElement) => expect(text).toHaveClass('custom-class')
+    },
+    {
+      name: 'uses custom testId',
+      props: { testId: 'custom-text' },
+      test: () => expect(screen.getByTestId('custom-text')).toBeInTheDocument()
+    },
+    {
+      name: 'applies base styles consistently',
+      props: {},
+      test: (text: HTMLElement) => expect(text).toHaveClass('font-mono', 'leading-normal')
+    }
+  ];
+
+  propTests.forEach(({ name, props, test }) => {
+    it(name, () => {
+      const text = renderText('test text', props);
+      test(text);
+    });
   });
 
-  it('uses custom testId', () => {
-    render(<Text testId="custom-text">Custom test ID</Text>);
-    
-    expect(screen.getByTestId('custom-text')).toBeInTheDocument();
-  });
-
-  it('applies base styles consistently', () => {
-    render(<Text>Base styles</Text>);
-    const text = screen.getByTestId('text');
-    
-    expect(text).toHaveClass('font-mono', 'leading-normal');
-  });
+  const realWorldExamples = [
+    {
+      name: 'renders body text for descriptions',
+      props: { variant: 'body', size: 'lg', weight: 'bold', uppercase: true, className: 'mb-0' },
+      content: "Here's what's happening with your home maintenance.",
+      expectedClasses: ['text-base', 'md:text-lg', 'font-bold', 'uppercase', 'mb-0']
+    },
+    {
+      name: 'renders caption text for subtitles',
+      props: { variant: 'caption', size: 'sm', weight: 'bold', color: 'secondary', uppercase: true },
+      content: 'Kitchen Appliances • 2 hours ago',
+      expectedClasses: ['text-xs', 'text-text-secondary', 'uppercase']
+    },
+    {
+      name: 'renders label text for form fields',
+      props: { variant: 'label', size: 'md', weight: 'bold', color: 'dark' },
+      content: 'HVAC Filter Change',
+      expectedClasses: ['text-xs', 'md:text-sm', 'text-text-primary']
+    },
+    {
+      name: 'renders white text for dark backgrounds',
+      props: { variant: 'caption', size: 'sm', weight: 'bold', color: 'white', uppercase: true },
+      content: '© 2025 HomeKeeper. All rights reserved.',
+      expectedClasses: ['text-white', 'uppercase']
+    }
+  ];
 
   describe('real-world usage examples', () => {
-    it('renders body text for descriptions', () => {
-      render(
-        <Text variant="body" size="lg" weight="bold" uppercase className="mb-0">
-          Here's what's happening with your home maintenance.
-        </Text>
-      );
-      
-      const text = screen.getByText("Here's what's happening with your home maintenance.");
-      expect(text).toHaveClass('text-base', 'md:text-lg', 'font-bold', 'uppercase', 'mb-0');
-      expect(text.tagName).toBe('SPAN');
-    });
-
-    it('renders caption text for subtitles', () => {
-      render(
-        <Text variant="caption" size="sm" weight="bold" color="secondary" uppercase>
-          Kitchen Appliances • 2 hours ago
-        </Text>
-      );
-      
-      const text = screen.getByText('Kitchen Appliances • 2 hours ago');
-      expect(text).toHaveClass('text-xs', 'text-text-secondary', 'uppercase');
-      expect(text.tagName).toBe('SPAN');
-    });
-
-    it('renders label text for form fields', () => {
-      render(
-        <Text variant="label" size="md" weight="bold" color="dark">
-          HVAC Filter Change
-        </Text>
-      );
-      
-      const text = screen.getByText('HVAC Filter Change');
-      expect(text).toHaveClass('text-xs', 'md:text-sm', 'text-text-primary');
-      expect(text.tagName).toBe('SPAN');
-    });
-
-    it('renders white text for dark backgrounds', () => {
-      render(
-        <Text variant="caption" size="sm" weight="bold" color="white" uppercase>
-          © 2025 HomeKeeper. All rights reserved.
-        </Text>
-      );
-      
-      const text = screen.getByText('© 2025 HomeKeeper. All rights reserved.');
-      expect(text).toHaveClass('text-white', 'uppercase');
+    realWorldExamples.forEach(({ name, props, content, expectedClasses }) => {
+      it(name, () => {
+        render(<Text {...props}>{content}</Text>);
+        const text = screen.getByText(content);
+        
+        expectedClasses.forEach(className => {
+          expect(text).toHaveClass(className);
+        });
+        expect(text.tagName).toBe('SPAN');
+      });
     });
   });
 });

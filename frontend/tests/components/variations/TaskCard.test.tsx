@@ -4,6 +4,8 @@ import { describe, it, expect, vi } from 'vitest';
 import { TaskCard } from '../../../src/components/variations/TaskCard';
 import { Action } from '../../../src/components/common/Action';
 import { Button } from '../../../src/components/common/Button';
+import { expectElementToHaveClasses } from '../../helpers/testHelpers';
+import type { AllowedActionChildren } from '../../../src/lib/validation/children';
 
 describe('TaskCard', () => {
   const defaultProps = {
@@ -13,8 +15,31 @@ describe('TaskCard', () => {
     dueDate: 'Due Tomorrow'
   };
 
+  // Helper function to render TaskCard with optional actions
+  const renderTaskCard = (props = {}, actions?: AllowedActionChildren) => {
+    const combinedProps = { ...defaultProps, ...props };
+    return render(
+      <TaskCard {...combinedProps}>
+        {actions}
+      </TaskCard>
+    );
+  };
+
+  // Helper function to create action components
+  const createActions = {
+    single: () => <Action variant="danger" onClick={vi.fn()}>Mark Complete</Action>,
+    multiple: () => [
+      <Action key="complete" variant="danger" onClick={vi.fn()}>Mark Complete</Action>,
+      <Action key="reschedule" variant="outline" onClick={vi.fn()}>Reschedule</Action>
+    ],
+    mixed: () => [
+      <Action key="complete" variant="danger" onClick={vi.fn()}>Mark Complete</Action>,
+      <Button key="notes" variant="outline" size="sm" onClick={vi.fn()}>Add Notes</Button>
+    ]
+  };
+
   it('renders title, subtitle, and due date', () => {
-    render(<TaskCard {...defaultProps} />);
+    renderTaskCard();
     
     expect(screen.getByText('Change HVAC Filter')).toBeInTheDocument();
     expect(screen.getByText('Central Air System • Living Room')).toBeInTheDocument();
@@ -22,29 +47,20 @@ describe('TaskCard', () => {
   });
 
   it('renders actions when provided', () => {
-    render(
-      <TaskCard {...defaultProps}>
-        <Action variant="danger" onClick={() => {}}>Mark Complete</Action>
-      </TaskCard>
-    );
+    renderTaskCard({}, createActions.single());
     
     expect(screen.getByRole('button', { name: 'Mark Complete' })).toBeInTheDocument();
   });
 
   it('does not render actions section when not provided', () => {
-    render(<TaskCard {...defaultProps} />);
+    renderTaskCard();
     
     // Should not have any buttons when no actions provided
     expect(screen.queryByRole('button')).not.toBeInTheDocument();
   });
 
   it('handles multiple actions', () => {
-    render(
-      <TaskCard {...defaultProps}>
-        <Action variant="danger" onClick={() => {}}>Mark Complete</Action>
-        <Action variant="outline" onClick={() => {}}>Reschedule</Action>
-      </TaskCard>
-    );
+    renderTaskCard({}, createActions.multiple());
     
     expect(screen.getByRole('button', { name: 'Mark Complete' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Reschedule' })).toBeInTheDocument();
@@ -54,92 +70,124 @@ describe('TaskCard', () => {
     const user = userEvent.setup();
     const mockOnClick = vi.fn();
     
-    render(
-      <TaskCard {...defaultProps}>
-        <Action variant="danger" onClick={mockOnClick}>Mark Complete</Action>
-      </TaskCard>
-    );
+    renderTaskCard({}, <Action variant="danger" onClick={mockOnClick}>Mark Complete</Action>);
     
     await user.click(screen.getByRole('button', { name: 'Mark Complete' }));
     expect(mockOnClick).toHaveBeenCalledTimes(1);
   });
 
-  it('applies correct status-based border colors', () => {
-    const { rerender, container } = render(<TaskCard {...defaultProps} status="urgent" />);
-    let card = container.querySelector('[class*="border-l-error"]');
-    expect(card).toBeInTheDocument();
+  describe('Status-Based Styling', () => {
+    const statusTests = [
+      {
+        name: 'applies urgent status styling',
+        status: 'urgent',
+        expectedBorderClass: 'border-l-error',
+        expectedTextClass: 'text-error'
+      },
+      {
+        name: 'applies normal status styling',
+        status: 'normal',
+        expectedBorderClass: 'border-l-secondary',
+        expectedTextClass: 'text-secondary'
+      },
+      {
+        name: 'applies future status styling',
+        status: 'future',
+        expectedBorderClass: 'border-l-accent',
+        expectedTextClass: 'text-accent'
+      },
+      {
+        name: 'applies completed status styling',
+        status: 'completed',
+        expectedBorderClass: 'border-l-accent',
+        expectedTextClass: 'text-accent'
+      }
+    ];
 
-    rerender(<TaskCard {...defaultProps} status="normal" />);
-    card = container.querySelector('[class*="border-l-secondary"]');
-    expect(card).toBeInTheDocument();
-
-    rerender(<TaskCard {...defaultProps} status="future" />);
-    card = container.querySelector('[class*="border-l-accent"]');
-    expect(card).toBeInTheDocument();
-
-    rerender(<TaskCard {...defaultProps} status="completed" />);
-    card = container.querySelector('[class*="border-l-accent"]');
-    expect(card).toBeInTheDocument();
+    statusTests.forEach(({ name, status, expectedBorderClass, expectedTextClass }) => {
+      it(name, () => {
+        const { container } = renderTaskCard({ status: status as any });
+        
+        // Check border color
+        const card = container.querySelector(`[class*="${expectedBorderClass}"]`);
+        expect(card).toBeInTheDocument();
+        
+        // Check due date text color
+        const dueDate = screen.getByText('Due Tomorrow');
+        expect(dueDate).toHaveClass(expectedTextClass);
+      });
+    });
   });
 
-  it('applies correct title styling', () => {
-    render(<TaskCard {...defaultProps} />);
-    
-    const title = screen.getByText('Change HVAC Filter');
-    expect(title.tagName).toBe('H3');
-    expect(title).toHaveClass('font-black', 'uppercase', 'text-text-primary');
+  describe('Element Styling', () => {
+    const elementTests = [
+      {
+        name: 'applies correct title styling',
+        element: () => screen.getByText('Change HVAC Filter'),
+        expectedTag: 'H3',
+        expectedClasses: ['font-black', 'uppercase', 'text-text-primary']
+      },
+      {
+        name: 'applies correct subtitle styling',
+        element: () => screen.getByText('Central Air System • Living Room'),
+        expectedTag: 'P',
+        expectedClasses: ['font-bold', 'text-text-secondary', 'uppercase']
+      }
+    ];
+
+    elementTests.forEach(({ name, element, expectedTag, expectedClasses }) => {
+      it(name, () => {
+        renderTaskCard();
+        
+        const targetElement = element();
+        expect(targetElement.tagName).toBe(expectedTag);
+        expectElementToHaveClasses(targetElement, expectedClasses);
+      });
+    });
   });
 
-  it('applies correct subtitle styling', () => {
-    render(<TaskCard {...defaultProps} />);
-    
-    const subtitle = screen.getByText('Central Air System • Living Room');
-    expect(subtitle.tagName).toBe('P');
-    expect(subtitle).toHaveClass('font-bold', 'text-text-secondary', 'uppercase');
-  });
-
-  it('applies correct due date styling based on status', () => {
-    const { rerender } = render(<TaskCard {...defaultProps} status="urgent" />);
-    let dueDate = screen.getByText('Due Tomorrow');
-    expect(dueDate).toHaveClass('text-error');
-
-    rerender(<TaskCard {...defaultProps} status="normal" />);
-    dueDate = screen.getByText('Due Tomorrow');
-    expect(dueDate).toHaveClass('text-secondary');
-
-    rerender(<TaskCard {...defaultProps} status="future" />);
-    dueDate = screen.getByText('Due Tomorrow');
-    expect(dueDate).toHaveClass('text-accent');
-
-    rerender(<TaskCard {...defaultProps} status="completed" />);
-    dueDate = screen.getByText('Due Tomorrow');
-    expect(dueDate).toHaveClass('text-accent');
-  });
-
-  // New composition pattern tests
   describe('Composition Pattern', () => {
-    it('supports mixed Action and Button components', () => {
-      render(
-        <TaskCard {...defaultProps}>
-          <Action variant="danger" onClick={() => {}}>Mark Complete</Action>
-          <Button variant="outline" size="sm" onClick={() => {}}>Add Notes</Button>
-        </TaskCard>
-      );
-      
-      expect(screen.getByRole('button', { name: 'Mark Complete' })).toBeInTheDocument();
-      expect(screen.getByRole('button', { name: 'Add Notes' })).toBeInTheDocument();
+    const compositionTests = [
+      {
+        name: 'supports mixed Action and Button components',
+        renderActions: () => createActions.mixed(),
+        expectedButtons: ['Mark Complete', 'Add Notes']
+      },
+      {
+        name: 'handles multiple actions with proper spacing',
+        renderActions: () => [
+          <Action key="complete" variant="danger" onClick={vi.fn()}>Complete</Action>,
+          <Action key="reschedule" variant="secondary" onClick={vi.fn()}>Reschedule</Action>,
+          <Action key="skip" variant="outline" onClick={vi.fn()}>Skip</Action>
+        ],
+        expectedButtons: ['Complete', 'Reschedule', 'Skip'],
+        verifySpacing: true
+      }
+    ];
+
+    compositionTests.forEach(({ name, renderActions, expectedButtons, verifySpacing }) => {
+      it(name, () => {
+        renderTaskCard({}, renderActions());
+        
+        expectedButtons.forEach(buttonName => {
+          expect(screen.getByRole('button', { name: buttonName })).toBeInTheDocument();
+        });
+        
+        if (verifySpacing) {
+          const actionsContainer = screen.getByRole('button', { name: expectedButtons[0] }).parentElement;
+          expect(actionsContainer).toHaveClass('flex', 'flex-wrap', 'gap-3');
+        }
+      });
     });
 
     it('validates children and filters out invalid components', () => {
       const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
       
-      render(
-        <TaskCard {...defaultProps}>
-          <Action variant="danger" onClick={() => {}}>Valid Action</Action>
-          <div>Invalid Child</div>
-          <Button variant="outline" size="sm" onClick={() => {}}>Valid Button</Button>
-        </TaskCard>
-      );
+      renderTaskCard({}, [
+        <Action key="valid" variant="danger" onClick={vi.fn()}>Valid Action</Action>,
+        <div key="invalid">Invalid Child</div>,
+        <Button key="button" variant="outline" size="sm" onClick={vi.fn()}>Valid Button</Button>
+      ]);
       
       // Valid components should render
       expect(screen.getByRole('button', { name: 'Valid Action' })).toBeInTheDocument();
@@ -157,62 +205,43 @@ describe('TaskCard', () => {
     });
 
     it('handles empty children gracefully', () => {
-      render(<TaskCard {...defaultProps} />);
+      renderTaskCard();
       
       expect(screen.queryByRole('button')).not.toBeInTheDocument();
     });
-
-    it('handles multiple actions with proper spacing', () => {
-      render(
-        <TaskCard {...defaultProps}>
-          <Action variant="danger" onClick={() => {}}>Complete</Action>
-          <Action variant="secondary" onClick={() => {}}>Reschedule</Action>
-          <Action variant="outline" onClick={() => {}}>Skip</Action>
-        </TaskCard>
-      );
-      
-      const actionsContainer = screen.getByRole('button', { name: 'Complete' }).parentElement;
-      expect(actionsContainer).toHaveClass('flex', 'flex-wrap', 'gap-3');
-    });
   });
 
-  // TypeScript validation tests (these would fail at compile time in real usage)
   describe('TypeScript Integration', () => {
-    it('Action component uses correct default size', () => {
-      render(
-        <TaskCard {...defaultProps}>
-          <Action variant="danger" onClick={() => {}}>Test Action</Action>
-        </TaskCard>
-      );
-      
-      const actionButton = screen.getByRole('button', { name: 'Test Action' });
-      // Action should have small size by default (from Action component)
-      expect(actionButton).toHaveClass('px-3 py-2', 'text-sm'); // sm size classes
-    });
+    const typeScriptTests = [
+      {
+        name: 'Action component uses correct default size',
+        actionProps: { variant: 'danger' as const, children: 'Test Action' },
+        expectedClasses: ['px-3', 'py-2', 'text-sm']
+      },
+      {
+        name: 'Action component can override size',
+        actionProps: { variant: 'danger' as const, size: 'lg' as const, children: 'Large Action' },
+        expectedClasses: ['px-6', 'py-4', 'text-lg']
+      }
+    ];
 
-    it('Action component can override size', () => {
-      render(
-        <TaskCard {...defaultProps}>
-          <Action variant="danger" size="lg" onClick={() => {}}>Large Action</Action>
-        </TaskCard>
-      );
-      
-      const actionButton = screen.getByRole('button', { name: 'Large Action' });
-      // Should have large size classes
-      expect(actionButton).toHaveClass('px-6 py-4', 'text-lg'); // lg size classes
+    typeScriptTests.forEach(({ name, actionProps, expectedClasses }) => {
+      it(name, () => {
+        renderTaskCard({}, <Action onClick={vi.fn()} {...actionProps} />);
+        
+        const actionButton = screen.getByRole('button', { name: actionProps.children as string });
+        expectElementToHaveClasses(actionButton, expectedClasses);
+      });
     });
 
     it('passes all card props to underlying Card component', () => {
-      render(
-        <TaskCard 
-          {...defaultProps} 
-          shadow="double"
-          hover
-          hoverEffect="lift"
-          className="custom-class"
-          testId="custom-task-card"
-        />
-      );
+      renderTaskCard({
+        shadow: 'double',
+        hover: true,
+        hoverEffect: 'lift',
+        className: 'custom-class',
+        testId: 'custom-task-card'
+      });
       
       const card = screen.getByTestId('custom-task-card');
       expect(card).toBeInTheDocument();

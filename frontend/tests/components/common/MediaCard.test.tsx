@@ -2,6 +2,15 @@ import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import { MediaCard } from '../../../src/components/common/MediaCard';
 import { Button } from '../../../src/components/common/Button';
+import { createVariantTests } from '../../helpers/componentTestHelpers';
+import { 
+  createAvatarTests, 
+  createBadgeTests,
+  createComplexScenarioTests,
+  createAccessibilityTests,
+  createEdgeCasesTests 
+} from '../../helpers/compoundComponentHelpers';
+import { expectElementToHaveClasses } from '../../helpers/testHelpers';
 
 describe('MediaCard (Compound Component)', () => {
   const defaultProps = {
@@ -50,166 +59,90 @@ describe('MediaCard (Compound Component)', () => {
     });
   });
 
-  describe('Variant Styles', () => {
-    it('applies default variant styling', () => {
-      const { container } = render(<MediaCard {...defaultProps} variant="default" />);
-      
-      const wrapper = container.firstChild as HTMLElement;
-      expect(wrapper).toHaveClass('bg-white', 'text-text-primary');
-    });
-
-    it('applies primary variant styling', () => {
-      const { container } = render(<MediaCard {...defaultProps} variant="primary" />);
-      
-      const wrapper = container.firstChild as HTMLElement;
-      expect(wrapper).toHaveClass('bg-primary', 'text-white');
-    });
-
-    it('applies secondary variant styling', () => {
-      const { container } = render(<MediaCard {...defaultProps} variant="secondary" />);
-      
-      const wrapper = container.firstChild as HTMLElement;
-      expect(wrapper).toHaveClass('bg-secondary', 'text-white');
-    });
-
-    it('applies accent variant styling', () => {
-      const { container } = render(<MediaCard {...defaultProps} variant="accent" />);
-      
-      const wrapper = container.firstChild as HTMLElement;
-      expect(wrapper).toHaveClass('bg-accent', 'text-white');
-    });
-
-    it('applies danger variant styling', () => {
-      const { container } = render(<MediaCard {...defaultProps} variant="danger" />);
-      
-      const wrapper = container.firstChild as HTMLElement;
-      expect(wrapper).toHaveClass('bg-error', 'text-white');
-    });
-
-    it('applies dark variant styling', () => {
-      const { container } = render(<MediaCard {...defaultProps} variant="dark" />);
-      
-      const wrapper = container.firstChild as HTMLElement;
-      expect(wrapper).toHaveClass('bg-text-primary', 'text-white');
-    });
-  });
+  createVariantTests('MediaCard', MediaCard, [
+    {
+      name: 'default',
+      props: { ...defaultProps, variant: 'default' },
+      expectedClasses: ['bg-white', 'text-text-primary']
+    },
+    {
+      name: 'primary', 
+      props: { ...defaultProps, variant: 'primary' },
+      expectedClasses: ['bg-primary', 'text-white']
+    },
+    {
+      name: 'secondary',
+      props: { ...defaultProps, variant: 'secondary' },
+      expectedClasses: ['bg-secondary', 'text-white']
+    },
+    {
+      name: 'accent',
+      props: { ...defaultProps, variant: 'accent' },
+      expectedClasses: ['bg-accent', 'text-white']
+    },
+    {
+      name: 'danger',
+      props: { ...defaultProps, variant: 'danger' },
+      expectedClasses: ['bg-error', 'text-white']
+    },
+    {
+      name: 'dark',
+      props: { ...defaultProps, variant: 'dark' },
+      expectedClasses: ['bg-text-primary', 'text-white']
+    }
+  ]);
 
   describe('Rotation Effects', () => {
-    it('applies no rotation by default', () => {
-      const { container } = render(<MediaCard {...defaultProps} rotation="none" />);
-      
-      const wrapper = container.firstChild as HTMLElement;
-      expect(wrapper).not.toHaveClass('brutal-rotate-left', 'brutal-rotate-right', 'brutal-rotate-slight-left', 'brutal-rotate-slight-right');
-    });
+    const rotationTests = [
+      { rotation: 'none', expectedClasses: [], notExpectedClasses: ['brutal-rotate-left', 'brutal-rotate-right', 'brutal-rotate-slight-left', 'brutal-rotate-slight-right'] },
+      { rotation: 'left', expectedClasses: ['brutal-rotate-left'] },
+      { rotation: 'right', expectedClasses: ['brutal-rotate-right'] },
+      { rotation: 'slight-left', expectedClasses: ['brutal-rotate-slight-left'] },
+      { rotation: 'slight-right', expectedClasses: ['brutal-rotate-slight-right'] }
+    ];
 
-    it('applies left rotation', () => {
-      const { container } = render(<MediaCard {...defaultProps} rotation="left" />);
-      
-      const wrapper = container.firstChild as HTMLElement;
-      expect(wrapper).toHaveClass('brutal-rotate-left');
-    });
-
-    it('applies right rotation', () => {
-      const { container } = render(<MediaCard {...defaultProps} rotation="right" />);
-      
-      const wrapper = container.firstChild as HTMLElement;
-      expect(wrapper).toHaveClass('brutal-rotate-right');
-    });
-
-    it('applies slight left rotation', () => {
-      const { container } = render(<MediaCard {...defaultProps} rotation="slight-left" />);
-      
-      const wrapper = container.firstChild as HTMLElement;
-      expect(wrapper).toHaveClass('brutal-rotate-slight-left');
-    });
-
-    it('applies slight right rotation', () => {
-      const { container } = render(<MediaCard {...defaultProps} rotation="slight-right" />);
-      
-      const wrapper = container.firstChild as HTMLElement;
-      expect(wrapper).toHaveClass('brutal-rotate-slight-right');
+    rotationTests.forEach(({ rotation, expectedClasses, notExpectedClasses }) => {
+      it(`applies ${rotation} rotation`, () => {
+        const { container } = render(<MediaCard {...defaultProps} rotation={rotation as any} />);
+        
+        const wrapper = container.firstChild as HTMLElement;
+        
+        if (expectedClasses.length > 0) {
+          expectElementToHaveClasses(wrapper, expectedClasses);
+        }
+        
+        if (notExpectedClasses) {
+          notExpectedClasses.forEach(className => {
+            expect(wrapper).not.toHaveClass(className);
+          });
+        }
+      });
     });
   });
 
   describe('Shadow Effects', () => {
-    it('applies default shadow', () => {
-      const { container } = render(<MediaCard {...defaultProps} shadow="default" />);
-      
-      const wrapper = container.firstChild as HTMLElement;
-      expect(wrapper).toHaveClass('brutal-shadow-dark');
-    });
+    const shadowTests = [
+      { shadow: 'default', expectedClass: 'brutal-shadow-dark' },
+      { shadow: 'primary', expectedClass: 'brutal-shadow-primary' },
+      { shadow: 'secondary', expectedClass: 'brutal-shadow-secondary' },
+      { shadow: 'accent', expectedClass: 'brutal-shadow-accent' },
+      { shadow: 'dark', expectedClass: 'brutal-shadow-dark' },
+      { shadow: 'error', expectedClass: 'brutal-shadow-error' }
+    ];
 
-    it('applies primary shadow', () => {
-      const { container } = render(<MediaCard {...defaultProps} shadow="primary" />);
-      
-      const wrapper = container.firstChild as HTMLElement;
-      expect(wrapper).toHaveClass('brutal-shadow-primary');
-    });
-
-    it('applies secondary shadow', () => {
-      const { container } = render(<MediaCard {...defaultProps} shadow="secondary" />);
-      
-      const wrapper = container.firstChild as HTMLElement;
-      expect(wrapper).toHaveClass('brutal-shadow-secondary');
-    });
-
-    it('applies accent shadow', () => {
-      const { container } = render(<MediaCard {...defaultProps} shadow="accent" />);
-      
-      const wrapper = container.firstChild as HTMLElement;
-      expect(wrapper).toHaveClass('brutal-shadow-accent');
-    });
-
-    it('applies dark shadow', () => {
-      const { container } = render(<MediaCard {...defaultProps} shadow="dark" />);
-      
-      const wrapper = container.firstChild as HTMLElement;
-      expect(wrapper).toHaveClass('brutal-shadow-dark');
-    });
-
-    it('applies error shadow', () => {
-      const { container } = render(<MediaCard {...defaultProps} shadow="error" />);
-      
-      const wrapper = container.firstChild as HTMLElement;
-      expect(wrapper).toHaveClass('brutal-shadow-error');
+    shadowTests.forEach(({ shadow, expectedClass }) => {
+      it(`applies ${shadow} shadow`, () => {
+        const { container } = render(<MediaCard {...defaultProps} shadow={shadow as any} />);
+        
+        const wrapper = container.firstChild as HTMLElement;
+        expect(wrapper).toHaveClass(expectedClass);
+      });
     });
   });
 
-  describe('Avatar Compound Component', () => {
-    it('renders avatar when provided', () => {
-      render(
-        <MediaCard {...defaultProps}>
-          <MediaCard.Avatar color="primary">📱</MediaCard.Avatar>
-        </MediaCard>
-      );
-      
-      expect(screen.getByText('📱')).toBeInTheDocument();
-    });
+  createAvatarTests('MediaCard', MediaCard, defaultProps);
 
-    it('does not render avatar section when not provided', () => {
-      render(<MediaCard {...defaultProps} />);
-      
-      expect(screen.queryByText('📱')).not.toBeInTheDocument();
-    });
-
-    it('applies correct avatar styling', () => {
-      render(
-        <MediaCard {...defaultProps}>
-          <MediaCard.Avatar color="primary">IC</MediaCard.Avatar>
-        </MediaCard>
-      );
-      
-      const avatar = screen.getByText('IC');
-      expect(avatar).toHaveClass(
-        'w-10', 'h-10', 'md:w-12', 'md:h-12',
-        'border-3', 'md:border-4', 'border-text-primary',
-        'flex', 'items-center', 'justify-center',
-        'text-base', 'md:text-xl', 'font-black',
-        'flex-shrink-0',
-        'bg-primary', 'text-white'
-      );
-    });
-
+  describe('MediaCard.Avatar layout integration', () => {
     it('positions avatar in header layout with title/subtitle', () => {
       render(
         <MediaCard {...defaultProps} subtitle="Test subtitle">
@@ -234,59 +167,12 @@ describe('MediaCard (Compound Component)', () => {
       const headerContainer = avatarContainer?.parentElement;
       expect(headerContainer).toHaveClass('flex', 'gap-3', 'md:gap-4', 'mb-4');
     });
-
-    it('applies different color variants correctly', () => {
-      render(
-        <MediaCard {...defaultProps}>
-          <MediaCard.Avatar color="danger">🚨</MediaCard.Avatar>
-        </MediaCard>
-      );
-      
-      const avatar = screen.getByText('🚨');
-      expect(avatar).toHaveClass('bg-error', 'text-white');
-    });
-
-    it('handles text avatars', () => {
-      render(
-        <MediaCard {...defaultProps}>
-          <MediaCard.Avatar color="accent">AB</MediaCard.Avatar>
-        </MediaCard>
-      );
-      
-      expect(screen.getByText('AB')).toBeInTheDocument();
-    });
   });
 
-  describe('Badge Compound Component', () => {
-    it('renders single badge when provided', () => {
-      render(
-        <MediaCard {...defaultProps}>
-          <MediaCard.Badge variant="primary">PDF</MediaCard.Badge>
-        </MediaCard>
-      );
-      
-      expect(screen.getByText('PDF')).toBeInTheDocument();
-    });
+  createBadgeTests('MediaCard', MediaCard, defaultProps);
 
-    it('renders multiple badges when provided', () => {
-      render(
-        <MediaCard {...defaultProps}>
-          <MediaCard.Badge variant="primary">PDF</MediaCard.Badge>
-          <MediaCard.Badge variant="secondary">Manual</MediaCard.Badge>
-        </MediaCard>
-      );
-      
-      expect(screen.getByText('PDF')).toBeInTheDocument();
-      expect(screen.getByText('Manual')).toBeInTheDocument();
-    });
-
-    it('does not render badges section when not provided', () => {
-      render(<MediaCard {...defaultProps} />);
-      
-      expect(screen.queryByText('PDF')).not.toBeInTheDocument();
-    });
-
-    it('applies correct badge styling', () => {
+  describe('MediaCard.Badge styling details', () => {
+    it('applies correct MediaCard-specific badge styling', () => {
       render(
         <MediaCard {...defaultProps}>
           <MediaCard.Badge variant="accent">Success</MediaCard.Badge>
@@ -294,30 +180,14 @@ describe('MediaCard (Compound Component)', () => {
       );
       
       const badge = screen.getByText('Success');
-      expect(badge).toHaveClass(
-        'px-3', 'py-1',
-        'border-3', 'border-text-primary',
-        'font-black', 'text-xs',
-        'uppercase',
-        'inline-block',
+      expectElementToHaveClasses(badge, [
+        'px-3', 'py-1', 'border-3', 'border-text-primary',
+        'font-black', 'text-xs', 'uppercase', 'inline-block',
         'bg-accent', 'text-white'
-      );
+      ]);
     });
 
-    it('positions badges at top of card', () => {
-      render(
-        <MediaCard {...defaultProps}>
-          <MediaCard.Badge variant="primary">Badge 1</MediaCard.Badge>
-          <MediaCard.Badge variant="secondary">Badge 2</MediaCard.Badge>
-        </MediaCard>
-      );
-      
-      const badge1 = screen.getByText('Badge 1');
-      const badgesContainer = badge1.parentElement;
-      expect(badgesContainer).toHaveClass('flex', 'flex-wrap', 'gap-2', 'mb-4');
-    });
-
-    it('supports success variant', () => {
+    it('supports success variant mapping to accent', () => {
       render(
         <MediaCard {...defaultProps}>
           <MediaCard.Badge variant="success">Completed</MediaCard.Badge>
@@ -325,7 +195,7 @@ describe('MediaCard (Compound Component)', () => {
       );
       
       const badge = screen.getByText('Completed');
-      expect(badge).toHaveClass('bg-accent', 'text-white'); // success uses accent color
+      expect(badge).toHaveClass('bg-accent', 'text-white');
     });
   });
 
@@ -373,36 +243,9 @@ describe('MediaCard (Compound Component)', () => {
     });
   });
 
-  describe('Complex Layout Scenarios', () => {
-    it('renders all elements in correct order: badges, header (avatar + title/subtitle), content', () => {
-      render(
-        <MediaCard {...defaultProps} subtitle="Card subtitle">
-          <MediaCard.Badge variant="primary">Top Badge</MediaCard.Badge>
-          <MediaCard.Avatar color="secondary">🔧</MediaCard.Avatar>
-          <p>Content paragraph</p>
-          <Button variant="outline" size="sm">Content Button</Button>
-        </MediaCard>
-      );
-      
-      const card = screen.getByTestId('media-card');
-      const children = Array.from(card.children);
-      
-      // First child should be badges container
-      expect(children[0]).toHaveClass('flex', 'flex-wrap', 'gap-2', 'mb-4');
-      expect(children[0]).toContainElement(screen.getByText('Top Badge'));
-      
-      // Second child should be header container
-      expect(children[1]).toHaveClass('flex', 'gap-3', 'md:gap-4', 'mb-4');
-      expect(children[1]).toContainElement(screen.getByText('🔧'));
-      expect(children[1]).toContainElement(screen.getByText('Test MediaCard'));
-      expect(children[1]).toContainElement(screen.getByText('Card subtitle'));
-      
-      // Third child should be content container
-      expect(children[2]).toHaveClass('space-y-3');
-      expect(children[2]).toContainElement(screen.getByText('Content paragraph'));
-      expect(children[2]).toContainElement(screen.getByRole('button', { name: 'Content Button' }));
-    });
+  createComplexScenarioTests('MediaCard', MediaCard as any, defaultProps, 'media-card');
 
+  describe('MediaCard-specific layout scenarios', () => {
     it('handles card without avatar but with other elements', () => {
       render(
         <MediaCard {...defaultProps} subtitle="No avatar card">
@@ -411,51 +254,26 @@ describe('MediaCard (Compound Component)', () => {
         </MediaCard>
       );
       
-      // Header should still exist but without avatar column
       const title = screen.getByText('Test MediaCard');
       const headerContainer = title.parentElement?.parentElement;
       expect(headerContainer).toHaveClass('flex', 'gap-3', 'md:gap-4', 'mb-4');
       
-      // Should not have avatar column
-      expect(screen.queryByText('🔧')).not.toBeInTheDocument();
-      
-      // Title container should still have flex-1 class
       const titleContainer = title.parentElement;
       expect(titleContainer).toHaveClass('flex-1', 'min-w-0');
     });
-
+    
     it('handles minimal card with only title', () => {
       render(<MediaCard {...defaultProps} />);
       
       const title = screen.getByText('Test MediaCard');
-      expect(title).toBeInTheDocument();
-      
-      // Should have header container even without avatar
       const headerContainer = title.parentElement?.parentElement;
       expect(headerContainer).toHaveClass('flex', 'gap-3', 'md:gap-4', 'mb-4');
     });
   });
 
-  describe('Accessibility', () => {
-    it('applies correct test id', () => {
-      render(<MediaCard {...defaultProps} testId="custom-test-id" />);
-      
-      expect(screen.getByTestId('custom-test-id')).toBeInTheDocument();
-    });
+  createAccessibilityTests('MediaCard', MediaCard, defaultProps, 'media-card');
 
-    it('uses default test id when not provided', () => {
-      render(<MediaCard {...defaultProps} />);
-      
-      expect(screen.getByTestId('media-card')).toBeInTheDocument();
-    });
-
-    it('uses semantic heading for title', () => {
-      render(<MediaCard {...defaultProps} />);
-      
-      const title = screen.getByRole('heading', { level: 3 });
-      expect(title).toHaveTextContent('Test MediaCard');
-    });
-
+  describe('MediaCard-specific accessibility', () => {
     it('maintains proper heading hierarchy with subtitle', () => {
       render(<MediaCard {...defaultProps} subtitle="Subtitle text" />);
       
@@ -463,48 +281,14 @@ describe('MediaCard (Compound Component)', () => {
       const subtitle = screen.getByText('Subtitle text');
       
       expect(title).toBeInTheDocument();
-      expect(subtitle.tagName.toLowerCase()).toBe('p'); // Subtitle should be a paragraph, not a heading
+      expect(subtitle.tagName.toLowerCase()).toBe('p');
     });
   });
 
-  describe('Edge Cases', () => {
-    it('handles empty children gracefully', () => {
-      render(<MediaCard {...defaultProps}>{null}</MediaCard>);
-      
-      expect(screen.getByText('Test MediaCard')).toBeInTheDocument();
-      expect(screen.queryByText('Custom content')).not.toBeInTheDocument();
-    });
+  createEdgeCasesTests('MediaCard', MediaCard, defaultProps);
 
-    it('handles mixed valid and invalid children', () => {
-      render(
-        <MediaCard {...defaultProps}>
-          <MediaCard.Avatar color="primary">AV</MediaCard.Avatar>
-          <div>Regular div content</div>
-          <MediaCard.Badge variant="primary">Valid Badge</MediaCard.Badge>
-          <span>Regular span content</span>
-        </MediaCard>
-      );
-      
-      // Valid compound components should render
-      expect(screen.getByText('AV')).toBeInTheDocument();
-      expect(screen.getByText('Valid Badge')).toBeInTheDocument();
-      
-      // Regular content should also render (non-compound children)
-      expect(screen.getByText('Regular div content')).toBeInTheDocument();
-      expect(screen.getByText('Regular span content')).toBeInTheDocument();
-    });
-
-    it('handles very long titles and subtitles', () => {
-      const longTitle = 'This is a very long title that should handle text wrapping and layout correctly without breaking the MediaCard component structure or layout';
-      const longSubtitle = 'This is a very long subtitle that should also handle text wrapping appropriately within the card layout';
-      
-      render(<MediaCard title={longTitle} subtitle={longSubtitle} />);
-      
-      expect(screen.getByText(longTitle)).toBeInTheDocument();
-      expect(screen.getByText(longSubtitle)).toBeInTheDocument();
-    });
-
-    it('handles multiple badges with long text', () => {
+  describe('MediaCard-specific edge cases', () => {
+    it('handles multiple badges with long text and wrapping', () => {
       render(
         <MediaCard {...defaultProps}>
           <MediaCard.Badge variant="primary">Very Long Badge Text</MediaCard.Badge>
@@ -517,7 +301,6 @@ describe('MediaCard (Compound Component)', () => {
       expect(screen.getByText('Another Long Badge')).toBeInTheDocument();
       expect(screen.getByText('Third Badge With More Text')).toBeInTheDocument();
       
-      // Badges should wrap appropriately
       const badge1 = screen.getByText('Very Long Badge Text');
       const badgesContainer = badge1.parentElement;
       expect(badgesContainer).toHaveClass('flex-wrap');

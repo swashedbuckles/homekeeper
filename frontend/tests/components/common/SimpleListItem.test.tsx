@@ -4,6 +4,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { SimpleListItem } from '../../../src/components/common/SimpleListItem';
 import { Action } from '../../../src/components/common/Action';
 import { Button } from '../../../src/components/common/Button';
+import { expectElementToHaveClasses } from '../../helpers/testHelpers';
 
 describe('SimpleListItem', () => {
   const defaultProps = {
@@ -71,25 +72,42 @@ describe('SimpleListItem', () => {
     expect(mockOnClick).toHaveBeenCalledTimes(1);
   });
 
-  it('applies correct CSS classes', () => {
-    const { container } = render(<SimpleListItem {...defaultProps} />);
-    
-    const wrapper = container.firstChild as HTMLElement;
-    expect(wrapper).toHaveClass('flex', 'items-start', 'md:items-center', 'justify-between', 'p-6', 'bg-white', 'border-brutal-lg', 'border-text-primary', 'font-mono');
-  });
+  describe('Styling', () => {
+    const stylingTests = [
+      {
+        name: 'applies correct CSS classes',
+        test: () => {
+          const { container } = render(<SimpleListItem {...defaultProps} />);
+          const wrapper = container.firstChild as HTMLElement;
+          expectElementToHaveClasses(wrapper, [
+            'flex', 'items-start', 'md:items-center', 'justify-between', 'p-6',
+            'bg-white', 'border-brutal-lg', 'border-text-primary', 'font-mono'
+          ]);
+        }
+      },
+      {
+        name: 'applies correct title styling',
+        test: () => {
+          render(<SimpleListItem {...defaultProps} />);
+          const title = screen.getByText('Test Action');
+          expectElementToHaveClasses(title, [
+            'font-bold', 'text-lg', 'md:text-xl', 'text-text-primary', 'uppercase', 'tracking-wide', 'mb-2'
+          ]);
+        }
+      },
+      {
+        name: 'applies correct subtitle styling when provided',
+        test: () => {
+          render(<SimpleListItem {...defaultProps} subtitle="Test subtitle" />);
+          const subtitle = screen.getByText('Test subtitle');
+          expectElementToHaveClasses(subtitle, ['text-text-secondary', 'text-sm']);
+        }
+      }
+    ];
 
-  it('applies correct title styling', () => {
-    render(<SimpleListItem {...defaultProps} />);
-    
-    const title = screen.getByText('Test Action');
-    expect(title).toHaveClass('font-bold', 'text-lg', 'md:text-xl', 'text-text-primary', 'uppercase', 'tracking-wide', 'mb-2');
-  });
-
-  it('applies correct subtitle styling when provided', () => {
-    render(<SimpleListItem {...defaultProps} subtitle="Test subtitle" />);
-    
-    const subtitle = screen.getByText('Test subtitle');
-    expect(subtitle).toHaveClass('text-text-secondary', 'text-sm');
+    stylingTests.forEach(({ name, test }) => {
+      it(name, test);
+    });
   });
 
   // New composition pattern tests
@@ -147,35 +165,42 @@ describe('SimpleListItem', () => {
         </SimpleListItem>
       );
       
-      const actionsContainer = screen.getByRole('button', { name: 'Action 1' }).parentElement;
-      expect(actionsContainer).toHaveClass('flex', 'gap-2');
+      const actionsContainer = screen.getByRole('button', { name: 'Action 1' }).parentElement as HTMLElement;
+      expectElementToHaveClasses(actionsContainer, ['flex', 'gap-2']);
     });
   });
 
   // TypeScript validation tests (these would fail at compile time in real usage)
   describe('TypeScript Integration', () => {
-    it('Action component uses correct default size', () => {
-      render(
-        <SimpleListItem {...defaultProps}>
-          <Action variant="primary" onClick={() => {}}>Test Action</Action>
-        </SimpleListItem>
-      );
-      
-      const actionButton = screen.getByRole('button', { name: 'Test Action' });
-      // Action should have small size by default (from Action component)
-      expect(actionButton).toHaveClass('px-3 py-2', 'text-sm'); // sm size classes
-    });
+    const sizeTests = [
+      {
+        name: 'Action component uses correct default size',
+        setup: (
+          <SimpleListItem {...defaultProps}>
+            <Action variant="primary" onClick={() => {}}>Test Action</Action>
+          </SimpleListItem>
+        ),
+        buttonName: 'Test Action',
+        expectedClasses: ['px-3', 'py-2', 'text-sm']
+      },
+      {
+        name: 'Action component can override size',
+        setup: (
+          <SimpleListItem {...defaultProps}>
+            <Action variant="primary" size="lg" onClick={() => {}}>Large Action</Action>
+          </SimpleListItem>
+        ),
+        buttonName: 'Large Action',
+        expectedClasses: ['px-6', 'py-4', 'text-lg']
+      }
+    ];
 
-    it('Action component can override size', () => {
-      render(
-        <SimpleListItem {...defaultProps}>
-          <Action variant="primary" size="lg" onClick={() => {}}>Large Action</Action>
-        </SimpleListItem>
-      );
-      
-      const actionButton = screen.getByRole('button', { name: 'Large Action' });
-      // Should have large size classes
-      expect(actionButton).toHaveClass('px-6 py-4', 'text-lg'); // lg size classes
+    sizeTests.forEach(({ name, setup, buttonName, expectedClasses }) => {
+      it(name, () => {
+        render(setup);
+        const actionButton = screen.getByRole('button', { name: buttonName });
+        expectElementToHaveClasses(actionButton, expectedClasses);
+      });
     });
   });
 });

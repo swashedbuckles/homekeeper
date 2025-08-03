@@ -3,22 +3,55 @@ import { render } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import { PasswordStrengthIndicator } from '../../../src/components/form/PasswordStrengthIndicator';
 
-describe('PasswordStrengthIndicator', () => {
-  it('renders three segments', () => {
-    const { container } = render(<PasswordStrengthIndicator password="" />);
-    
-    const segments = container.querySelectorAll('.h-3.flex-1');
-    expect(segments).toHaveLength(3);
-  });
+// Helper function to render password strength indicator
+const renderPasswordStrengthIndicator = (password: string) => {
+  return render(<PasswordStrengthIndicator password={password} />);
+};
 
-  it('shows no active segments for weak password (strength < 2)', () => {
-    const { container } = render(<PasswordStrengthIndicator password="weak" />);
-    
-    const activeSegments = container.querySelectorAll('.bg-error, .bg-warning, .bg-success');
-    const inactiveSegments = container.querySelectorAll('.bg-background');
-    
-    expect(activeSegments).toHaveLength(0);
-    expect(inactiveSegments).toHaveLength(3);
+// Helper function to get segment counts by type
+const getSegmentCounts = (container: HTMLElement) => {
+  const activeSegments = container.querySelectorAll('.bg-error, .bg-warning, .bg-success');
+  const errorSegments = container.querySelectorAll('.bg-error');
+  const warningSegments = container.querySelectorAll('.bg-warning');
+  const successSegments = container.querySelectorAll('.bg-success');
+  const inactiveSegments = container.querySelectorAll('.bg-background');
+  
+  return {
+    active: activeSegments.length,
+    error: errorSegments.length,
+    warning: warningSegments.length,
+    success: successSegments.length,
+    inactive: inactiveSegments.length,
+    total: container.querySelectorAll('.h-3.flex-1').length
+  };
+};
+
+describe('PasswordStrengthIndicator', () => {
+  const basicRenderingTests = [
+    {
+      name: 'renders three segments',
+      password: '',
+      expectation: (container: HTMLElement) => {
+        const counts = getSegmentCounts(container);
+        expect(counts.total).toBe(3);
+      }
+    },
+    {
+      name: 'shows no active segments for weak password (strength < 2)',
+      password: 'weak',
+      expectation: (container: HTMLElement) => {
+        const counts = getSegmentCounts(container);
+        expect(counts.active).toBe(0);
+        expect(counts.inactive).toBe(3);
+      }
+    }
+  ];
+
+  basicRenderingTests.forEach(({ name, password, expectation }) => {
+    it(name, () => {
+      const { container } = renderPasswordStrengthIndicator(password);
+      expectation(container);
+    });
   });
 
   it.skip('shows one red segment for password meeting 2 requirements', () => {
@@ -32,41 +65,49 @@ describe('PasswordStrengthIndicator', () => {
     expect(inactiveSegments).toHaveLength(2);
   });
 
-  it('shows two yellow segments for password meeting 4 requirements', () => {
-    const { container } = render(<PasswordStrengthIndicator password="Password123" />); // length + upper + lower + number
-    
-    const yellowSegments = container.querySelectorAll('.bg-warning');
-    const inactiveSegments = container.querySelectorAll('.bg-background');
-    
-    expect(yellowSegments).toHaveLength(2);
-    expect(inactiveSegments).toHaveLength(1);
-  });
+  const strengthTests = [
+    {
+      name: 'shows two yellow segments for password meeting 4 requirements',
+      password: 'Password123', // length + upper + lower + number
+      expectation: (container: HTMLElement) => {
+        const counts = getSegmentCounts(container);
+        expect(counts.warning).toBe(2);
+        expect(counts.inactive).toBe(1);
+      }
+    },
+    {
+      name: 'shows three green segments for password meeting all 5 requirements',
+      password: 'Password123!', // all requirements
+      expectation: (container: HTMLElement) => {
+        const counts = getSegmentCounts(container);
+        expect(counts.success).toBe(3);
+        expect(counts.inactive).toBe(0);
+      }
+    }
+  ];
 
-  it('shows three green segments for password meeting all 5 requirements', () => {
-    const { container } = render(<PasswordStrengthIndicator password="Password123!" />); // all requirements
-    
-    const greenSegments = container.querySelectorAll('.bg-success');
-    const inactiveSegments = container.querySelectorAll('.bg-background');
-    
-    expect(greenSegments).toHaveLength(3);
-    expect(inactiveSegments).toHaveLength(0);
+  strengthTests.forEach(({ name, password, expectation }) => {
+    it(name, () => {
+      const { container } = renderPasswordStrengthIndicator(password);
+      expectation(container);
+    });
   });
 
   it('updates segments when password changes', () => {
-    const { container, rerender } = render(<PasswordStrengthIndicator password="weak" />);
+    const { container, rerender } = renderPasswordStrengthIndicator('weak');
     
     // Initially weak - no active segments
-    let activeSegments = container.querySelectorAll('.bg-error, .bg-warning, .bg-success');
-    expect(activeSegments).toHaveLength(0);
+    let counts = getSegmentCounts(container);
+    expect(counts.active).toBe(0);
 
     // Change to strong password
     rerender(<PasswordStrengthIndicator password="StrongPass123!" />);
-    activeSegments = container.querySelectorAll('.bg-success');
-    expect(activeSegments).toHaveLength(3);
+    counts = getSegmentCounts(container);
+    expect(counts.success).toBe(3);
   });
 
   it('applies correct classes to all segments', () => {
-    const { container } = render(<PasswordStrengthIndicator password="" />);
+    const { container } = renderPasswordStrengthIndicator('');
     
     const segments = container.querySelectorAll('.h-3.flex-1');
     segments.forEach(segment => {

@@ -96,31 +96,35 @@ describe('hover-effects design system', () => {
 
   describe('Component Hover Recommendations', () => {
     describe('COMPONENT_HOVER_RECOMMENDATIONS', () => {
-      it('should provide recommendations for interactive buttons', () => {
-        expect(COMPONENT_HOVER_RECOMMENDATIONS.button).toBe('press');
-        expect(COMPONENT_HOVER_RECOMMENDATIONS.backButton).toBe('press');
-      });
+      const componentRecommendationTests = [
+        {
+          name: 'should provide recommendations for interactive buttons',
+          components: { button: 'press', backButton: 'press' }
+        },
+        {
+          name: 'should provide recommendations for cards and containers',
+          components: { card: 'lift', statCard: 'lift', taskCard: 'lift', listItem: 'lift' }
+        },
+        {
+          name: 'should provide recommendations for special card types',
+          components: { optionCard: 'press' }
+        },
+        {
+          name: 'should provide recommendations for small interactive elements',
+          components: { badge: 'press-small', checkbox: 'press-small' }
+        },
+        {
+          name: 'should provide recommendations for non-interactive elements',
+          components: { alert: 'none', textInput: 'none', textArea: 'none' }
+        }
+      ];
 
-      it('should provide recommendations for cards and containers', () => {
-        expect(COMPONENT_HOVER_RECOMMENDATIONS.card).toBe('lift');
-        expect(COMPONENT_HOVER_RECOMMENDATIONS.statCard).toBe('lift');
-        expect(COMPONENT_HOVER_RECOMMENDATIONS.taskCard).toBe('lift');
-        expect(COMPONENT_HOVER_RECOMMENDATIONS.listItem).toBe('lift');
-      });
-
-      it('should provide recommendations for special card types', () => {
-        expect(COMPONENT_HOVER_RECOMMENDATIONS.optionCard).toBe('press');
-      });
-
-      it('should provide recommendations for small interactive elements', () => {
-        expect(COMPONENT_HOVER_RECOMMENDATIONS.badge).toBe('press-small');
-        expect(COMPONENT_HOVER_RECOMMENDATIONS.checkbox).toBe('press-small');
-      });
-
-      it('should provide none for non-interactive elements', () => {
-        expect(COMPONENT_HOVER_RECOMMENDATIONS.alert).toBe('none');
-        expect(COMPONENT_HOVER_RECOMMENDATIONS.textInput).toBe('none');
-        expect(COMPONENT_HOVER_RECOMMENDATIONS.textArea).toBe('none');
+      componentRecommendationTests.forEach(({ name, components }) => {
+        it(name, () => {
+          Object.entries(components).forEach(([component, expectedEffect]) => {
+            expect(COMPONENT_HOVER_RECOMMENDATIONS[component as keyof typeof COMPONENT_HOVER_RECOMMENDATIONS]).toBe(expectedEffect);
+          });
+        });
       });
 
       it('should only use valid HoverEffect values', () => {

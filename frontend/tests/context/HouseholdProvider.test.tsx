@@ -17,6 +17,43 @@ const mockUseAuth = vi.mocked(useAuth);
 const mockGetHouseholds = vi.mocked(getHouseholds);
 const mockGetHousehold = vi.mocked(getHousehold);
 
+// Test data factories
+const createMockHousehold = (overrides = {}) => ({
+  id: 'house-1',
+  name: 'Test Household',
+  ownerId: 'user-123',
+  memberCount: 2,
+  userRole: HOUSEHOLD_ROLE.OWNER,
+  ...overrides
+});
+
+const createAuthenticatedUser = (overrides = {}) => ({
+  id: 'user-123',
+  name: 'Test User', 
+  email: 'test@example.com',
+  preferences: {
+    theme: '',
+    notifications: {
+      email: false,
+      push: false
+    },
+    defaultHouseholdId: undefined
+  },
+  householdRoles: {},
+  ...overrides
+});
+
+const createMockAuthState = (user: any = null, isAuthenticated = false) => ({
+  user,
+  isAuthenticated,
+  authStatus: isAuthenticated ? AuthStatus.LOGGED_IN : AuthStatus.LOGGED_OUT,
+  checkAuth: vi.fn(),
+  login: vi.fn(),
+  logout: vi.fn(),
+  isLoading: false,
+  isKnown: false
+});
+
 // Test component to access context
 const TestConsumer = () => {
   const context = useContext(HouseholdContext);
@@ -66,16 +103,7 @@ describe('HouseholdProvider', () => {
     vi.clearAllMocks();
     
     // Default auth state
-    mockUseAuth.mockReturnValue({
-      user: null,
-      isAuthenticated: false,
-      authStatus: AuthStatus.LOGGED_OUT,
-      checkAuth: vi.fn(),
-      login: vi.fn(),
-      logout: vi.fn(),
-      isLoading: false,
-      isKnown: false
-    });
+    mockUseAuth.mockReturnValue(createMockAuthState());
     
     // Ensure getHousehold doesn't get called for unauthenticated users
     mockGetHousehold.mockResolvedValue({ data: void 0 });
@@ -101,36 +129,16 @@ describe('HouseholdProvider', () => {
   });
 
   describe('when user is authenticated', () => {
+    const authenticatedUser = createAuthenticatedUser();
+
     beforeEach(() => {
-      mockUseAuth.mockReturnValue({
-        user: {
-          id: 'user-123',
-          name: 'Test User',
-          email: 'test@example.com',
-          preferences: {
-            theme: '',
-            notifications: {
-              email: false,
-              push: false
-            },
-            defaultHouseholdId: undefined
-          },
-          householdRoles: {}
-        },
-        isAuthenticated: true,
-        authStatus: AuthStatus.LOGGED_IN,
-        checkAuth: vi.fn(),
-        login: vi.fn(),
-        logout: vi.fn(),
-        isLoading: false,
-        isKnown: false
-      });
+      mockUseAuth.mockReturnValue(createMockAuthState(authenticatedUser, true));
     });
 
     it('fetches user households on mount', async () => {
       const mockHouseholds = [
-        { id: 'house-1', name: 'House 1', ownerId: 'user-123', memberCount: 2, userRole: HOUSEHOLD_ROLE.OWNER },
-        { id: 'house-2', name: 'House 2', ownerId: 'user-456', memberCount: 3, userRole: HOUSEHOLD_ROLE.MEMBER }
+        createMockHousehold({ id: 'house-1', name: 'House 1' }),
+        createMockHousehold({ id: 'house-2', name: 'House 2', ownerId: 'user-456', userRole: HOUSEHOLD_ROLE.MEMBER, memberCount: 3 })
       ];
 
       mockGetHouseholds.mockResolvedValue({ data: mockHouseholds });
@@ -148,14 +156,13 @@ describe('HouseholdProvider', () => {
 
     it('automatically selects first household when no default is set', async () => {
       const mockHouseholds = [
-        { id: 'house-1', name: 'House 1', ownerId: 'user-123', memberCount: 2, userRole: HOUSEHOLD_ROLE.OWNER },
-        { id: 'house-2', name: 'House 2', ownerId: 'user-456', memberCount: 3, userRole: HOUSEHOLD_ROLE.MEMBER }
+        createMockHousehold({ id: 'house-1', name: 'House 1' }),
+        createMockHousehold({ id: 'house-2', name: 'House 2', ownerId: 'user-456', userRole: HOUSEHOLD_ROLE.MEMBER, memberCount: 3 })
       ];
+      const firstHousehold = mockHouseholds[0];
 
       mockGetHouseholds.mockResolvedValue({ data: mockHouseholds });
-      mockGetHousehold.mockResolvedValue({ 
-        data: { id: 'house-1', name: 'House 1', ownerId: 'user-123', memberCount: 2, userRole: HOUSEHOLD_ROLE.OWNER }
-      });
+      mockGetHousehold.mockResolvedValue({ data: firstHousehold });
 
       renderWithProviders(<TestConsumer />);
 
@@ -169,39 +176,23 @@ describe('HouseholdProvider', () => {
     });
 
     it('selects default household from user preferences', async () => {
-      mockUseAuth.mockReturnValue({
-        user: {
-          id: 'user-123',
-          name: 'Test User',
-          email: 'test@example.com',
-          preferences: {
-            defaultHouseholdId: 'house-2',
-            theme: '',
-            notifications: {
-              email: false,
-              push: false
-            }
-          },
-          householdRoles: {}
-        },
-        isAuthenticated: true,
-        authStatus: AuthStatus.LOGGED_IN,
-        checkAuth: vi.fn(),
-        login: vi.fn(),
-        logout: vi.fn(),
-        isLoading: false,
-        isKnown: false
+      const userWithDefault = createAuthenticatedUser({
+        preferences: {
+          defaultHouseholdId: 'house-2',
+          theme: '',
+          notifications: { email: false, push: false }
+        }
       });
+      mockUseAuth.mockReturnValue(createMockAuthState(userWithDefault, true));
 
       const mockHouseholds = [
-        { id: 'house-1', name: 'House 1', ownerId: 'user-123', memberCount: 2, userRole: HOUSEHOLD_ROLE.OWNER },
-        { id: 'house-2', name: 'House 2', ownerId: 'user-456', memberCount: 3, userRole: HOUSEHOLD_ROLE.MEMBER }
+        createMockHousehold({ id: 'house-1', name: 'House 1' }),
+        createMockHousehold({ id: 'house-2', name: 'House 2', ownerId: 'user-456', userRole: HOUSEHOLD_ROLE.MEMBER, memberCount: 3 })
       ];
+      const defaultHousehold = mockHouseholds[1];
 
       mockGetHouseholds.mockResolvedValue({ data: mockHouseholds });
-      mockGetHousehold.mockResolvedValue({ 
-        data: { id: 'house-2', name: 'House 2', ownerId: 'user-456', memberCount: 3, userRole: HOUSEHOLD_ROLE.MEMBER }
-      });
+      mockGetHousehold.mockResolvedValue({ data: defaultHousehold });
 
       renderWithProviders(<TestConsumer />);
 
@@ -211,38 +202,20 @@ describe('HouseholdProvider', () => {
     });
 
     it('handles invalid default household gracefully', async () => {
-      mockUseAuth.mockReturnValue({
-        user: {
-          id: 'user-123',
-          name: 'Test User',
-          email: 'test@example.com',
-          preferences: {
-            defaultHouseholdId: 'nonexistent-house',
-            theme: '',
-            notifications: {
-              email: false,
-              push: false
-            }
-          },
-          householdRoles: {}
-        },
-        isAuthenticated: true,
-        authStatus: AuthStatus.LOGGED_IN,
-        checkAuth: vi.fn(),
-        login: vi.fn(),
-        logout: vi.fn(),
-        isLoading: false,
-        isKnown: false
+      const userWithInvalidDefault = createAuthenticatedUser({
+        preferences: {
+          defaultHouseholdId: 'nonexistent-house',
+          theme: '',
+          notifications: { email: false, push: false }
+        }
       });
+      mockUseAuth.mockReturnValue(createMockAuthState(userWithInvalidDefault, true));
 
-      const mockHouseholds = [
-        { id: 'house-1', name: 'House 1', ownerId: 'user-123', memberCount: 2, userRole: HOUSEHOLD_ROLE.OWNER }
-      ];
+      const mockHouseholds = [createMockHousehold({ id: 'house-1', name: 'House 1' })];
+      const availableHousehold = mockHouseholds[0];
 
       mockGetHouseholds.mockResolvedValue({ data: mockHouseholds });
-      mockGetHousehold.mockResolvedValue({ 
-        data: { id: 'house-1', name: 'House 1', ownerId: 'user-123', memberCount: 2, userRole: HOUSEHOLD_ROLE.OWNER }
-      });
+      mockGetHousehold.mockResolvedValue({ data: availableHousehold });
 
       renderWithProviders(<TestConsumer />);
 
@@ -260,136 +233,85 @@ describe('HouseholdProvider', () => {
   });
 
   describe('household management permissions', () => {
+    const authenticatedUser = createAuthenticatedUser();
+
     beforeEach(() => {
-      mockUseAuth.mockReturnValue({
-        user: {
-          id: 'user-123',
-          name: 'Test User',
-          email: 'test@example.com',
-          preferences: {
-            theme: '',
-            notifications: {
-              email: false,
-              push: false
-            },
-            defaultHouseholdId: undefined
-          },
-          householdRoles: {}
-        },
-        isAuthenticated: true,
-        authStatus: AuthStatus.LOGGED_IN,
-        checkAuth: vi.fn(),
-        login: vi.fn(),
-        logout: vi.fn(),
-        isLoading: false,
-        isKnown: false
-      });
+      mockUseAuth.mockReturnValue(createMockAuthState(authenticatedUser, true));
     });
 
-    it('grants management permissions to owner', async () => {
-      const mockHouseholds = [
-        { id: 'house-1', name: 'House 1', ownerId: 'user-123', memberCount: 2, userRole: HOUSEHOLD_ROLE.OWNER }
-      ];
+    const permissionTests = [
+      {
+        role: HOUSEHOLD_ROLE.OWNER,
+        ownerId: 'user-123', // Same as authenticated user
+        expectedCanManage: true,
+        expectedRole: 'owner'
+      },
+      {
+        role: HOUSEHOLD_ROLE.ADMIN,
+        ownerId: 'user-456', // Different from authenticated user
+        expectedCanManage: true,
+        expectedRole: 'admin'
+      },
+      {
+        role: HOUSEHOLD_ROLE.MEMBER,
+        ownerId: 'user-456',
+        expectedCanManage: false,
+        expectedRole: 'member'
+      },
+      {
+        role: HOUSEHOLD_ROLE.GUEST,
+        ownerId: 'user-456',
+        expectedCanManage: false,
+        expectedRole: 'guest'
+      }
+    ];
 
-      mockGetHouseholds.mockResolvedValue({ data: mockHouseholds });
-      mockGetHousehold.mockResolvedValue({ data: mockHouseholds[0] });
+    permissionTests.forEach(({ role, ownerId, expectedCanManage, expectedRole }) => {
+      const action = expectedCanManage ? 'grants' : 'denies';
+      
+      it(`${action} management permissions to ${role}`, async () => {
+        const mockHouseholds = [createMockHousehold({ 
+          ownerId, 
+          userRole: role 
+        })];
 
-      renderWithProviders(<TestConsumer />);
+        mockGetHouseholds.mockResolvedValue({ data: mockHouseholds });
+        mockGetHousehold.mockResolvedValue({ data: mockHouseholds[0] });
 
-      await waitFor(() => {
-        expect(screen.getByTestId('can-manage')).toHaveTextContent('true');
-        expect(screen.getByTestId('current-role')).toHaveTextContent('owner');
-      });
-    });
+        renderWithProviders(<TestConsumer />);
 
-    it('grants management permissions to admin', async () => {
-      const mockHouseholds = [
-        { id: 'house-1', name: 'House 1', ownerId: 'user-456', memberCount: 2, userRole: HOUSEHOLD_ROLE.ADMIN }
-      ];
-
-      mockGetHouseholds.mockResolvedValue({ data: mockHouseholds });
-      mockGetHousehold.mockResolvedValue({ data: mockHouseholds[0] });
-
-      renderWithProviders(<TestConsumer />);
-
-      await waitFor(() => {
-        expect(screen.getByTestId('can-manage')).toHaveTextContent('true');
-        expect(screen.getByTestId('current-role')).toHaveTextContent('admin');
-      });
-    });
-
-    it('denies management permissions to member', async () => {
-      const mockHouseholds = [
-        { id: 'house-1', name: 'House 1', ownerId: 'user-456', memberCount: 2, userRole: HOUSEHOLD_ROLE.MEMBER }
-      ];
-
-      mockGetHouseholds.mockResolvedValue({ data: mockHouseholds });
-      mockGetHousehold.mockResolvedValue({ data: mockHouseholds[0] });
-
-      renderWithProviders(<TestConsumer />);
-
-      await waitFor(() => {
-        expect(screen.getByTestId('can-manage')).toHaveTextContent('false');
-        expect(screen.getByTestId('current-role')).toHaveTextContent('member');
-      });
-    });
-
-    it('denies management permissions to guest', async () => {
-      const mockHouseholds = [
-        { id: 'house-1', name: 'House 1', ownerId: 'user-456', memberCount: 2, userRole: HOUSEHOLD_ROLE.GUEST }
-      ];
-
-      mockGetHouseholds.mockResolvedValue({ data: mockHouseholds });
-      mockGetHousehold.mockResolvedValue({ data: mockHouseholds[0] });
-
-      renderWithProviders(<TestConsumer />);
-
-      await waitFor(() => {
-        expect(screen.getByTestId('can-manage')).toHaveTextContent('false');
-        expect(screen.getByTestId('current-role')).toHaveTextContent('guest');
+        await waitFor(() => {
+          expect(screen.getByTestId('can-manage')).toHaveTextContent(String(expectedCanManage));
+          expect(screen.getByTestId('current-role')).toHaveTextContent(expectedRole);
+        });
       });
     });
   });
 
   describe('household switching', () => {
+    const authenticatedUser = createAuthenticatedUser();
+
     beforeEach(() => {
-      mockUseAuth.mockReturnValue({
-        user: {
-          id: 'user-123',
-          name: 'Test User',
-          email: 'test@example.com',
-          preferences: {
-            theme: '',
-            notifications: {
-              email: false,
-              push: false
-            },
-            defaultHouseholdId: undefined
-          },
-          householdRoles: {}
-        },
-        isAuthenticated: true,
-        authStatus: AuthStatus.LOGGED_IN,
-        checkAuth: vi.fn(),
-        login: vi.fn(),
-        logout: vi.fn(),
-        isLoading: false,
-        isKnown: false
-      });
+      mockUseAuth.mockReturnValue(createMockAuthState(authenticatedUser, true));
     });
 
     it('allows switching between households', async () => {
       const mockHouseholds = [
-        { id: 'house-1', name: 'House 1', ownerId: 'user-123', memberCount: 2, userRole: HOUSEHOLD_ROLE.OWNER },
-        { id: 'house-2', name: 'House 2', ownerId: 'user-456', memberCount: 3, userRole: HOUSEHOLD_ROLE.MEMBER }
+        createMockHousehold({ id: 'house-1', name: 'House 1' }),
+        createMockHousehold({ id: 'house-2', name: 'House 2', ownerId: 'user-456', userRole: HOUSEHOLD_ROLE.MEMBER, memberCount: 3 })
       ];
+      const newHousehold = createMockHousehold({ 
+        id: 'new-household-id', 
+        name: 'New Household', 
+        ownerId: 'user-789', 
+        memberCount: 1, 
+        userRole: 'guest' 
+      });
 
       mockGetHouseholds.mockResolvedValue({ data: mockHouseholds });
       mockGetHousehold
         .mockResolvedValueOnce({ data: mockHouseholds[0] })
-        .mockResolvedValueOnce({ 
-          data: { id: 'new-household-id', name: 'New Household', ownerId: 'user-789', memberCount: 1, userRole: 'guest' }
-        });
+        .mockResolvedValueOnce({ data: newHousehold });
 
       renderWithProviders(<TestConsumer />);
 
@@ -415,95 +337,62 @@ describe('HouseholdProvider', () => {
   });
 
   describe('error handling', () => {
+    const authenticatedUser = createAuthenticatedUser();
+
     beforeEach(() => {
-      mockUseAuth.mockReturnValue({
-        user: {
-          id: 'user-123',
-          name: 'Test User',
-          email: 'test@example.com',
-          preferences: {
-            theme: '',
-            notifications: {
-              email: false,
-              push: false
-            },
-            defaultHouseholdId: undefined
-          },
-          householdRoles: {}
+      mockUseAuth.mockReturnValue(createMockAuthState(authenticatedUser, true));
+    });
+
+    const errorScenarios = [
+      {
+        name: 'handles households fetch error',
+        setup: () => {
+          const error = new Error('Failed to fetch households');
+          mockGetHouseholds.mockRejectedValue(error);
         },
-        isAuthenticated: true,
-        authStatus: AuthStatus.LOGGED_IN,
-        checkAuth: vi.fn(),
-        login: vi.fn(),
-        logout: vi.fn(),
-        isLoading: false,
-        isKnown: false
-      });
-    });
+        expectation: async () => {
+          await waitFor(() => {
+            expect(screen.getByTestId('user-households-count')).toHaveTextContent('0');
+          });
+        }
+      },
+      {
+        name: 'handles active household fetch error',
+        setup: () => {
+          const mockHouseholds = [createMockHousehold({ id: 'house-1', name: 'House 1' })];
+          mockGetHouseholds.mockResolvedValue({ data: mockHouseholds });
+          mockGetHousehold.mockRejectedValue(new Error('Failed to fetch household'));
+        },
+        expectation: async () => {
+          await waitFor(() => {
+            expect(screen.getByTestId('active-household-id')).toHaveTextContent('house-1');
+          });
+          // Active household should not be loaded due to error
+          await waitFor(() => {
+            expect(screen.getByTestId('active-household-name')).toHaveTextContent('none');
+          });
+        }
+      }
+    ];
 
-    it('handles households fetch error', async () => {
-      const error = new Error('Failed to fetch households');
-      mockGetHouseholds.mockRejectedValue(error);
-
-      renderWithProviders(<TestConsumer />);
-
-      await waitFor(() => {
-        expect(screen.getByTestId('user-households-count')).toHaveTextContent('0');
-      });
-    });
-
-    it('handles active household fetch error', async () => {
-      const mockHouseholds = [
-        { id: 'house-1', name: 'House 1', ownerId: 'user-123', memberCount: 2, userRole: HOUSEHOLD_ROLE.OWNER }
-      ];
-
-      mockGetHouseholds.mockResolvedValue({ data: mockHouseholds });
-      mockGetHousehold.mockRejectedValue(new Error('Failed to fetch household'));
-
-      renderWithProviders(<TestConsumer />);
-
-      await waitFor(() => {
-        expect(screen.getByTestId('active-household-id')).toHaveTextContent('house-1');
-      });
-
-      // Active household should not be loaded due to error
-      await waitFor(() => {
-        expect(screen.getByTestId('active-household-name')).toHaveTextContent('none');
+    errorScenarios.forEach(({ name, setup, expectation }) => {
+      it(name, async () => {
+        setup();
+        renderWithProviders(<TestConsumer />);
+        await expectation();
       });
     });
   });
 
   describe('loading states', () => {
+    const authenticatedUser = createAuthenticatedUser();
+
     beforeEach(() => {
-      mockUseAuth.mockReturnValue({
-        user: {
-          id: 'user-123',
-          name: 'Test User',
-          email: 'test@example.com',
-          preferences: {
-            theme: '',
-            notifications: {
-              email: false,
-              push: false
-            },
-            defaultHouseholdId: undefined
-          },
-          householdRoles: {}
-        },
-        isAuthenticated: true,
-        authStatus: AuthStatus.LOGGED_IN,
-        checkAuth: vi.fn(),
-        login: vi.fn(),
-        logout: vi.fn(),
-        isLoading: false,
-        isKnown: false
-      });
+      mockUseAuth.mockReturnValue(createMockAuthState(authenticatedUser, true));
     });
 
     it('shows loading states correctly', async () => {
-      const mockHouseholds = [
-        { id: 'house-1', name: 'House 1', ownerId: 'user-123', memberCount: 2, userRole: HOUSEHOLD_ROLE.OWNER }
-      ];
+      const mockHouseholds = [createMockHousehold({ id: 'house-1', name: 'House 1' })];
 
       // Delay the resolution to test loading states
       mockGetHouseholds.mockImplementation(() => 
@@ -525,77 +414,43 @@ describe('HouseholdProvider', () => {
   });
 
   describe('edge cases', () => {
-    it('handles empty households list', async () => {
-      mockUseAuth.mockReturnValue({
-        user: {
-          id: 'user-123',
-          name: 'Test User',
-          email: 'test@example.com',
-          preferences: {
-            theme: '',
-            notifications: {
-              email: false,
-              push: false
-            },
-            defaultHouseholdId: undefined
-          },
-          householdRoles: {}
+    const edgeCaseScenarios = [
+      {
+        name: 'handles empty households list',
+        setup: () => {
+          const authenticatedUser = createAuthenticatedUser();
+          mockUseAuth.mockReturnValue(createMockAuthState(authenticatedUser, true));
+          mockGetHouseholds.mockResolvedValue({ data: [] });
         },
-        isAuthenticated: true,
-        authStatus: AuthStatus.LOGGED_IN,
-        checkAuth: vi.fn(),
-        login: vi.fn(),
-        logout: vi.fn(),
-        isLoading: false,
-        isKnown: false
-      });
-
-      mockGetHouseholds.mockResolvedValue({ data: [] });
-
-      renderWithProviders(<TestConsumer />);
-
-      await waitFor(() => {
-        expect(screen.getByTestId('user-households-count')).toHaveTextContent('0');
-        expect(screen.getByTestId('active-household-id')).toHaveTextContent('null');
-      });
-    });
-
-    it('handles null user preferences', async () => {
-      mockUseAuth.mockReturnValue({
-        user: {
-          id: 'user-123',
-          name: 'Test User',
-          email: 'test@example.com',
-          preferences: {
-            theme: '',
-            notifications: {
-              email: false,
-              push: false
-            },
-            defaultHouseholdId: undefined
-          },
-          householdRoles: {}
+        expectation: async () => {
+          await waitFor(() => {
+            expect(screen.getByTestId('user-households-count')).toHaveTextContent('0');
+            expect(screen.getByTestId('active-household-id')).toHaveTextContent('null');
+          });
+        }
+      },
+      {
+        name: 'handles null user preferences',
+        setup: () => {
+          const authenticatedUser = createAuthenticatedUser();
+          mockUseAuth.mockReturnValue(createMockAuthState(authenticatedUser, true));
+          const mockHouseholds = [createMockHousehold({ id: 'house-1', name: 'House 1' })];
+          mockGetHouseholds.mockResolvedValue({ data: mockHouseholds });
+          mockGetHousehold.mockResolvedValue({ data: mockHouseholds[0] });
         },
-        isAuthenticated: true,
-        authStatus: AuthStatus.LOGGED_IN,
-        checkAuth: vi.fn(),
-        login: vi.fn(),
-        logout: vi.fn(),
-        isLoading: false,
-        isKnown: false
-      });
+        expectation: async () => {
+          await waitFor(() => {
+            expect(screen.getByTestId('active-household-id')).toHaveTextContent('house-1');
+          });
+        }
+      }
+    ];
 
-      const mockHouseholds = [
-        { id: 'house-1', name: 'House 1', ownerId: 'user-123', memberCount: 2, userRole: HOUSEHOLD_ROLE.OWNER }
-      ];
-
-      mockGetHouseholds.mockResolvedValue({ data: mockHouseholds });
-      mockGetHousehold.mockResolvedValue({ data: mockHouseholds[0] });
-
-      renderWithProviders(<TestConsumer />);
-
-      await waitFor(() => {
-        expect(screen.getByTestId('active-household-id')).toHaveTextContent('house-1');
+    edgeCaseScenarios.forEach(({ name, setup, expectation }) => {
+      it(name, async () => {
+        setup();
+        renderWithProviders(<TestConsumer />);
+        await expectation();
       });
     });
   });

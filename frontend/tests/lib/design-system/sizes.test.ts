@@ -137,27 +137,39 @@ describe('sizes design system', () => {
     });
 
     describe('CONTAINER_WIDTH_TOKENS', () => {
+      const containerWidthTests = [
+        { size: 'sm', expected: 'max-w-sm' },
+        { size: 'md', expected: 'max-w-md' },
+        { size: 'lg', expected: 'max-w-lg' },
+        { size: 'xl', expected: 'max-w-xl' },
+        { size: '2xl', expected: 'max-w-2xl' },
+        { size: '3xl', expected: 'max-w-3xl' },
+        { size: '4xl', expected: 'max-w-4xl' },
+        { size: '5xl', expected: 'max-w-5xl' },
+        { size: '6xl', expected: 'max-w-6xl' },
+        { size: '7xl', expected: 'max-w-7xl' },
+        { size: 'none', expected: '' }
+      ];
+
       it('should map container sizes to max-width classes', () => {
-        expect(CONTAINER_WIDTH_TOKENS.sm).toBe('max-w-sm');
-        expect(CONTAINER_WIDTH_TOKENS.md).toBe('max-w-md');
-        expect(CONTAINER_WIDTH_TOKENS.lg).toBe('max-w-lg');
-        expect(CONTAINER_WIDTH_TOKENS.xl).toBe('max-w-xl');
-        expect(CONTAINER_WIDTH_TOKENS['2xl']).toBe('max-w-2xl');
-        expect(CONTAINER_WIDTH_TOKENS['3xl']).toBe('max-w-3xl');
-        expect(CONTAINER_WIDTH_TOKENS['4xl']).toBe('max-w-4xl');
-        expect(CONTAINER_WIDTH_TOKENS['5xl']).toBe('max-w-5xl');
-        expect(CONTAINER_WIDTH_TOKENS['6xl']).toBe('max-w-6xl');
-        expect(CONTAINER_WIDTH_TOKENS['7xl']).toBe('max-w-7xl');
-        expect(CONTAINER_WIDTH_TOKENS.none).toBe('');
+        containerWidthTests.forEach(({ size, expected }) => {
+          expect(CONTAINER_WIDTH_TOKENS[size as keyof typeof CONTAINER_WIDTH_TOKENS]).toBe(expected);
+        });
       });
     });
 
     describe('CONTAINER_SPACING_TOKENS', () => {
+      const containerSpacingTests = [
+        { size: 'sm', expected: 'py-2 md:py-8' },
+        { size: 'md', expected: 'py-4 md:py-10' },
+        { size: 'lg', expected: 'py-6 md:py-16' },
+        { size: 'xl', expected: 'py-8 md:py-20' }
+      ];
+
       it('should map spacing sizes to padding classes', () => {
-        expect(CONTAINER_SPACING_TOKENS.sm).toBe('py-2 md:py-8');
-        expect(CONTAINER_SPACING_TOKENS.md).toBe('py-4 md:py-10');
-        expect(CONTAINER_SPACING_TOKENS.lg).toBe('py-6 md:py-16');
-        expect(CONTAINER_SPACING_TOKENS.xl).toBe('py-8 md:py-20');
+        containerSpacingTests.forEach(({ size, expected }) => {
+          expect(CONTAINER_SPACING_TOKENS[size as keyof typeof CONTAINER_SPACING_TOKENS]).toBe(expected);
+        });
       });
     });
   });
@@ -316,25 +328,44 @@ describe('sizes design system', () => {
     });
 
     describe('RESPONSIVE_PATTERNS', () => {
-      it('should provide visibility patterns', () => {
-        expect(RESPONSIVE_PATTERNS.mobileOnly).toBe('md:hidden');
-        expect(RESPONSIVE_PATTERNS.tabletUp).toBe('hidden md:block');
-        expect(RESPONSIVE_PATTERNS.desktopUp).toBe('hidden lg:block');
-      });
+      const responsivePatternTests = [
+        {
+          name: 'should provide visibility patterns',
+          patterns: {
+            mobileOnly: 'md:hidden',
+            tabletUp: 'hidden md:block',
+            desktopUp: 'hidden lg:block'
+          }
+        },
+        {
+          name: 'should provide layout patterns',
+          patterns: {
+            stackToRow: 'flex-col md:flex-row',
+            rowToStack: 'flex-row md:flex-col'
+          }
+        },
+        {
+          name: 'should provide touch target guidance',
+          patterns: {
+            touchTarget: 'min-h-[44px]'
+          }
+        },
+        {
+          name: 'should provide grid patterns',
+          patterns: {
+            singleToDouble: 'grid-cols-1 md:grid-cols-2',
+            singleToTriple: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3',
+            singleToQuad: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4'
+          }
+        }
+      ];
 
-      it('should provide layout patterns', () => {
-        expect(RESPONSIVE_PATTERNS.stackToRow).toBe('flex-col md:flex-row');
-        expect(RESPONSIVE_PATTERNS.rowToStack).toBe('flex-row md:flex-col');
-      });
-
-      it('should provide touch target guidance', () => {
-        expect(RESPONSIVE_PATTERNS.touchTarget).toBe('min-h-[44px]');
-      });
-
-      it('should provide grid patterns', () => {
-        expect(RESPONSIVE_PATTERNS.singleToDouble).toBe('grid-cols-1 md:grid-cols-2');
-        expect(RESPONSIVE_PATTERNS.singleToTriple).toBe('grid-cols-1 md:grid-cols-2 lg:grid-cols-3');
-        expect(RESPONSIVE_PATTERNS.singleToQuad).toBe('grid-cols-1 md:grid-cols-2 lg:grid-cols-4');
+      responsivePatternTests.forEach(({ name, patterns }) => {
+        it(name, () => {
+          Object.entries(patterns).forEach(([pattern, expected]) => {
+            expect(RESPONSIVE_PATTERNS[pattern as keyof typeof RESPONSIVE_PATTERNS]).toBe(expected);
+          });
+        });
       });
     });
 

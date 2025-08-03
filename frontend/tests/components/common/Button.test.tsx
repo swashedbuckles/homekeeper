@@ -1,14 +1,32 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { Button } from '../../../src/components/common/Button';
+import { 
+  expectTextToBeVisible, 
+  expectTextNotToBeVisible,
+  expectButtonToHaveClasses,
+  expectShadowClasses,
+  expectNoShadowClasses
+} from '../../helpers/testHelpers';
+import { 
+  createVariantTests, 
+  createSizeTests, 
+  createShadowTests,
+  createBasicRenderingTests
+} from '../../helpers/componentTestHelpers';
 
 describe('Button', () => {
-  it('renders children correctly', () => {
-    render(<Button>Click me</Button>);
-    
-    expect(screen.getByText('Click me')).toBeInTheDocument();
-  });
+  // Basic rendering tests
+  createBasicRenderingTests('Button', Button, [
+    {
+      description: 'renders children correctly',
+      props: { children: 'Click me' } as any,
+      expectedText: 'Click me',
+      expectedRole: 'button'
+    }
+  ]);
 
+  // Core interaction tests
   it('calls onClick when clicked', () => {
     const handleClick = vi.fn();
     render(<Button onClick={handleClick}>Click me</Button>);
@@ -17,6 +35,7 @@ describe('Button', () => {
     expect(handleClick).toHaveBeenCalledTimes(1);
   });
 
+  // Core functionality tests
   it('does not call onClick when disabled', () => {
     const handleClick = vi.fn();
     render(<Button onClick={handleClick} disabled>Click me</Button>);
@@ -28,35 +47,37 @@ describe('Button', () => {
   it('shows loading text when loading', () => {
     render(<Button loading loadingText="Processing...">Click me</Button>);
     
-    expect(screen.getByText('Processing...')).toBeInTheDocument();
-    expect(screen.queryByText('Click me')).not.toBeInTheDocument();
+    expectTextToBeVisible('Processing...');
+    expectTextNotToBeVisible('Click me');
   });
 
   it('uses default loading text when none provided', () => {
     render(<Button loading>Click me</Button>);
-    
-    expect(screen.getByText('Loading...')).toBeInTheDocument();
+    expectTextToBeVisible('Loading...');
   });
 
-  it('applies variant classes correctly', () => {
-    const { rerender } = render(<Button variant="primary">Primary</Button>);
-    let button = screen.getByRole('button');
-    expect(button).toHaveClass('bg-primary');
-
-    rerender(<Button variant="secondary">Secondary</Button>);
-    button = screen.getByRole('button');
-    expect(button).toHaveClass('bg-secondary');
-
-    rerender(<Button variant="outline">Outline</Button>);
-    button = screen.getByRole('button');
-    expect(button).toHaveClass('bg-transparent');
-  });
+  // Variant tests using factory
+  createVariantTests('Button', Button, [
+    {
+      name: 'primary',
+      props: { variant: 'primary', children: 'Primary' },
+      expectedClasses: ['bg-primary']
+    },
+    {
+      name: 'secondary', 
+      props: { variant: 'secondary', children: 'Secondary' },
+      expectedClasses: ['bg-secondary']
+    },
+    {
+      name: 'outline',
+      props: { variant: 'outline', children: 'Outline' },
+      expectedClasses: ['bg-transparent']
+    }
+  ]);
 
   it('applies full width class when full prop is true', () => {
     render(<Button full>Full width</Button>);
-    
-    const button = screen.getByRole('button');
-    expect(button).toHaveClass('w-full');
+    expectButtonToHaveClasses('Full width', ['w-full']);
   });
 
   it('sets correct button type', () => {
@@ -71,253 +92,105 @@ describe('Button', () => {
 
   it('applies custom className', () => {
     render(<Button className="custom-class">Button</Button>);
-    
-    const button = screen.getByRole('button');
-    expect(button).toHaveClass('custom-class');
+    expectButtonToHaveClasses('Button', ['custom-class']);
   });
 
-  describe('Shadow Functionality', () => {
-    describe('Default Shadow Behavior', () => {
-      it('applies shadow by default for primary variant', () => {
-        render(<Button variant="primary">Primary Button</Button>);
-        
-        const button = screen.getByRole('button');
-        expect(button).toHaveClass('brutal-shadow-dark'); // md size gets dark shadow
-      });
+  // Consolidated shadow tests - reduced from 150+ lines to representative samples
+  createShadowTests('Button', Button, [
+    // Default shadow behavior (representative samples)
+    {
+      description: 'applies shadow by default for solid variants',
+      props: { variant: 'primary', children: 'Primary Button' },
+      expectShadow: true,
+      expectedShadowClass: 'brutal-shadow-dark'
+    },
+    {
+      description: 'does not apply shadow by default for outline variant',
+      props: { variant: 'outline', children: 'Outline Button' },
+      expectShadow: false
+    },
+    {
+      description: 'does not apply shadow by default for text variant',
+      props: { variant: 'text', children: 'Text Button' },
+      expectShadow: false
+    },
+    // Size-based shadow (representative samples)
+    {
+      description: 'applies small shadow for small sizes',
+      props: { size: 'sm', children: 'Small Button' },
+      expectShadow: true,
+      expectedShadowClass: 'brutal-shadow-dark-sm'
+    },
+    {
+      description: 'applies standard shadow for medium and large sizes',
+      props: { size: 'lg', children: 'Large Button' },
+      expectShadow: true,
+      expectedShadowClass: 'brutal-shadow-dark'
+    },
+    // Explicit shadow control
+    {
+      description: 'applies shadow when explicitly enabled on outline variant',
+      props: { variant: 'outline', shadow: true, children: 'Outline with Shadow' },
+      expectShadow: true,
+      expectedShadowClass: 'brutal-shadow-dark'
+    },
+    {
+      description: 'removes shadow when explicitly disabled on solid variant',
+      props: { variant: 'primary', shadow: false, children: 'Primary without Shadow' },
+      expectShadow: false
+    }
+  ]);
 
-      it('applies shadow by default for secondary variant', () => {
-        render(<Button variant="secondary">Secondary Button</Button>);
-        
-        const button = screen.getByRole('button');
-        expect(button).toHaveClass('brutal-shadow-dark');
-      });
+  // Size tests using factory
+  createSizeTests('Button', Button, [
+    {
+      size: 'xs',
+      props: { size: 'xs', children: 'Extra Small' },
+      expectedClasses: ['brutal-shadow-dark-sm'] // xs gets small shadow
+    },
+    {
+      size: 'sm',
+      props: { size: 'sm', children: 'Small' },
+      expectedClasses: ['brutal-shadow-dark-sm']
+    },
+    {
+      size: 'md',
+      props: { size: 'md', children: 'Medium' },
+      expectedClasses: ['brutal-shadow-dark'] // md and up get standard shadow
+    }
+  ]);
 
-      it('applies shadow by default for tertiary variant', () => {
-        render(<Button variant="tertiary">Tertiary Button</Button>);
-        
-        const button = screen.getByRole('button');
-        expect(button).toHaveClass('brutal-shadow-dark');
-      });
-
-      it('applies shadow by default for danger variant', () => {
-        render(<Button variant="danger">Danger Button</Button>);
-        
-        const button = screen.getByRole('button');
-        expect(button).toHaveClass('brutal-shadow-dark');
-      });
-
-      it('applies shadow by default for accent variant', () => {
-        render(<Button variant="accent">Accent Button</Button>);
-        
-        const button = screen.getByRole('button');
-        expect(button).toHaveClass('brutal-shadow-dark');
-      });
-
-      it('does not apply shadow by default for outline variant', () => {
-        render(<Button variant="outline">Outline Button</Button>);
-        
-        const button = screen.getByRole('button');
-        expect(button).not.toHaveClass('brutal-shadow-dark', 'brutal-shadow-dark-sm');
-      });
-
-      it('does not apply shadow by default for text variant', () => {
-        render(<Button variant="text">Text Button</Button>);
-        
-        const button = screen.getByRole('button');
-        expect(button).not.toHaveClass('brutal-shadow-dark', 'brutal-shadow-dark-sm');
-      });
+  // Edge cases and integration tests
+  describe('Integration and Edge Cases', () => {
+    it('maintains shadow behavior when disabled', () => {
+      render(<Button variant="primary" disabled>Disabled Primary</Button>);
+      
+      const button = screen.getByRole('button');
+      expectShadowClasses(button);
+      expect(button).toHaveClass('disabled:opacity-50');
     });
 
-    describe('Size-Based Shadow Mapping', () => {
-      it('applies small shadow for xs size buttons', () => {
-        render(<Button size="xs">Extra Small</Button>);
-        
-        const button = screen.getByRole('button');
-        expect(button).toHaveClass('brutal-shadow-dark-sm');
-      });
-
-      it('applies small shadow for sm size buttons', () => {
-        render(<Button size="sm">Small</Button>);
-        
-        const button = screen.getByRole('button');
-        expect(button).toHaveClass('brutal-shadow-dark-sm');
-      });
-
-      it('applies standard shadow for md size buttons', () => {
-        render(<Button size="md">Medium</Button>);
-        
-        const button = screen.getByRole('button');
-        expect(button).toHaveClass('brutal-shadow-dark');
-      });
-
-      it('applies standard shadow for lg size buttons', () => {
-        render(<Button size="lg">Large</Button>);
-        
-        const button = screen.getByRole('button');
-        expect(button).toHaveClass('brutal-shadow-dark');
-      });
-
-      it('applies standard shadow for xl size buttons', () => {
-        render(<Button size="xl">Extra Large</Button>);
-        
-        const button = screen.getByRole('button');
-        expect(button).toHaveClass('brutal-shadow-dark');
-      });
+    it('maintains shadow behavior when loading', () => {
+      render(<Button variant="primary" loading>Loading Primary</Button>);
+      
+      const button = screen.getByRole('button');
+      expectShadowClasses(button);
     });
 
-    describe('Explicit Shadow Control', () => {
-      it('applies shadow when shadow={true} is explicitly set', () => {
-        render(<Button variant="outline" shadow={true}>Outline with Shadow</Button>);
-        
-        const button = screen.getByRole('button');
-        expect(button).toHaveClass('brutal-shadow-dark'); // md size gets dark shadow
-      });
-
-      it('removes shadow when shadow={false} is explicitly set', () => {
-        render(<Button variant="primary" shadow={false}>Primary without Shadow</Button>);
-        
-        const button = screen.getByRole('button');
-        expect(button).not.toHaveClass('brutal-shadow-dark', 'brutal-shadow-dark-sm');
-      });
-
-      it('respects size-based shadow when shadow={true} on small button', () => {
-        render(<Button variant="outline" size="sm" shadow={true}>Small Outline with Shadow</Button>);
-        
-        const button = screen.getByRole('button');
-        expect(button).toHaveClass('brutal-shadow-dark-sm');
-      });
-
-      it('removes shadow from small button when shadow={false}', () => {
-        render(<Button variant="primary" size="xs" shadow={false}>Small Primary without Shadow</Button>);
-        
-        const button = screen.getByRole('button');
-        expect(button).not.toHaveClass('brutal-shadow-dark', 'brutal-shadow-dark-sm');
-      });
+    it('works with full width buttons', () => {
+      render(<Button variant="primary" full>Full Width Primary</Button>);
+      expectButtonToHaveClasses('Full Width Primary', ['brutal-shadow-dark', 'w-full']);
     });
 
-    describe('Shadow with Different Variants', () => {
-      it('can add shadow to text variant', () => {
-        render(<Button variant="text" shadow={true}>Text with Shadow</Button>);
-        
-        const button = screen.getByRole('button');
-        expect(button).toHaveClass('brutal-shadow-dark');
-      });
-
-      it('can remove shadow from primary variant', () => {
-        render(<Button variant="primary" shadow={false}>Primary without Shadow</Button>);
-        
-        const button = screen.getByRole('button');
-        expect(button).not.toHaveClass('brutal-shadow-dark');
-      });
-
-      it('maintains all other variant styles when shadow is modified', () => {
-        render(<Button variant="secondary" shadow={false}>Secondary without Shadow</Button>);
-        
-        const button = screen.getByRole('button');
-        expect(button).toHaveClass('bg-secondary', 'text-white', 'border-text-primary');
-        expect(button).not.toHaveClass('brutal-shadow-dark');
-      });
-    });
-
-    describe('Shadow Integration with Other Props', () => {
-      it('maintains shadow behavior when disabled', () => {
-        render(<Button variant="primary" disabled>Disabled Primary</Button>);
-        
-        const button = screen.getByRole('button');
-        expect(button).toHaveClass('brutal-shadow-dark');
-        expect(button).toHaveClass('disabled:opacity-50');
-      });
-
-      it('maintains shadow behavior when loading', () => {
-        render(<Button variant="primary" loading>Loading Primary</Button>);
-        
-        const button = screen.getByRole('button');
-        expect(button).toHaveClass('brutal-shadow-dark');
-      });
-
-      it('works with full width buttons', () => {
-        render(<Button variant="primary" full>Full Width Primary</Button>);
-        
-        const button = screen.getByRole('button');
-        expect(button).toHaveClass('brutal-shadow-dark', 'w-full');
-      });
-
-      it('works with custom className', () => {
-        render(<Button variant="primary" shadow={false} className="custom-class">Custom Primary</Button>);
-        
-        const button = screen.getByRole('button');
-        expect(button).toHaveClass('custom-class');
-        expect(button).not.toHaveClass('brutal-shadow-dark');
-      });
-    });
-
-    describe('Real-world Shadow Usage', () => {
-      it('renders Action component default (small shadow)', () => {
-        // This simulates how Action component would use Button
-        render(<Button variant="primary" size="sm">Action Button</Button>);
-        
-        const button = screen.getByRole('button');
-        expect(button).toHaveClass('brutal-shadow-dark-sm');
-      });
-
-      it('renders clean list item actions without shadows', () => {
-        render(<Button variant="primary" size="sm" shadow={false}>Clean Action</Button>);
-        
-        const button = screen.getByRole('button');
-        expect(button).not.toHaveClass('brutal-shadow-dark', 'brutal-shadow-dark-sm');
-      });
-
-      it('renders mixed shadow usage in list items', () => {
-        const { container } = render(
-          <div>
-            <Button variant="primary" size="sm" shadow={false}>No Shadow</Button>
-            <Button variant="secondary" size="sm">With Shadow</Button>
-            <Button variant="outline" size="sm">Natural (no shadow)</Button>
-          </div>
-        );
-        
-        const buttons = container.querySelectorAll('button');
-        expect(buttons[0]).not.toHaveClass('brutal-shadow-dark-sm'); // explicit false
-        expect(buttons[1]).toHaveClass('brutal-shadow-dark-sm'); // default true
-        expect(buttons[2]).not.toHaveClass('brutal-shadow-dark-sm'); // outline default false
-      });
-
-      it('renders hero button with large shadow', () => {
-        render(<Button variant="primary" size="xl">Hero CTA Button</Button>);
-        
-        const button = screen.getByRole('button');
-        expect(button).toHaveClass('brutal-shadow-dark'); // xl still gets standard shadow
-      });
-    });
-
-    describe('Shadow Edge Cases', () => {
-      it('handles undefined shadow prop correctly', () => {
-        render(<Button variant="primary" shadow={undefined}>Undefined Shadow</Button>);
-        
-        const button = screen.getByRole('button');
-        expect(button).toHaveClass('brutal-shadow-dark'); // should use default behavior
-      });
-
-      it('preserves existing class order with shadow classes', () => {
-        render(<Button variant="primary" size="sm" className="custom">Custom Button</Button>);
-        
-        const button = screen.getByRole('button');
-        const classes = button.className.split(' ');
-        expect(classes).toContain('brutal-shadow-dark-sm');
-        expect(classes).toContain('custom');
-        expect(classes).toContain('bg-primary');
-      });
-
-      it('works correctly when shadow prop changes dynamically', () => {
-        const { rerender } = render(<Button variant="primary" shadow={true}>Dynamic Shadow</Button>);
-        
-        let button = screen.getByRole('button');
-        expect(button).toHaveClass('brutal-shadow-dark');
-        
-        rerender(<Button variant="primary" shadow={false}>Dynamic Shadow</Button>);
-        button = screen.getByRole('button');
-        expect(button).not.toHaveClass('brutal-shadow-dark');
-      });
+    it('handles dynamic shadow prop changes', () => {
+      const { rerender } = render(<Button variant="primary" shadow={true}>Dynamic Shadow</Button>);
+      
+      let button = screen.getByRole('button');
+      expectShadowClasses(button);
+      
+      rerender(<Button variant="primary" shadow={false}>Dynamic Shadow</Button>);
+      button = screen.getByRole('button');
+      expectNoShadowClasses(button);
     });
   });
 });

@@ -27,132 +27,170 @@ describe('colors design system', () => {
   });
 
   describe('Color Token Constants', () => {
-    describe('TEXT_COLOR_TOKENS', () => {
-      it('should map all standard colors to text classes', () => {
-        expect(TEXT_COLOR_TOKENS.primary).toBe('text-primary');
-        expect(TEXT_COLOR_TOKENS.secondary).toBe('text-text-secondary');
-        expect(TEXT_COLOR_TOKENS.accent).toBe('text-accent');
-        expect(TEXT_COLOR_TOKENS.dark).toBe('text-text-primary');
-        expect(TEXT_COLOR_TOKENS.error).toBe('text-error');
-        expect(TEXT_COLOR_TOKENS.success).toBe('text-accent');
-        expect(TEXT_COLOR_TOKENS.warning).toBe('text-primary');
-        expect(TEXT_COLOR_TOKENS.white).toBe('text-white');
-      });
+    const colorTokenTests = [
+      {
+        name: 'TEXT_COLOR_TOKENS',
+        tokens: TEXT_COLOR_TOKENS,
+        expectations: {
+          primary: 'text-primary',
+          secondary: 'text-text-secondary',
+          accent: 'text-accent',
+          dark: 'text-text-primary',
+          error: 'text-error',
+          success: 'text-accent',
+          warning: 'text-primary',
+          white: 'text-white'
+        }
+      },
+      {
+        name: 'BACKGROUND_COLOR_TOKENS',
+        tokens: BACKGROUND_COLOR_TOKENS,
+        expectations: {
+          primary: 'bg-primary',
+          secondary: 'bg-secondary',
+          accent: 'bg-accent',
+          dark: 'bg-text-primary',
+          error: 'bg-error',
+          success: 'bg-accent',
+          warning: 'bg-primary',
+          white: 'bg-white'
+        }
+      },
+      {
+        name: 'BORDER_COLOR_TOKENS',
+        tokens: BORDER_COLOR_TOKENS,
+        expectations: {
+          primary: 'border-primary',
+          secondary: 'border-secondary',
+          accent: 'border-accent',
+          dark: 'border-text-primary',
+          error: 'border-error',
+          success: 'border-accent',
+          warning: 'border-primary',
+          white: 'border-white'
+        }
+      },
+      {
+        name: 'SHADOW_COLOR_TOKENS',
+        tokens: SHADOW_COLOR_TOKENS,
+        expectations: {
+          primary: 'brutal-shadow-primary',
+          secondary: 'brutal-shadow-secondary',
+          accent: 'brutal-shadow-accent',
+          dark: 'brutal-shadow-primary',
+          error: 'brutal-shadow-dark',
+          success: 'brutal-shadow-dark',
+          warning: 'brutal-shadow-dark',
+          white: 'brutal-shadow-dark'
+        }
+      }
+    ];
 
-      it('should have consistent success and accent mapping', () => {
-        expect(TEXT_COLOR_TOKENS.success).toBe(TEXT_COLOR_TOKENS.accent);
-      });
-
-      it('should have consistent warning and primary mapping', () => {
-        expect(TEXT_COLOR_TOKENS.warning).toBe(TEXT_COLOR_TOKENS.primary);
+    colorTokenTests.forEach(({ name, tokens, expectations }) => {
+      describe(name, () => {
+        it(`should map all standard colors to ${name.toLowerCase().replace('_tokens', '')} classes`, () => {
+          Object.entries(expectations).forEach(([color, expectedClass]) => {
+            expect(tokens[color as StandardColor]).toBe(expectedClass);
+          });
+        });
       });
     });
 
-    describe('BACKGROUND_COLOR_TOKENS', () => {
-      it('should map all standard colors to background classes', () => {
-        expect(BACKGROUND_COLOR_TOKENS.primary).toBe('bg-primary');
-        expect(BACKGROUND_COLOR_TOKENS.secondary).toBe('bg-secondary');
-        expect(BACKGROUND_COLOR_TOKENS.accent).toBe('bg-accent');
-        expect(BACKGROUND_COLOR_TOKENS.dark).toBe('bg-text-primary');
-        expect(BACKGROUND_COLOR_TOKENS.error).toBe('bg-error');
-        expect(BACKGROUND_COLOR_TOKENS.success).toBe('bg-accent');
-        expect(BACKGROUND_COLOR_TOKENS.warning).toBe('bg-primary');
-        expect(BACKGROUND_COLOR_TOKENS.white).toBe('bg-white');
-      });
+    // Semantic consistency tests
+    const semanticTests = [
+      { tokens: [TEXT_COLOR_TOKENS, BACKGROUND_COLOR_TOKENS, BORDER_COLOR_TOKENS], name: 'success and accent mapping' },
+      { tokens: [TEXT_COLOR_TOKENS, BACKGROUND_COLOR_TOKENS, BORDER_COLOR_TOKENS], name: 'warning and primary mapping' }
+    ];
 
-      it('should have consistent success and accent mapping', () => {
-        expect(BACKGROUND_COLOR_TOKENS.success).toBe(BACKGROUND_COLOR_TOKENS.accent);
-      });
-
-      it('should have consistent warning and primary mapping', () => {
-        expect(BACKGROUND_COLOR_TOKENS.warning).toBe(BACKGROUND_COLOR_TOKENS.primary);
-      });
-    });
-
-    describe('BORDER_COLOR_TOKENS', () => {
-      it('should map all standard colors to border classes', () => {
-        expect(BORDER_COLOR_TOKENS.primary).toBe('border-primary');
-        expect(BORDER_COLOR_TOKENS.secondary).toBe('border-secondary');
-        expect(BORDER_COLOR_TOKENS.accent).toBe('border-accent');
-        expect(BORDER_COLOR_TOKENS.dark).toBe('border-text-primary');
-        expect(BORDER_COLOR_TOKENS.error).toBe('border-error');
-        expect(BORDER_COLOR_TOKENS.success).toBe('border-accent');
-        expect(BORDER_COLOR_TOKENS.warning).toBe('border-primary');
-        expect(BORDER_COLOR_TOKENS.white).toBe('border-white');
+    semanticTests.forEach(({ tokens, name }) => {
+      tokens.forEach((tokenSet, index) => {
+        const tokenName = ['TEXT', 'BACKGROUND', 'BORDER'][index];
+        it(`should have consistent ${name} in ${tokenName}_COLOR_TOKENS`, () => {
+          if (name.includes('success')) {
+            expect(tokenSet.success).toBe(tokenSet.accent);
+          } else {
+            expect(tokenSet.warning).toBe(tokenSet.primary);
+          }
+        });
       });
     });
 
     describe('SHADOW_COLOR_TOKENS', () => {
-      it('should map all standard colors to shadow classes', () => {
-        expect(SHADOW_COLOR_TOKENS.primary).toBe('brutal-shadow-primary');
-        expect(SHADOW_COLOR_TOKENS.secondary).toBe('brutal-shadow-secondary');
-        expect(SHADOW_COLOR_TOKENS.accent).toBe('brutal-shadow-accent');
-        expect(SHADOW_COLOR_TOKENS.dark).toBe('brutal-shadow-primary');
-        expect(SHADOW_COLOR_TOKENS.error).toBe('brutal-shadow-dark');
-        expect(SHADOW_COLOR_TOKENS.success).toBe('brutal-shadow-dark');
-        expect(SHADOW_COLOR_TOKENS.warning).toBe('brutal-shadow-dark');
-        expect(SHADOW_COLOR_TOKENS.white).toBe('brutal-shadow-dark');
-      });
-
       it('should use dark shadow for most negative/warning states', () => {
-        expect(SHADOW_COLOR_TOKENS.error).toBe('brutal-shadow-dark');
-        expect(SHADOW_COLOR_TOKENS.success).toBe('brutal-shadow-dark');
-        expect(SHADOW_COLOR_TOKENS.warning).toBe('brutal-shadow-dark');
-        expect(SHADOW_COLOR_TOKENS.white).toBe('brutal-shadow-dark');
+        ['error', 'success', 'warning', 'white'].forEach(color => {
+          expect(SHADOW_COLOR_TOKENS[color as StandardColor]).toBe('brutal-shadow-dark');
+        });
       });
     });
   });
 
   describe('Utility Functions', () => {
-    describe('getTextColor', () => {
-      it('should return correct text color class for each standard color', () => {
-        expect(getTextColor('primary')).toBe('text-primary');
-        expect(getTextColor('secondary')).toBe('text-text-secondary');
-        expect(getTextColor('accent')).toBe('text-accent');
-        expect(getTextColor('dark')).toBe('text-text-primary');
-        expect(getTextColor('error')).toBe('text-error');
-        expect(getTextColor('success')).toBe('text-accent');
-        expect(getTextColor('warning')).toBe('text-primary');
-        expect(getTextColor('white')).toBe('text-white');
-      });
-    });
+    const utilityFunctionTests = [
+      {
+        name: 'getTextColor',
+        fn: getTextColor,
+        expectations: {
+          primary: 'text-primary',
+          secondary: 'text-text-secondary',
+          accent: 'text-accent',
+          dark: 'text-text-primary',
+          error: 'text-error',
+          success: 'text-accent',
+          warning: 'text-primary',
+          white: 'text-white'
+        }
+      },
+      {
+        name: 'getBackgroundColor',
+        fn: getBackgroundColor,
+        expectations: {
+          primary: 'bg-primary',
+          secondary: 'bg-secondary',
+          accent: 'bg-accent',
+          dark: 'bg-text-primary',
+          error: 'bg-error',
+          success: 'bg-accent',
+          warning: 'bg-primary',
+          white: 'bg-white'
+        }
+      },
+      {
+        name: 'getBorderColor',
+        fn: getBorderColor,
+        expectations: {
+          primary: 'border-primary',
+          secondary: 'border-secondary',
+          accent: 'border-accent',
+          dark: 'border-text-primary',
+          error: 'border-error',
+          success: 'border-accent',
+          warning: 'border-primary',
+          white: 'border-white'
+        }
+      },
+      {
+        name: 'getShadowColor',
+        fn: getShadowColor,
+        expectations: {
+          primary: 'brutal-shadow-primary',
+          secondary: 'brutal-shadow-secondary',
+          accent: 'brutal-shadow-accent',
+          dark: 'brutal-shadow-primary',
+          error: 'brutal-shadow-dark',
+          success: 'brutal-shadow-dark',
+          warning: 'brutal-shadow-dark',
+          white: 'brutal-shadow-dark'
+        }
+      }
+    ];
 
-    describe('getBackgroundColor', () => {
-      it('should return correct background color class for each standard color', () => {
-        expect(getBackgroundColor('primary')).toBe('bg-primary');
-        expect(getBackgroundColor('secondary')).toBe('bg-secondary');
-        expect(getBackgroundColor('accent')).toBe('bg-accent');
-        expect(getBackgroundColor('dark')).toBe('bg-text-primary');
-        expect(getBackgroundColor('error')).toBe('bg-error');
-        expect(getBackgroundColor('success')).toBe('bg-accent');
-        expect(getBackgroundColor('warning')).toBe('bg-primary');
-        expect(getBackgroundColor('white')).toBe('bg-white');
-      });
-    });
-
-    describe('getBorderColor', () => {
-      it('should return correct border color class for each standard color', () => {
-        expect(getBorderColor('primary')).toBe('border-primary');
-        expect(getBorderColor('secondary')).toBe('border-secondary');
-        expect(getBorderColor('accent')).toBe('border-accent');
-        expect(getBorderColor('dark')).toBe('border-text-primary');
-        expect(getBorderColor('error')).toBe('border-error');
-        expect(getBorderColor('success')).toBe('border-accent');
-        expect(getBorderColor('warning')).toBe('border-primary');
-        expect(getBorderColor('white')).toBe('border-white');
-      });
-    });
-
-    describe('getShadowColor', () => {
-      it('should return correct shadow color class for each standard color', () => {
-        expect(getShadowColor('primary')).toBe('brutal-shadow-primary');
-        expect(getShadowColor('secondary')).toBe('brutal-shadow-secondary');
-        expect(getShadowColor('accent')).toBe('brutal-shadow-accent');
-        expect(getShadowColor('dark')).toBe('brutal-shadow-primary');
-        expect(getShadowColor('error')).toBe('brutal-shadow-dark');
-        expect(getShadowColor('success')).toBe('brutal-shadow-dark');
-        expect(getShadowColor('warning')).toBe('brutal-shadow-dark');
-        expect(getShadowColor('white')).toBe('brutal-shadow-dark');
+    utilityFunctionTests.forEach(({ name, fn, expectations }) => {
+      describe(name, () => {
+        it(`should return correct ${name.replace('get', '').toLowerCase()} class for each standard color`, () => {
+          Object.entries(expectations).forEach(([color, expectedClass]) => {
+            expect(fn(color as StandardColor)).toBe(expectedClass);
+          });
+        });
       });
     });
   });
@@ -193,22 +231,39 @@ describe('colors design system', () => {
     });
 
     describe('SEMANTIC_COLORS', () => {
-      it('should map positive/negative semantics correctly', () => {
-        expect(SEMANTIC_COLORS.positive).toBe('success');
-        expect(SEMANTIC_COLORS.negative).toBe('error');
-        expect(SEMANTIC_COLORS.neutral).toBe('secondary');
-      });
+      const semanticColorTests = [
+        {
+          name: 'should map positive/negative semantics correctly',
+          expectations: {
+            positive: 'success',
+            negative: 'error',
+            neutral: 'secondary'
+          }
+        },
+        {
+          name: 'should map urgency levels correctly',
+          expectations: {
+            urgent: 'error',
+            important: 'warning',
+            normal: 'secondary'
+          }
+        },
+        {
+          name: 'should map action types correctly',
+          expectations: {
+            destructive: 'error',
+            constructive: 'success',
+            informational: 'primary'
+          }
+        }
+      ];
 
-      it('should map urgency levels correctly', () => {
-        expect(SEMANTIC_COLORS.urgent).toBe('error');
-        expect(SEMANTIC_COLORS.important).toBe('warning');
-        expect(SEMANTIC_COLORS.normal).toBe('secondary');
-      });
-
-      it('should map action types correctly', () => {
-        expect(SEMANTIC_COLORS.destructive).toBe('error');
-        expect(SEMANTIC_COLORS.constructive).toBe('success');
-        expect(SEMANTIC_COLORS.informational).toBe('primary');
+      semanticColorTests.forEach(({ name, expectations }) => {
+        it(name, () => {
+          Object.entries(expectations).forEach(([semantic, expectedColor]) => {
+            expect(SEMANTIC_COLORS[semantic as keyof typeof SEMANTIC_COLORS]).toBe(expectedColor);
+          });
+        });
       });
 
       it('should only use valid StandardColor values', () => {

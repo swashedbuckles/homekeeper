@@ -2,282 +2,292 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { StatCard } from '../../../src/components/variations/StatCard';
 
+// Helper function to render StatCard
+const renderStatCard = (props = {}) => {
+  const defaultProps = {
+    label: 'Test Label',
+    value: 100
+  };
+  
+  return render(<StatCard {...defaultProps} {...props} />);
+};
+
+// Helper function to get value element
+const getValueElement = (value = '100') => screen.getByText(value.toString());
+
 describe('StatCard', () => {
-  it('renders label and value correctly', () => {
-    render(<StatCard label="Total Manuals" value={47} />);
-    
-    expect(screen.getByText('Total Manuals')).toBeInTheDocument();
-    expect(screen.getByText('47')).toBeInTheDocument();
+  const basicTests = [
+    {
+      name: 'renders label and value correctly',
+      props: { label: 'Total Manuals', value: 47 },
+      test: () => {
+        expect(screen.getByText('Total Manuals')).toBeInTheDocument();
+        expect(screen.getByText('47')).toBeInTheDocument();
+      }
+    },
+    {
+      name: 'renders with default props',
+      props: { label: 'Default Card', value: 100 },
+      test: () => {
+        const value = getValueElement();
+        expect(value).toBeInTheDocument();
+        expect(value).toHaveClass('text-5xl', 'md:text-6xl', 'lg:text-7xl', 'text-white');
+      }
+    }
+  ];
+
+  basicTests.forEach(({ name, props, test }) => {
+    it(name, () => {
+      renderStatCard(props);
+      test();
+    });
   });
 
-  it('renders with default props', () => {
-    render(<StatCard label="Default Card" value={100} />);
-    
-    // Check that StatCard renders (may or may not be a button)
-    expect(screen.getByText('100')).toBeInTheDocument();
-    
-    // Check default size (lg -> large) and variant (dark -> white text)
-    const value = screen.getByText('100');
-    expect(value).toHaveClass('text-5xl', 'md:text-6xl', 'lg:text-7xl', 'text-white');
-  });
+  const sizeTests = [
+    {
+      name: 'renders small size correctly',
+      props: { label: 'Small Card', value: 25, size: 'sm' },
+      expectedClasses: ['text-2xl', 'md:text-3xl']
+    },
+    {
+      name: 'renders medium size correctly',
+      props: { label: 'Medium Card', value: 50, size: 'md' },
+      expectedClasses: ['text-4xl', 'md:text-5xl']
+    },
+    {
+      name: 'renders large size correctly',
+      props: { label: 'Large Card', value: 100, size: 'lg' },
+      expectedClasses: ['text-5xl', 'md:text-6xl', 'lg:text-7xl']
+    }
+  ];
 
   describe('sizes', () => {
-    it('renders small size correctly', () => {
-      render(<StatCard label="Small Card" value={25} size="sm" />);
-      
-      const value = screen.getByText('25');
-      expect(value).toHaveClass('text-2xl', 'md:text-3xl'); // small Stats size
-    });
-
-    it('renders medium size correctly', () => {
-      render(<StatCard label="Medium Card" value={50} size="md" />);
-      
-      const value = screen.getByText('50');
-      expect(value).toHaveClass('text-4xl', 'md:text-5xl'); // medium Stats size
-    });
-
-    it('renders large size correctly', () => {
-      render(<StatCard label="Large Card" value={100} size="lg" />);
-      
-      const value = screen.getByText('100');
-      expect(value).toHaveClass('text-5xl', 'md:text-6xl', 'lg:text-7xl'); // large Stats size
+    sizeTests.forEach(({ name, props, expectedClasses }) => {
+      it(name, () => {
+        renderStatCard(props);
+        const value = getValueElement(props.value);
+        
+        expectedClasses.forEach(className => {
+          expect(value).toHaveClass(className);
+        });
+      });
     });
   });
+
+  const variantTests = [
+    { name: 'renders default variant with dark text', variant: 'default', value: 10, expectedColor: 'text-text-primary' },
+    { name: 'renders subtle variant with dark text', variant: 'subtle', value: 20, expectedColor: 'text-text-primary' },
+    { name: 'renders primary variant with white text', variant: 'primary', value: 30, expectedColor: 'text-white' },
+    { name: 'renders secondary variant with white text', variant: 'secondary', value: 40, expectedColor: 'text-white' },
+    { name: 'renders accent variant with white text', variant: 'accent', value: 50, expectedColor: 'text-white' },
+    { name: 'renders danger variant with white text', variant: 'danger', value: 60, expectedColor: 'text-white' },
+    { name: 'renders dark variant with white text', variant: 'dark', value: 70, expectedColor: 'text-white' }
+  ];
 
   describe('variants and color mapping', () => {
-    it('renders default variant with dark text', () => {
-      render(<StatCard label="Default" value={10} variant="default" />);
-      
-      const value = screen.getByText('10');
-      expect(value).toHaveClass('text-text-primary'); // dark color
-    });
-
-    it('renders subtle variant with dark text', () => {
-      render(<StatCard label="Subtle" value={20} variant="subtle" />);
-      
-      const value = screen.getByText('20');
-      expect(value).toHaveClass('text-text-primary'); // dark color
-    });
-
-    it('renders primary variant with white text', () => {
-      render(<StatCard label="Primary" value={30} variant="primary" />);
-      
-      const value = screen.getByText('30');
-      expect(value).toHaveClass('text-white'); // white color
-    });
-
-    it('renders secondary variant with white text', () => {
-      render(<StatCard label="Secondary" value={40} variant="secondary" />);
-      
-      const value = screen.getByText('40');
-      expect(value).toHaveClass('text-white'); // white color
-    });
-
-    it('renders accent variant with white text', () => {
-      render(<StatCard label="Accent" value={50} variant="accent" />);
-      
-      const value = screen.getByText('50');
-      expect(value).toHaveClass('text-white'); // white color
-    });
-
-    it('renders danger variant with white text', () => {
-      render(<StatCard label="Danger" value={60} variant="danger" />);
-      
-      const value = screen.getByText('60');
-      expect(value).toHaveClass('text-white'); // white color
-    });
-
-    it('renders dark variant with white text', () => {
-      render(<StatCard label="Dark" value={70} variant="dark" />);
-      
-      const value = screen.getByText('70');
-      expect(value).toHaveClass('text-white'); // white color
+    variantTests.forEach(({ name, variant, value, expectedColor }) => {
+      it(name, () => {
+        renderStatCard({ label: variant.charAt(0).toUpperCase() + variant.slice(1), value, variant });
+        const valueElement = getValueElement(value);
+        expect(valueElement).toHaveClass(expectedColor);
+      });
     });
   });
+
+  const subtitleTests = [
+    {
+      name: 'renders subtitle when provided',
+      props: { label: 'Total Manuals', value: 47, subtitle: '+3 This Month' },
+      test: () => {
+        expect(screen.getByText('+3 This Month')).toBeInTheDocument();
+      }
+    },
+    {
+      name: 'does not render subtitle when not provided',
+      props: { label: 'Total Manuals', value: 47 },
+      test: () => {
+        expect(screen.queryByText('+3 This Month')).not.toBeInTheDocument();
+      }
+    }
+  ];
 
   describe('subtitle', () => {
-    it('renders subtitle when provided', () => {
-      render(
-        <StatCard 
-          label="Total Manuals" 
-          value={47} 
-          subtitle="+3 This Month" 
-        />
-      );
-      
-      expect(screen.getByText('+3 This Month')).toBeInTheDocument();
-    });
-
-    it('does not render subtitle when not provided', () => {
-      render(<StatCard label="Total Manuals" value={47} />);
-      
-      // Subtitle should not exist
-      expect(screen.queryByText('+3 This Month')).not.toBeInTheDocument();
+    subtitleTests.forEach(({ name, props, test }) => {
+      it(name, () => {
+        renderStatCard(props);
+        test();
+      });
     });
   });
+
+  const cardPropsTests = [
+    {
+      name: 'passes Card props correctly',
+      props: {
+        label: 'Card Props',
+        value: 100,
+        shadow: 'double',
+        rotation: 'slight-left',
+        className: 'custom-class',
+        testId: 'custom-stat-card'
+      },
+      test: () => {
+        const card = screen.getByTestId('custom-stat-card');
+        expect(card).toHaveClass('custom-class');
+      }
+    },
+    {
+      name: 'handles hover and click events',
+      props: {
+        label: 'Clickable',
+        value: 42,
+        hover: true,
+        onClick: vi.fn()
+      },
+      test: () => {
+        const card = screen.getByTestId('card');
+        fireEvent.click(card);
+        expect(vi.mocked(cardPropsTests[1].props.onClick)).toHaveBeenCalledTimes(1);
+      }
+    },
+    {
+      name: 'applies shadow variants',
+      props: {
+        label: 'Shadow Test',
+        value: 123,
+        shadow: 'primary',
+        testId: 'shadow-card'
+      },
+      test: () => {
+        expect(screen.getByTestId('shadow-card')).toBeInTheDocument();
+      }
+    }
+  ];
 
   describe('Card props delegation', () => {
-    it('passes Card props correctly', () => {
-      render(
-        <StatCard 
-          label="Card Props" 
-          value={100}
-          shadow="double"
-          rotation="slight-left"
-          className="custom-class"
-          testId="custom-stat-card"
-        />
-      );
-      
-      const card = screen.getByTestId('custom-stat-card');
-      expect(card).toHaveClass('custom-class');
-    });
-
-    it('handles hover and click events', () => {
-      const mockClick = vi.fn();
-      render(
-        <StatCard 
-          label="Clickable" 
-          value={42}
-          hover
-          onClick={mockClick}
-        />
-      );
-      
-      const card = screen.getByTestId('card');
-      fireEvent.click(card);
-      expect(mockClick).toHaveBeenCalledTimes(1);
-    });
-
-    it('applies shadow variants', () => {
-      render(
-        <StatCard 
-          label="Shadow Test" 
-          value={123}
-          shadow="primary"
-          testId="shadow-card"
-        />
-      );
-      
-      // Shadow classes should be applied by Card component
-      expect(screen.getByTestId('shadow-card')).toBeInTheDocument();
+    cardPropsTests.forEach(({ name, props, test }) => {
+      it(name, () => {
+        renderStatCard(props);
+        test();
+      });
     });
   });
+
+  const valueTypeTests = [
+    { name: 'renders string values correctly', props: { label: 'String Value', value: '$2,340' } },
+    { name: 'renders numeric values correctly', props: { label: 'Numeric Value', value: 12345 } },
+    { name: 'renders zero values correctly', props: { label: 'Zero Value', value: 0 } }
+  ];
 
   describe('value types', () => {
-    it('renders string values correctly', () => {
-      render(<StatCard label="String Value" value="$2,340" />);
-      
-      expect(screen.getByText('$2,340')).toBeInTheDocument();
-    });
-
-    it('renders numeric values correctly', () => {
-      render(<StatCard label="Numeric Value" value={12345} />);
-      
-      expect(screen.getByText('12345')).toBeInTheDocument();
-    });
-
-    it('renders zero values correctly', () => {
-      render(<StatCard label="Zero Value" value={0} />);
-      
-      expect(screen.getByText('0')).toBeInTheDocument();
+    valueTypeTests.forEach(({ name, props }) => {
+      it(name, () => {
+        renderStatCard(props);
+        expect(screen.getByText(props.value.toString())).toBeInTheDocument();
+      });
     });
   });
 
+  const realWorldExamples = [
+    {
+      name: 'renders dashboard manual count card',
+      props: {
+        label: 'Total Manuals',
+        value: 47,
+        subtitle: '+3 This Month',
+        size: 'md',
+        variant: 'dark',
+        rotation: 'left',
+        shadow: 'double',
+        hover: true,
+        hoverEffect: 'lift'
+      },
+      tests: [
+        () => expect(screen.getByText('47')).toHaveClass('text-4xl', 'md:text-5xl', 'text-white'),
+        () => expect(screen.getByText('Total Manuals')).toHaveClass('text-white'),
+        () => expect(screen.getByText('+3 This Month')).toBeInTheDocument()
+      ]
+    },
+    {
+      name: 'renders pending tasks card',
+      props: {
+        label: 'Pending Tasks',
+        value: 5,
+        subtitle: '2 Due Soon',
+        size: 'md',
+        variant: 'secondary',
+        rotation: 'slight-right',
+        shadow: 'double',
+        hover: true,
+        hoverEffect: 'lift'
+      },
+      tests: [
+        () => expect(screen.getByText('5')).toHaveClass('text-white'),
+        () => expect(screen.getByText('Pending Tasks')).toBeInTheDocument(),
+        () => expect(screen.getByText('2 Due Soon')).toBeInTheDocument()
+      ]
+    },
+    {
+      name: 'renders completed tasks card',
+      props: {
+        label: 'Completed',
+        value: 12,
+        subtitle: 'This Month',
+        size: 'md',
+        variant: 'accent',
+        rotation: 'slight-left',
+        shadow: 'double',
+        hover: true,
+        hoverEffect: 'lift'
+      },
+      tests: [
+        () => expect(screen.getByText('12')).toHaveClass('text-white')
+      ]
+    },
+    {
+      name: 'renders small floating stat card',
+      props: {
+        size: 'sm',
+        className: 'absolute -top-16 -right-8 hidden lg:block',
+        label: 'Manuals Stored',
+        value: 47,
+        variant: 'primary',
+        rotation: 'slight-right'
+      },
+      tests: [
+        () => expect(screen.getByText('47')).toHaveClass('text-2xl', 'md:text-3xl'),
+        () => {
+          const card = screen.getByTestId('card') || screen.getByText('47').closest('div');
+          expect(card).toHaveClass('absolute', '-top-16', '-right-8');
+        }
+      ]
+    },
+    {
+      name: 'renders tasks completed card with bottom positioning',
+      props: {
+        size: 'sm',
+        className: 'absolute -bottom-24 -left-16 hidden lg:block',
+        label: 'Tasks Completed',
+        value: 12,
+        variant: 'accent',
+        rotation: 'left'
+      },
+      tests: [
+        () => expect(screen.getByText('12')).toHaveClass('text-white'),
+        () => {
+          const card = screen.getByTestId('card') || screen.getByText('12').closest('div');
+          expect(card).toHaveClass('absolute', '-bottom-24', '-left-16');
+        }
+      ]
+    }
+  ];
+
   describe('real-world usage examples', () => {
-    it('renders dashboard manual count card', () => {
-      render(
-        <StatCard
-          label="Total Manuals"
-          value={47}
-          subtitle="+3 This Month"
-          size="md"
-          variant="dark"
-          rotation="left"
-          shadow="double"
-          hover
-          hoverEffect="lift"
-        />
-      );
-      
-      expect(screen.getByText('47')).toHaveClass('text-4xl', 'md:text-5xl', 'text-white');
-      expect(screen.getByText('Total Manuals')).toHaveClass('text-white');
-      expect(screen.getByText('+3 This Month')).toBeInTheDocument();
-    });
-
-    it('renders pending tasks card', () => {
-      render(
-        <StatCard
-          label="Pending Tasks"
-          value={5}
-          subtitle="2 Due Soon"
-          size="md"
-          variant="secondary"
-          rotation="slight-right"
-          shadow="double"
-          hover
-          hoverEffect="lift"
-        />
-      );
-      
-      const value = screen.getByText('5');
-      expect(value).toHaveClass('text-white'); // secondary variant uses white text
-      expect(screen.getByText('Pending Tasks')).toBeInTheDocument();
-      expect(screen.getByText('2 Due Soon')).toBeInTheDocument();
-    });
-
-    it('renders completed tasks card', () => {
-      render(
-        <StatCard
-          label="Completed"
-          value={12}
-          subtitle="This Month"
-          size="md"
-          variant="accent"
-          rotation="slight-left"
-          shadow="double"
-          hover
-          hoverEffect="lift"
-        />
-      );
-      
-      const value = screen.getByText('12');
-      expect(value).toHaveClass('text-white'); // accent variant uses white text
-    });
-
-    it('renders small floating stat card', () => {
-      render(
-        <StatCard
-          size="sm"
-          className="absolute -top-16 -right-8 hidden lg:block"
-          label="Manuals Stored"
-          value={47}
-          variant="primary"
-          rotation="slight-right"
-        />
-      );
-      
-      const value = screen.getByText('47');
-      expect(value).toHaveClass('text-2xl', 'md:text-3xl'); // small size
-      const card = screen.getByTestId('card') || screen.getByText('47').closest('div');
-      expect(card).toHaveClass('absolute', '-top-16', '-right-8');
-    });
-
-    it('renders tasks completed card with bottom positioning', () => {
-      render(
-        <StatCard
-          size="sm"
-          className="absolute -bottom-24 -left-16 hidden lg:block"
-          label="Tasks Completed"
-          value={12}
-          variant="accent"
-          rotation="left"
-        />
-      );
-      
-      expect(screen.getByText('12')).toHaveClass('text-white');
-      const card = screen.getByTestId('card') || screen.getByText('12').closest('div');
-      expect(card).toHaveClass('absolute', '-bottom-24', '-left-16');
+    realWorldExamples.forEach(({ name, props, tests }) => {
+      it(name, () => {
+        renderStatCard(props);
+        tests.forEach(test => test());
+      });
     });
   });
 });

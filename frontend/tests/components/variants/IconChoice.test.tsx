@@ -4,67 +4,92 @@ import { Calendar, Wrench } from 'lucide-react';
 import { IconChoice } from '../../../src/components/variations/IconChoice';
 import { Option } from '../../../src/components/form/Option';
 
+// Helper function to render IconChoice with standard options
+const renderIconChoice = (props = {}, children?: React.ReactNode) => {
+  const defaultChildren = [
+    <Option key="once" value="once">One Time</Option>,
+    <Option key="recurring" value="recurring">Recurring</Option>
+  ];
+  
+  return render(
+    <IconChoice name="frequency" {...props}>
+      {children || defaultChildren}
+    </IconChoice>
+  );
+};
+
+// Helper function to get option elements
+const getOptionElements = () => {
+  return {
+    oneTime: screen.getByText('One Time'),
+    recurring: screen.getByText('Recurring'),
+    allButtons: screen.getAllByRole('button')
+  };
+};
+
+// Helper function to count SVG icons
+const countSvgIcons = () => {
+  const buttons = screen.getAllByRole('button');
+  return buttons.map(btn => btn.querySelector('svg')).filter(svg => svg !== null).length;
+};
+
 describe('IconChoice', () => {
-  it('renders options with default icons', () => {
-    render(
-      <IconChoice name="frequency">
-        <Option value="once">One Time</Option>
-        <Option value="recurring">Recurring</Option>
-      </IconChoice>
-    );
+  const basicTests = [
+    {
+      name: 'renders options with default icons',
+      test: () => {
+        renderIconChoice();
+        const { oneTime, recurring } = getOptionElements();
+        
+        expect(oneTime).toBeInTheDocument();
+        expect(recurring).toBeInTheDocument();
+        expect(countSvgIcons()).toBe(2);
+      }
+    },
+    {
+      name: 'uses custom icon map when provided',
+      test: () => {
+        const iconMap = { cleaning: Calendar, maintenance: Wrench };
+        const children = [
+          <Option key="cleaning" value="cleaning">Cleaning</Option>,
+          <Option key="maintenance" value="maintenance">Maintenance</Option>
+        ];
+        
+        render(
+          <IconChoice name="category" iconMap={iconMap}>
+            {children}
+          </IconChoice>
+        );
+        
+        expect(screen.getByText('Cleaning')).toBeInTheDocument();
+        expect(screen.getByText('Maintenance')).toBeInTheDocument();
+      }
+    },
+    {
+      name: 'handles selection with icon cards',
+      test: () => {
+        const onChange = vi.fn();
+        renderIconChoice({ onChange });
+        const { oneTime } = getOptionElements();
+        
+        fireEvent.click(oneTime);
+        expect(onChange).toHaveBeenCalledWith('once');
+      }
+    },
+    {
+      name: 'applies correct styling for selected state',
+      test: () => {
+        renderIconChoice({ value: 'once' });
+        const selectedCard = screen.getByText('One Time').closest('button');
+        const unselectedCard = screen.getByText('Recurring').closest('button');
+        
+        expect(selectedCard?.className).toContain('bg-primary');
+        expect(unselectedCard?.className).toContain('bg-white');
+      }
+    }
+  ];
 
-    expect(screen.getByText('One Time')).toBeInTheDocument();
-    expect(screen.getByText('Recurring')).toBeInTheDocument();
-    
-    // Should render SVG icons
-    const svgs = screen.getAllByRole('button').map(btn => btn.querySelector('svg'));
-    expect(svgs.filter(svg => svg !== null)).toHaveLength(2);
-  });
-
-  it('uses custom icon map when provided', () => {
-    render(
-      <IconChoice 
-        name="category" 
-        iconMap={{ 
-          cleaning: Calendar, 
-          maintenance: Wrench 
-        }}
-      >
-        <Option value="cleaning">Cleaning</Option>
-        <Option value="maintenance">Maintenance</Option>
-      </IconChoice>
-    );
-
-    expect(screen.getByText('Cleaning')).toBeInTheDocument();
-    expect(screen.getByText('Maintenance')).toBeInTheDocument();
-  });
-
-  it('handles selection with icon cards', () => {
-    const onChange = vi.fn();
-    
-    render(
-      <IconChoice name="frequency" onChange={onChange}>
-        <Option value="once">One Time</Option>
-        <Option value="recurring">Recurring</Option>
-      </IconChoice>
-    );
-
-    fireEvent.click(screen.getByText('One Time'));
-    expect(onChange).toHaveBeenCalledWith('once');
-  });
-
-  it('applies correct styling for selected state', () => {
-    render(
-      <IconChoice name="frequency" value="once">
-        <Option value="once">One Time</Option>
-        <Option value="recurring">Recurring</Option>
-      </IconChoice>
-    );
-
-    const selectedCard = screen.getByText('One Time').closest('button');
-    const unselectedCard = screen.getByText('Recurring').closest('button');
-    
-    expect(selectedCard?.className).toContain('bg-primary');
-    expect(unselectedCard?.className).toContain('bg-white');
+  basicTests.forEach(({ name, test }) => {
+    it(name, test);
   });
 });

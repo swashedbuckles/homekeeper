@@ -6,117 +6,137 @@ import { AuthProvider } from '../../src/context/AuthProvider';
 import { AuthStatus } from '../../src/lib/types/authStatus';
 import { createMockUser } from '../helpers/testUtils';
 
-// Test component to access context values
-function TestComponent() {
-  const auth = useContext(AuthContext);
-  const actions = useContext(AuthActionsContext);
+// Helper function to render AuthProvider with test consumer
+const renderAuthProvider = (initialState: any, children?: React.ReactNode) => {
+  const TestComponent = () => {
+    const auth = useContext(AuthContext);
+    const actions = useContext(AuthActionsContext);
 
-  return (
-    <div>
-      <span data-testid="auth-status">{auth.authStatus}</span>
-      <span data-testid="user-email">{auth.user?.email || 'no-user'}</span>
-      <button
-        data-testid="set-logged-in"
-        onClick={() => actions.setAuthStatus(AuthStatus.LOGGED_IN)}
-      >
-        Set Logged In
-      </button>
-      <button
-        data-testid="set-user"
-        onClick={() => actions.setUser(createMockUser({ email: 'updated@example.com' }))}
-      >
-        Set User
-      </button>
-    </div>
+    return (
+      <div>
+        <span data-testid="auth-status">{auth.authStatus}</span>
+        <span data-testid="user-email">{auth.user?.email || 'no-user'}</span>
+        <button
+          data-testid="set-logged-in"
+          onClick={() => actions.setAuthStatus(AuthStatus.LOGGED_IN)}
+        >
+          Set Logged In
+        </button>
+        <button
+          data-testid="set-user"
+          onClick={() => actions.setUser(createMockUser({ email: 'updated@example.com' }))}
+        >
+          Set User
+        </button>
+        {children}
+      </div>
+    );
+  };
+
+  return render(
+    <AuthProvider initialState={initialState}>
+      <TestComponent />
+    </AuthProvider>
   );
-}
+};
 
 describe('AuthProvider', () => {
   describe('initialization', () => {
-    it('should provide default initial state', () => {
-      const defaultInitialState = {
-        authStatus: AuthStatus.UNKNOWN,
-        user: null,
-      };
+    const initializationTests = [
+      {
+        name: 'should provide default initial state',
+        initialState: {
+          authStatus: AuthStatus.UNKNOWN,
+          user: null,
+        },
+        expectedAuthStatus: AuthStatus.UNKNOWN,
+        expectedUserEmail: 'no-user'
+      },
+      {
+        name: 'should provide custom initial state',
+        initialState: {
+          authStatus: AuthStatus.LOGGED_IN,
+          user: createMockUser({ email: 'test@example.com' }),
+        },
+        expectedAuthStatus: AuthStatus.LOGGED_IN,
+        expectedUserEmail: 'test@example.com'
+      },
+      {
+        name: 'should provide logged out state',
+        initialState: {
+          authStatus: AuthStatus.LOGGED_OUT,
+          user: null,
+        },
+        expectedAuthStatus: AuthStatus.LOGGED_OUT,
+        expectedUserEmail: 'no-user'
+      }
+    ];
 
-      render(
-        <AuthProvider initialState={defaultInitialState}>
-          <TestComponent />
-        </AuthProvider>
-      );
+    initializationTests.forEach(({ name, initialState, expectedAuthStatus, expectedUserEmail }) => {
+      it(name, () => {
+        renderAuthProvider(initialState);
 
-      expect(screen.getByTestId('auth-status')).toHaveTextContent(AuthStatus.UNKNOWN);
-      expect(screen.getByTestId('user-email')).toHaveTextContent('no-user');
-    });
-
-    it('should provide custom initial state', () => {
-      const mockUser = createMockUser({ email: 'test@example.com' });
-      const customInitialState = {
-        authStatus: AuthStatus.LOGGED_IN,
-        user: mockUser,
-      };
-
-      render(
-        <AuthProvider initialState={customInitialState}>
-          <TestComponent />
-        </AuthProvider>
-      );
-
-      expect(screen.getByTestId('auth-status')).toHaveTextContent(AuthStatus.LOGGED_IN);
-      expect(screen.getByTestId('user-email')).toHaveTextContent('test@example.com');
-    });
-
-    it('should provide logged out state', () => {
-      const loggedOutState = {
-        authStatus: AuthStatus.LOGGED_OUT,
-        user: null,
-      };
-
-      render(
-        <AuthProvider initialState={loggedOutState}>
-          <TestComponent />
-        </AuthProvider>
-      );
-
-      expect(screen.getByTestId('auth-status')).toHaveTextContent(AuthStatus.LOGGED_OUT);
-      expect(screen.getByTestId('user-email')).toHaveTextContent('no-user');
+        expect(screen.getByTestId('auth-status')).toHaveTextContent(expectedAuthStatus);
+        expect(screen.getByTestId('user-email')).toHaveTextContent(expectedUserEmail);
+      });
     });
   });
 
   describe('state updates', () => {
-    it('should update auth status', async () => {
-      const { getByTestId } = render(
-        <AuthProvider initialState={{
+    const stateUpdateTests = [
+      {
+        name: 'should update auth status',
+        initialState: {
           authStatus: AuthStatus.LOGGED_OUT,
           user: null,
-        }}>
-          <TestComponent />
-        </AuthProvider>
-      );
-
-
-      expect(getByTestId('auth-status')).toHaveTextContent(AuthStatus.LOGGED_OUT);
-
-      await getByTestId('set-logged-in').click();
-
-      expect(getByTestId('auth-status')).toHaveTextContent(AuthStatus.LOGGED_IN);
-    });
-
-    it('should update user data', async () => {
-      const { getByTestId } = render(
-        <AuthProvider initialState={{
+        },
+        action: async (getByTestId: any) => {
+          await getByTestId('set-logged-in').click();
+        },
+        expectations: {
+          initialAuthStatus: AuthStatus.LOGGED_OUT,
+          finalAuthStatus: AuthStatus.LOGGED_IN
+        }
+      },
+      {
+        name: 'should update user data',
+        initialState: {
           authStatus: AuthStatus.LOGGED_OUT,
           user: null,
-        }}>
-          <TestComponent />
-        </AuthProvider>
-      );
+        },
+        action: async (getByTestId: any) => {
+          await getByTestId('set-user').click();
+        },
+        expectations: {
+          initialUserEmail: 'no-user',
+          finalUserEmail: 'updated@example.com'
+        }
+      }
+    ];
 
-      expect(getByTestId('user-email')).toHaveTextContent('no-user');
+    stateUpdateTests.forEach(({ name, initialState, action, expectations }) => {
+      it(name, async () => {
+        const { getByTestId } = renderAuthProvider(initialState);
 
-      await getByTestId('set-user').click();
+        // Check initial state
+        if (expectations.initialAuthStatus) {
+          expect(getByTestId('auth-status')).toHaveTextContent(expectations.initialAuthStatus);
+        }
+        if (expectations.initialUserEmail) {
+          expect(getByTestId('user-email')).toHaveTextContent(expectations.initialUserEmail);
+        }
 
-      expect(getByTestId('user-email')).toHaveTextContent('updated@example.com');
+        // Perform action
+        await action(getByTestId);
+
+        // Check final state
+        if (expectations.finalAuthStatus) {
+          expect(getByTestId('auth-status')).toHaveTextContent(expectations.finalAuthStatus);
+        }
+        if (expectations.finalUserEmail) {
+          expect(getByTestId('user-email')).toHaveTextContent(expectations.finalUserEmail);
+        }
+      });
     });
 
     it('should handle clearing user data', async () => {
@@ -136,16 +156,12 @@ describe('AuthProvider', () => {
         </button>);
       };
 
-      const { getByTestId } = render(
-        <AuthProvider initialState={{
+      const { getByTestId } = renderAuthProvider(
+        {
           authStatus: AuthStatus.LOGGED_IN,
           user: mockUser,
-        }}>
-          <div>
-            <TestComponent />
-            <ClearUserButton />
-          </div>
-        </AuthProvider>
+        },
+        <ClearUserButton />
       );
 
       // Initial state
@@ -164,7 +180,7 @@ describe('AuthProvider', () => {
 
   describe('context isolation', () => {
     it('should provide separate contexts for state and actions', () => {
-      function ContextTestComponent() {
+      const ContextTestComponent = () => {
         const auth = useContext(AuthContext);
         const actions = useContext(AuthActionsContext);
 
@@ -177,7 +193,7 @@ describe('AuthProvider', () => {
             </span>
           </div>
         );
-      }
+      };
 
       render(
         <AuthProvider initialState={{
@@ -247,24 +263,20 @@ describe('AuthProvider', () => {
         </AuthProvider>
       );
 
-      // Initial state
-      expect(screen.getByTestId('current-status')).toHaveTextContent(AuthStatus.UNKNOWN);
+      const transitionSteps = [
+        { action: 'initial', expectedStatus: AuthStatus.UNKNOWN },
+        { action: 'start-login', expectedStatus: AuthStatus.LOGGING_IN },
+        { action: 'complete-login', expectedStatus: AuthStatus.LOGGED_IN },
+        { action: 'start-logout', expectedStatus: AuthStatus.LOGGING_OUT },
+        { action: 'complete-logout', expectedStatus: AuthStatus.LOGGED_OUT }
+      ];
 
-      // Start login process
-      await getByTestId('start-login').click();
-      expect(screen.getByTestId('current-status')).toHaveTextContent(AuthStatus.LOGGING_IN);
-
-      // Complete login
-      await getByTestId('complete-login').click();
-      expect(screen.getByTestId('current-status')).toHaveTextContent(AuthStatus.LOGGED_IN);
-
-      // Start logout process
-      await getByTestId('start-logout').click();
-      expect(screen.getByTestId('current-status')).toHaveTextContent(AuthStatus.LOGGING_OUT);
-
-      // Complete logout
-      await getByTestId('complete-logout').click();
-      expect(screen.getByTestId('current-status')).toHaveTextContent(AuthStatus.LOGGED_OUT);
+      for (const { action, expectedStatus } of transitionSteps) {
+        if (action !== 'initial') {
+          await getByTestId(action).click();
+        }
+        expect(screen.getByTestId('current-status')).toHaveTextContent(expectedStatus);
+      }
     });
   });
 });

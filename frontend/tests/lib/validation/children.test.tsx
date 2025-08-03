@@ -15,9 +15,20 @@ import { NavItem } from '../../../src/components/headers/NavItem';
 
 describe('children validation utilities', () => {
   describe('getComponentName', () => {
-    it('returns string directly if component type is string', () => {
-      expect(getComponentName('div')).toBe('div');
-      expect(getComponentName('span')).toBe('span');
+    const componentNameTests = [
+      {
+        name: 'returns string directly if component type is string',
+        inputs: ['div', 'span'],
+        expected: ['div', 'span']
+      }
+    ];
+
+    componentNameTests.forEach(({ name, inputs, expected }) => {
+      it(name, () => {
+        inputs.forEach((input, index) => {
+          expect(getComponentName(input)).toBe(expected[index]);
+        });
+      });
     });
 
     it('returns displayName if available on component', () => {
@@ -54,35 +65,38 @@ describe('children validation utilities', () => {
   });
 
   describe('validateActionChildren', () => {
-    it('allows valid Action and Button children', () => {
-      const children = [
-        createElement(Action, { key: '1', children: null }, 'Action 1'),
-        createElement(Button, { key: '2', children: null }, 'Button 1'),
-        createElement(Action, { key: '3', children: null }, 'Action 2')
-      ];
+    const actionValidationTests = [
+      {
+        name: 'allows valid Action and Button children',
+        children: [
+          createElement(Action, { key: '1', children: null }, 'Action 1'),
+          createElement(Button, { key: '2', children: null }, 'Button 1'),
+          createElement(Action, { key: '3', children: null }, 'Action 2')
+        ],
+        expectedLength: 3
+      },
+      {
+        name: 'filters out invalid children',
+        children: [
+          createElement(Action, { key: '1', children: null }, 'Valid Action'),
+          createElement('div', { key: '2' }, 'Invalid div'),
+          createElement(Button, { key: '3', children: null }, 'Valid Button'),
+          'Invalid string child'
+        ],
+        expectedLength: 2
+      },
+      {
+        name: 'handles empty children',
+        children: [],
+        expectedLength: 0
+      }
+    ];
 
-      const result = validateActionChildren(children, 'TestComponent');
-
-      expect(result).toHaveLength(3);
-    });
-
-    it('filters out invalid children', () => {
-      const children = [
-        createElement(Action, { key: '1', children: null }, 'Valid Action'),
-        createElement('div', { key: '2' }, 'Invalid div'),
-        createElement(Button, { key: '3', children: null }, 'Valid Button'),
-        'Invalid string child'
-      ];
-
-      const result = validateActionChildren(children, 'TestComponent');
-
-      expect(result).toHaveLength(2);
-    });
-
-    it('handles empty children', () => {
-      const result = validateActionChildren([], 'TestComponent');
-      
-      expect(result).toHaveLength(0);
+    actionValidationTests.forEach(({ name, children, expectedLength }) => {
+      it(name, () => {
+        const result = validateActionChildren(children, 'TestComponent');
+        expect(result).toHaveLength(expectedLength);
+      });
     });
 
     it('handles null/undefined children', () => {
@@ -106,27 +120,31 @@ describe('children validation utilities', () => {
   });
 
   describe('validateNavChildren', () => {
-    it('allows valid NavItem children', () => {
-      const children = [
-        createElement(NavItem, { key: '1', path: '/dashboard', children: null }, 'Dashboard'),
-        createElement(NavItem, { key: '2', path: '/settings', children: null }, 'Settings')
-      ];
+    const navValidationTests = [
+      {
+        name: 'allows valid NavItem children',
+        children: [
+          createElement(NavItem, { key: '1', path: '/dashboard', children: null }, 'Dashboard'),
+          createElement(NavItem, { key: '2', path: '/settings', children: null }, 'Settings')
+        ],
+        expectedLength: 2
+      },
+      {
+        name: 'filters out invalid children',
+        children: [
+          createElement(NavItem, { key: '1', path: '/dashboard', children: null }, 'Valid NavItem'),
+          createElement('a', { key: '2' }, 'Invalid anchor'),
+          createElement(Button, { key: '3', children: null }, 'Invalid Button')
+        ],
+        expectedLength: 1
+      }
+    ];
 
-      const result = validateNavChildren(children, 'AppNavigation');
-
-      expect(result).toHaveLength(2);
-    });
-
-    it('filters out invalid children', () => {
-      const children = [
-        createElement(NavItem, { key: '1', path: '/dashboard', children: null }, 'Valid NavItem'),
-        createElement('a', { key: '2' }, 'Invalid anchor'),
-        createElement(Button, { key: '3', children: null }, 'Invalid Button')
-      ];
-
-      const result = validateNavChildren(children, 'AppNavigation');
-
-      expect(result).toHaveLength(1);
+    navValidationTests.forEach(({ name, children, expectedLength }) => {
+      it(name, () => {
+        const result = validateNavChildren(children, 'AppNavigation');
+        expect(result).toHaveLength(expectedLength);
+      });
     });
   });
 
@@ -190,28 +208,32 @@ describe('children validation utilities', () => {
   });
 
   describe('validateStepsChildren', () => {
-    it('allows valid Step children', () => {
-      const children = [
-        createElement(Step, { key: '1', children: 'Step 1' }),
-        createElement(Step, { key: '2', children: 'Step 2' }),
-        createElement(Step, { key: '3', children: 'Step 3' })
-      ];
+    const stepsValidationTests = [
+      {
+        name: 'allows valid Step children',
+        children: [
+          createElement(Step, { key: '1', children: 'Step 1' }),
+          createElement(Step, { key: '2', children: 'Step 2' }),
+          createElement(Step, { key: '3', children: 'Step 3' })
+        ],
+        expectedLength: 3
+      },
+      {
+        name: 'filters out invalid children',
+        children: [
+          createElement(Step, { key: '1', children: 'Valid Step' }),
+          createElement('li', { key: '2' }, 'Invalid list item'),
+          createElement(Button, { key: '3', children: null }, 'Invalid Button')
+        ],
+        expectedLength: 1
+      }
+    ];
 
-      const result = validateStepsChildren(children, 'Steps');
-
-      expect(result).toHaveLength(3);
-    });
-
-    it('filters out invalid children', () => {
-      const children = [
-        createElement(Step, { key: '1', children: 'Valid Step' }),
-        createElement('li', { key: '2' }, 'Invalid list item'),
-        createElement(Button, { key: '3', children: null }, 'Invalid Button')
-      ];
-
-      const result = validateStepsChildren(children, 'Steps');
-
-      expect(result).toHaveLength(1);
+    stepsValidationTests.forEach(({ name, children, expectedLength }) => {
+      it(name, () => {
+        const result = validateStepsChildren(children, 'Steps');
+        expect(result).toHaveLength(expectedLength);
+      });
     });
   });
 

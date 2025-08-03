@@ -3,51 +3,63 @@ import { describe, it, expect, vi } from 'vitest';
 import { PriorityChoice } from '../../../src/components/variations/PriorityChoice';
 import { Option } from '../../../src/components/form/Option';
 
+// Helper function to render PriorityChoice with standard options
+const renderPriorityChoice = (props = {}) => {
+  return render(
+    <PriorityChoice name="priority" {...props}>
+      <Option value="low">Low</Option>
+      <Option value="medium">Medium</Option>
+      <Option value="high">High</Option>
+    </PriorityChoice>
+  );
+};
+
+// Helper function to get priority buttons
+const getPriorityButtons = () => {
+  return {
+    low: screen.getByText('Low'),
+    medium: screen.getByText('Medium'),
+    high: screen.getByText('High')
+  };
+};
+
 describe('PriorityChoice', () => {
-  it('renders priority options', () => {
-    render(
-      <PriorityChoice name="priority">
-        <Option value="low">Low</Option>
-        <Option value="medium">Medium</Option>
-        <Option value="high">High</Option>
-      </PriorityChoice>
-    );
+  const priorityTests = [
+    {
+      name: 'renders priority options',
+      test: () => {
+        renderPriorityChoice();
+        const { low, medium, high } = getPriorityButtons();
+        
+        expect(low).toBeInTheDocument();
+        expect(medium).toBeInTheDocument();
+        expect(high).toBeInTheDocument();
+      }
+    },
+    {
+      name: 'applies correct color variants based on priority',
+      test: () => {
+        renderPriorityChoice({ value: 'high' });
+        const { high, low } = getPriorityButtons();
+        
+        expect(high.className).toContain('bg-error');
+        expect(low.className).toContain('bg-white');
+      }
+    },
+    {
+      name: 'handles priority selection',
+      test: () => {
+        const onChange = vi.fn();
+        renderPriorityChoice({ onChange });
+        const { medium } = getPriorityButtons();
+        
+        fireEvent.click(medium);
+        expect(onChange).toHaveBeenCalledWith('medium');
+      }
+    }
+  ];
 
-    expect(screen.getByText('Low')).toBeInTheDocument();
-    expect(screen.getByText('Medium')).toBeInTheDocument();
-    expect(screen.getByText('High')).toBeInTheDocument();
-  });
-
-  it('applies correct color variants based on priority', () => {
-    render(
-      <PriorityChoice name="priority" value="high">
-        <Option value="low">Low</Option>
-        <Option value="medium">Medium</Option>
-        <Option value="high">High</Option>
-      </PriorityChoice>
-    );
-
-    const highButton = screen.getByText('High');
-    const lowButton = screen.getByText('Low');
-    
-    // High priority should use danger (red) variant when selected
-    expect(highButton.className).toContain('bg-error');
-    // Unselected should use tertiary (white) variant
-    expect(lowButton.className).toContain('bg-white');
-  });
-
-  it('handles priority selection', () => {
-    const onChange = vi.fn();
-    
-    render(
-      <PriorityChoice name="priority" onChange={onChange}>
-        <Option value="low">Low</Option>
-        <Option value="medium">Medium</Option>
-        <Option value="high">High</Option>
-      </PriorityChoice>
-    );
-
-    fireEvent.click(screen.getByText('Medium'));
-    expect(onChange).toHaveBeenCalledWith('medium');
+  priorityTests.forEach(({ name, test }) => {
+    it(name, test);
   });
 });

@@ -3,6 +3,16 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { login, register, logout, getProfile } from '../../../src/lib/api/auth';
 import { ApiError } from '../../../src/lib/types/apiError';
 import { createMockUser } from '../../helpers/testUtils';
+import { 
+  mockApiSuccess, 
+  mockApiError, 
+  mockNetworkError,
+  expectApiError,
+  expectNetworkError,
+  expectLastCallToHaveMethod,
+  expectLastCallToHaveBody,
+  mockApiCreated
+} from '../../helpers/apiTestHelpers';
 
 describe('auth API', () => {
   beforeEach(() => {
@@ -13,65 +23,52 @@ describe('auth API', () => {
   describe('login', () => {
     it('should successfully login with valid credentials', async () => {
       const mockUser = createMockUser();
-      fetchMock.route({
-        url: 'path:/auth/login',
-        allowRelativeUrls: true,
-        response: { data: mockUser, message: 'Login successful' }
-      });
+      mockApiSuccess('/auth/login', mockUser, 'Login successful');
 
       const result = await login('test@example.com', 'password123');
       expect(result.data).toEqual(mockUser);
-
-      const lastCall = fetchMock.callHistory.lastCall();
-      expect(lastCall?.options.method).toEqual('post');
-      expect(JSON.parse(lastCall?.options.body as string)).toEqual({
+      
+      expectLastCallToHaveMethod('post');
+      expectLastCallToHaveBody({
         email: 'test@example.com',
         password: 'password123',
       });
     });
 
-    it('should throw ApiError for invalid credentials', async () => {
-      fetchMock.route({
-        url: 'path:/auth/login',
-        allowRelativeUrls: true,
-        response: {
-          status: 401,
-          body: { error: 'Invalid credentials' }
-        }
-      });
-
-      await expect(login('wrong@example.com', 'wrongpass')).rejects.toThrow(ApiError);
-      
-      try {
-        await login('wrong@example.com', 'wrongpass');
-      } catch (error) {
-        expect(error).toBeInstanceOf(ApiError);
-        expect((error as ApiError).statusCode).toBe(401);
-        expect((error as ApiError).message).toBe('Invalid credentials');
+    const loginErrorTests = [
+      {
+        name: 'should throw ApiError for invalid credentials',
+        statusCode: 401,
+        errorMessage: 'Invalid credentials',
+        credentials: { email: 'wrong@example.com', password: 'wrongpass' }
+      },
+      {
+        name: 'should handle server errors during login',
+        statusCode: 500,
+        errorMessage: 'Internal server error',
+        credentials: { email: 'test@example.com', password: 'password' }
       }
-    });
+    ];
 
-    it('should handle server errors during login', async () => {
-      fetchMock.route({
-        url: 'path:/auth/login',
-        allowRelativeUrls: true,
-        response: {
-          status: 500,
-          body: { error: 'Internal server error' }
-        }
+    loginErrorTests.forEach(({ name, statusCode, errorMessage, credentials }) => {
+      it(name, async () => {
+        mockApiError('/auth/login', statusCode, errorMessage);
+        
+        await expectApiError(
+          () => login(credentials.email, credentials.password),
+          statusCode,
+          errorMessage
+        );
       });
-
-      await expect(login('test@example.com', 'password')).rejects.toThrow(ApiError);
     });
 
     it('should handle Network Errors during login', async () => {
-      fetchMock.route({
-        url: 'path:/auth/login',
-        allowRelativeUrls: true,
-        response: Promise.reject(new Error('Network Error'))
-      });
-
-      await expect(login('test@example.com', 'password')).rejects.toThrow('Network Error');
+      mockNetworkError('/auth/login', 'Network Error');
+      
+      await expectNetworkError(
+        () => login('test@example.com', 'password'),
+        'Network Error'
+      );
     });
   });
 
@@ -82,111 +79,84 @@ describe('auth API', () => {
         name: 'New User' 
       });
       
-      fetchMock.route({
-        url: 'path:/auth/register',
-        allowRelativeUrls: true,
-        response: {
-          status: 201,
-          body: { data: mockUser, message: 'Registration successful' }
-        }
-      });
+      mockApiCreated('/auth/register', mockUser, 'Registration successful');
 
       const result = await register('newuser@example.com', 'password123', 'New User');
-
       expect(result.data).toEqual(mockUser);
       
-      const lastCall = fetchMock.callHistory.lastCall();
-      expect(lastCall?.options.method).toEqual('post');
-      expect(JSON.parse(lastCall?.options.body as string)).toEqual({
+      expectLastCallToHaveMethod('post');
+      expectLastCallToHaveBody({
         email: 'newuser@example.com',
         password: 'password123',
         name: 'New User',
       });
     });
 
-    it('should throw ApiError for duplicate email', async () => {
-      fetchMock.route({
-        url: 'path:/auth/register',
-        allowRelativeUrls: true,
-        response: {
-          status: 409,
-          body: { error: 'Email already exists' }
-        }
+    const registerErrorTests = [
+      {
+        name: 'should throw ApiError for duplicate email',
+        statusCode: 409,
+        errorMessage: 'Email already exists',
+        userData: { email: 'existing@example.com', password: 'password', name: 'User' }
+      },
+      {
+        name: 'should throw ApiError for validation errors',
+        statusCode: 400,
+        errorMessage: 'Password too weak',
+        userData: { email: 'test@example.com', password: '123', name: 'User' }
+      }
+    ];
+
+    registerErrorTests.forEach(({ name, statusCode, errorMessage, userData }) => {
+      it(name, async () => {
+        mockApiError('/auth/register', statusCode, errorMessage);
+        
+        await expectApiError(
+          () => register(userData.email, userData.password, userData.name),
+          statusCode,
+          errorMessage
+        );
       });
-
-      await expect(register('existing@example.com', 'password', 'User')).rejects.toThrow(ApiError);
-    });
-
-    it('should throw ApiError for validation errors', async () => {
-      fetchMock.route({
-        url: 'path:/auth/register',
-        allowRelativeUrls: true,
-        response: {
-          status: 400,
-          body: { error: 'Password too weak' }
-        }
-      });
-
-      await expect(register('test@example.com', '123', 'User')).rejects.toThrow(ApiError);
     });
   });
 
   describe('logout', () => {
     it('should successfully logout', async () => {
-      fetchMock.route({
-        url: 'path:/auth/logout',
-        allowRelativeUrls: true,
-        response: { message: 'Logout successful' }
-      });
+      mockApiSuccess('/auth/logout', {}, 'Logout successful');
 
       await expect(logout()).resolves.not.toThrow();
-      
-      const lastCall = fetchMock.callHistory.lastCall();
-      expect(lastCall?.options.method).toEqual('post');
+      expectLastCallToHaveMethod('post');
     });
 
-    it('should handle logout when not logged in', async () => {
-      fetchMock.route({
-        url: 'path:/auth/logout',
-        allowRelativeUrls: true,
-        response: {
-          status: 401,
-          body: { error: 'Not authenticated' }
-        }
+    const logoutErrorTests = [
+      {
+        name: 'should handle logout when not logged in',
+        statusCode: 401,
+        errorMessage: 'Not authenticated'
+      },
+      {
+        name: 'should handle server errors during logout',
+        statusCode: 500,
+        errorMessage: 'Server error'
+      }
+    ];
+
+    logoutErrorTests.forEach(({ name, statusCode, errorMessage }) => {
+      it(name, async () => {
+        mockApiError('/auth/logout', statusCode, errorMessage);
+        await expect(logout()).rejects.toThrow(ApiError);
       });
-
-      await expect(logout()).rejects.toThrow(ApiError);
-    });
-
-    it('should handle server errors during logout', async () => {
-      fetchMock.route({
-        url: 'path:/auth/logout',
-        allowRelativeUrls: true,
-        response: {
-          status: 500,
-          body: { error: 'Server error' }
-        }
-      });
-
-      await expect(logout()).rejects.toThrow(ApiError);
     });
   });
 
   describe('getProfile', () => {
     it('should successfully get user profile', async () => {
       const mockUser = createMockUser();
-      fetchMock.route({
-        url: 'path:/auth/whoami',
-        allowRelativeUrls: true,
-        response: { data: mockUser }
-      });
+      mockApiSuccess('/auth/whoami', mockUser);
 
       const result = await getProfile();
-
       expect(result.data).toEqual(mockUser);
-      
-      const lastCall = fetchMock.callHistory.lastCall();
-      expect(lastCall?.options.method).toEqual('get');
+      expectLastCallToHaveMethod('get');
     });
 
     it('should throw ApiError when not authenticated', async () => {
@@ -217,56 +187,59 @@ describe('auth API', () => {
       }
     });
 
-    it('should handle server errors when getting profile', async () => {
-      fetchMock.route({
-        url: 'path:/auth/whoami',
-        allowRelativeUrls: true,
-        response: {
-          status: 500,
-          body: { error: 'Internal server error' }
-        }
-      });
+    const profileErrorTests = [
+      {
+        name: 'should handle server errors when getting profile',
+        statusCode: 500,
+        errorMessage: 'Internal server error'
+      }
+    ];
 
-      await expect(getProfile()).rejects.toThrow(ApiError);
+    profileErrorTests.forEach(({ name, statusCode, errorMessage }) => {
+      it(name, async () => {
+        mockApiError('/auth/whoami', statusCode, errorMessage);
+        await expect(getProfile()).rejects.toThrow(ApiError);
+      });
     });
 
     it('should handle Network Errors when getting profile', async () => {
-      fetchMock.route({
-        url: 'path:/auth/whoami',
-        allowRelativeUrls: true,
-        response: Promise.reject(new Error('Network Error'))
-      });
-
-      await expect(getProfile()).rejects.toThrow('Network Error');
+      mockNetworkError('/auth/whoami', 'Network Error');
+      await expectNetworkError(() => getProfile(), 'Network Error');
     });
   });
 
   describe('request headers and options', () => {
-    it('should include proper content-type for POST requests', async () => {
-      fetchMock.route({
-        url: 'path:/auth/login',
-        allowRelativeUrls: true,
-        response: {}
+    const headerTests = [
+      {
+        name: 'should include proper content-type for POST requests',
+        apiCall: () => login('test@example.com', 'password'),
+        mockEndpoint: '/auth/login',
+        expectedHeader: 'content-type',
+        expectedValue: 'application/json'
+      },
+      {
+        name: 'should include credentials for all requests',
+        apiCall: () => getProfile(),
+        mockEndpoint: '/auth/whoami',
+        expectedOption: 'credentials',
+        expectedValue: 'include'
+      }
+    ];
+
+    headerTests.forEach(({ name, apiCall, mockEndpoint, expectedHeader, expectedOption, expectedValue }) => {
+      it(name, async () => {
+        mockApiSuccess(mockEndpoint, {});
+        await apiCall();
+
+        const lastCall = fetchMock.callHistory.lastCall();
+        if (expectedHeader) {
+          const headers = lastCall?.options.headers as Record<string, string>;
+          expect(headers?.[expectedHeader]).toBe(expectedValue);
+        }
+        if (expectedOption) {
+          expect(lastCall?.options[expectedOption as keyof RequestInit]).toBe(expectedValue);
+        }
       });
-
-      await login('test@example.com', 'password');
-
-      const lastCall = fetchMock.callHistory.lastCall();
-      const headers = lastCall?.options.headers as Record<string, string>;
-      expect(headers?.['content-type']).toBe('application/json');
-    });
-
-    it('should include credentials for all requests', async () => {
-      fetchMock.route({
-        url: 'path:/auth/whoami',
-        allowRelativeUrls: true,
-        response: {}
-      });
-
-      await getProfile();
-
-      const lastCall = fetchMock.callHistory.lastCall();
-      expect(lastCall?.options.credentials).toBe('include');
     });
   });
 });

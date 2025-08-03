@@ -6,12 +6,41 @@ import { RegistrationForm } from '../../../src/components/fragments/Registration
 import { TestAuthProvider } from '../../helpers/testProviderUtils';
 import { createMockUser, mockAuthEndpoints } from '../../helpers/testUtils';
 
+// Helper function to render RegistrationForm with test setup
 const renderRegistrationForm = (onSuccess = vi.fn()) => {
   return render(
     <TestAuthProvider>
       <RegistrationForm onSuccess={onSuccess} />
     </TestAuthProvider>
   );
+};
+
+// Helper function to setup form input values
+const fillRegistrationForm = (formData = {}) => {
+  const defaultData = {
+    name: 'John Doe',
+    email: 'john@example.com',
+    password: 'StrongPass123!',
+    confirmPassword: 'StrongPass123!'
+  };
+  
+  const data = { ...defaultData, ...formData };
+  
+  fireEvent.change(screen.getByTestId('name-input'), { target: { value: data.name } });
+  fireEvent.change(screen.getByTestId('email-input'), { target: { value: data.email } });
+  fireEvent.change(screen.getByTestId('password-input'), { target: { value: data.password } });
+  fireEvent.change(screen.getByTestId('confirm-password-input'), { target: { value: data.confirmPassword } });
+};
+
+// Helper function to mock successful registration response
+const mockSuccessfulRegistration = (user: any) => {
+  fetchMock.route({
+    url: 'path:/auth/register', 
+    response: {
+      status: 200,
+      body: { data: user }
+    }
+  });
 };
 
 describe('RegistrationForm', () => {
@@ -45,22 +74,12 @@ describe('RegistrationForm', () => {
     const mockUser = createMockUser();
     const onSuccess = vi.fn();
     
-    fetchMock.route({
-      url: 'path:/auth/register', 
-      response: {
-        status: 200,
-        body: { data: mockUser }
-      }
-    });
-    
+    mockSuccessfulRegistration(mockUser);
     renderRegistrationForm(onSuccess);
     
-    fireEvent.change(screen.getByTestId('name-input'), { target: { value: 'John Doe' } });
-    fireEvent.change(screen.getByTestId('email-input'), { target: { value: 'john@example.com' } });
-    fireEvent.change(screen.getByTestId('password-input'), { target: { value: 'StrongPass123!' } });
-    fireEvent.change(screen.getByTestId('confirm-password-input'), { target: { value: 'StrongPass123!' } });
-    
+    fillRegistrationForm();
     fireEvent.click(screen.getByTestId('submit-button'));
+    
     await waitFor(() => {
       expect(onSuccess).toHaveBeenCalledWith(mockUser);
     });
@@ -77,11 +96,7 @@ describe('RegistrationForm', () => {
     
     renderRegistrationForm();
     
-    fireEvent.change(screen.getByTestId('name-input'), { target: { value: 'John Doe' } });
-    fireEvent.change(screen.getByTestId('email-input'), { target: { value: 'existing@example.com' } });
-    fireEvent.change(screen.getByTestId('password-input'), { target: { value: 'StrongPass123!' } });
-    fireEvent.change(screen.getByTestId('confirm-password-input'), { target: { value: 'StrongPass123!' } });
-    
+    fillRegistrationForm({ email: 'existing@example.com' });
     fireEvent.click(screen.getByTestId('submit-button'));
     
     await waitFor(() => {
@@ -97,11 +112,7 @@ describe('RegistrationForm', () => {
 
     renderRegistrationForm();
     
-    fireEvent.change(screen.getByTestId('name-input'), { target: { value: 'John Doe' } });
-    fireEvent.change(screen.getByTestId('email-input'), { target: { value: 'john@example.com' } });
-    fireEvent.change(screen.getByTestId('password-input'), { target: { value: 'StrongPass123!' } });
-    fireEvent.change(screen.getByTestId('confirm-password-input'), { target: { value: 'StrongPass123!' } });
-    
+    fillRegistrationForm();
     fireEvent.click(screen.getByTestId('submit-button'));
     
     await waitFor(() => {

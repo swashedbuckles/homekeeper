@@ -101,32 +101,48 @@ describe('useHousehold', () => {
       expect(result.current.userHouseholds).toEqual(mockHouseholds);
     });
 
-    it('returns loading states', () => {
-      const mockContext = createMockContextValue({
-        isLoadingHouseholds: true,
-        isLoadingActiveHousehold: true
+    describe('loading and error states', () => {
+      const stateTests = [
+        {
+          name: 'returns loading states',
+          contextOverrides: {
+            isLoadingHouseholds: true,
+            isLoadingActiveHousehold: true
+          },
+          expectations: {
+            isLoadingHouseholds: true,
+            isLoadingActiveHousehold: true
+          }
+        },
+        {
+          name: 'returns error states',
+          contextOverrides: {
+            householdsError: new Error('Failed to fetch households'),
+            activeHouseholdError: new Error('Failed to fetch active household')
+          },
+          expectations: {
+            householdsError: new Error('Failed to fetch households'),
+            activeHouseholdError: new Error('Failed to fetch active household')
+          }
+        }
+      ];
+
+      stateTests.forEach(({ name, contextOverrides, expectations }) => {
+        it(name, () => {
+          const mockContext = createMockContextValue(contextOverrides);
+          const wrapper = createWrapperWithContext(mockContext);
+
+          const { result } = renderHook(() => useHousehold(), { wrapper });
+
+          Object.entries(expectations).forEach(([key, expectedValue]) => {
+            if (expectedValue instanceof Error) {
+              expect(result.current[key as keyof typeof result.current]).toEqual(expectedValue);
+            } else {
+              expect(result.current[key as keyof typeof result.current]).toBe(expectedValue);
+            }
+          });
+        });
       });
-      const wrapper = createWrapperWithContext(mockContext);
-
-      const { result } = renderHook(() => useHousehold(), { wrapper });
-
-      expect(result.current.isLoadingHouseholds).toBe(true);
-      expect(result.current.isLoadingActiveHousehold).toBe(true);
-    });
-
-    it('returns error states', () => {
-      const householdsError = new Error('Failed to fetch households');
-      const activeHouseholdError = new Error('Failed to fetch active household');
-      const mockContext = createMockContextValue({
-        householdsError,
-        activeHouseholdError
-      });
-      const wrapper = createWrapperWithContext(mockContext);
-
-      const { result } = renderHook(() => useHousehold(), { wrapper });
-
-      expect(result.current.householdsError).toBe(householdsError);
-      expect(result.current.activeHouseholdError).toBe(activeHouseholdError);
     });
 
     it('provides switchHousehold function', () => {
@@ -143,135 +159,121 @@ describe('useHousehold', () => {
     });
 
     describe('permission checks', () => {
-      it('returns correct permissions for owner', () => {
-        const mockContext = createMockContextValue({
-          currentRole: 'owner',
-          canManageHousehold: true
+      const permissionTests = [
+        {
+          role: 'owner',
+          contextOverrides: { currentRole: 'owner', canManageHousehold: true },
+          expectedRole: 'owner',
+          expectedCanManage: true
+        },
+        {
+          role: 'admin',
+          contextOverrides: { currentRole: 'admin', canManageHousehold: true },
+          expectedRole: 'admin',
+          expectedCanManage: true
+        },
+        {
+          role: 'member',
+          contextOverrides: { currentRole: 'member', canManageHousehold: false },
+          expectedRole: 'member',
+          expectedCanManage: false
+        },
+        {
+          role: 'guest',
+          contextOverrides: { currentRole: 'guest', canManageHousehold: false },
+          expectedRole: 'guest',
+          expectedCanManage: false
+        },
+        {
+          role: 'null role',
+          contextOverrides: { currentRole: null, canManageHousehold: false },
+          expectedRole: null,
+          expectedCanManage: false
+        }
+      ];
+
+      permissionTests.forEach(({ role, contextOverrides, expectedRole, expectedCanManage }) => {
+        it(`returns correct permissions for ${role}`, () => {
+          const mockContext = createMockContextValue(contextOverrides);
+          const wrapper = createWrapperWithContext(mockContext);
+
+          const { result } = renderHook(() => useHousehold(), { wrapper });
+
+          expect(result.current.currentRole).toBe(expectedRole);
+          expect(result.current.canManageHousehold).toBe(expectedCanManage);
         });
-        const wrapper = createWrapperWithContext(mockContext);
-
-        const { result } = renderHook(() => useHousehold(), { wrapper });
-
-        expect(result.current.currentRole).toBe('owner');
-        expect(result.current.canManageHousehold).toBe(true);
-      });
-
-      it('returns correct permissions for admin', () => {
-        const mockContext = createMockContextValue({
-          currentRole: 'admin',
-          canManageHousehold: true
-        });
-        const wrapper = createWrapperWithContext(mockContext);
-
-        const { result } = renderHook(() => useHousehold(), { wrapper });
-
-        expect(result.current.currentRole).toBe('admin');
-        expect(result.current.canManageHousehold).toBe(true);
-      });
-
-      it('returns correct permissions for member', () => {
-        const mockContext = createMockContextValue({
-          currentRole: 'member',
-          canManageHousehold: false
-        });
-        const wrapper = createWrapperWithContext(mockContext);
-
-        const { result } = renderHook(() => useHousehold(), { wrapper });
-
-        expect(result.current.currentRole).toBe('member');
-        expect(result.current.canManageHousehold).toBe(false);
-      });
-
-      it('returns correct permissions for guest', () => {
-        const mockContext = createMockContextValue({
-          currentRole: 'guest',
-          canManageHousehold: false
-        });
-        const wrapper = createWrapperWithContext(mockContext);
-
-        const { result } = renderHook(() => useHousehold(), { wrapper });
-
-        expect(result.current.currentRole).toBe('guest');
-        expect(result.current.canManageHousehold).toBe(false);
-      });
-
-      it('handles null role correctly', () => {
-        const mockContext = createMockContextValue({
-          currentRole: null,
-          canManageHousehold: false
-        });
-        const wrapper = createWrapperWithContext(mockContext);
-
-        const { result } = renderHook(() => useHousehold(), { wrapper });
-
-        expect(result.current.currentRole).toBe(null);
-        expect(result.current.canManageHousehold).toBe(false);
       });
     });
 
     describe('empty/null states', () => {
-      it('handles no active household', () => {
-        const mockContext = createMockContextValue({
-          activeHouseholdId: null,
-          activeHousehold: undefined,
-          currentRole: null,
-          canManageHousehold: false
+      const nullStateTests = [
+        {
+          name: 'handles no active household',
+          contextOverrides: {
+            activeHouseholdId: null,
+            activeHousehold: undefined,
+            currentRole: null,
+            canManageHousehold: false
+          },
+          expectations: {
+            activeHouseholdId: null,
+            activeHousehold: undefined,
+            currentRole: null,
+            canManageHousehold: false
+          }
+        },
+        {
+          name: 'handles empty households list',
+          contextOverrides: { userHouseholds: [] },
+          expectations: { userHouseholds: [] }
+        },
+        {
+          name: 'handles undefined households list',
+          contextOverrides: { userHouseholds: undefined },
+          expectations: { userHouseholds: undefined }
+        }
+      ];
+
+      nullStateTests.forEach(({ name, contextOverrides, expectations }) => {
+        it(name, () => {
+          const mockContext = createMockContextValue(contextOverrides);
+          const wrapper = createWrapperWithContext(mockContext);
+
+          const { result } = renderHook(() => useHousehold(), { wrapper });
+
+          Object.entries(expectations).forEach(([key, expectedValue]) => {
+            expect(result.current[key as keyof typeof result.current]).toEqual(expectedValue);
+          });
         });
-        const wrapper = createWrapperWithContext(mockContext);
-
-        const { result } = renderHook(() => useHousehold(), { wrapper });
-
-        expect(result.current.activeHouseholdId).toBe(null);
-        expect(result.current.activeHousehold).toBe(undefined);
-        expect(result.current.currentRole).toBe(null);
-        expect(result.current.canManageHousehold).toBe(false);
-      });
-
-      it('handles empty households list', () => {
-        const mockContext = createMockContextValue({
-          userHouseholds: []
-        });
-        const wrapper = createWrapperWithContext(mockContext);
-
-        const { result } = renderHook(() => useHousehold(), { wrapper });
-
-        expect(result.current.userHouseholds).toEqual([]);
-      });
-
-      it('handles undefined households list', () => {
-        const mockContext = createMockContextValue({
-          userHouseholds: undefined
-        });
-        const wrapper = createWrapperWithContext(mockContext);
-
-        const { result } = renderHook(() => useHousehold(), { wrapper });
-
-        expect(result.current.userHouseholds).toBe(undefined);
       });
     });
   });
 
   describe('when used outside HouseholdProvider', () => {
-    it('throws an error', () => {
-      // Suppress console.error for this test since we expect an error
-      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const errorTests = [
+      {
+        name: 'throws an error when used without provider',
+        setup: () => renderHook(() => useHousehold())
+      },
+      {
+        name: 'throws an error when context is null',
+        setup: () => {
+          const wrapper = createWrapperWithContext(null);
+          return renderHook(() => useHousehold(), { wrapper });
+        }
+      }
+    ];
 
-      expect(() => {
-        renderHook(() => useHousehold());
-      }).toThrow('`useHousehold` must be used within HouseholdProvider');
+    errorTests.forEach(({ name, setup }) => {
+      it(name, () => {
+        const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
-      consoleSpy.mockRestore();
-    });
+        expect(() => {
+          setup();
+        }).toThrow('`useHousehold` must be used within HouseholdProvider');
 
-    it('throws an error when context is null', () => {
-      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-      const wrapper = createWrapperWithContext(null);
-
-      expect(() => {
-        renderHook(() => useHousehold(), { wrapper });
-      }).toThrow('`useHousehold` must be used within HouseholdProvider');
-
-      consoleSpy.mockRestore();
+        consoleSpy.mockRestore();
+      });
     });
   });
 

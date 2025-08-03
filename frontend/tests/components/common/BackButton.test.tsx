@@ -1,8 +1,9 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { BrowserRouter } from 'react-router';
 import { BackButton } from '../../../src/components/common/BackButton';
+import { expectElementToHaveClasses } from '../../helpers/testHelpers';
 
 // Mock useNavigate
 const mockNavigate = vi.fn();
@@ -23,16 +24,26 @@ describe('BackButton', () => {
     mockNavigate.mockClear();
   });
 
-  it('renders with default Back label', () => {
-    renderWithRouter(<BackButton />);
-    
-    expect(screen.getByText('Back')).toBeInTheDocument();
-  });
+  describe('Label Rendering', () => {
+    const labelTests = [
+      {
+        name: 'renders with default Back label',
+        props: {},
+        expectedText: 'Back'
+      },
+      {
+        name: 'renders with custom label',
+        props: { label: 'Go Back' },
+        expectedText: 'Go Back'
+      }
+    ];
 
-  it('renders with custom label', () => {
-    renderWithRouter(<BackButton label="Go Back" />);
-    
-    expect(screen.getByText('Go Back')).toBeInTheDocument();
+    labelTests.forEach(({ name, props, expectedText }) => {
+      it(name, () => {
+        renderWithRouter(<BackButton {...props} />);
+        expect(screen.getByText(expectedText)).toBeInTheDocument();
+      });
+    });
   });
 
   it('renders chevron icon', () => {
@@ -42,26 +53,35 @@ describe('BackButton', () => {
     expect(icon).toBeInTheDocument();
   });
 
-  it('navigates back when clicked', async () => {
-    const user = userEvent.setup();
-    renderWithRouter(<BackButton />);
-    
-    await user.click(screen.getByRole('button'));
-    expect(mockNavigate).toHaveBeenCalledWith(-1);
-  });
+  describe('Navigation Behavior', () => {
+    const navigationTests = [
+      {
+        name: 'navigates back when clicked',
+        props: {},
+        expectedCall: -1
+      },
+      {
+        name: 'navigates to historyOverride when provided',
+        props: { historyOverride: '/custom-path' },
+        expectedCall: '/custom-path'
+      }
+    ];
 
-  it('navigates to historyOverride when provided', async () => {
-    const user = userEvent.setup();
-    renderWithRouter(<BackButton historyOverride="/custom-path" />);
-    
-    await user.click(screen.getByRole('button'));
-    expect(mockNavigate).toHaveBeenCalledWith('/custom-path');
+    navigationTests.forEach(({ name, props, expectedCall }) => {
+      it(name, async () => {
+        const user = userEvent.setup();
+        renderWithRouter(<BackButton {...props} />);
+        
+        await user.click(screen.getByRole('button'));
+        expect(mockNavigate).toHaveBeenCalledWith(expectedCall);
+      });
+    });
   });
 
   it('applies correct CSS classes', () => {
     renderWithRouter(<BackButton />);
     
     const button = screen.getByRole('button');
-    expect(button).toHaveClass('font-mono', 'font-bold', 'uppercase', 'brutal-transition', 'mb-4');
+    expectElementToHaveClasses(button, ['font-mono', 'font-bold', 'uppercase', 'brutal-transition', 'mb-4']);
   });
 });

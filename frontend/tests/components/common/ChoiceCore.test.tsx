@@ -15,48 +15,69 @@ const testRenderer = ({ option, isSelected, isDisabled, onClick }: OptionRenderP
   </button>
 );
 
+// Helper function to render ChoiceCore with standard options
+const renderChoiceCore = (props = {}, children?: React.ReactNode) => {
+  const defaultChildren = [
+    <Option key="a" value="a">Option A</Option>,
+    <Option key="b" value="b">Option B</Option>
+  ];
+  
+  return render(
+    <ChoiceCore name="test" renderOption={testRenderer} {...props}>
+      {children || defaultChildren}
+    </ChoiceCore>
+  );
+};
+
+// Helper function to get option elements
+const getOptionElements = () => {
+  return {
+    optionA: screen.getByText('Option A'),
+    optionB: screen.getByText('Option B')
+  };
+};
+
 describe('ChoiceCore', () => {
   it('renders options using provided renderer', () => {
-    render(
-      <ChoiceCore name="test" renderOption={testRenderer}>
-        <Option value="a">Option A</Option>
-        <Option value="b">Option B</Option>
-      </ChoiceCore>
-    );
-
-    expect(screen.getByText('Option A')).toBeInTheDocument();
-    expect(screen.getByText('Option B')).toBeInTheDocument();
+    renderChoiceCore();
+    const { optionA, optionB } = getOptionElements();
+    
+    expect(optionA).toBeInTheDocument();
+    expect(optionB).toBeInTheDocument();
   });
 
-  it('handles single selection', () => {
-    const onChange = vi.fn();
-    
-    render(
-      <ChoiceCore name="test" renderOption={testRenderer} onChange={onChange}>
-        <Option value="a">Option A</Option>
-        <Option value="b">Option B</Option>
-      </ChoiceCore>
-    );
+  const selectionTests = [
+    {
+      name: 'handles single selection',
+      props: { onChange: vi.fn() },
+      test: (props: any) => {
+        renderChoiceCore(props);
+        const { optionA } = getOptionElements();
+        
+        fireEvent.click(optionA);
+        expect(props.onChange).toHaveBeenCalledWith('a');
+      }
+    },
+    {
+      name: 'handles multiple selection',
+      props: { multiple: true, onChange: vi.fn() },
+      test: (props: any) => {
+        renderChoiceCore(props);
+        const { optionA, optionB } = getOptionElements();
+        
+        fireEvent.click(optionA);
+        expect(props.onChange).toHaveBeenCalledWith(['a']);
+        
+        fireEvent.click(optionB);
+        expect(props.onChange).toHaveBeenCalledWith(['a', 'b']);
+      }
+    }
+  ];
 
-    fireEvent.click(screen.getByText('Option A'));
-    expect(onChange).toHaveBeenCalledWith('a');
-  });
-
-  it('handles multiple selection', () => {
-    const onChange = vi.fn();
-    
-    render(
-      <ChoiceCore name="test" multiple renderOption={testRenderer} onChange={onChange}>
-        <Option value="a">Option A</Option>
-        <Option value="b">Option B</Option>
-      </ChoiceCore>
-    );
-
-    fireEvent.click(screen.getByText('Option A'));
-    expect(onChange).toHaveBeenCalledWith(['a']);
-    
-    fireEvent.click(screen.getByText('Option B'));
-    expect(onChange).toHaveBeenCalledWith(['a', 'b']);
+  selectionTests.forEach(({ name, props, test }) => {
+    it(name, () => {
+      test(props);
+    });
   });
 
   it('handles controlled value', () => {
@@ -69,7 +90,7 @@ describe('ChoiceCore', () => {
       </ChoiceCore>
     );
 
-    // Option A should be selected
+    // Initial state - Option A should be selected
     expect(screen.getByText('Option A')).toHaveClass('selected');
     expect(screen.getByText('Option B')).toHaveClass('unselected');
 
@@ -90,40 +111,41 @@ describe('ChoiceCore', () => {
     expect(screen.getByText('Option B')).toHaveClass('selected');
   });
 
-  it('displays label when provided', () => {
-    render(
-      <ChoiceCore name="test" label="Test Label" renderOption={testRenderer}>
-        <Option value="a">Option A</Option>
-      </ChoiceCore>
-    );
+  const displayTests = [
+    {
+      name: 'displays label when provided',
+      props: { label: 'Test Label' },
+      expectedText: 'Test Label'
+    },
+    {
+      name: 'displays error when provided',
+      props: { error: 'Test error' },
+      expectedText: '⚠ Test error'
+    }
+  ];
 
-    expect(screen.getByText('Test Label')).toBeInTheDocument();
-  });
-
-  it('displays error when provided', () => {
-    render(
-      <ChoiceCore name="test" error="Test error" renderOption={testRenderer}>
-        <Option value="a">Option A</Option>
-      </ChoiceCore>
-    );
-
-    expect(screen.getByText('⚠ Test error')).toBeInTheDocument();
+  displayTests.forEach(({ name, props, expectedText }) => {
+    it(name, () => {
+      const children = [<Option key="a" value="a">Option A</Option>];
+      renderChoiceCore(props, children);
+      expect(screen.getByText(expectedText)).toBeInTheDocument();
+    });
   });
 
   it('handles disabled options', () => {
     const onChange = vi.fn();
+    const children = [
+      <Option key="a" value="a" disabled>Option A</Option>,
+      <Option key="b" value="b">Option B</Option>
+    ];
     
-    render(
-      <ChoiceCore name="test" renderOption={testRenderer} onChange={onChange}>
-        <Option value="a" disabled>Option A</Option>
-        <Option value="b">Option B</Option>
-      </ChoiceCore>
-    );
+    renderChoiceCore({ onChange }, children);
+    const { optionA, optionB } = getOptionElements();
 
-    fireEvent.click(screen.getByText('Option A'));
+    fireEvent.click(optionA);
     expect(onChange).not.toHaveBeenCalled();
 
-    fireEvent.click(screen.getByText('Option B'));
+    fireEvent.click(optionB);
     expect(onChange).toHaveBeenCalledWith('b');
   });
 });

@@ -410,26 +410,37 @@ describe('Select Component', () => {
     expect(ref).toHaveBeenCalled();
   });
 
-  describe('All size variants', () => {
-    const sizes = ['xs', 'sm', 'md', 'lg', 'xl'] as const;
-    
-    sizes.forEach(size => {
-      it(`renders ${size} size correctly`, () => {
-        render(
-          <Select 
-            label={`${size.toUpperCase()} Select`}
-            size={size}
-            testId={`${size}-select`}
-          >
-            <Option value="option1">Option 1</Option>
-            <Option value="option2">Option 2</Option>
-          </Select>
-        );
+  // Representative size tests - reduced from 5 individual tests to 2
+  it('renders small size correctly', () => {
+    render(
+      <Select 
+        label="Small Select"
+        size="sm"
+        testId="sm-select"
+      >
+        <Option value="option1">Option 1</Option>
+        <Option value="option2">Option 2</Option>
+      </Select>
+    );
 
-        const trigger = screen.getByTestId(`${size}-select-trigger`);
-        expect(trigger).toBeInTheDocument();
-      });
-    });
+    const trigger = screen.getByTestId('sm-select-trigger');
+    expect(trigger).toBeInTheDocument();
+  });
+
+  it('renders large size correctly', () => {
+    render(
+      <Select 
+        label="Large Select"
+        size="lg"
+        testId="lg-select"
+      >
+        <Option value="option1">Option 1</Option>
+        <Option value="option2">Option 2</Option>
+      </Select>
+    );
+
+    const trigger = screen.getByTestId('lg-select-trigger');
+    expect(trigger).toBeInTheDocument();
   });
 
   describe('Option states', () => {

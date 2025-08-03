@@ -2,199 +2,192 @@ import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import { Code } from '../../../src/components/common/Code';
 
+// Helper function to render Code and get code element
+const renderCode = (children = 'Test Code', props = {}) => {
+  render(<Code {...props}>{children}</Code>);
+  return screen.getByTestId(props.testId || 'code');
+};
+
 describe('Code', () => {
   it('renders children correctly', () => {
-    render(<Code>Test Code</Code>);
+    renderCode();
     expect(screen.getByText('Test Code')).toBeInTheDocument();
   });
 
   it('renders with default props', () => {
-    render(<Code>Default Code</Code>);
-    const code = screen.getByTestId('code');
-    
-    expect(code.tagName).toBe('CODE'); // default variant inline
-    expect(code).toHaveClass('text-base', 'px-4', 'py-3'); // default size md
+    const code = renderCode('Default Code');
+    expect(code.tagName).toBe('CODE');
+    expect(code).toHaveClass('text-base', 'px-4', 'py-3');
   });
+
+  const variantTests = [
+    {
+      name: 'renders inline variant correctly',
+      variant: 'inline',
+      expectedTag: 'CODE',
+      expectedClasses: ['inline-block', 'mx-1'],
+      notExpectedClasses: ['block', 'whitespace-pre-wrap']
+    },
+    {
+      name: 'renders block variant correctly',
+      variant: 'block',
+      expectedTag: 'PRE',
+      expectedClasses: ['block', 'p-4', 'my-2', 'whitespace-pre-wrap', 'brutal-shadow-primary'],
+      notExpectedClasses: ['inline-block', 'mx-1']
+    }
+  ];
 
   describe('variants', () => {
-    it('renders inline variant correctly', () => {
-      render(<Code variant="inline">Inline code</Code>);
-      const code = screen.getByTestId('code');
-      
-      expect(code.tagName).toBe('CODE');
-      expect(code).toHaveClass('inline-block', 'mx-1');
-      expect(code).not.toHaveClass('block', 'whitespace-pre-wrap');
-    });
-
-    it('renders block variant correctly', () => {
-      render(<Code variant="block">Block code</Code>);
-      const code = screen.getByTestId('code');
-      
-      expect(code.tagName).toBe('PRE');
-      expect(code).toHaveClass('block', 'p-4', 'my-2', 'whitespace-pre-wrap', 'brutal-shadow-primary');
-      expect(code).not.toHaveClass('inline-block', 'mx-1');
+    variantTests.forEach(({ name, variant, expectedTag, expectedClasses, notExpectedClasses }) => {
+      it(name, () => {
+        const code = renderCode(`${variant} code`, { variant });
+        
+        expect(code.tagName).toBe(expectedTag);
+        expectedClasses.forEach(className => {
+          expect(code).toHaveClass(className);
+        });
+        notExpectedClasses.forEach(className => {
+          expect(code).not.toHaveClass(className);
+        });
+      });
     });
   });
+
+  const sizeTests = [
+    // Inline variant sizes
+    { name: 'renders small inline size correctly', variant: 'inline', size: 'sm', expectedClasses: ['text-sm', 'px-3', 'py-2'] },
+    { name: 'renders medium inline size correctly', variant: 'inline', size: 'md', expectedClasses: ['text-base', 'px-4', 'py-3'] },
+    { name: 'renders large inline size correctly', variant: 'inline', size: 'lg', expectedClasses: ['text-lg', 'px-6', 'py-4'] },
+    // Block variant sizes
+    { name: 'renders small block size correctly', variant: 'block', size: 'sm', expectedClasses: ['text-sm', 'p-3'] },
+    { name: 'renders medium block size correctly', variant: 'block', size: 'md', expectedClasses: ['text-base', 'p-4'] },
+    { name: 'renders large block size correctly', variant: 'block', size: 'lg', expectedClasses: ['text-lg', 'p-6'] }
+  ];
 
   describe('sizes', () => {
-    describe('inline variant sizes', () => {
-      it('renders small inline size correctly', () => {
-        render(<Code variant="inline" size="sm">Small inline</Code>);
-        const code = screen.getByTestId('code');
-        
-        expect(code).toHaveClass('text-sm', 'px-3', 'py-2');
-      });
-
-      it('renders medium inline size correctly', () => {
-        render(<Code variant="inline" size="md">Medium inline</Code>);
-        const code = screen.getByTestId('code');
-        
-        expect(code).toHaveClass('text-base', 'px-4', 'py-3');
-      });
-
-      it('renders large inline size correctly', () => {
-        render(<Code variant="inline" size="lg">Large inline</Code>);
-        const code = screen.getByTestId('code');
-        
-        expect(code).toHaveClass('text-lg', 'px-6', 'py-4');
-      });
-    });
-
-    describe('block variant sizes', () => {
-      it('renders small block size correctly', () => {
-        render(<Code variant="block" size="sm">Small block</Code>);
-        const code = screen.getByTestId('code');
-        
-        expect(code).toHaveClass('text-sm', 'p-3');
-      });
-
-      it('renders medium block size correctly', () => {
-        render(<Code variant="block" size="md">Medium block</Code>);
-        const code = screen.getByTestId('code');
-        
-        expect(code).toHaveClass('text-base', 'p-4');
-      });
-
-      it('renders large block size correctly', () => {
-        render(<Code variant="block" size="lg">Large block</Code>);
-        const code = screen.getByTestId('code');
-        
-        expect(code).toHaveClass('text-lg', 'p-6');
+    sizeTests.forEach(({ name, variant, size, expectedClasses }) => {
+      it(name, () => {
+        const code = renderCode(`${size} ${variant}`, { variant, size });
+        expectedClasses.forEach(className => {
+          expect(code).toHaveClass(className);
+        });
       });
     });
   });
 
-  it('applies custom className', () => {
-    render(<Code className="custom-class">Custom class</Code>);
-    const code = screen.getByTestId('code');
-    
-    expect(code).toHaveClass('custom-class');
+  const propTests = [
+    {
+      name: 'applies custom className',
+      props: { className: 'custom-class' },
+      test: (code: HTMLElement) => expect(code).toHaveClass('custom-class')
+    },
+    {
+      name: 'uses custom testId',
+      props: { testId: 'custom-code' },
+      test: () => expect(screen.getByTestId('custom-code')).toBeInTheDocument()
+    },
+    {
+      name: 'applies base styles consistently',
+      props: {},
+      test: (code: HTMLElement) => {
+        const expectedClasses = [
+          'font-mono', 'font-bold', 'bg-background',
+          'border-brutal-md', 'border-text-primary', 'text-text-primary'
+        ];
+        expectedClasses.forEach(className => {
+          expect(code).toHaveClass(className);
+        });
+      }
+    }
+  ];
+
+  propTests.forEach(({ name, props, test }) => {
+    it(name, () => {
+      const code = renderCode('test code', props);
+      test(code);
+    });
   });
 
-  it('uses custom testId', () => {
-    render(<Code testId="custom-code">Custom test ID</Code>);
-    
-    expect(screen.getByTestId('custom-code')).toBeInTheDocument();
-  });
-
-  it('applies base styles consistently', () => {
-    render(<Code>Base styles</Code>);
-    const code = screen.getByTestId('code');
-    
-    expect(code).toHaveClass(
-      'font-mono',
-      'font-bold',
-      'bg-background',
-      'border-brutal-md', // Updated to match design system
-      'border-text-primary',
-      'text-text-primary'
-    );
-  });
+  const elementTests = [
+    { name: 'uses <code> element for inline variant', variant: 'inline', expectedTag: 'CODE' },
+    { name: 'uses <pre> element for block variant', variant: 'block', expectedTag: 'PRE' }
+  ];
 
   describe('HTML element selection', () => {
-    it('uses <code> element for inline variant', () => {
-      render(<Code variant="inline">Inline</Code>);
-      const element = screen.getByTestId('code');
-      
-      expect(element.tagName).toBe('CODE');
-    });
-
-    it('uses <pre> element for block variant', () => {
-      render(<Code variant="block">Block</Code>);
-      const element = screen.getByTestId('code');
-      
-      expect(element.tagName).toBe('PRE');
+    elementTests.forEach(({ name, variant, expectedTag }) => {
+      it(name, () => {
+        const element = renderCode('element test', { variant });
+        expect(element.tagName).toBe(expectedTag);
+      });
     });
   });
 
+  const realWorldExamples = [
+    {
+      name: 'renders model number correctly',
+      content: 'RF28T5001SR',
+      props: {},
+      expectedClasses: ['inline-block', 'font-mono', 'border-brutal-md'],
+      expectedTag: 'CODE'
+    },
+    {
+      name: 'renders inline model with context',
+      content: 'RF28T5001SR',
+      props: {},
+      expectedClasses: ['inline-block', 'mx-1'],
+      wrapper: (children: React.ReactNode) => <span>Samsung Refrigerator {children}</span>
+    },
+    {
+      name: 'renders small ID code',
+      content: 'ID: #12345',
+      props: { size: 'sm' },
+      expectedClasses: ['text-sm', 'px-3', 'py-2']
+    },
+    {
+      name: 'renders technical specifications block',
+      content: 'Serial: 987654321\nManufactured: 2023-01-15\nWarranty: 5 years',
+      props: { variant: 'block', size: 'lg' },
+      expectedClasses: ['text-lg', 'p-6', 'whitespace-pre-wrap', 'brutal-shadow-primary'],
+      useTestId: true
+    },
+    {
+      name: 'renders version numbers in documentation',
+      content: 'v2.1.3',
+      props: { size: 'sm' },
+      expectedClasses: ['text-sm'],
+      expectedTag: 'CODE',
+      wrapper: (children: React.ReactNode) => <p>Current version: {children}</p>
+    },
+    {
+      name: 'renders configuration block',
+      content: 'config:\n  name: "HomeKeeper"\n  version: "1.0.0"\n  environment: "production"',
+      props: { variant: 'block', size: 'md' },
+      expectedClasses: ['block', 'text-base', 'p-4'],
+      useTestId: true
+    }
+  ];
+
   describe('real-world usage examples', () => {
-    it('renders model number correctly', () => {
-      render(<Code>RF28T5001SR</Code>);
-      
-      const code = screen.getByText('RF28T5001SR');
-      expect(code).toHaveClass('inline-block', 'font-mono', 'border-brutal-md'); // Updated to match design system
-      expect(code.tagName).toBe('CODE');
-    });
-
-    it('renders inline model with context', () => {
-      render(
-        <span>
-          Samsung Refrigerator <Code>RF28T5001SR</Code>
-        </span>
-      );
-      
-      const code = screen.getByText('RF28T5001SR');
-      expect(code).toHaveClass('inline-block', 'mx-1');
-    });
-
-    it('renders small ID code', () => {
-      render(<Code size="sm">ID: #12345</Code>);
-      
-      const code = screen.getByText('ID: #12345');
-      expect(code).toHaveClass('text-sm', 'px-3', 'py-2');
-    });
-
-    it('renders technical specifications block', () => {
-      const specs = `Serial: 987654321
-Manufactured: 2023-01-15
-Warranty: 5 years`;
-      
-      render(
-        <Code variant="block" size="lg">
-          {specs}
-        </Code>
-      );
-      
-      const code = screen.getByTestId('code');
-      expect(code.tagName).toBe('PRE');
-      expect(code).toHaveClass('text-lg', 'p-6', 'whitespace-pre-wrap', 'brutal-shadow-primary');
-    });
-
-    it('renders version numbers in documentation', () => {
-      render(
-        <p>
-          Current version: <Code size="sm">v2.1.3</Code>
-        </p>
-      );
-      
-      const code = screen.getByText('v2.1.3');
-      expect(code).toHaveClass('text-sm');
-      expect(code.tagName).toBe('CODE');
-    });
-
-    it('renders configuration block', () => {
-      render(
-        <Code variant="block" size="md">
-          {`config:
-  name: "HomeKeeper"
-  version: "1.0.0"
-  environment: "production"`}
-        </Code>
-      );
-      
-      const code = screen.getByTestId('code');
-      expect(code).toHaveClass('block', 'text-base', 'p-4');
-      expect(code.tagName).toBe('PRE');
+    realWorldExamples.forEach(({ name, content, props, expectedClasses, expectedTag, wrapper, useTestId }) => {
+      it(name, () => {
+        const codeElement = <Code {...props}>{content}</Code>;
+        
+        if (wrapper) {
+          render(wrapper(codeElement));
+        } else {
+          render(codeElement);
+        }
+        
+        const code = useTestId ? screen.getByTestId('code') : screen.getByText(content);
+        
+        expectedClasses.forEach(className => {
+          expect(code).toHaveClass(className);
+        });
+        
+        if (expectedTag) {
+          expect(code.tagName).toBe(expectedTag);
+        }
+      });
     });
   });
 });

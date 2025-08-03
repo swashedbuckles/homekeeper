@@ -1,6 +1,7 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { Modal } from '../../../src/components/common/Modal';
+import { expectElementToHaveClasses } from '../../helpers/testHelpers';
 
 // Mock createPortal to render in the current DOM for testing
 vi.mock('react-dom', async () => {
@@ -63,7 +64,7 @@ describe('Modal', () => {
       render(<Modal {...defaultProps} />);
       
       const modal = screen.getByRole('dialog');
-      expect(modal).toHaveClass('fixed', 'inset-0', 'z-60');
+      expectElementToHaveClasses(modal, ['fixed', 'inset-0', 'z-60']);
     });
   });
 
@@ -132,61 +133,77 @@ describe('Modal', () => {
   });
 
   describe('Body Scroll Prevention', () => {
-    it('prevents body scroll when modal is open', () => {
-      render(<Modal {...defaultProps} />);
-      
-      expect(document.body.style.overflow).toBe('hidden');
-    });
+    const scrollTests = [
+      {
+        name: 'prevents body scroll when modal is open',
+        action: () => render(<Modal {...defaultProps} />),
+        expectation: () => expect(document.body.style.overflow).toBe('hidden')
+      },
+      {
+        name: 'restores body scroll when modal is closed',
+        action: () => {
+          const { rerender } = render(<Modal {...defaultProps} />);
+          expect(document.body.style.overflow).toBe('hidden');
+          rerender(<Modal {...defaultProps} isOpen={false} />);
+          return null;
+        },
+        expectation: () => expect(document.body.style.overflow).toBe('')
+      },
+      {
+        name: 'cleans up body scroll on unmount',
+        action: () => {
+          const { unmount } = render(<Modal {...defaultProps} />);
+          expect(document.body.style.overflow).toBe('hidden');
+          unmount();
+          return null;
+        },
+        expectation: () => expect(document.body.style.overflow).toBe('')
+      }
+    ];
 
-    it('restores body scroll when modal is closed', () => {
-      const { rerender } = render(<Modal {...defaultProps} />);
-      
-      expect(document.body.style.overflow).toBe('hidden');
-      
-      rerender(<Modal {...defaultProps} isOpen={false} />);
-      
-      expect(document.body.style.overflow).toBe('');
-    });
-
-    it('cleans up body scroll on unmount', () => {
-      const { unmount } = render(<Modal {...defaultProps} />);
-      
-      expect(document.body.style.overflow).toBe('hidden');
-      
-      unmount();
-      
-      expect(document.body.style.overflow).toBe('');
+    scrollTests.forEach(({ name, action, expectation }) => {
+      it(name, () => {
+        action();
+        expectation();
+      });
     });
   });
 
   describe('Keyboard Navigation', () => {
-    it('closes modal when Escape key is pressed', () => {
-      const onClose = vi.fn();
-      render(<Modal {...defaultProps} onClose={onClose} />);
-      
-      const modal = screen.getByRole('dialog');
-      fireEvent.keyDown(modal, { key: 'Escape' });
-      
-      expect(onClose).toHaveBeenCalledTimes(1);
-    });
+    const keyboardTests = [
+      {
+        name: 'closes modal when Escape key is pressed',
+        setup: () => ({ onClose: vi.fn() }),
+        action: (modal: HTMLElement) => fireEvent.keyDown(modal, { key: 'Escape' }),
+        expectation: (onClose: any) => expect(onClose).toHaveBeenCalledTimes(1)
+      },
+      {
+        name: 'does not close modal when other keys are pressed',
+        setup: () => ({ onClose: vi.fn() }),
+        action: (modal: HTMLElement) => {
+          fireEvent.keyDown(modal, { key: 'Enter' });
+          fireEvent.keyDown(modal, { key: 'Space' });
+          fireEvent.keyDown(modal, { key: 'Tab' });
+        },
+        expectation: (onClose: any) => expect(onClose).not.toHaveBeenCalled()
+      }
+    ];
 
-    it('does not close modal when other keys are pressed', () => {
-      const onClose = vi.fn();
-      render(<Modal {...defaultProps} onClose={onClose} />);
-      
-      const modal = screen.getByRole('dialog');
-      fireEvent.keyDown(modal, { key: 'Enter' });
-      fireEvent.keyDown(modal, { key: 'Space' });
-      fireEvent.keyDown(modal, { key: 'Tab' });
-      
-      expect(onClose).not.toHaveBeenCalled();
+    keyboardTests.forEach(({ name, setup, action, expectation }) => {
+      it(name, () => {
+        const { onClose } = setup();
+        render(<Modal {...defaultProps} onClose={onClose} />);
+        
+        const modal = screen.getByRole('dialog');
+        action(modal);
+        expectation(onClose);
+      });
     });
 
     it('does not close modal when Escape is pressed but onClose is not provided', () => {
       render(<Modal isOpen={true} children={<div>Content</div>} />);
       
       const modal = screen.getByRole('dialog');
-      // Should not throw error
       expect(() => fireEvent.keyDown(modal, { key: 'Escape' })).not.toThrow();
     });
   });
@@ -244,22 +261,42 @@ describe('Modal', () => {
   });
 
   describe('Accessibility', () => {
-    it('has correct role and ARIA attributes', () => {
-      render(<Modal {...defaultProps} ariaLabelledBy="test-title" />);
-      
-      const modal = screen.getByRole('dialog');
-      expect(modal).toHaveAttribute('role', 'dialog');
-      expect(modal).toHaveAttribute('aria-modal', 'true');
-      expect(modal).toHaveAttribute('aria-labelledby', 'test-title');
-    });
+    const accessibilityTests = [
+      {
+        name: 'has correct role and ARIA attributes',
+        props: { ariaLabelledBy: 'test-title' },
+        expectations: [
+          { attribute: 'role', value: 'dialog' },
+          { attribute: 'aria-modal', value: 'true' },
+          { attribute: 'aria-labelledby', value: 'test-title' }
+        ]
+      },
+      {
+        name: 'works without ariaLabelledBy prop',
+        props: {},
+        expectations: [
+          { attribute: 'role', value: 'dialog' },
+          { attribute: 'aria-modal', value: 'true' }
+        ],
+        notExpected: ['aria-labelledby']
+      }
+    ];
 
-    it('works without ariaLabelledBy prop', () => {
-      render(<Modal {...defaultProps} />);
-      
-      const modal = screen.getByRole('dialog');
-      expect(modal).toHaveAttribute('role', 'dialog');
-      expect(modal).toHaveAttribute('aria-modal', 'true');
-      expect(modal).not.toHaveAttribute('aria-labelledby');
+    accessibilityTests.forEach(({ name, props, expectations, notExpected }) => {
+      it(name, () => {
+        render(<Modal {...defaultProps} {...props} />);
+        
+        const modal = screen.getByRole('dialog');
+        expectations.forEach(({ attribute, value }) => {
+          expect(modal).toHaveAttribute(attribute, value);
+        });
+        
+        if (notExpected) {
+          notExpected.forEach(attribute => {
+            expect(modal).not.toHaveAttribute(attribute);
+          });
+        }
+      });
     });
   });
 

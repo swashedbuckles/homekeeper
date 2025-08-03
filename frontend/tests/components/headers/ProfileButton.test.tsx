@@ -5,6 +5,26 @@ import { ProfileButton } from '../../../src/components/headers/ProfileButton';
 import { renderWithAuth } from '../../helpers/testProviderUtils';
 import { createMockUser } from '../../helpers/testUtils';
 
+// Helper function to render ProfileButton with auth context
+const renderProfileButton = (props = {}, authOverrides = {}) => {
+  const defaultProps = {
+    isOpen: false,
+    setIsOpen: vi.fn()
+  };
+  const defaultAuth = {
+    authStatus: AuthStatus.LOGGED_IN,
+    user: createMockUser()
+  };
+  
+  return renderWithAuth(
+    <ProfileButton {...defaultProps} {...props} />,
+    { ...defaultAuth, ...authOverrides }
+  );
+};
+
+// Helper function to get profile button
+const getProfileButton = () => screen.getByLabelText('Toggle menu');
+
 describe('ProfileButton', () => {
   const mockSetIsOpen = vi.fn();
   
@@ -12,108 +32,82 @@ describe('ProfileButton', () => {
     mockSetIsOpen.mockClear();
   });
 
-  it('renders user initial when user is authenticated', () => {
-    const mockUser = createMockUser({ name: 'John Doe' });
-    
-    renderWithAuth(
-      <ProfileButton isOpen={false} setIsOpen={mockSetIsOpen} />,
-      { authStatus: AuthStatus.LOGGED_IN, user: mockUser }
-    );
-    
-    expect(screen.getByText('J')).toBeInTheDocument();
+  const renderingTests = [
+    {
+      name: 'renders user initial when user is authenticated',
+      authOverrides: { user: createMockUser({ name: 'John Doe' }) },
+      expectation: () => expect(screen.getByText('J')).toBeInTheDocument()
+    },
+    {
+      name: 'renders User icon when no user name available',
+      authOverrides: { user: createMockUser({ name: '' }) },
+      expectation: (container: HTMLElement) => expect(container.querySelector('svg')).toBeInTheDocument()
+    },
+    {
+      name: 'renders User icon when user is not authenticated',
+      authOverrides: { authStatus: AuthStatus.LOGGED_OUT, user: null },
+      expectation: (container: HTMLElement) => expect(container.querySelector('svg')).toBeInTheDocument()
+    }
+  ];
+
+  renderingTests.forEach(({ name, authOverrides, expectation }) => {
+    it(name, () => {
+      const { container } = renderProfileButton({}, authOverrides);
+      expectation(container);
+    });
   });
 
-  it('renders User icon when no user name available', () => {
-    const mockUser = createMockUser({ name: '' });
-    
-    const { container } = renderWithAuth(
-      <ProfileButton isOpen={false} setIsOpen={mockSetIsOpen} />,
-      { authStatus: AuthStatus.LOGGED_IN, user: mockUser }
-    );
-    
-    // Lucide User icon should be rendered (it's an SVG)
-    expect(container.querySelector('svg')).toBeInTheDocument();
+  const toggleTests = [
+    {
+      name: 'calls setIsOpen with true when clicked while closed',
+      isOpen: false,
+      expectedCall: true
+    },
+    {
+      name: 'calls setIsOpen with false when clicked while open',
+      isOpen: true,
+      expectedCall: false
+    }
+  ];
+
+  toggleTests.forEach(({ name, isOpen, expectedCall }) => {
+    it(name, () => {
+      renderProfileButton({ isOpen, setIsOpen: mockSetIsOpen });
+      const button = getProfileButton();
+      fireEvent.click(button);
+      
+      expect(mockSetIsOpen).toHaveBeenCalledTimes(1);
+      expect(mockSetIsOpen).toHaveBeenCalledWith(expectedCall);
+    });
   });
 
-  it('renders User icon when user is not authenticated', () => {
-    const { container } = renderWithAuth(
-      <ProfileButton isOpen={false} setIsOpen={mockSetIsOpen} />,
-      { authStatus: AuthStatus.LOGGED_OUT, user: null }
-    );
-    
-    expect(container.querySelector('svg')).toBeInTheDocument();
-  });
+  const stylingTests = [
+    {
+      name: 'applies responsive size classes',
+      expectedClasses: ['w-10', 'h-10', 'md:w-12', 'md:h-12']
+    },
+    {
+      name: 'applies brutal styling classes',
+      expectedClasses: [
+        'brutal-rotate-right', 'brutal-transition', 'brutal-hover-press-small',
+        'brutal-shadow-accent-sm', 'bg-primary', 'border-brutal-md', 'border-white'
+      ]
+    }
+  ];
 
-  it('calls setIsOpen when clicked', () => {
-    const mockUser = createMockUser();
-    
-    renderWithAuth(
-      <ProfileButton isOpen={false} setIsOpen={mockSetIsOpen} />,
-      { authStatus: AuthStatus.LOGGED_IN, user: mockUser }
-    );
-    
-    const button = screen.getByLabelText('Toggle menu');
-    fireEvent.click(button);
-    
-    expect(mockSetIsOpen).toHaveBeenCalledTimes(1);
-    expect(mockSetIsOpen).toHaveBeenCalledWith(true);
-  });
-
-  it('toggles isOpen state correctly', () => {
-    const mockUser = createMockUser();
-    
-    renderWithAuth(
-      <ProfileButton isOpen={true} setIsOpen={mockSetIsOpen} />,
-      { authStatus: AuthStatus.LOGGED_IN, user: mockUser }
-    );
-    
-    const button = screen.getByLabelText('Toggle menu');
-    fireEvent.click(button);
-    
-    expect(mockSetIsOpen).toHaveBeenCalledWith(false);
-  });
-
-  it('applies responsive size classes', () => {
-    const mockUser = createMockUser();
-    
-    renderWithAuth(
-      <ProfileButton isOpen={false} setIsOpen={mockSetIsOpen} />,
-      { authStatus: AuthStatus.LOGGED_IN, user: mockUser }
-    );
-    
-    const button = screen.getByLabelText('Toggle menu');
-    expect(button).toHaveClass('w-10', 'h-10', 'md:w-12', 'md:h-12');
-  });
-
-  it('applies brutal styling classes', () => {
-    const mockUser = createMockUser();
-    
-    renderWithAuth(
-      <ProfileButton isOpen={false} setIsOpen={mockSetIsOpen} />,
-      { authStatus: AuthStatus.LOGGED_IN, user: mockUser }
-    );
-    
-    const button = screen.getByLabelText('Toggle menu');
-    expect(button).toHaveClass(
-      'brutal-rotate-right',
-      'brutal-transition',
-      'brutal-hover-press-small',
-      'brutal-shadow-accent-sm',
-      'bg-primary',
-      'border-brutal-md',
-      'border-white'
-    );
+  stylingTests.forEach(({ name, expectedClasses }) => {
+    it(name, () => {
+      renderProfileButton();
+      const button = getProfileButton();
+      expectedClasses.forEach(className => {
+        expect(button).toHaveClass(className);
+      });
+    });
   });
 
   it('has correct accessibility attributes', () => {
-    const mockUser = createMockUser();
-    
-    renderWithAuth(
-      <ProfileButton isOpen={false} setIsOpen={mockSetIsOpen} />,
-      { authStatus: AuthStatus.LOGGED_IN, user: mockUser }
-    );
-    
-    const button = screen.getByLabelText('Toggle menu');
+    renderProfileButton();
+    const button = getProfileButton();
     expect(button).toHaveAttribute('aria-label', 'Toggle menu');
   });
 });

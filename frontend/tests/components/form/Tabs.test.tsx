@@ -4,121 +4,100 @@ import { describe, it, expect, vi } from 'vitest';
 import { Tabs } from '../../../src/components/layout/Tabs';
 import React from 'react';
 
+// Mock content components
 const MockHouseholdContent = () => <div>Household Settings Content</div>;
 const MockMembersContent = () => <div>Members Management Content</div>;
 const MockInviteContent = () => <div>Invite Members Content</div>;
 
+// Helper function to render basic tabs setup
+const renderBasicTabs = (defaultTab = 'household', additionalTabs: string[] = []) => {
+  const allTabs = ['household', 'members', ...additionalTabs];
+  
+  return render(
+    <Tabs defaultTab={defaultTab}>
+      <Tabs.List>
+        {allTabs.includes('household') && <Tabs.Button value="household">Household</Tabs.Button>}
+        {allTabs.includes('members') && <Tabs.Button value="members">Members</Tabs.Button>}
+        {allTabs.includes('invite') && <Tabs.Button value="invite">Invite</Tabs.Button>}
+      </Tabs.List>
+      {allTabs.includes('household') && (
+        <Tabs.Panel value="household">
+          <MockHouseholdContent />
+        </Tabs.Panel>
+      )}
+      {allTabs.includes('members') && (
+        <Tabs.Panel value="members">
+          <MockMembersContent />
+        </Tabs.Panel>
+      )}
+      {allTabs.includes('invite') && (
+        <Tabs.Panel value="invite">
+          <MockInviteContent />
+        </Tabs.Panel>
+      )}
+    </Tabs>
+  );
+};
+
+// Helper function to get tab button by name
+const getTabButton = (name: string) => screen.getByRole('tab', { name });
+
+// Helper function to check tab visibility and state
+const expectTabState = (activeTab: string, allTabs: string[] = ['household', 'members']) => {
+  const contentMap = {
+    household: 'Household Settings Content',
+    members: 'Members Management Content',
+    invite: 'Invite Members Content'
+  };
+  
+  allTabs.forEach(tab => {
+    const button = getTabButton(tab.charAt(0).toUpperCase() + tab.slice(1));
+    const content = contentMap[tab as keyof typeof contentMap];
+    
+    if (tab === activeTab) {
+      expect(button).toHaveAttribute('aria-selected', 'true');
+      expect(screen.getByText(content)).toBeVisible();
+    } else {
+      expect(button).toHaveAttribute('aria-selected', 'false');
+      expect(screen.getByText(content)).not.toBeVisible();
+    }
+  });
+};
+
 describe('Tabs', () => {
   describe('Basic Functionality', () => {
     it('renders with default tab active', () => {
-      render(
-        <Tabs defaultTab="household">
-          <Tabs.List>
-            <Tabs.Button value="household">Household</Tabs.Button>
-            <Tabs.Button value="members">Members</Tabs.Button>
-          </Tabs.List>
-          <Tabs.Panel value="household">
-            <MockHouseholdContent />
-          </Tabs.Panel>
-          <Tabs.Panel value="members">
-            <MockMembersContent />
-          </Tabs.Panel>
-        </Tabs>
-      );
-
-      // Default tab content should be visible
-      expect(screen.getByText('Household Settings Content')).toBeVisible();
-      expect(screen.getByText('Members Management Content')).not.toBeVisible();
-      
-      // Default tab button should be active
-      const householdButton = screen.getByRole('tab', { name: 'Household' });
-      expect(householdButton).toHaveAttribute('aria-selected', 'true');
-      
-      const membersButton = screen.getByRole('tab', { name: 'Members' });
-      expect(membersButton).toHaveAttribute('aria-selected', 'false');
+      renderBasicTabs('household');
+      expectTabState('household');
     });
 
     it('switches tabs when tab button is clicked', async () => {
       const user = userEvent.setup();
-      
-      render(
-        <Tabs defaultTab="household">
-          <Tabs.List>
-            <Tabs.Button value="household">Household</Tabs.Button>
-            <Tabs.Button value="members">Members</Tabs.Button>
-          </Tabs.List>
-          <Tabs.Panel value="household">
-            <MockHouseholdContent />
-          </Tabs.Panel>
-          <Tabs.Panel value="members">
-            <MockMembersContent />
-          </Tabs.Panel>
-        </Tabs>
-      );
+      renderBasicTabs('household');
 
       // Click on Members tab
-      const membersButton = screen.getByRole('tab', { name: 'Members' });
-      await user.click(membersButton);
-
-      // Members content should now be visible
-      expect(screen.getByText('Members Management Content')).toBeVisible();
-      expect(screen.getByText('Household Settings Content')).not.toBeVisible();
-      
-      // Button states should update
-      expect(membersButton).toHaveAttribute('aria-selected', 'true');
-      
-      const householdButton = screen.getByRole('tab', { name: 'Household' });
-      expect(householdButton).toHaveAttribute('aria-selected', 'false');
+      await user.click(getTabButton('Members'));
+      expectTabState('members');
     });
 
     it('handles multiple panels correctly', async () => {
       const user = userEvent.setup();
-      
-      render(
-        <Tabs defaultTab="household">
-          <Tabs.List>
-            <Tabs.Button value="household">Household</Tabs.Button>
-            <Tabs.Button value="members">Members</Tabs.Button>
-            <Tabs.Button value="invite">Invite</Tabs.Button>
-          </Tabs.List>
-          <Tabs.Panel value="household">
-            <MockHouseholdContent />
-          </Tabs.Panel>
-          <Tabs.Panel value="members">
-            <MockMembersContent />
-          </Tabs.Panel>
-          <Tabs.Panel value="invite">
-            <MockInviteContent />
-          </Tabs.Panel>
-        </Tabs>
-      );
+      renderBasicTabs('household', ['invite']);
+      const allTabs = ['household', 'members', 'invite'];
 
       // Test switching between all three tabs
-      await user.click(screen.getByRole('tab', { name: 'Invite' }));
-      expect(screen.getByText('Invite Members Content')).toBeVisible();
-      expect(screen.getByText('Household Settings Content')).not.toBeVisible();
-      expect(screen.getByText('Members Management Content')).not.toBeVisible();
+      await user.click(getTabButton('Invite'));
+      expectTabState('invite', allTabs);
 
-      await user.click(screen.getByRole('tab', { name: 'Members' }));
-      expect(screen.getByText('Members Management Content')).toBeVisible();
-      expect(screen.getByText('Household Settings Content')).not.toBeVisible();
-      expect(screen.getByText('Invite Members Content')).not.toBeVisible();
+      await user.click(getTabButton('Members'));
+      expectTabState('members', allTabs);
     });
   });
 
   describe('Styling and Design System Integration', () => {
     it('applies default styling to Tabs.List', () => {
-      render(
-        <Tabs defaultTab="household">
-          <Tabs.List>
-            <Tabs.Button value="household">Household</Tabs.Button>
-          </Tabs.List>
-          <Tabs.Panel value="household">
-            <MockHouseholdContent />
-          </Tabs.Panel>
-        </Tabs>
-      );
-
+      renderBasicTabs('household');
+      
       const tabList = screen.getByRole('tablist');
       expect(tabList).toHaveClass('flex', 'flex-wrap', 'gap-4');
     });
@@ -140,65 +119,43 @@ describe('Tabs', () => {
     });
 
     it('applies neobrutalist styling to tab buttons', () => {
-      render(
-        <Tabs defaultTab="household">
-          <Tabs.List>
-            <Tabs.Button value="household">Household</Tabs.Button>
-            <Tabs.Button value="members">Members</Tabs.Button>
-          </Tabs.List>
-          <Tabs.Panel value="household">
-            <MockHouseholdContent />
-          </Tabs.Panel>
-          <Tabs.Panel value="members">
-            <MockMembersContent />
-          </Tabs.Panel>
-        </Tabs>
-      );
+      renderBasicTabs('household');
 
       const buttons = screen.getAllByRole('tab');
+      const expectedClasses = [
+        'font-mono',
+        'font-black', 
+        'uppercase',
+        'tracking-wider',
+        'brutal-transition',
+        'border-text-primary'
+      ];
+      
       buttons.forEach(button => {
-        // Check for design system base classes
-        expect(button).toHaveClass(
-          'font-mono',
-          'font-black',
-          'uppercase',
-          'tracking-wider',
-          'brutal-transition',
-          'border-text-primary'
-        );
-        
-        // Check for design system border (should have border-brutal-md from getSizeToken)
+        expectedClasses.forEach(className => {
+          expect(button).toHaveClass(className);
+        });
         expect(button.className).toMatch(/border-brutal-(xs|sm|md|lg|xl)/);
       });
     });
 
     it('applies active state styling correctly', () => {
-      render(
-        <Tabs defaultTab="household">
-          <Tabs.List>
-            <Tabs.Button value="household">Household</Tabs.Button>
-            <Tabs.Button value="members">Members</Tabs.Button>
-          </Tabs.List>
-          <Tabs.Panel value="household">
-            <MockHouseholdContent />
-          </Tabs.Panel>
-          <Tabs.Panel value="members">
-            <MockMembersContent />
-          </Tabs.Panel>
-        </Tabs>
-      );
+      renderBasicTabs('household');
 
-      const activeButton = screen.getByRole('tab', { name: 'Household' });
-      const inactiveButton = screen.getByRole('tab', { name: 'Members' });
+      const activeButton = getTabButton('Household');
+      const inactiveButton = getTabButton('Members');
 
-      // Active button should have primary styling
-      expect(activeButton).toHaveClass('bg-primary', 'text-white');
-      expect(activeButton).toHaveClass('transform', 'translate-x-1', 'translate-y-1');
-      expect(activeButton).toHaveClass('shadow-none');
+      // Active button styling
+      const activeClasses = ['bg-primary', 'text-white', 'transform', 'translate-x-1', 'translate-y-1', 'shadow-none'];
+      activeClasses.forEach(className => {
+        expect(activeButton).toHaveClass(className);
+      });
 
-      // Inactive button should have transparent background
-      expect(inactiveButton).toHaveClass('bg-transparent', 'text-text-primary');
-      expect(inactiveButton).toHaveClass('brutal-shadow-dark');
+      // Inactive button styling
+      const inactiveClasses = ['bg-transparent', 'text-text-primary', 'brutal-shadow-dark'];
+      inactiveClasses.forEach(className => {
+        expect(inactiveButton).toHaveClass(className);
+      });
     });
 
     it('supports custom className on tab buttons', () => {
@@ -258,94 +215,50 @@ describe('Tabs', () => {
 
     it('supports keyboard navigation', async () => {
       const user = userEvent.setup();
-      
-      render(
-        <Tabs defaultTab="household">
-          <Tabs.List>
-            <Tabs.Button value="household">Household</Tabs.Button>
-            <Tabs.Button value="members">Members</Tabs.Button>
-            <Tabs.Button value="invite">Invite</Tabs.Button>
-          </Tabs.List>
-          <Tabs.Panel value="household">
-            <MockHouseholdContent />
-          </Tabs.Panel>
-          <Tabs.Panel value="members">
-            <MockMembersContent />
-          </Tabs.Panel>
-          <Tabs.Panel value="invite">
-            <MockInviteContent />
-          </Tabs.Panel>
-        </Tabs>
-      );
+      renderBasicTabs('household', ['invite']);
 
-      const householdButton = screen.getByRole('tab', { name: 'Household' });
-      const membersButton = screen.getByRole('tab', { name: 'Members' });
-      const inviteButton = screen.getByRole('tab', { name: 'Invite' });
+      const householdButton = getTabButton('Household');
+      const membersButton = getTabButton('Members');
+      const inviteButton = getTabButton('Invite');
 
-      // Focus first tab
-      householdButton.focus();
-      expect(householdButton).toHaveFocus();
+      // Test keyboard navigation sequence
+      const navigationTests = [
+        { action: () => householdButton.focus(), expectedFocus: householdButton, expectedContent: 'Household Settings Content' },
+        { action: () => user.keyboard('{ArrowRight}'), expectedFocus: membersButton, expectedContent: 'Members Management Content' },
+        { action: () => user.keyboard('{ArrowRight}'), expectedFocus: inviteButton, expectedContent: 'Invite Members Content' },
+        { action: () => user.keyboard('{ArrowRight}'), expectedFocus: householdButton, expectedContent: 'Household Settings Content' },
+        { action: () => user.keyboard('{ArrowLeft}'), expectedFocus: inviteButton, expectedContent: 'Invite Members Content' }
+      ];
 
-      // Arrow right should move to next tab
-      await user.keyboard('{ArrowRight}');
-      expect(membersButton).toHaveFocus();
-      expect(screen.getByText('Members Management Content')).toBeVisible();
-
-      // Arrow right again should move to third tab
-      await user.keyboard('{ArrowRight}');
-      expect(inviteButton).toHaveFocus();
-      expect(screen.getByText('Invite Members Content')).toBeVisible();
-
-      // Arrow right should wrap to first tab
-      await user.keyboard('{ArrowRight}');
-      expect(householdButton).toHaveFocus();
-      expect(screen.getByText('Household Settings Content')).toBeVisible();
-
-      // Arrow left should move to previous tab (wrapping)
-      await user.keyboard('{ArrowLeft}');
-      expect(inviteButton).toHaveFocus();
-      expect(screen.getByText('Invite Members Content')).toBeVisible();
+      for (const { action, expectedFocus, expectedContent } of navigationTests) {
+        await action();
+        expect(expectedFocus).toHaveFocus();
+        expect(screen.getByText(expectedContent)).toBeVisible();
+      }
     });
 
     it('supports Home and End key navigation', async () => {
       const user = userEvent.setup();
-      
-      render(
-        <Tabs defaultTab="members">
-          <Tabs.List>
-            <Tabs.Button value="household">Household</Tabs.Button>
-            <Tabs.Button value="members">Members</Tabs.Button>
-            <Tabs.Button value="invite">Invite</Tabs.Button>
-          </Tabs.List>
-          <Tabs.Panel value="household">
-            <MockHouseholdContent />
-          </Tabs.Panel>
-          <Tabs.Panel value="members">
-            <MockMembersContent />
-          </Tabs.Panel>
-          <Tabs.Panel value="invite">
-            <MockInviteContent />
-          </Tabs.Panel>
-        </Tabs>
-      );
+      renderBasicTabs('members', ['invite']);
 
-      const householdButton = screen.getByRole('tab', { name: 'Household' });
-      const membersButton = screen.getByRole('tab', { name: 'Members' });
-      const inviteButton = screen.getByRole('tab', { name: 'Invite' });
+      const householdButton = getTabButton('Household');
+      const membersButton = getTabButton('Members');
+      const inviteButton = getTabButton('Invite');
 
-      // Focus middle tab
+      // Focus middle tab and test Home/End navigation
       membersButton.focus();
       expect(membersButton).toHaveFocus();
 
-      // Home should move to first tab
-      await user.keyboard('{Home}');
-      expect(householdButton).toHaveFocus();
-      expect(screen.getByText('Household Settings Content')).toBeVisible();
+      const homeEndTests = [
+        { key: '{Home}', expectedFocus: householdButton, expectedContent: 'Household Settings Content' },
+        { key: '{End}', expectedFocus: inviteButton, expectedContent: 'Invite Members Content' }
+      ];
 
-      // End should move to last tab
-      await user.keyboard('{End}');
-      expect(inviteButton).toHaveFocus();
-      expect(screen.getByText('Invite Members Content')).toBeVisible();
+      for (const { key, expectedFocus, expectedContent } of homeEndTests) {
+        await user.keyboard(key);
+        expect(expectedFocus).toHaveFocus();
+        expect(screen.getByText(expectedContent)).toBeVisible();
+      }
     });
   });
 

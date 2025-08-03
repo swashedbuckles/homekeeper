@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import { LoadingIndicator } from '../../../src/components/common/LoadingIndicator';
+import { expectElementToHaveClasses } from '../../helpers/testHelpers';
 
 describe('LoadingIndicator', () => {
   describe('Default Rendering and Basic Functionality', () => {
@@ -34,43 +35,39 @@ describe('LoadingIndicator', () => {
   });
 
   describe('Size Variants', () => {
-    it('applies correct styles for small size', () => {
-      const { container } = render(<LoadingIndicator size="sm" />);
-      
-      const squares = container.querySelectorAll('.animate-pulse');
-      squares.forEach(square => {
-        expect(square).toHaveClass('w-3', 'h-3');
-      });
-      
-      // Check for small gap between squares
-      const squareContainer = container.querySelector('.gap-1');
-      expect(squareContainer).toBeInTheDocument();
-    });
+    const sizeTests = [
+      {
+        size: 'small',
+        props: { size: 'sm' as const },
+        squareClasses: ['w-3', 'h-3'],
+        gapClass: 'gap-1'
+      },
+      {
+        size: 'medium',
+        props: { size: 'md' as const },
+        squareClasses: ['w-4', 'h-4'],
+        gapClass: 'gap-2'
+      },
+      {
+        size: 'large',
+        props: { size: 'lg' as const },
+        squareClasses: ['w-6', 'h-6'],
+        gapClass: 'gap-3'
+      }
+    ];
 
-    it('applies correct styles for medium size (default)', () => {
-      const { container } = render(<LoadingIndicator size="md" />);
-      
-      const squares = container.querySelectorAll('.animate-pulse');
-      squares.forEach(square => {
-        expect(square).toHaveClass('w-4', 'h-4');
+    sizeTests.forEach(({ size, props, squareClasses, gapClass }) => {
+      it(`applies correct styles for ${size} size`, () => {
+        const { container } = render(<LoadingIndicator {...props} />);
+        
+        const squares = container.querySelectorAll('.animate-pulse');
+        squares.forEach(square => {
+          expectElementToHaveClasses(square as HTMLElement, squareClasses);
+        });
+        
+        const squareContainer = container.querySelector(`.${gapClass}`);
+        expect(squareContainer).toBeInTheDocument();
       });
-      
-      // Check for medium gap between squares
-      const squareContainer = container.querySelector('.gap-2');
-      expect(squareContainer).toBeInTheDocument();
-    });
-
-    it('applies correct styles for large size', () => {
-      const { container } = render(<LoadingIndicator size="lg" />);
-      
-      const squares = container.querySelectorAll('.animate-pulse');
-      squares.forEach(square => {
-        expect(square).toHaveClass('w-6', 'h-6');
-      });
-      
-      // Check for large gap between squares
-      const squareContainer = container.querySelector('.gap-3');
-      expect(squareContainer).toBeInTheDocument();
     });
 
     it('defaults to medium size when size prop is not provided', () => {
@@ -78,46 +75,44 @@ describe('LoadingIndicator', () => {
       
       const squares = container.querySelectorAll('.animate-pulse');
       squares.forEach(square => {
-        expect(square).toHaveClass('w-4', 'h-4');
+        expectElementToHaveClasses(square as HTMLElement, ['w-4', 'h-4']);
       });
     });
   });
 
   describe('Color Variants', () => {
-    it('applies default color variant correctly', () => {
-      const { container } = render(<LoadingIndicator variant="default" />);
-      
-      const squares = container.querySelectorAll('.animate-pulse');
-      expect(squares[0]).toHaveClass('bg-primary');
-      expect(squares[1]).toHaveClass('bg-secondary');
-      expect(squares[2]).toHaveClass('bg-accent');
-    });
+    const colorTests = [
+      {
+        variant: 'default',
+        props: { variant: 'default' as const },
+        expectedSquareClasses: ['bg-primary', 'bg-secondary', 'bg-accent']
+      },
+      {
+        variant: 'primary',
+        props: { variant: 'primary' as const },
+        expectedSquareClasses: ['bg-primary', 'bg-primary/80', 'bg-primary/60']
+      },
+      {
+        variant: 'secondary',
+        props: { variant: 'secondary' as const },
+        expectedSquareClasses: ['bg-secondary', 'bg-secondary/80', 'bg-secondary/60']
+      },
+      {
+        variant: 'accent',
+        props: { variant: 'accent' as const },
+        expectedSquareClasses: ['bg-accent', 'bg-accent/80', 'bg-accent/60']
+      }
+    ];
 
-    it('applies primary color variant correctly', () => {
-      const { container } = render(<LoadingIndicator variant="primary" />);
-      
-      const squares = container.querySelectorAll('.animate-pulse');
-      expect(squares[0]).toHaveClass('bg-primary');
-      expect(squares[1]).toHaveClass('bg-primary/80');
-      expect(squares[2]).toHaveClass('bg-primary/60');
-    });
-
-    it('applies secondary color variant correctly', () => {
-      const { container } = render(<LoadingIndicator variant="secondary" />);
-      
-      const squares = container.querySelectorAll('.animate-pulse');
-      expect(squares[0]).toHaveClass('bg-secondary');
-      expect(squares[1]).toHaveClass('bg-secondary/80');
-      expect(squares[2]).toHaveClass('bg-secondary/60');
-    });
-
-    it('applies accent color variant correctly', () => {
-      const { container } = render(<LoadingIndicator variant="accent" />);
-      
-      const squares = container.querySelectorAll('.animate-pulse');
-      expect(squares[0]).toHaveClass('bg-accent');
-      expect(squares[1]).toHaveClass('bg-accent/80');
-      expect(squares[2]).toHaveClass('bg-accent/60');
+    colorTests.forEach(({ variant, props, expectedSquareClasses }) => {
+      it(`applies ${variant} color variant correctly`, () => {
+        const { container } = render(<LoadingIndicator {...props} />);
+        
+        const squares = container.querySelectorAll('.animate-pulse');
+        expectedSquareClasses.forEach((expectedClass, index) => {
+          expect(squares[index]).toHaveClass(expectedClass);
+        });
+      });
     });
 
     it('defaults to default variant when variant prop is not provided', () => {
@@ -175,42 +170,37 @@ describe('LoadingIndicator', () => {
     it('does not display message when not provided', () => {
       const { container } = render(<LoadingIndicator />);
       
-      // Look for any paragraph tags that would contain a message
       const messageParagraph = container.querySelector('p');
       expect(messageParagraph).not.toBeInTheDocument();
     });
 
-    it('applies correct message styling', () => {
+    describe('Message sizing', () => {
+      const messageSizeTests = [
+        { size: 'sm' as const, expectedClass: 'text-xs' },
+        { size: 'md' as const, expectedClass: 'text-sm' },
+        { size: 'lg' as const, expectedClass: 'text-base' }
+      ];
+
+      messageSizeTests.forEach(({ size, expectedClass }) => {
+        it(`applies correct message size for ${size} indicator`, () => {
+          const message = 'Loading...';
+          render(<LoadingIndicator message={message} size={size} />);
+          
+          const messageParagraph = screen.getByText(message);
+          expect(messageParagraph).toHaveClass(expectedClass);
+        });
+      });
+    });
+
+    it('applies correct base message styling', () => {
       const message = 'Loading...';
       render(<LoadingIndicator message={message} size="md" />);
       
       const messageParagraph = screen.getByText(message);
-      expect(messageParagraph).toHaveClass(
-        'text-text-secondary',
-        'font-mono',
-        'font-bold',
-        'uppercase',
-        'tracking-wide',
-        'mt-4',
-        'text-center',
-        'text-sm' // md size uses text-sm
-      );
-    });
-
-    it('applies correct message size for small indicator', () => {
-      const message = 'Loading...';
-      render(<LoadingIndicator message={message} size="sm" />);
-      
-      const messageParagraph = screen.getByText(message);
-      expect(messageParagraph).toHaveClass('text-xs');
-    });
-
-    it('applies correct message size for large indicator', () => {
-      const message = 'Loading...';
-      render(<LoadingIndicator message={message} size="lg" />);
-      
-      const messageParagraph = screen.getByText(message);
-      expect(messageParagraph).toHaveClass('text-base');
+      expectElementToHaveClasses(messageParagraph, [
+        'text-text-secondary', 'font-mono', 'font-bold',
+        'uppercase', 'tracking-wide', 'mt-4', 'text-center'
+      ]);
     });
 
     it('displays message in both centered and inline modes', () => {
@@ -260,35 +250,19 @@ describe('LoadingIndicator', () => {
     });
   });
 
-  describe('Animation Delays and Styling', () => {
-    it('applies correct animation delays to squares', () => {
+  describe('Animation and Styling', () => {
+    it('applies correct animation delays and styling to squares', () => {
       const { container } = render(<LoadingIndicator />);
       
       const squares = container.querySelectorAll('.animate-pulse');
-      expect(squares[0]).toHaveStyle({ animationDelay: '0ms' });
-      expect(squares[1]).toHaveStyle({ animationDelay: '200ms' });
-      expect(squares[2]).toHaveStyle({ animationDelay: '400ms' });
-    });
-
-    it('applies pulse animation to all squares', () => {
-      const { container } = render(<LoadingIndicator />);
+      const expectedDelays = ['0ms', '200ms', '400ms'];
       
-      const squares = container.querySelectorAll('.animate-pulse');
-      squares.forEach(square => {
+      squares.forEach((square, index) => {
+        expect(square).toHaveStyle({ animationDelay: expectedDelays[index] });
         expect(square).toHaveClass('animate-pulse');
-      });
-    });
-
-    it('applies brutal styling to squares', () => {
-      const { container } = render(<LoadingIndicator />);
-      
-      const squares = container.querySelectorAll('.animate-pulse');
-      squares.forEach(square => {
-        expect(square).toHaveClass(
-          'border-brutal-sm',
-          'border-text-primary',
-          'flex-shrink-0'
-        );
+        expectElementToHaveClasses(square as HTMLElement, [
+          'border-brutal-sm', 'border-text-primary', 'flex-shrink-0'
+        ]);
       });
     });
 
@@ -300,45 +274,43 @@ describe('LoadingIndicator', () => {
     });
   });
 
-  describe('Accessibility Considerations', () => {
-    it('provides testId for automated testing', () => {
-      render(<LoadingIndicator />);
-      
-      const indicator = screen.getByTestId('loading-indicator');
-      expect(indicator).toBeInTheDocument();
+  describe('Accessibility', () => {
+    const accessibilityTests = [
+      {
+        name: 'provides default testId',
+        props: {},
+        expectedTestId: 'loading-indicator'
+      },
+      {
+        name: 'accepts custom testId',
+        props: { testId: 'dashboard-loading' },
+        expectedTestId: 'dashboard-loading'
+      }
+    ];
+
+    accessibilityTests.forEach(({ name, props, expectedTestId }) => {
+      it(name, () => {
+        render(<LoadingIndicator {...props} />);
+        expect(screen.getByTestId(expectedTestId)).toBeInTheDocument();
+      });
     });
 
-    it('accepts custom testId for better test identification', () => {
-      const customTestId = 'dashboard-loading';
-      render(<LoadingIndicator testId={customTestId} />);
-      
-      expect(screen.getByTestId(customTestId)).toBeInTheDocument();
-    });
-
-    it('provides semantic message text when message is provided', () => {
+    it('uses semantic HTML structure with proper message element', () => {
       const message = 'Loading your data, please wait...';
-      render(<LoadingIndicator message={message} />);
+      const { container } = render(<LoadingIndicator message={message} />);
       
-      // Message should be accessible to screen readers
+      expect(container.firstChild?.nodeName).toBe('DIV');
       const messageElement = screen.getByText(message);
       expect(messageElement.tagName.toLowerCase()).toBe('p');
     });
 
-    it('maintains accessible contrast with brutal borders', () => {
+    it('maintains accessible contrast', () => {
       const { container } = render(<LoadingIndicator />);
       
       const squares = container.querySelectorAll('.animate-pulse');
       squares.forEach(square => {
         expect(square).toHaveClass('border-text-primary');
       });
-    });
-
-    it('uses semantic HTML structure', () => {
-      const { container } = render(<LoadingIndicator message="Loading..." />);
-      
-      // Should use div for container and p for message
-      expect(container.firstChild?.nodeName).toBe('DIV');
-      expect(screen.getByText('Loading...').tagName.toLowerCase()).toBe('p');
     });
   });
 
@@ -351,64 +323,61 @@ describe('LoadingIndicator', () => {
         variants.forEach(variant => {
           const { container, unmount } = render(<LoadingIndicator size={size} variant={variant} />);
           
-          const indicator = screen.getByTestId('loading-indicator');
-          expect(indicator).toBeInTheDocument();
-          
-          const squares = container.querySelectorAll('.animate-pulse');
-          expect(squares).toHaveLength(3);
+          expect(screen.getByTestId('loading-indicator')).toBeInTheDocument();
+          expect(container.querySelectorAll('.animate-pulse')).toHaveLength(3);
           
           unmount();
         });
       });
     });
 
-    it('works with inline mode and custom message combination', () => {
-      const message = 'Processing request...';
-      const { container } = render(<LoadingIndicator inline message={message} />);
-      
-      const indicator = container.firstChild;
-      expect(indicator).toHaveClass('flex', 'flex-col', 'items-center');
-      expect(screen.getByText(message)).toBeInTheDocument();
-    });
+    const integrationTests = [
+      {
+        name: 'works with inline mode and custom message',
+        props: { inline: true, message: 'Processing request...' },
+        test: (container: HTMLElement) => {
+          expect(container.firstChild).toHaveClass('flex', 'flex-col', 'items-center');
+          expect(screen.getByText('Processing request...')).toBeInTheDocument();
+        }
+      },
+      {
+        name: 'maintains proper styling with all props combined',
+        props: {
+          size: 'lg' as const,
+          variant: 'primary' as const,
+          inline: true,
+          message: 'Loading large content...',
+          className: 'custom-loader',
+          testId: 'complex-loader'
+        },
+        test: (container: HTMLElement) => {
+          const indicator = screen.getByTestId('complex-loader');
+          expectElementToHaveClasses(indicator, ['custom-loader', 'flex', 'flex-col', 'items-center']);
+          
+          const squares = container.querySelectorAll('.animate-pulse');
+          expect(squares).toHaveLength(3);
+          expectElementToHaveClasses(squares[0] as HTMLElement, ['bg-primary', 'w-6', 'h-6']);
+          
+          const message = screen.getByText('Loading large content...');
+          expect(message).toHaveClass('text-base');
+        }
+      }
+    ];
 
-    it('maintains proper styling with all props combined', () => {
-      const { container } = render(
-        <LoadingIndicator 
-          size="lg"
-          variant="primary"
-          inline
-          message="Loading large content..."
-          className="custom-loader"
-          testId="complex-loader"
-        />
-      );
-      
-      const indicator = screen.getByTestId('complex-loader');
-      expect(indicator).toHaveClass('custom-loader', 'flex', 'flex-col', 'items-center');
-      
-      const squares = container.querySelectorAll('.animate-pulse');
-      expect(squares).toHaveLength(3);
-      expect(squares[0]).toHaveClass('bg-primary', 'w-6', 'h-6');
-      
-      const message = screen.getByText('Loading large content...');
-      expect(message).toHaveClass('text-base'); // lg size uses text-base
+    integrationTests.forEach(({ name, props, test }) => {
+      it(name, () => {
+        const { container } = render(<LoadingIndicator {...props} />);
+        test(container);
+      });
     });
   });
 
   describe('Component Lifecycle', () => {
-    it('renders immediately without delays', () => {
-      const { container } = render(<LoadingIndicator />);
+    it('renders immediately and handles lifecycle correctly', () => {
+      const { container, unmount } = render(<LoadingIndicator />);
       
-      const indicator = screen.getByTestId('loading-indicator');
-      expect(indicator).toBeInTheDocument();
-      
-      const squares = container.querySelectorAll('.animate-pulse');
-      expect(squares).toHaveLength(3);
-    });
-
-    it('can be unmounted cleanly', () => {
-      const { unmount } = render(<LoadingIndicator />);
-      
+      expect(screen.getByTestId('loading-indicator')).toBeInTheDocument();
+      expect(container.querySelectorAll('.animate-pulse')).toHaveLength(3);
       expect(() => unmount()).not.toThrow();
     });
 
@@ -416,15 +385,13 @@ describe('LoadingIndicator', () => {
       const { rerender, container } = render(<LoadingIndicator size="sm" />);
       
       let squares = container.querySelectorAll('.animate-pulse');
-      expect(squares[0]).toHaveClass('w-3', 'h-3');
+      expectElementToHaveClasses(squares[0] as HTMLElement, ['w-3', 'h-3']);
       
       rerender(<LoadingIndicator size="lg" />);
       squares = container.querySelectorAll('.animate-pulse');
-      expect(squares[0]).toHaveClass('w-6', 'h-6');
+      expectElementToHaveClasses(squares[0] as HTMLElement, ['w-6', 'h-6']);
     });
-  });
 
-  describe('Display Name', () => {
     it('has correct displayName for debugging', () => {
       expect(LoadingIndicator.displayName).toBe('LoadingIndicator');
     });

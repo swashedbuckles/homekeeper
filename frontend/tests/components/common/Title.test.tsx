@@ -2,53 +2,73 @@ import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import { Title } from '../../../src/components/common/Title';
 
+// Helper function to render Title and get heading element
+const renderTitle = (children = 'Test Title', props = {}) => {
+  render(<Title {...props}>{children}</Title>);
+  return screen.getByRole('heading', { level: 1 });
+};
+
 describe('Title Component', () => {
-  describe('Title (primary component)', () => {
-    it('renders children content', () => {
-      render(<Title>Test Title</Title>);
-      
-      expect(screen.getByText('Test Title')).toBeInTheDocument();
-    });
+  const titleTests = [
+    {
+      name: 'renders children content',
+      test: () => {
+        renderTitle();
+        expect(screen.getByText('Test Title')).toBeInTheDocument();
+      }
+    },
+    {
+      name: 'renders as h1 by default (page variant)',
+      test: () => {
+        const heading = renderTitle('Page Title');
+        expect(heading).toBeInTheDocument();
+      }
+    },
+    {
+      name: 'renders as h1 for hero variant',
+      test: () => {
+        const heading = renderTitle('Hero Title', { variant: 'hero' });
+        expect(heading).toBeInTheDocument();
+      }
+    },
+    {
+      name: 'applies correct styles for hero variant',
+      test: () => {
+        const heading = renderTitle('Hero Title', { variant: 'hero' });
+        const expectedClasses = [
+          'font-mono', 'font-black', 'uppercase', 'tracking-wide', 
+          'text-text-primary', 'leading-none', 'text-5xl', 'md:text-7xl', 
+          'lg:text-8xl', 'mb-6'
+        ];
+        expectedClasses.forEach(className => {
+          expect(heading).toHaveClass(className);
+        });
+      }
+    },
+    {
+      name: 'applies text shadow when specified',
+      test: () => {
+        const heading = renderTitle('Title with shadow', { textShadow: 'orange' });
+        expect(heading).toHaveClass('brutal-text-shadow');
+      }
+    },
+    {
+      name: 'applies rotation when specified',
+      test: () => {
+        const heading = renderTitle('Rotated Title', { rotation: 'slight-left' });
+        expect(heading).toHaveClass('brutal-rotate-slight-left');
+      }
+    },
+    {
+      name: 'applies custom testId',
+      test: () => {
+        renderTitle('Title', { testId: 'custom-title' });
+        expect(screen.getByTestId('custom-title')).toBeInTheDocument();
+      }
+    }
+  ];
 
-    it('renders as h1 by default (page variant)', () => {
-      render(<Title>Page Title</Title>);
-      
-      const heading = screen.getByRole('heading', { level: 1 });
-      expect(heading).toBeInTheDocument();
-    });
-
-    it('renders as h1 for hero variant', () => {
-      render(<Title variant="hero">Hero Title</Title>);
-      
-      const heading = screen.getByRole('heading', { level: 1 });
-      expect(heading).toBeInTheDocument();
-    });
-
-    it('applies correct styles for hero variant', () => {
-      render(<Title variant="hero">Hero Title</Title>);
-      
-      const heading = screen.getByRole('heading');
-      expect(heading).toHaveClass('font-mono', 'font-black', 'uppercase', 'tracking-wide', 'text-text-primary', 'leading-none', 'text-5xl', 'md:text-7xl', 'lg:text-8xl', 'mb-6');
-    });
-
-    it('applies text shadow when specified', () => {
-      render(<Title textShadow="orange">Title with shadow</Title>);
-      
-      const heading = screen.getByRole('heading');
-      expect(heading).toHaveClass('brutal-text-shadow');
-    });
-
-    it('applies rotation when specified', () => {
-      render(<Title rotation="slight-left">Rotated Title</Title>);
-      
-      const heading = screen.getByRole('heading');
-      expect(heading).toHaveClass('brutal-rotate-slight-left');
-    });
-
-    it('applies custom testId', () => {
-      render(<Title testId="custom-title">Title</Title>);
-      
-      expect(screen.getByTestId('custom-title')).toBeInTheDocument();
-    });
+  titleTests.forEach(({ name, test }) => {
+    it(name, test);
   });
 });

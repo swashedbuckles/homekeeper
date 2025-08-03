@@ -5,12 +5,38 @@ import { LoginForm } from '../../../src/components/fragments/LoginForm';
 import { TestAuthProvider } from '../../helpers/testProviderUtils';
 import { createMockUser } from '../../helpers/testUtils';
 
+// Helper function to render LoginForm with test setup
 const renderLoginForm = (onSuccess = vi.fn()) => {
   return render(
     <TestAuthProvider>
       <LoginForm onSuccess={onSuccess} />
     </TestAuthProvider>
   );
+};
+
+// Helper function to setup form input values
+const fillLoginForm = (email = 'test@example.com', password = 'password123') => {
+  fireEvent.change(screen.getByTestId('email-input'), { target: { value: email } });
+  fireEvent.change(screen.getByTestId('password-input'), { target: { value: password } });
+};
+
+// Helper function to mock successful login response
+const mockSuccessfulLogin = (user: any) => {
+  fetchMock.route({
+    url: 'path:/auth/login', 
+    response: {
+      status: 200,
+      body: { data: user }
+    }
+  });
+
+  fetchMock.route({
+    url: 'path:/auth/csrf-token', 
+    response: {
+      status: 200,
+      body: { csrfToken: 'mock-token' }
+    }
+  });
 };
 
 describe('LoginForm', () => {
@@ -32,24 +58,10 @@ describe('LoginForm', () => {
     const mockUser = createMockUser();
     const onSuccess = vi.fn();
     
-    fetchMock.route({
-      url: 'path:/auth/login', 
-      response: {
-        status: 200,
-        body: { data: mockUser }}
-    });
-
-    fetchMock.route({
-      url: 'path:/auth/csrf-token', 
-      response: {
-        status: 200,
-        body: { csrfToken: 'mock-token' }}
-    });
-    
+    mockSuccessfulLogin(mockUser);
     renderLoginForm(onSuccess);
     
-    fireEvent.change(screen.getByTestId('email-input'), { target: { value: 'test@example.com' } });
-    fireEvent.change(screen.getByTestId('password-input'), { target: { value: 'password123' } });
+    fillLoginForm();
     fireEvent.click(screen.getByTestId('submit-button'));
     
     await waitFor(() => {
@@ -58,27 +70,26 @@ describe('LoginForm', () => {
   });
 
   it('shows error message on login failure', async () => {
-      fetchMock.route({
-        url: 'path:/auth/refresh',
-        response: {
-          status: 401,
-          body: { error: 'Session expired' }
-        }
-      });
+    fetchMock.route({
+      url: 'path:/auth/refresh',
+      response: {
+        status: 401,
+        body: { error: 'Session expired' }
+      }
+    });
 
-      fetchMock.route({
-        url: 'path:/auth/login',
-        allowRelativeUrls: true,
-        response: {
-          status: 401,
-          body: { error: 'Invalid credentials' }
-        }
-      });
+    fetchMock.route({
+      url: 'path:/auth/login',
+      allowRelativeUrls: true,
+      response: {
+        status: 401,
+        body: { error: 'Invalid credentials' }
+      }
+    });
     
     renderLoginForm();
     
-    fireEvent.change(screen.getByTestId('email-input'), { target: { value: 'test@example.com' } });
-    fireEvent.change(screen.getByTestId('password-input'), { target: { value: 'wrongpassword' } });
+    fillLoginForm('test@example.com', 'wrongpassword');
     fireEvent.click(screen.getByTestId('submit-button'));
     
     await waitFor(() => {
@@ -87,7 +98,6 @@ describe('LoginForm', () => {
   });
 
   it('shows loading state during submission', async () => {
-    
     fetchMock.route({
       url: 'path:/auth/login', 
       response: new Promise(() => {})
@@ -97,13 +107,13 @@ describe('LoginForm', () => {
       url: 'path:/auth/csrf-token', 
       response: {
         status: 200,
-        body: { csrfToken: 'mock-token' }}
+        body: { csrfToken: 'mock-token' }
+      }
     });
     
     renderLoginForm();
     
-    fireEvent.change(screen.getByTestId('email-input'), { target: { value: 'test@example.com' } });
-    fireEvent.change(screen.getByTestId('password-input'), { target: { value: 'password123' } });
+    fillLoginForm();
     fireEvent.click(screen.getByTestId('submit-button'));
     
     await waitFor(() => {

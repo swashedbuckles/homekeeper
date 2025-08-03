@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { apiRequest, API_BASE_URL, clearCsrfToken } from '../../src/lib/apiClient';
 import { ApiError } from '../../src/lib/types/apiError';
 import { createMockUser } from '../helpers/testUtils';
+import { mockApiSuccess, mockApiError, expectApiError } from '../helpers/apiTestHelpers';
 
 describe('apiClient', () => {
   beforeEach(() => {
@@ -114,51 +115,44 @@ describe('apiClient', () => {
       expect(result).toEqual(directData);
     });
 
-    it('should handle response without data wrapper', async () => {
-      const directData = { message: 'Success' };
-      fetchMock.route({
-        url: 'path:/direct',
-        allowRelativeUrls: true,
-        response: directData
-      });
-
-      const result = await apiRequest('/direct');
-      expect(result).toEqual(directData);
-    });
-
     describe('Error handling', () => {
-      it('should throw ApiError for HTTP error status', async () => {
-        fetchMock.route({
-          url: 'path:/error',
-          allowRelativeUrls: true,
-          response: {
-            status: 400,
-            body: { error: 'Bad Request' }
-          }
-        });
-
-        await expect(apiRequest('/error')).rejects.toThrow(ApiError);
-
-        try {
-          await apiRequest('/error');
-        } catch (error) {
-          expect(error).toBeInstanceOf(ApiError);
-          expect((error as ApiError).statusCode).toBe(400);
-          expect((error as ApiError).message).toBe('Bad Request');
+      const errorScenarios = [
+        {
+          name: 'should throw ApiError for HTTP error status',
+          endpoint: '/error',
+          statusCode: 400,
+          errorMessage: 'Bad Request',
+          verifyDetails: true
+        },
+        {
+          name: 'should throw ApiError for 500 server error',
+          endpoint: '/server-error',
+          statusCode: 500,
+          errorMessage: 'Internal Server Error',
+          verifyDetails: false
         }
-      });
+      ];
 
-      it('should throw ApiError for 500 server error', async () => {
-        fetchMock.route({
-          url: 'path:/server-error',
-          allowRelativeUrls: true,
-          response: {
-            status: 500,
-            body: { error: 'Internal Server Error' }
+      errorScenarios.forEach(({ name, endpoint, statusCode, errorMessage, verifyDetails }) => {
+        it(name, async () => {
+          mockApiError(endpoint, statusCode, errorMessage);
+
+          await expectApiError(
+            () => apiRequest(endpoint),
+            statusCode,
+            errorMessage
+          );
+
+          if (verifyDetails) {
+            try {
+              await apiRequest(endpoint);
+            } catch (error) {
+              expect(error).toBeInstanceOf(ApiError);
+              expect((error as ApiError).statusCode).toBe(statusCode);
+              expect((error as ApiError).message).toBe(errorMessage);
+            }
           }
         });
-
-        await expect(apiRequest('/server-error')).rejects.toThrow(ApiError);
       });
 
       it('should handle network errors', async () => {
@@ -203,95 +197,77 @@ describe('apiClient', () => {
       });
 
       it('should not attempt refresh for non-401 errors', async () => {
-        fetchMock.route({
-          url: 'path:/forbidden',
-          allowRelativeUrls: true,
-          response: { status: 403, body: { error: 'Forbidden' } }
-        });
+        mockApiError('/forbidden', 403, 'Forbidden');
+        mockApiSuccess('/auth/refresh', { message: 'Token refreshed successfully' });
 
-        fetchMock.route({
-          url: 'path:/auth/refresh',
-          method: 'POST',
-          response: { status: 200, body: { message: 'Token refreshed successfully' } }
-        });
-
-        await expect(apiRequest('/forbidden')).rejects.toThrow(ApiError);
+        await expectApiError(
+          () => apiRequest('/forbidden'),
+          403,
+          'Forbidden'
+        );
         expect(fetchMock.callHistory.calls('path:/auth/refresh').length).toBe(0);
       });
     });
 
     describe('JWT Refresh handling', () => {
       beforeEach(() => {
-        fetchMock.route({
-          url: 'path:/auth/refresh',
-          method: 'POST',
-          response: { status: 200, body: { message: 'Token refreshed successfully' } }
-        });
+        mockApiSuccess('/auth/refresh', { message: 'Token refreshed successfully' });
       });
 
-      it('should NOT attempt refresh for auth endpoints on 401', async () => {
-        fetchMock.route({
-          url: 'path:/auth/login',
+      const authEndpointScenarios = [
+        {
+          name: 'should NOT attempt refresh for auth endpoints on 401',
+          endpoint: '/auth/login',
           method: 'POST',
-          response: { status: 401, body: { error: 'Invalid credentials' } }
-        });
-
-        await expect(apiRequest('/auth/login', { method: 'POST' })).rejects.toThrow(ApiError);
-        
-        // Should not attempt refresh for auth endpoints
-        expect(fetchMock.callHistory.calls('path:/auth/refresh').length).toBe(0);
-        expect(fetchMock.callHistory.calls('path:/auth/login').length).toBe(1);
-      });
-
-      it('should NOT attempt refresh for auth/register endpoint on 401', async () => {
-        fetchMock.route({
-          url: 'path:/auth/register',
+          errorMessage: 'Invalid credentials'
+        },
+        {
+          name: 'should NOT attempt refresh for auth/register endpoint on 401',
+          endpoint: '/auth/register',
           method: 'POST',
-          response: { status: 401, body: { error: 'Registration failed' } }
-        });
-
-        await expect(apiRequest('/auth/register', { method: 'POST' })).rejects.toThrow(ApiError);
-        
-        expect(fetchMock.callHistory.calls('path:/auth/refresh').length).toBe(0);
-      });
-
-      it('should NOT attempt refresh for auth/logout endpoint on 401', async () => {
-        fetchMock.route({
-          url: 'path:/auth/logout',
+          errorMessage: 'Registration failed'
+        },
+        {
+          name: 'should NOT attempt refresh for auth/logout endpoint on 401',
+          endpoint: '/auth/logout',
           method: 'POST',
-          response: { status: 401, body: { error: 'Logout failed' } }
+          errorMessage: 'Logout failed'
+        },
+        {
+          name: 'should NOT attempt refresh for csrf-token endpoint on 401',
+          endpoint: '/auth/csrf-token',
+          method: undefined,
+          errorMessage: 'Unauthorized'
+        }
+      ];
+
+      authEndpointScenarios.forEach(({ name, endpoint, method, errorMessage }) => {
+        it(name, async () => {
+          mockApiError(endpoint, 401, errorMessage);
+
+          const requestOptions = method ? { method } : undefined;
+          await expectApiError(
+            () => apiRequest(endpoint, requestOptions),
+            401,
+            errorMessage
+          );
+          
+          // Should not attempt refresh for auth endpoints
+          expect(fetchMock.callHistory.calls('path:/auth/refresh').length).toBe(0);
         });
-
-        await expect(apiRequest('/auth/logout', { method: 'POST' })).rejects.toThrow(ApiError);
-        
-        expect(fetchMock.callHistory.calls('path:/auth/refresh').length).toBe(0);
-      });
-
-      it('should NOT attempt refresh for csrf-token endpoint on 401', async () => {
-        fetchMock.route({
-          url: 'path:/auth/csrf-token',
-          response: { status: 401, body: { error: 'Unauthorized' } }
-        });
-
-        await expect(apiRequest('/auth/csrf-token')).rejects.toThrow(ApiError);
-        
-        expect(fetchMock.callHistory.calls('path:/auth/refresh').length).toBe(0);
       });
 
       it('should retry request after 401 and successful refresh', async () => {
         fetchMock.once({
           url: 'path:/protected',
           method: 'POST',
-          response: 
-            { status: 401, body: { error: 'Unauthorized' } },
+          response: { status: 401, body: { error: 'Unauthorized' } }
         });
 
         fetchMock.once({
           url: 'path:/protected',
           method: 'POST',
-          response: 
-            { status: 200, body: { data: 'success' } }
-          
+          response: { status: 200, body: { data: 'success' } }
         });
 
         fetchMock.route({
@@ -374,15 +350,13 @@ describe('apiClient', () => {
         fetchMock.once({
           url: 'path:/unauthorized',
           allowRelativeUrls: true,
-          response: 
-            { status: 401, body: { error: 'Unauthorized' } },
+          response: { status: 401, body: { error: 'Unauthorized' } }
         });
 
         fetchMock.once({
           url: 'path:/unauthorized',
           allowRelativeUrls: true,
-          response: 
-            { status: 200, body: { data: 'success after refresh' } }
+          response: { status: 200, body: { data: 'success after refresh' } }
         });
 
         const result = await apiRequest('/unauthorized');
@@ -462,38 +436,51 @@ describe('apiClient', () => {
         });
       });
 
-      it('should only fetches a token if needed', async () => {
-        await apiRequest('/protected', { method: 'POST' });
-        expect(fetchMock.callHistory.called('path:/auth/csrf-token')).toBe(true);
+      const csrfTokenTests = [
+        {
+          name: 'should only fetches a token if needed',
+          test: async () => {
+            await apiRequest('/protected', { method: 'POST' });
+            expect(fetchMock.callHistory.called('path:/auth/csrf-token')).toBe(true);
 
-        await apiRequest('/protected', { method: 'POST' });
-        expect(fetchMock.callHistory.calls('path:/auth/csrf-token').length).toEqual(1);
-      });
+            await apiRequest('/protected', { method: 'POST' });
+            expect(fetchMock.callHistory.calls('path:/auth/csrf-token').length).toEqual(1);
+          }
+        },
+        {
+          name: 'should add header to protected methods',
+          test: async () => {
+            await apiRequest('/protected', { method: 'POST' });
+            const apiCall = fetchMock.callHistory.calls('path:/protected')[0];
+            const options = apiCall?.options;
 
-      it('should add header to protected methods', async () => {
-        await apiRequest('/protected', { method: 'POST' });
-        const apiCall = fetchMock.callHistory.calls('path:/protected')[0];
-        const options = apiCall?.options;
+            expect(options?.method).toBe('post');
+            expect(options?.headers).toEqual(
+              expect.objectContaining({
+                'x-csrf-token': 'mock-csrf-token',
+                'content-type': 'application/json',
+              }));
+          }
+        },
+        {
+          name: 'should not add header to any auth endpoint',
+          test: async () => {
+            await apiRequest('/auth/login', { method: 'POST' });
+            const apiCall = fetchMock.callHistory.calls('path:/auth/login')[0];
+            const options = apiCall?.options;
 
-        expect(options?.method).toBe('post');
-        expect(options?.headers).toEqual(
-          expect.objectContaining({
-            'x-csrf-token': 'mock-csrf-token',
-            'content-type': 'application/json',
-          }));
-      });
+            expect(options?.method).toBe('post');
+            expect(options?.headers).toEqual(
+              expect.objectContaining({
+                'content-type': 'application/json',
+              }));
+            expect(options?.headers).not.toHaveProperty('x-csrf-token');
+          }
+        }
+      ];
 
-      it('should not add header to any auth endpoint', async () => {
-        await apiRequest('/auth/login', { method: 'POST' });
-        const apiCall = fetchMock.callHistory.calls('path:/auth/login')[0];
-        const options = apiCall?.options;
-
-        expect(options?.method).toBe('post');
-        expect(options?.headers).toEqual(
-          expect.objectContaining({
-            'content-type': 'application/json',
-          }));
-        expect(options?.headers).not.toHaveProperty('x-csrf-token');
+      csrfTokenTests.forEach(({ name, test }) => {
+        it(name, test);
       });
 
       it('should have a way to clear the token', async () => {

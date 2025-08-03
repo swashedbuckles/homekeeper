@@ -1,12 +1,18 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import { Badge } from '../../../src/components/common/Badge';
+import { expectTestIdToHaveClasses } from '../../helpers/testHelpers';
+import { createVariantTests, createSizeTests, createBasicRenderingTests } from '../../helpers/componentTestHelpers';
 
 describe('Badge', () => {
-  it('renders children correctly', () => {
-    render(<Badge>Test Badge</Badge>);
-    expect(screen.getByText('Test Badge')).toBeInTheDocument();
-  });
+  // Basic rendering tests
+  createBasicRenderingTests('Badge', Badge, [
+    {
+      description: 'renders children correctly',
+      props: { children: 'Test Badge' } as any,
+      expectedText: 'Test Badge'
+    }
+  ]);
 
   it('renders with default props', () => {
     render(<Badge>Default</Badge>);
@@ -18,93 +24,81 @@ describe('Badge', () => {
     expect(badge).toHaveClass('rounded-none'); // default variant status
   });
 
-  describe('variants', () => {
-    it('renders status variant correctly', () => {
-      render(<Badge variant="status">STATUS</Badge>);
-      const badge = screen.getByTestId('badge');
-      
-      expect(badge).toHaveClass('rounded-none');
-      expect(badge).toHaveClass('px-3'); // from size system
-      expect(badge).toHaveClass('py-2'); // from size system
-    });
+  // Variant tests using factory
+  createVariantTests('Badge', Badge, [
+    {
+      name: 'status',
+      props: { variant: 'status', children: 'STATUS' },
+      expectedClasses: ['rounded-none', 'px-3', 'py-2'],
+      testId: 'badge'
+    },
+    {
+      name: 'category',
+      props: { variant: 'category', children: 'CATEGORY' },
+      expectedClasses: ['rounded-none', 'px-3', 'py-2'],
+      testId: 'badge'
+    },
+    {
+      name: 'count',
+      props: { variant: 'count', children: '3' },
+      expectedClasses: ['rounded-full', 'min-w-[2rem]', 'px-3', 'py-2'],
+      testId: 'badge'
+    }
+  ]);
 
-    it('renders category variant correctly', () => {
-      render(<Badge variant="category">CATEGORY</Badge>);
-      const badge = screen.getByTestId('badge');
-      
-      expect(badge).toHaveClass('rounded-none');
-      expect(badge).toHaveClass('px-3'); // from size system
-      expect(badge).toHaveClass('py-2'); // from size system
-    });
+  // Color tests using factory  
+  createVariantTests('Badge', Badge, [
+    {
+      name: 'primary color',
+      props: { color: 'primary', children: 'Primary' },
+      expectedClasses: ['bg-primary', 'text-white', 'brutal-shadow-dark'],
+      testId: 'badge'
+    },
+    {
+      name: 'error color',
+      props: { color: 'error', children: 'Error' },
+      expectedClasses: ['bg-error', 'text-white', 'brutal-shadow-dark'],
+      testId: 'badge'
+    },
+    {
+      name: 'dark color',
+      props: { color: 'dark', children: 'Dark' },
+      expectedClasses: ['bg-text-primary', 'text-white', 'brutal-shadow-primary'],
+      testId: 'badge'
+    },
+    {
+      name: 'accent color',
+      props: { color: 'accent', children: 'Accent' },
+      expectedClasses: ['bg-accent', 'text-white', 'brutal-shadow-dark'],
+      testId: 'badge'
+    }
+  ]);
 
-    it('renders count variant correctly', () => {
-      render(<Badge variant="count">3</Badge>);
-      const badge = screen.getByTestId('badge');
-      
-      expect(badge).toHaveClass('rounded-full', 'min-w-[2rem]');
-      expect(badge).toHaveClass('px-3'); // from size system
-      expect(badge).toHaveClass('py-2'); // from size system
-    });
-  });
-
-  describe('colors', () => {
-    it('renders primary color correctly', () => {
-      render(<Badge color="primary">Primary</Badge>);
-      const badge = screen.getByTestId('badge');
-      
-      expect(badge).toHaveClass('bg-primary', 'text-white', 'brutal-shadow-dark');
-    });
-
-    it('renders error color correctly', () => {
-      render(<Badge color="error">Error</Badge>);
-      const badge = screen.getByTestId('badge');
-      
-      expect(badge).toHaveClass('bg-error', 'text-white', 'brutal-shadow-dark');
-    });
-
-    it('renders dark color correctly', () => {
-      render(<Badge color="dark">Dark</Badge>);
-      const badge = screen.getByTestId('badge');
-      
-      expect(badge).toHaveClass('bg-text-primary', 'text-white', 'brutal-shadow-primary');
-    });
-
-    it('renders accent color correctly', () => {
-      render(<Badge color="accent">Accent</Badge>);
-      const badge = screen.getByTestId('badge');
-      
-      expect(badge).toHaveClass('bg-accent', 'text-white', 'brutal-shadow-dark');
-    });
-  });
-
-  describe('sizes', () => {
-    it('renders small size correctly', () => {
-      render(<Badge size="sm">Small</Badge>);
-      const badge = screen.getByTestId('badge');
-      
-      expect(badge).toHaveClass('text-sm', 'px-3', 'py-2');
-    });
-
-    it('renders medium size correctly', () => {
-      render(<Badge size="md">Medium</Badge>);
-      const badge = screen.getByTestId('badge');
-      
-      expect(badge).toHaveClass('text-base', 'px-4', 'py-3');
-    });
-
-    it('renders large size correctly', () => {
-      render(<Badge size="lg">Large</Badge>);
-      const badge = screen.getByTestId('badge');
-      
-      expect(badge).toHaveClass('text-lg', 'px-6', 'py-4');
-    });
-  });
+  // Size tests using factory
+  createSizeTests('Badge', Badge, [
+    {
+      size: 'sm',
+      props: { size: 'sm', children: 'Small' },
+      expectedClasses: ['text-sm', 'px-3', 'py-2'],
+      testId: 'badge'
+    },
+    {
+      size: 'md', 
+      props: { size: 'md', children: 'Medium' },
+      expectedClasses: ['text-base', 'px-4', 'py-3'],
+      testId: 'badge'
+    },
+    {
+      size: 'lg',
+      props: { size: 'lg', children: 'Large' },
+      expectedClasses: ['text-lg', 'px-6', 'py-4'],
+      testId: 'badge'
+    }
+  ]);
 
   it('applies custom className', () => {
     render(<Badge className="custom-class">Custom</Badge>);
-    const badge = screen.getByTestId('badge');
-    
-    expect(badge).toHaveClass('custom-class');
+    expectTestIdToHaveClasses('badge', ['custom-class']);
   });
 
   it('uses custom testId', () => {
@@ -115,54 +109,29 @@ describe('Badge', () => {
 
   it('applies base styles consistently', () => {
     render(<Badge>Base Styles</Badge>);
-    const badge = screen.getByTestId('badge');
-    
-    expect(badge).toHaveClass(
-      'font-mono',
-      'font-black',
-      'uppercase',
-      'tracking-wider',
-      'inline-flex',
-      'items-center',
-      'justify-center',
-      'border-text-primary',
-      'whitespace-nowrap'
-    );
-    expect(badge).toHaveClass('border-brutal-sm'); // from size system
+    expectTestIdToHaveClasses('badge', [
+      'font-mono', 'font-black', 'uppercase', 'tracking-wider', 
+      'inline-flex', 'items-center', 'justify-center', 'border-text-primary', 
+      'whitespace-nowrap', 'border-brutal-sm'
+    ]);
   });
 
-  describe('real-world usage examples', () => {
-    it('renders overdue status badge', () => {
-      render(
-        <Badge variant="status" color="error" size="sm">
-          OVERDUE
-        </Badge>
-      );
-      
-      const badge = screen.getByText('OVERDUE');
-      expect(badge).toHaveClass('bg-error', 'text-sm');
-    });
-
-    it('renders category badge for HVAC', () => {
-      render(
-        <Badge variant="category" color="primary">
-          HVAC
-        </Badge>
-      );
-      
-      const badge = screen.getByText('HVAC');
-      expect(badge).toHaveClass('bg-primary', 'rounded-none');
-    });
-
-    it('renders notification count badge', () => {
-      render(
-        <Badge variant="count" color="accent" size="sm">
-          3
-        </Badge>
-      );
-      
-      const badge = screen.getByText('3');
-      expect(badge).toHaveClass('bg-accent', 'rounded-full', 'min-w-[2rem]');
-    });
-  });
+  // Real-world usage integration tests
+  createBasicRenderingTests('Badge', Badge, [
+    {
+      description: 'renders overdue status badge',
+      props: { variant: 'status', color: 'error', size: 'sm', children: 'OVERDUE' } as any,
+      expectedText: 'OVERDUE'
+    },
+    {
+      description: 'renders category badge for HVAC',
+      props: { variant: 'category', color: 'primary', children: 'HVAC' } as any,
+      expectedText: 'HVAC'
+    },
+    {
+      description: 'renders notification count badge',
+      props: { variant: 'count', color: 'accent', size: 'sm', children: '3' } as any,
+      expectedText: '3'
+    }
+  ]);
 });

@@ -3,6 +3,20 @@ import { getHousehold, getHouseholds, createHousehold, updateHousehold } from '.
 import { apiRequest } from '../../../src/lib/apiClient';
 import { ApiError } from '../../../src/lib/types/apiError';
 
+// Test data factories
+const createMockHousehold = (overrides = {}) => ({
+  id: 'household-123',
+  name: 'Test Household',
+  description: 'A test household',
+  ...overrides
+});
+
+const createApiErrorTest = (statusCode: number, message: string) => ({
+  error: new ApiError(statusCode, message),
+  expectation: (apiCall: () => Promise<any>) => 
+    expect(apiCall()).rejects.toThrow(new ApiError(statusCode, message))
+});
+
 // Mock the apiClient
 vi.mock('../../../src/lib/apiClient', () => ({
   apiRequest: vi.fn()
@@ -17,11 +31,7 @@ describe('household API', () => {
 
   describe('getHousehold', () => {
     it('makes correct API call for valid household ID', async () => {
-      const mockResponse = { data: { 
-        id: 'household-123', 
-        name: 'Test Household',
-        description: 'A test household'
-      }};
+      const mockResponse = { data: createMockHousehold() };
       mockApiRequest.mockResolvedValue(mockResponse);
 
       const result = await getHousehold('household-123');
@@ -30,19 +40,17 @@ describe('household API', () => {
       expect(result).toEqual(mockResponse);
     });
 
-    it('throws ApiError when household ID is empty string', () => {
-      expect(() => getHousehold('')).toThrow(ApiError);
-      expect(() => getHousehold('')).toThrow('Missing household');
-    });
+    const validationTests = [
+      { name: 'throws ApiError when household ID is empty string', input: '' },
+      { name: 'throws ApiError when household ID is null', input: null as any },
+      { name: 'throws ApiError when household ID is undefined', input: undefined as any }
+    ];
 
-    it('throws ApiError when household ID is null', () => {
-      expect(() => getHousehold(null as any)).toThrow(ApiError);
-      expect(() => getHousehold(null as any)).toThrow('Missing household');
-    });
-
-    it('throws ApiError when household ID is undefined', () => {
-      expect(() => getHousehold(undefined as any)).toThrow(ApiError);
-      expect(() => getHousehold(undefined as any)).toThrow('Missing household');
+    validationTests.forEach(({ name, input }) => {
+      it(name, () => {
+        expect(() => getHousehold(input)).toThrow(ApiError);
+        expect(() => getHousehold(input)).toThrow('Missing household');
+      });
     });
 
     it('throws ApiError with correct status code', () => {
@@ -55,18 +63,18 @@ describe('household API', () => {
     });
 
     it('propagates API request errors', async () => {
-      const apiError = new ApiError(404, 'Household not found');
-      mockApiRequest.mockRejectedValue(apiError);
+      const { error } = createApiErrorTest(404, 'Household not found');
+      mockApiRequest.mockRejectedValue(error);
 
-      await expect(getHousehold('nonexistent-id')).rejects.toThrow(apiError);
+      await expect(getHousehold('nonexistent-id')).rejects.toThrow(error);
     });
   });
 
   describe('getHouseholds', () => {
     it('makes correct API call to fetch all households', async () => {
       const mockResponse = {data: [
-        { id: 'household-1', name: 'Household 1' },
-        { id: 'household-2', name: 'Household 2' }
+        createMockHousehold({ id: 'household-1', name: 'Household 1' }),
+        createMockHousehold({ id: 'household-2', name: 'Household 2' })
       ]};
       mockApiRequest.mockResolvedValue(mockResponse);
 
@@ -85,138 +93,106 @@ describe('household API', () => {
     });
 
     it('propagates API request errors', async () => {
-      const apiError = new ApiError(500, 'Server error');
-      mockApiRequest.mockRejectedValue(apiError);
+      const { error } = createApiErrorTest(500, 'Server error');
+      mockApiRequest.mockRejectedValue(error);
 
-      await expect(getHouseholds()).rejects.toThrow(apiError);
+      await expect(getHouseholds()).rejects.toThrow(error);
     });
   });
 
   describe('createHousehold', () => {
-    it('makes correct API call with name only', async () => {
-      const mockResponse = { data: { 
-        id: 'new-household-123', 
-        name: 'New Household',
-        description: undefined
-      }};
-      mockApiRequest.mockResolvedValue(mockResponse);
+    const createHouseholdTests = [
+      {
+        name: 'makes correct API call with name only',
+        args: ['New Household'] as const,
+        expectedBody: { name: 'New Household', description: undefined },
+        mockResponse: { data: createMockHousehold({ id: 'new-household-123', name: 'New Household', description: undefined }) }
+      },
+      {
+        name: 'makes correct API call with name and description',
+        args: ['Family Home', 'Our cozy family home'] as const,
+        expectedBody: { name: 'Family Home', description: 'Our cozy family home' },
+        mockResponse: { data: createMockHousehold({ id: 'new-household-456', name: 'Family Home', description: 'Our cozy family home' }) }
+      },
+      {
+        name: 'handles empty description correctly',
+        args: ['Test House', ''] as const,
+        expectedBody: { name: 'Test House', description: '' },
+        mockResponse: { data: createMockHousehold({ id: 'new-household-789', name: 'Test House', description: '' }) }
+      }
+    ];
 
-      const result = await createHousehold('New Household');
+    createHouseholdTests.forEach(({ name, args, expectedBody, mockResponse }) => {
+      it(name, async () => {
+        mockApiRequest.mockResolvedValue(mockResponse);
 
-      expect(mockApiRequest).toHaveBeenCalledWith('/households', {
-        method: 'POST',
-        body: JSON.stringify({ name: 'New Household', description: undefined })
-      });
-      expect(result).toEqual(mockResponse);
-    });
+        const result = await createHousehold(args[0], args[1]);
 
-    it('makes correct API call with name and description', async () => {
-      const mockResponse = { data: { 
-        id: 'new-household-456', 
-        name: 'Family Home',
-        description: 'Our cozy family home'
-      }};
-      mockApiRequest.mockResolvedValue(mockResponse);
-
-      const result = await createHousehold('Family Home', 'Our cozy family home');
-
-      expect(mockApiRequest).toHaveBeenCalledWith('/households', {
-        method: 'POST',
-        body: JSON.stringify({ 
-          name: 'Family Home', 
-          description: 'Our cozy family home' 
-        })
-      });
-      expect(result).toEqual(mockResponse);
-    });
-
-    it('handles empty description correctly', async () => {
-      const mockResponse = { data: { 
-        id: 'new-household-789', 
-        name: 'Test House',
-        description: ''
-      }};
-      mockApiRequest.mockResolvedValue(mockResponse);
-
-      await createHousehold('Test House', '');
-
-      expect(mockApiRequest).toHaveBeenCalledWith('/households', {
-        method: 'POST',
-        body: JSON.stringify({ name: 'Test House', description: '' })
+        expect(mockApiRequest).toHaveBeenCalledWith('/households', {
+          method: 'POST',
+          body: JSON.stringify(expectedBody)
+        });
+        if (name.includes('correctly')) {
+          // For tests that just verify the call, we don't need to check result
+          return;
+        }
+        expect(result).toEqual(mockResponse);
       });
     });
 
     it('propagates API request errors', async () => {
-      const apiError = new ApiError(400, 'Invalid household data');
-      mockApiRequest.mockRejectedValue(apiError);
+      const { error } = createApiErrorTest(400, 'Invalid household data');
+      mockApiRequest.mockRejectedValue(error);
 
-      await expect(createHousehold('Test')).rejects.toThrow(apiError);
+      await expect(createHousehold('Test')).rejects.toThrow(error);
     });
   });
 
   describe('updateHousehold', () => {
-    it('makes correct API call with name only', async () => {
-      const mockResponse = { data: { 
-        id: 'household-123', 
-        name: 'Updated Household',
-        description: undefined
-      }};
-      mockApiRequest.mockResolvedValue(mockResponse);
+    const updateHouseholdTests = [
+      {
+        name: 'makes correct API call with name only',
+        args: ['household-123', 'Updated Household'] as const,
+        expectedBody: { name: 'Updated Household', description: undefined },
+        mockResponse: { data: createMockHousehold({ name: 'Updated Household', description: undefined }) }
+      },
+      {
+        name: 'makes correct API call with name and description',
+        args: ['household-456', 'Updated Family Home', 'Updated description'] as const,
+        expectedBody: { name: 'Updated Family Home', description: 'Updated description' },
+        mockResponse: { data: createMockHousehold({ id: 'household-456', name: 'Updated Family Home', description: 'Updated description' }) }
+      },
+      {
+        name: 'handles empty description correctly',
+        args: ['household-789', 'Test House', ''] as const,
+        expectedBody: { name: 'Test House', description: '' },
+        mockResponse: { data: createMockHousehold({ id: 'household-789', name: 'Test House', description: '' }) }
+      }
+    ];
 
-      const result = await updateHousehold('household-123', 'Updated Household');
+    updateHouseholdTests.forEach(({ name, args, expectedBody, mockResponse }) => {
+      it(name, async () => {
+        mockApiRequest.mockResolvedValue(mockResponse);
 
-      expect(mockApiRequest).toHaveBeenCalledWith('/households/household-123', {
-        method: 'PUT',
-        body: JSON.stringify({ name: 'Updated Household', description: undefined })
-      });
-      expect(result).toEqual(mockResponse);
-    });
+        const result = await updateHousehold(args[0], args[1], args[2]);
 
-    it('makes correct API call with name and description', async () => {
-      const mockResponse = { data: { 
-        id: 'household-456', 
-        name: 'Updated Family Home',
-        description: 'Updated description'
-      }};
-      mockApiRequest.mockResolvedValue(mockResponse);
-
-      const result = await updateHousehold(
-        'household-456', 
-        'Updated Family Home', 
-        'Updated description'
-      );
-
-      expect(mockApiRequest).toHaveBeenCalledWith('/households/household-456', {
-        method: 'PUT',
-        body: JSON.stringify({ 
-          name: 'Updated Family Home', 
-          description: 'Updated description' 
-        })
-      });
-      expect(result).toEqual(mockResponse);
-    });
-
-    it('handles empty description correctly', async () => {
-      const mockResponse = { data: { 
-        id: 'household-789', 
-        name: 'Test House',
-        description: ''
-      }};
-      mockApiRequest.mockResolvedValue(mockResponse);
-
-      await updateHousehold('household-789', 'Test House', '');
-
-      expect(mockApiRequest).toHaveBeenCalledWith('/households/household-789', {
-        method: 'PUT',
-        body: JSON.stringify({ name: 'Test House', description: '' })
+        expect(mockApiRequest).toHaveBeenCalledWith(`/households/${args[0]}`, {
+          method: 'PUT',
+          body: JSON.stringify(expectedBody)
+        });
+        if (name.includes('correctly')) {
+          // For tests that just verify the call, we don't need to check result
+          return;
+        }
+        expect(result).toEqual(mockResponse);
       });
     });
 
     it('propagates API request errors', async () => {
-      const apiError = new ApiError(404, 'Household not found');
-      mockApiRequest.mockRejectedValue(apiError);
+      const { error } = createApiErrorTest(404, 'Household not found');
+      mockApiRequest.mockRejectedValue(error);
 
-      await expect(updateHousehold('nonexistent', 'Test')).rejects.toThrow(apiError);
+      await expect(updateHousehold('nonexistent', 'Test')).rejects.toThrow(error);
     });
   });
 });

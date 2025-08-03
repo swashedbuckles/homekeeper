@@ -6,6 +6,13 @@ import { ApiError } from '../../src/lib/types/apiError';
 import { AuthStatus } from '../../src/lib/types/authStatus';
 import { TestAuthProvider } from '../helpers/testProviderUtils';
 import { createMockUser } from '../helpers/testUtils';
+import { 
+  createHookInitialStateTests, 
+  createAuthWrapper, 
+  AUTH_STATE_SCENARIOS,
+  expectAuthState 
+} from '../helpers/hookTestHelpers';
+import { mockApiSuccess, mockApiError } from '../helpers/apiTestHelpers';
 
 describe('useAuth', () => {
   beforeEach(() => {
@@ -13,81 +20,21 @@ describe('useAuth', () => {
     fetchMock.mockGlobal();
   });
 
-  describe('initial state', () => {
-    it('should initialize with UNKNOWN status', () => {
-      const { result } = renderHook(() => useAuth(), {
-        wrapper: ({ children }) => (
-          <TestAuthProvider initialAuthStatus={AuthStatus.UNKNOWN}>
-            {children}
-          </TestAuthProvider>
-        ),
-      });
-
-      expect(result.current.authStatus).toBe(AuthStatus.UNKNOWN);
-      expect(result.current.user).toBeNull();
-      expect(result.current.isLoading).toBe(false);
-      expect(result.current.isAuthenticated).toBe(false);
-    });
-
-    it('should initialize with LOGGED_OUT status', () => {
-      const { result } = renderHook(() => useAuth(), {
-        wrapper: ({ children }) => (
-          <TestAuthProvider initialAuthStatus={AuthStatus.LOGGED_OUT}>
-            {children}
-          </TestAuthProvider>
-        ),
-      });
-
-      expect(result.current.authStatus).toBe(AuthStatus.LOGGED_OUT);
-      expect(result.current.isLoading).toBe(false);
-      expect(result.current.isAuthenticated).toBe(false);
-    });
-
-    it('should initialize with LOGGED_IN status and user', () => {
-      const mockUser = createMockUser();
-      
-      const { result } = renderHook(() => useAuth(), {
-        wrapper: ({ children }) => (
-          <TestAuthProvider 
-            initialAuthStatus={AuthStatus.LOGGED_IN}
-            initialUser={mockUser}
-          >
-            {children}
-          </TestAuthProvider>
-        ),
-      });
-
-      expect(result.current.authStatus).toBe(AuthStatus.LOGGED_IN);
-      expect(result.current.user).toEqual(mockUser);
-      expect(result.current.isLoading).toBe(false);
-      expect(result.current.isAuthenticated).toBe(true);
-    });
-  });
+  createHookInitialStateTests('useAuth', useAuth, [
+    AUTH_STATE_SCENARIOS.unknown,
+    AUTH_STATE_SCENARIOS.loggedOut,
+    AUTH_STATE_SCENARIOS.loggedIn(createMockUser())
+  ]);
 
   describe('checkAuth', () => {
     it('should successfully validate session and get user profile', async () => {
       const mockUser = createMockUser();
       
-      // Mock successful session validation
-      fetchMock.route({
-        url: 'path:/auth/validate',
-        allowRelativeUrls: true,
-        response: { data: { valid: true } }
-      });
-
-      // Mock successful profile fetch
-      fetchMock.route({
-        url: 'path:/auth/whoami',
-        allowRelativeUrls: true,
-        response: { data: mockUser }
-      });
+      mockApiSuccess('/auth/validate', { valid: true });
+      mockApiSuccess('/auth/whoami', mockUser);
 
       const { result } = renderHook(() => useAuth(), {
-        wrapper: ({ children }) => (
-          <TestAuthProvider initialAuthStatus={AuthStatus.UNKNOWN}>
-            {children}
-          </TestAuthProvider>
-        ),
+        wrapper: createAuthWrapper(AuthStatus.UNKNOWN)
       });
 
       await act(async () => {
@@ -95,59 +42,37 @@ describe('useAuth', () => {
       });
 
       await waitFor(() => {
-        expect(result.current.authStatus).toBe(AuthStatus.LOGGED_IN);
-        expect(result.current.user).toEqual(mockUser);
+        expectAuthState(result, AuthStatus.LOGGED_IN, mockUser, true, false);
       });
 
       // Verify both calls were made
-      const validateCall = fetchMock.callHistory.calls().find(call => 
-        call.url.includes('/auth/validate')
-      );
-      const profileCall = fetchMock.callHistory.calls().find(call => 
-        call.url.includes('/auth/whoami')
-      );
-      expect(validateCall).toBeTruthy();
-      expect(profileCall).toBeTruthy();
+      const calls = fetchMock.callHistory.calls();
+      expect(calls.some(call => call.url.includes('/auth/validate'))).toBe(true);
+      expect(calls.some(call => call.url.includes('/auth/whoami'))).toBe(true);
     });
 
     it('should refresh token and retry when session validation fails with 401', async () => {
       const mockUser = createMockUser();
-      let call = 0;
+      let callCount = 0;
 
-      // Mock first validation call fails with 401
+      // Mock first validation fails, second succeeds
       fetchMock.route({
         url: 'path:/auth/validate',
         allowRelativeUrls: true,
-        response: (_arg0) => { 
-          if(call === 0) {
-            call++;
-            return {status: 401, body: { error: 'Token expired' }};
+        response: () => {
+          if (callCount === 0) {
+            callCount++;
+            return { status: 401, body: { error: 'Token expired' } };
           }
-
-          return {status: 200, body: {response: 'ok'}}
+          return { status: 200, body: { response: 'ok' } };
         }
       });
 
-      // Mock successful token refresh
-      fetchMock.route({
-        url: 'path:/auth/refresh',
-        allowRelativeUrls: true,
-        response: { message: 'Token refreshed' }
-      });
-
-      // Mock successful profile fetch
-      fetchMock.route({
-        url: 'path:/auth/whoami',
-        allowRelativeUrls: true,
-        response: { data: mockUser }
-      });
+      mockApiSuccess('/auth/refresh', { message: 'Token refreshed' });
+      mockApiSuccess('/auth/whoami', mockUser);
 
       const { result } = renderHook(() => useAuth(), {
-        wrapper: ({ children }) => (
-          <TestAuthProvider initialAuthStatus={AuthStatus.UNKNOWN}>
-            {children}
-          </TestAuthProvider>
-        ),
+        wrapper: createAuthWrapper(AuthStatus.UNKNOWN)
       });
 
       await act(async () => {
@@ -155,50 +80,20 @@ describe('useAuth', () => {
       });
 
       await waitFor(() => {
-        expect(result.current.authStatus).toBe(AuthStatus.LOGGED_IN);
-        expect(result.current.user).toEqual(mockUser);
+        expectAuthState(result, AuthStatus.LOGGED_IN, mockUser, true, false);
       });
 
-      // Verify refresh was called
-      const refreshCall = fetchMock.callHistory.calls().find(call => 
-        call.url.includes('/auth/refresh')
-      );
-      expect(refreshCall).toBeTruthy();
-
-      // Verify validation was called twice (before and after refresh)
-      const validateCalls = fetchMock.callHistory.calls().filter(call => 
-        call.url.includes('/auth/validate')
-      );
-      expect(validateCalls).toHaveLength(2);
+      const calls = fetchMock.callHistory.calls();
+      expect(calls.filter(call => call.url.includes('/auth/validate'))).toHaveLength(2);
+      expect(calls.some(call => call.url.includes('/auth/refresh'))).toBe(true);
     });
 
     it('should set LOGGED_OUT when session validation fails and refresh also fails', async () => {
-      // Mock failed session validation
-      fetchMock.route({
-        url: 'path:/auth/validate',
-        allowRelativeUrls: true,
-        response: {
-          status: 401,
-          body: { error: 'Token expired' }
-        }
-      });
-
-      // Mock failed refresh (session completely expired)
-      fetchMock.route({
-        url: 'path:/auth/refresh',
-        allowRelativeUrls: true,
-        response: {
-          status: 205,
-          body: { error: 'Session expired' }
-        }
-      });
+      mockApiError('/auth/validate', 401, 'Token expired');
+      mockApiError('/auth/refresh', 205, 'Session expired');
 
       const { result } = renderHook(() => useAuth(), {
-        wrapper: ({ children }) => (
-          <TestAuthProvider initialAuthStatus={AuthStatus.UNKNOWN}>
-            {children}
-          </TestAuthProvider>
-        ),
+        wrapper: createAuthWrapper(AuthStatus.UNKNOWN)
       });
 
       await act(async () => {
@@ -206,38 +101,19 @@ describe('useAuth', () => {
       });
 
       await waitFor(() => {
-        expect(result.current.authStatus).toBe(AuthStatus.LOGGED_OUT);
-        expect(result.current.user).toBeNull();
+        expectAuthState(result, AuthStatus.LOGGED_OUT, null, false, false);
       });
 
-      // Verify refresh was attempted
-      const refreshCall = fetchMock.callHistory.calls().find(call => 
-        call.url.includes('/auth/refresh')
-      );
-      expect(refreshCall).toBeTruthy();
+      const calls = fetchMock.callHistory.calls();
+      expect(calls.some(call => call.url.includes('/auth/refresh'))).toBe(true);
     });
 
     it('should handle session valid but no user data', async () => {
-      // Mock successful session validation
-      fetchMock.route({
-        url: 'path:/auth/validate',
-        allowRelativeUrls: true,
-        response: { data: { valid: true } }
-      });
-
-      // Mock profile with empty data
-      fetchMock.route({
-        url: 'path:/auth/whoami',
-        allowRelativeUrls: true,
-        response: { data: {} }
-      });
+      mockApiSuccess('/auth/validate', { valid: true });
+      mockApiSuccess('/auth/whoami', {});
 
       const { result } = renderHook(() => useAuth(), {
-        wrapper: ({ children }) => (
-          <TestAuthProvider initialAuthStatus={AuthStatus.UNKNOWN}>
-            {children}
-          </TestAuthProvider>
-        ),
+        wrapper: createAuthWrapper(AuthStatus.UNKNOWN)
       });
 
       await act(async () => {
@@ -245,8 +121,7 @@ describe('useAuth', () => {
       });
 
       await waitFor(() => {
-        expect(result.current.authStatus).toBe(AuthStatus.LOGGED_OUT);
-        expect(result.current.user).toBeNull();
+        expectAuthState(result, AuthStatus.LOGGED_OUT, null, false, false);
       });
     });
   });
@@ -254,109 +129,71 @@ describe('useAuth', () => {
   describe('login', () => {
     it('should successfully login user', async () => {
       const mockUser = createMockUser();
-      fetchMock.route({
-        url: 'path:/auth/login',
-        allowRelativeUrls: true,
-        response: { data: mockUser, message: 'Login successful' }
-      });
+      mockApiSuccess('/auth/login', mockUser, 'Login successful');
 
       const { result } = renderHook(() => useAuth(), {
-        wrapper: ({ children }) => (
-          <TestAuthProvider initialAuthStatus={AuthStatus.LOGGED_OUT}>
-            {children}
-          </TestAuthProvider>
-        ),
+        wrapper: createAuthWrapper(AuthStatus.LOGGED_OUT)
       });
 
       await act(async () => {
-        await result.current.login({email: 'test@example.com', password: 'password123'});
+        await result.current.login({ email: 'test@example.com', password: 'password123' });
       });
 
       await waitFor(() => {
-        expect(result.current.authStatus).toBe(AuthStatus.LOGGED_IN);
-        expect(result.current.user).toEqual(mockUser);
+        expectAuthState(result, AuthStatus.LOGGED_IN, mockUser, true, false);
       });
 
-      // Verify the request was made correctly
       const loginCall = fetchMock.callHistory.calls().find(call => 
         call.url.includes('/auth/login')
       );
       expect(loginCall).toBeTruthy();
       expect(JSON.parse(loginCall?.options.body as string)).toEqual({
         email: 'test@example.com',
-        password: 'password123',
+        password: 'password123'
       });
     });
 
     it('should handle login failure', async () => {
-      fetchMock.route({
-        url: 'path:/auth/login',
-        allowRelativeUrls: true,
-        response: {
-          status: 401,
-          body: { error: 'Invalid credentials' }
-        }
-      });
-      
-      fetchMock.route({
-        url: 'path:/auth/refresh',
-        allowRelativeUrls: true,
-        response: {
-          status: 401,
-          body: { error: 'Session expired' }
-        }
-      });
+      mockApiError('/auth/login', 401, 'Invalid credentials');
+      mockApiError('/auth/refresh', 401, 'Session expired');
 
       const { result } = renderHook(() => useAuth(), {
-        wrapper: ({ children }) => (
-          <TestAuthProvider initialAuthStatus={AuthStatus.LOGGED_OUT}>
-            {children}
-          </TestAuthProvider>
-        ),
+        wrapper: createAuthWrapper(AuthStatus.LOGGED_OUT)
       });
 
       await act(async () => {
-        await expect(result.current.login({email: 'wrong@example.com', password: 'wrongpass'}))
+        await expect(result.current.login({ email: 'wrong@example.com', password: 'wrongpass' }))
           .rejects.toThrow(ApiError);
       });
 
       await waitFor(() => {
-        expect(result.current.authStatus).toBe(AuthStatus.LOGGED_OUT);
-        expect(result.current.user).toBeNull();
+        expectAuthState(result, AuthStatus.LOGGED_OUT, null, false, false);
       });
     });
 
     it('should set loading state during login', async () => {
       const mockUser = createMockUser();
       
-      // Add a delay to the response so we can check loading state
       fetchMock.route({
         url: 'path:/auth/login',
         allowRelativeUrls: true,
         delay: 100,
-        response: {body: {data: mockUser}}
+        response: { body: { data: mockUser } }
       });
 
       const { result } = renderHook(() => useAuth(), {
-        wrapper: ({ children }) => (
-          <TestAuthProvider initialAuthStatus={AuthStatus.LOGGED_OUT}>
-            {children}
-          </TestAuthProvider>
-        ),
+        wrapper: createAuthWrapper(AuthStatus.LOGGED_OUT)
       });
 
       act(() => {
-        result.current.login({email: 'test@example.com', password: 'password123'});
+        result.current.login({ email: 'test@example.com', password: 'password123' });
       });
 
-      // Should be in loading state immediately
       expect(result.current.authStatus).toBe(AuthStatus.LOGGING_IN);
       expect(result.current.isLoading).toBe(true);
 
-      // Wait for completion
       await waitFor(() => {
-        expect(result.current.authStatus).toBe(AuthStatus.LOGGED_IN);
-        expect(result.current.isLoading).toBe(false);
+        expectAuthState(result, AuthStatus.LOGGED_IN, mockUser, true, false);
       });
     });
   });
@@ -364,22 +201,10 @@ describe('useAuth', () => {
   describe('logout', () => {
     it('should successfully logout user', async () => {
       const mockUser = createMockUser();
-      
-      fetchMock.route({
-        url: 'path:/auth/logout',
-        allowRelativeUrls: true,
-        response: { message: 'Logout successful' }
-      });
+      mockApiSuccess('/auth/logout', { message: 'Logout successful' });
 
       const { result } = renderHook(() => useAuth(), {
-        wrapper: ({ children }) => (
-          <TestAuthProvider 
-            initialAuthStatus={AuthStatus.LOGGED_IN}
-            initialUser={mockUser}
-          >
-            {children}
-          </TestAuthProvider>
-        ),
+        wrapper: createAuthWrapper(AuthStatus.LOGGED_IN, mockUser)
       });
 
       await act(async () => {
@@ -387,8 +212,7 @@ describe('useAuth', () => {
       });
 
       await waitFor(() => {
-        expect(result.current.authStatus).toBe(AuthStatus.LOGGED_OUT);
-        expect(result.current.user).toBeNull();
+        expectAuthState(result, AuthStatus.LOGGED_OUT, null, false, false);
       });
     });
 
@@ -429,44 +253,19 @@ describe('useAuth', () => {
 
     it('should handle logout failure and not clear local state', async () => {
       const mockUser = createMockUser();
-      
-      fetchMock.route({
-        url: 'path:/auth/logout',
-        allowRelativeUrls: true,
-        response: {
-          status: 500,
-          body: { error: 'Server error' }
-        }
-      });
-      
-      fetchMock.route({
-        url: 'path:/auth/refresh',
-        allowRelativeUrls: true,
-        response: {
-          status: 401,
-          body: { error: 'Session expired' }
-        }
-      });
+      mockApiError('/auth/logout', 500, 'Server error');
+      mockApiError('/auth/refresh', 401, 'Session expired');
 
       const { result } = renderHook(() => useAuth(), {
-        wrapper: ({ children }) => (
-          <TestAuthProvider 
-            initialAuthStatus={AuthStatus.LOGGED_IN}
-            initialUser={mockUser}
-          >
-            {children}
-          </TestAuthProvider>
-        ),
+        wrapper: createAuthWrapper(AuthStatus.LOGGED_IN, mockUser)
       });
 
       await act(async () => {
         await result.current.logout().catch(() => {});
       });
 
-      // Should clear local state even if server call fails
       await waitFor(() => {
-        expect(result.current.authStatus).toBe(AuthStatus.LOGGED_IN);
-        expect(result.current.user).toBe(mockUser);
+        expectAuthState(result, AuthStatus.LOGGED_IN, mockUser, true, false);
       });
     });
 
@@ -482,27 +281,18 @@ describe('useAuth', () => {
       });
 
       const { result } = renderHook(() => useAuth(), {
-        wrapper: ({ children }) => (
-          <TestAuthProvider 
-            initialAuthStatus={AuthStatus.LOGGED_IN}
-            initialUser={mockUser}
-          >
-            {children}
-          </TestAuthProvider>
-        ),
+        wrapper: createAuthWrapper(AuthStatus.LOGGED_IN, mockUser)
       });
 
       act(() => {
         result.current.logout();
       });
 
-      // Should be in loading state immediately
       expect(result.current.authStatus).toBe(AuthStatus.LOGGING_OUT);
       expect(result.current.isLoading).toBe(true);
 
       await waitFor(() => {
-        expect(result.current.authStatus).toBe(AuthStatus.LOGGED_OUT);
-        expect(result.current.isLoading).toBe(false);
+        expectAuthState(result, AuthStatus.LOGGED_OUT, null, false, false);
       });
     });
   });
@@ -512,49 +302,41 @@ describe('useAuth', () => {
       const loadingStates = [
         AuthStatus.CHECKING,
         AuthStatus.LOGGING_IN,
-        AuthStatus.LOGGING_OUT,
+        AuthStatus.LOGGING_OUT
       ];
 
       loadingStates.forEach(status => {
         const { result } = renderHook(() => useAuth(), {
-          wrapper: ({ children }) => (
-            <TestAuthProvider initialAuthStatus={status}>
-              {children}
-            </TestAuthProvider>
-          ),
+          wrapper: createAuthWrapper(status)
         });
 
         expect(result.current.isLoading).toBe(true);
       });
     });
 
-    it('should correctly calculate isAuthenticated', () => {
-      const mockUser = createMockUser();
-      
-      const { result } = renderHook(() => useAuth(), {
-        wrapper: ({ children }) => (
-          <TestAuthProvider 
-            initialAuthStatus={AuthStatus.LOGGED_IN}
-            initialUser={mockUser}
-          >
-            {children}
-          </TestAuthProvider>
-        ),
+    const authenticationTests = [
+      {
+        name: 'should return true for isAuthenticated when logged in',
+        status: AuthStatus.LOGGED_IN,
+        user: createMockUser(),
+        expectedAuth: true
+      },
+      {
+        name: 'should return false for isAuthenticated when logged out',
+        status: AuthStatus.LOGGED_OUT,
+        user: null,
+        expectedAuth: false
+      }
+    ];
+
+    authenticationTests.forEach(({ name, status, user, expectedAuth }) => {
+      it(name, () => {
+        const { result } = renderHook(() => useAuth(), {
+          wrapper: createAuthWrapper(status, user)
+        });
+
+        expect(result.current.isAuthenticated).toBe(expectedAuth);
       });
-
-      expect(result.current.isAuthenticated).toBe(true);
-    });
-
-    it('should return false for isAuthenticated when logged out', () => {
-      const { result } = renderHook(() => useAuth(), {
-        wrapper: ({ children }) => (
-          <TestAuthProvider initialAuthStatus={AuthStatus.LOGGED_OUT}>
-            {children}
-          </TestAuthProvider>
-        ),
-      });
-
-      expect(result.current.isAuthenticated).toBe(false);
     });
   });
 });

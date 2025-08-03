@@ -42,13 +42,18 @@ export function getComponentName(componentType: string | ComponentType): string 
     return componentType;
   }
   
+  // Handle symbols (like React.Fragment)
+  if (typeof componentType === 'symbol') {
+    return componentType.toString();
+  }
+  
   // Check for displayName first (commonly set on forwardRef components)
-  if ('displayName' in componentType && typeof componentType.displayName === 'string') {
+  if (componentType && (typeof componentType === 'object' || typeof componentType === 'function') && 'displayName' in componentType && typeof componentType.displayName === 'string') {
     return componentType.displayName;
   }
   
   // Check for function name
-  if ('name' in componentType && typeof componentType.name === 'string') {
+  if (componentType && typeof componentType === 'function' && 'name' in componentType && typeof componentType.name === 'string') {
     return componentType.name;
   }
   

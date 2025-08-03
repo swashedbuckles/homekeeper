@@ -1,7 +1,7 @@
-// frontend/tests/components/common/TextInput.test.tsx
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import { TextInput } from '../../../src/components/form/TextInput';
+import { expectElementToHaveClasses } from '../../helpers/testHelpers';
 import type { UseFormRegisterReturn } from 'react-hook-form';
 
 describe('TextInput', () => {
@@ -34,19 +34,33 @@ describe('TextInput', () => {
     expect(screen.getByText(/Email is required/)).toBeInTheDocument();
   });
 
-  it('applies error styling when error is present', () => {
-    render(<TextInput label="Email" type="email" error="Email is required" />);
-    
-    const input = screen.getByRole('textbox');
-    expect(input).toHaveClass('border-error');
-  });
+  describe('error states', () => {
+    const errorStateTests = [
+      {
+        name: 'applies error styling when error is present',
+        props: { label: 'Email', type: 'email' as const, error: 'Email is required' },
+        expectedClasses: ['border-error'],
+        notExpectedClasses: []
+      },
+      {
+        name: 'applies normal styling when no error',
+        props: { label: 'Email', type: 'email' as const },
+        expectedClasses: ['border-text-primary'],
+        notExpectedClasses: ['border-error']
+      }
+    ];
 
-  it('applies normal styling when no error', () => {
-    render(<TextInput label="Email" type="email" />);
-    
-    const input = screen.getByRole('textbox');
-    expect(input).toHaveClass('border-text-primary');
-    expect(input).not.toHaveClass('border-error');
+    errorStateTests.forEach(({ name, props, expectedClasses, notExpectedClasses }) => {
+      it(name, () => {
+        render(<TextInput {...props} />);
+        
+        const input = screen.getByRole('textbox');
+        expectElementToHaveClasses(input, expectedClasses);
+        notExpectedClasses.forEach(className => {
+          expect(input).not.toHaveClass(className);
+        });
+      });
+    });
   });
 
   it('renders validation feedback when provided', () => {
@@ -56,68 +70,81 @@ describe('TextInput', () => {
     expect(screen.getByText('Password strength indicator')).toBeInTheDocument();
   });
 
-  it('applies form registration when provided', () => {
-    const mockRegister = {
-      name: 'email',
-      onChange: () => {},
-      onBlur: () => {},
-      ref: () => {},
-    } as unknown as UseFormRegisterReturn;
-    
-    render(<TextInput label="Email" type="email" register={mockRegister} />);
-    
-    const input = screen.getByRole('textbox');
-    expect(input).toHaveAttribute('name', 'email');
+  describe('form integration', () => {
+    const formIntegrationTests = [
+      {
+        name: 'applies form registration when provided',
+        props: {
+          label: 'Email',
+          type: 'email' as const,
+          register: {
+            name: 'email',
+            onChange: () => {},
+            onBlur: () => {},
+            ref: () => {},
+          } as unknown as UseFormRegisterReturn
+        },
+        test: (input: HTMLElement) => {
+          expect(input).toHaveAttribute('name', 'email');
+        }
+      },
+      {
+        name: 'renders without form registration',
+        props: { label: 'Email', type: 'email' as const },
+        test: (input: HTMLElement) => {
+          expect(input).toBeInTheDocument();
+          expect(input).not.toHaveAttribute('name');
+        }
+      }
+    ];
+
+    formIntegrationTests.forEach(({ name, props, test }) => {
+      it(name, () => {
+        render(<TextInput {...props} />);
+        
+        const input = screen.getByRole('textbox');
+        test(input);
+      });
+    });
   });
 
-  it('renders without form registration', () => {
-    render(<TextInput label="Email" type="email" />);
-    
-    const input = screen.getByRole('textbox');
-    expect(input).toBeInTheDocument();
-    expect(input).not.toHaveAttribute('name');
+  describe('styling', () => {
+    const stylingTests = [
+      {
+        name: 'applies base input classes',
+        element: 'input',
+        expectedClasses: [
+          'w-full', 'input-brutal', 'font-mono', 'font-bold', 'uppercase',
+          'brutal-transition', 'px-4', 'py-3', 'bg-white', 'border-text-primary', 'text-text-primary'
+        ]
+      },
+      {
+        name: 'applies label classes',
+        element: 'label',
+        expectedClasses: [
+          'block', 'font-mono', 'font-black', 'text-text-primary', 'uppercase',
+          'mb-2', 'text-lg', 'tracking-wide'
+        ]
+      }
+    ];
+
+    stylingTests.forEach(({ name, element, expectedClasses }) => {
+      it(name, () => {
+        render(<TextInput label="Email" type="email" />);
+        
+        const targetElement = element === 'input' ? 
+          screen.getByRole('textbox') : 
+          screen.getByText('Email');
+        
+        expectElementToHaveClasses(targetElement, expectedClasses);
+      });
+    });
   });
 
-  it('applies base input classes', () => {
-    render(<TextInput label="Email" type="email" />);
-    
-    const input = screen.getByRole('textbox');
-    expect(input).toHaveClass(
-      'w-full',
-      'input-brutal',
-      'font-mono',
-      'font-bold',
-      'uppercase',
-      'brutal-transition',
-      'px-4',
-      'py-3',
-      'bg-white',
-      'border-text-primary',
-      'text-text-primary'
-    );
-  });
-
-  it('applies label classes', () => {
-    render(<TextInput label="Email" type="email" />);
-    
-    const label = screen.getByText('Email');
-    expect(label).toHaveClass(
-      'block',
-      'font-mono',
-      'font-black',
-      'text-text-primary',
-      'uppercase',
-      'mb-2',
-      'text-lg',
-      'tracking-wide'
-    );
-  });
-
-  it('shows error with red text', () => {
+  it('shows error with correct styling', () => {
     render(<TextInput label="Email" type="email" error="Email is required" />);
     
-    // Error text is now inside a div with warning symbol
     const errorElement = screen.getByText(/Email is required/);
-    expect(errorElement).toHaveClass('font-mono', 'font-bold', 'uppercase', 'text-sm');
+    expectElementToHaveClasses(errorElement, ['font-mono', 'font-bold', 'uppercase', 'text-sm']);
   });
 });

@@ -3,52 +3,82 @@ import { describe, it, expect, vi } from 'vitest';
 import { FilterChoice } from '../../../src/components/variations/FilterChoice';
 import { Option } from '../../../src/components/form/Option';
 
+// Helper function to render FilterChoice with standard options
+const renderFilterChoice = (props = {}, children?: React.ReactNode) => {
+  const defaultChildren = [
+    <Option key="all" value="all">All</Option>,
+    <Option key="active" value="active">Active</Option>,
+    <Option key="completed" value="completed">Completed</Option>
+  ];
+  
+  return render(
+    <FilterChoice name="filters" {...props}>
+      {children || defaultChildren}
+    </FilterChoice>
+  );
+};
+
+// Helper function to get filter buttons
+const getFilterButtons = () => {
+  return {
+    all: screen.getByText('All'),
+    active: screen.getByText('Active'),
+    completed: screen.getByText('Completed')
+  };
+};
+
 describe('FilterChoice', () => {
   it('renders filter options', () => {
-    render(
-      <FilterChoice name="filters">
-        <Option value="all">All</Option>
-        <Option value="active">Active</Option>
-        <Option value="completed">Completed</Option>
-      </FilterChoice>
-    );
-
-    expect(screen.getByText('All')).toBeInTheDocument();
-    expect(screen.getByText('Active')).toBeInTheDocument();
-    expect(screen.getByText('Completed')).toBeInTheDocument();
+    renderFilterChoice();
+    const { all, active, completed } = getFilterButtons();
+    
+    expect(all).toBeInTheDocument();
+    expect(active).toBeInTheDocument();
+    expect(completed).toBeInTheDocument();
   });
 
   it('handles multiple filter selection', () => {
     const onChange = vi.fn();
+    const children = [
+      <Option key="active" value="active">Active</Option>,
+      <Option key="completed" value="completed">Completed</Option>
+    ];
     
-    render(
-      <FilterChoice name="filters" multiple onChange={onChange}>
-        <Option value="active">Active</Option>
-        <Option value="completed">Completed</Option>
-      </FilterChoice>
-    );
+    renderFilterChoice({ multiple: true, onChange }, children);
+    const active = screen.getByText('Active');
+    const completed = screen.getByText('Completed');
 
-    fireEvent.click(screen.getByText('Active'));
+    fireEvent.click(active);
     expect(onChange).toHaveBeenCalledWith(['active']);
 
-    fireEvent.click(screen.getByText('Completed'));
+    fireEvent.click(completed);
     expect(onChange).toHaveBeenCalledWith(['active', 'completed']);
   });
 
-  it('applies secondary (blue) variant for selected filters', () => {
-    render(
-      <FilterChoice name="filters" value={['active']}>
-        <Option value="active">Active</Option>
-        <Option value="completed">Completed</Option>
-      </FilterChoice>
-    );
+  const stylingTests = [
+    {
+      name: 'applies secondary (blue) variant for selected filters',
+      props: { value: ['active'] },
+      expectedClasses: {
+        active: 'bg-secondary',
+        completed: 'bg-white'
+      }
+    }
+  ];
 
-    const activeButton = screen.getByText('Active');
-    const completedButton = screen.getByText('Completed');
-    
-    // Selected filter should use secondary (blue) variant
-    expect(activeButton.className).toContain('bg-secondary');
-    // Unselected should use tertiary (white) variant
-    expect(completedButton.className).toContain('bg-white');
+  stylingTests.forEach(({ name, props, expectedClasses }) => {
+    it(name, () => {
+      const children = [
+        <Option key="active" value="active">Active</Option>,
+        <Option key="completed" value="completed">Completed</Option>
+      ];
+      
+      renderFilterChoice(props, children);
+      const active = screen.getByText('Active');
+      const completed = screen.getByText('Completed');
+      
+      expect(active.className).toContain(expectedClasses.active);
+      expect(completed.className).toContain(expectedClasses.completed);
+    });
   });
 });

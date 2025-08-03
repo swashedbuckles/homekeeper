@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import { Step, Steps } from '../../../src/components/common/Steps';
+import { expectElementToHaveClasses } from '../../helpers/testHelpers';
 
 describe('Steps Component', () => {
   describe('Step', () => {
@@ -14,7 +15,7 @@ describe('Steps Component', () => {
       render(<Step>Test Step</Step>);
       
       const step = screen.getByText('Test Step');
-      expect(step).toHaveClass('text-text-secondary', 'font-mono', 'font-bold', 'uppercase', 'text-sm');
+      expectElementToHaveClasses(step, ['text-text-secondary', 'font-mono', 'font-bold', 'uppercase', 'text-sm']);
     });
   });
 
@@ -39,44 +40,64 @@ describe('Steps Component', () => {
       expect(screen.getByText('Step 3')).toBeInTheDocument();
     });
 
-    it('handles completed steps correctly', () => {
-      render(
-        <Steps>
-          <Step completed>Completed Step</Step>
-          <Step>Next Step</Step>
-        </Steps>
-      );
+    describe('Step State Styling', () => {
+      const stateTests = [
+        {
+          name: 'handles completed steps correctly',
+          setup: (
+            <Steps>
+              <Step completed>Completed Step</Step>
+              <Step>Next Step</Step>
+            </Steps>
+          ),
+          indicator: '1',
+          expectedClasses: ['bg-accent', 'text-white']
+        },
+        {
+          name: 'handles active steps correctly',
+          setup: (
+            <Steps>
+              <Step completed>Completed Step</Step>
+              <Step active>Active Step</Step>
+              <Step>Future Step</Step>
+            </Steps>
+          ),
+          indicator: '2',
+          expectedClasses: ['bg-primary', 'text-white', 'brutal-shadow-dark']
+        },
+        {
+          name: 'handles error steps correctly',
+          setup: (
+            <Steps>
+              <Step error>Error Step</Step>
+              <Step>Next Step</Step>
+            </Steps>
+          ),
+          indicator: '1',
+          expectedClasses: ['bg-error', 'text-white']
+        }
+      ];
 
-      const indicator1 = screen.getByText('1');
-      expect(indicator1).toHaveClass('bg-accent', 'text-white');
-    });
+      stateTests.forEach(({ name, setup, indicator, expectedClasses }) => {
+        it(name, () => {
+          render(setup);
+          const indicatorElement = screen.getByText(indicator);
+          expectElementToHaveClasses(indicatorElement, expectedClasses);
+        });
+      });
 
-    it('handles active steps correctly', () => {
-      render(
-        <Steps>
-          <Step completed>Completed Step</Step>
-          <Step active>Active Step</Step>
-          <Step>Future Step</Step>
-        </Steps>
-      );
-
-      const indicator2 = screen.getByText('2');
-      expect(indicator2).toHaveClass('bg-primary', 'text-white', 'brutal-shadow-dark');
-      
-      const activeLabel = screen.getByText('Active Step');
-      expect(activeLabel).toHaveClass('text-primary');
-    });
-
-    it('handles error steps correctly', () => {
-      render(
-        <Steps>
-          <Step error>Error Step</Step>
-          <Step>Next Step</Step>
-        </Steps>
-      );
-
-      const indicator1 = screen.getByText('1');
-      expect(indicator1).toHaveClass('bg-error', 'text-white');
+      it('applies correct label styling for active steps', () => {
+        render(
+          <Steps>
+            <Step completed>Completed Step</Step>
+            <Step active>Active Step</Step>
+            <Step>Future Step</Step>
+          </Steps>
+        );
+        
+        const activeLabel = screen.getByText('Active Step');
+        expect(activeLabel).toHaveClass('text-primary');
+      });
     });
 
     it('renders connecting lines between steps', () => {
@@ -136,28 +157,39 @@ describe('Steps Component', () => {
       expect(screen.getByText('Another Valid Step')).toBeInTheDocument();
     });
 
-    it('applies correct container styling', () => {
-      const { container } = render(
-        <Steps>
-          <Step>Test Step</Step>
-        </Steps>
-      );
+    describe('Container and Layout Styling', () => {
+      const layoutTests = [
+        {
+          name: 'applies correct container styling',
+          test: () => {
+            const { container } = render(
+              <Steps>
+                <Step>Test Step</Step>
+              </Steps>
+            );
+            const stepsContainer = container.firstChild as HTMLElement;
+            expectElementToHaveClasses(stepsContainer, ['w-full', 'max-w-3xl', 'mx-auto']);
+          }
+        },
+        {
+          name: 'positions step labels correctly',
+          test: () => {
+            render(
+              <Steps>
+                <Step>Step 1</Step>
+                <Step active>Step 2</Step>
+                <Step>Step 3</Step>
+              </Steps>
+            );
+            const labelsContainer = screen.getByText('Step 1').parentElement as HTMLElement;
+            expectElementToHaveClasses(labelsContainer, ['flex', 'justify-between']);
+          }
+        }
+      ];
 
-      const stepsContainer = container.firstChild;
-      expect(stepsContainer).toHaveClass('w-full', 'max-w-3xl', 'mx-auto');
-    });
-
-    it('positions step labels correctly', () => {
-      render(
-        <Steps>
-          <Step>Step 1</Step>
-          <Step active>Step 2</Step>
-          <Step>Step 3</Step>
-        </Steps>
-      );
-
-      const labelsContainer = screen.getByText('Step 1').parentElement;
-      expect(labelsContainer).toHaveClass('flex', 'justify-between');
+      layoutTests.forEach(({ name, test }) => {
+        it(name, test);
+      });
     });
 
     it('handles single step correctly', () => {
