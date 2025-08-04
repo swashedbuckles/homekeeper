@@ -14,7 +14,10 @@ import type { IdParam } from '../../types/apiRequests';
 export const router = Router();
 
 /**
- * Get everyone in a household
+ * Get all members of a household
+ * @route GET /household/:id/members
+ * @params {IdParam} Household ID
+ * @response {{ data: { memberCount: number, members: MemberDetail[] } }} Household members list
  */
 export const getMembers = async (req: Request<IdParam, object, object>, res: Response) => {
   assertHasUser<typeof req>(req);
@@ -36,7 +39,11 @@ export const getMembers = async (req: Request<IdParam, object, object>, res: Res
 };
 
 /**
- * Add someone (who exists) to a household
+ * Add existing user to household
+ * @route PUT /household/:id/members
+ * @params {IdParam} Household ID
+ * @body {AddMemberRequest} User ID and role to add
+ * @response {{ data: MemberDetail[] }} Updated members list
  */
 export const putMember = async (req: Request<IdParam, object, AddMemberRequest>, res: Response) => {
   assertHasUser<typeof req>(req);
@@ -69,6 +76,12 @@ export const putMember = async (req: Request<IdParam, object, AddMemberRequest>,
   });
 };
 
+/**
+ * Get specific household member details
+ * @route GET /household/:id/member/:userId
+ * @params {{ id: string, userId: string }} Household ID and user ID
+ * @response {{ data: { id: string, name: string, role: HouseholdRoles } }} Member details
+ */
 export const getMemberById = async (req: Request, res: Response) => {
   assertHasUser<typeof req>(req);
   assertHasHouse<typeof req>(req);
@@ -88,12 +101,16 @@ export const getMemberById = async (req: Request, res: Response) => {
   });
 };
 
-/** 
- * Change a user's role
- */
 type RoleChangeReqBody = { role: HouseholdRoles };
-type RoleChangeParams = { id: string; userId: string };
-export const putMemberRole = async (req: Request<RoleChangeParams, object, RoleChangeReqBody>, res: Response) => {
+type HouseAndUserParams = { id: string; userId: string };
+/** 
+ * Update household member's role
+ * @route PUT /household/:id/members/:userId/role
+ * @params {HouseAndUserParams} Household ID and user ID
+ * @body {RoleChangeReqBody} New role for the user
+ * @response {{ data: { id: string, name: string, role: HouseholdRoles } }} Updated member details
+ */
+export const putMemberRole = async (req: Request<HouseAndUserParams, object, RoleChangeReqBody>, res: Response) => {
   assertHasUser<typeof req>(req);
   assertHasHouse<typeof req>(req);
 
@@ -123,9 +140,12 @@ export const putMemberRole = async (req: Request<RoleChangeParams, object, RoleC
 };
 
 /**
- * Remove a user from the household
+ * Remove member from household
+ * @route DELETE /household/:id/members/:userId
+ * @params {HouseAndUserParams} Household ID and user ID
+ * @response {{ data: { memberCount: number, members: MemberDetail[] } }} Updated members list
  */
-export const deleteMember = async (req: Request<RoleChangeParams, object, object>, res: Response) => {
+export const deleteMember = async (req: Request<HouseAndUserParams, object, object>, res: Response) => {
   assertHasUser<typeof req>(req);
   assertHasHouse<typeof req>(req);
   const { userId } = req.params;
@@ -154,6 +174,12 @@ export const deleteMember = async (req: Request<RoleChangeParams, object, object
   });
 };
 
+/**
+ * Get all pending invitations for household
+ * @route GET /household/:id/invitations
+ * @params {{ id: string }} Household ID
+ * @response {{ data: InvitationResponse[] }} List of pending invitations
+ */
 export const getInvitations = async (req: Request, res: Response) => {
   assertHasUser<typeof req>(req);
   assertHasHouse<typeof req>(req);
@@ -184,6 +210,12 @@ export const getInvitations = async (req: Request, res: Response) => {
     });
 };
 
+/**
+ * Cancel pending household invitation
+ * @route DELETE /household/:id/invitations/:invitationId
+ * @params {{ id: string, invitationId: string }} Household ID and invitation ID
+ * @response {{ data: InvitationResponse }} Cancelled invitation details
+ */
 export const cancelInvitation = async (req: Request, res: Response) => {
   assertHasUser<typeof req>(req);
   assertHasHouse<typeof req>(req);
@@ -229,7 +261,11 @@ export const cancelInvitation = async (req: Request, res: Response) => {
 };
 
 /**
- * Send an invitation to a member
+ * Create and send household invitation
+ * @route POST /household/:id/members/invite
+ * @params {IdParam} Household ID
+ * @body {InviteRequest} Invitation details (email, name?, role)
+ * @response {{ data: InvitationResponse }} Created invitation details
  */
 export const postInvitation = async (req: Request<IdParam, object, InviteRequest>, res: Response) => {
   assertHasUser<typeof req>(req);

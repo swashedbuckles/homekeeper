@@ -172,7 +172,7 @@ router.get('/:id/invitations',
 );
 
 /**
- * Fetch a list of invitations to a hosuehold
+ * Remove an invitation
  */
 router.delete('/:id/invitations/:invitationId',
   requireAuth,

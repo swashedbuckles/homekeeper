@@ -13,6 +13,11 @@ import { decodeJwt } from '../../utils/decodeJwt';
 
 import type {Request, Response} from 'express';
 
+/**
+ * Refresh expired JWT token using refresh token
+ * @route POST /auth/refresh
+ * @response {{ message: string }} Success message with new JWT and refresh cookies
+ */
 export function getRefresh(req: Request, res: Response) {
   const jwtToken = (req.cookies[JWT_COOKIE_NAME] ?? null) as string | null;
   const refreshToken = (req.cookies[REFRESH_COOKIE_NAME] ?? null) as string | null;

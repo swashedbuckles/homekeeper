@@ -16,6 +16,11 @@ import { createAuthToken, createRefreshToken } from '../../utils/createJwt';
 
 import type { Request, Response } from 'express';
 
+/**
+ * Get login page information
+ * @route GET /auth/login
+ * @response {{ message: string }} Login page message
+ */
 export function getLogin(_req: Request, res: Response) {
   res
     .status(HTTP_STATUS.OK)
@@ -24,6 +29,12 @@ export function getLogin(_req: Request, res: Response) {
     });
 }
 
+/**
+ * Authenticate user login
+ * @route POST /auth/login
+ * @body {LoginRequest} User login credentials
+ * @response {{ message: string, data: SafeUser }} Success message and user data with auth cookies
+ */
 export async function postLogin(req: Request<object, object, LoginRequest>, res: Response) {
   try {
     const { email, password } = req.body;

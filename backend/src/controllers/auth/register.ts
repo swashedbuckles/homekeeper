@@ -17,12 +17,23 @@ import { createAuthToken, createRefreshToken } from '../../utils/createJwt';
 import type {Request, Response} from 'express';
 
 
+/**
+ * Get registration page information
+ * @route GET /auth/register
+ * @response {{ message: string }} Registration page message
+ */
 export function getRegister(_req: Request, res: Response) {
   res.status(HTTP_STATUS.OK).apiSuccess({
     message: 'GET Register',
   });
 }
 
+/**
+ * Register new user account
+ * @route POST /auth/register
+ * @body {RegisterRequest} User registration data (email, password, name)
+ * @response {{ message: string, data?: SafeUser }} Success message and optional user data with auth cookies
+ */
 export async function postRegister(req: Request<object, object, RegisterRequest>, res: Response) {
     const { email, password, name } = req.body;
     try {

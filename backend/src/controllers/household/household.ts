@@ -18,14 +18,16 @@ export const transformHousehold = (userRoles: { [key: string]: HouseholdRoles })
     memberCount: house.members.length,
     userRole: userRoles[house._id.toString()],
     ...removeKeysReducer(house.serialize(), ['members'])
+    
   };
 
   return data;
 };
 
 /**
- * Returns a list of households of which user is a member. 
- * Looked up via household and not by User's role-map
+ * Get all households where user is a member
+ * @route GET /household
+ * @response {{ data: HouseResponse[] }} List of households with user roles
  */
 export const getHouseholds = async (req: Request, res: Response) => {
   assertHasUser(req);
@@ -46,8 +48,11 @@ export const getHouseholds = async (req: Request, res: Response) => {
   }
 };
 
-/** 
- * Household creation doesn't have permissions as... you become the owner once you've created one.
+/**
+ * Create a new household
+ * @route POST /household
+ * @body {HouseReqBody} Household data (name, description?)
+ * @response {{ data: object }} Created household data
  */
 export const postHouseholds = async (req: Request<{}, {}, HouseReqBody>, res: Response) => {
   assertHasUser<typeof req>(req);
@@ -69,7 +74,10 @@ export const postHouseholds = async (req: Request<{}, {}, HouseReqBody>, res: Re
 };
 
 /**
- * Get details for an individual household
+ * Get household details by ID
+ * @route GET /household/:id
+ * @params {IdParam} Household ID
+ * @response {{ data: HouseResponse }} Household details with user role
  */
 export const getHouseholdById = (req: Request<IdParam, {}, {}>, res: Response) => {
   assertHasUser<typeof req>(req);
@@ -83,7 +91,11 @@ export const getHouseholdById = (req: Request<IdParam, {}, {}>, res: Response) =
 };
 
 /**
- * Update a household
+ * Update household information
+ * @route PUT /household/:id
+ * @params {IdParam} Household ID
+ * @body {HouseReqBody} Updated household data (name, description?)
+ * @response {{ data: object }} Updated household data
  */
 export const putHousehold = async (req: Request<IdParam, object, HouseReqBody>, res: Response) => {
   assertHasUser<typeof req>(req);
@@ -118,7 +130,10 @@ export const putHousehold = async (req: Request<IdParam, object, HouseReqBody>, 
 };
 
 /**
- * Remove a household!
+ * Delete a household
+ * @route DELETE /household/:id
+ * @params {IdParam} Household ID
+ * @response No content (204)
  */
 export const deleteHousehold = async (req: Request<IdParam, object, object>, res: Response) => {
   assertHasUser<typeof req>(req);

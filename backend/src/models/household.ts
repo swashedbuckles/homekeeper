@@ -9,6 +9,9 @@ export interface IHousehold {
   description?: string;
   ownerId: Types.ObjectId;
   members: Types.ObjectId[];
+  // added by mongoose
+  createdAt: Date;
+  updateAt: Date;
 }
 
 export interface IHouseholdMethods {
@@ -94,7 +97,8 @@ const householdSchema = new Schema<IHousehold, IHouseholdModel, IHouseholdMethod
         name: this.name,
         description: this.description,
         ownerId: this.ownerId.toString(),
-        members: this.members.map(x => x.toString())
+        members: this.members.map(x => x.toString()),
+        createdAt: this.createdAt.toISOString()
       };
     },
 

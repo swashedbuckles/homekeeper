@@ -8,6 +8,11 @@ import {
   RESPONSE_MESSAGES, 
 } from '../../constants';
 
+/**
+ * Log out user by clearing authentication cookies
+ * @route POST /auth/logout
+ * @response {{ message: string }} Success message
+ */
 export function postLogout(req: Request, res: Response) {
   /** @todo fix typing for request object to have cookies setup correctly */
    
