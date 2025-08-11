@@ -9,7 +9,7 @@ import { Household, HouseholdDocument } from '../../models/household';
 import { removeKeysReducer } from '../../utils/removeKeys';
 
 import type { HouseReqBody, IdParam } from '../../types/apiRequests';
-import type { HouseholdRoles, HouseResponse, SerializedHousehold } from '@homekeeper/shared';
+import type { HouseholdRoles, HouseResponse } from '@homekeeper/shared';
 
 export const router = Router();
 
@@ -117,15 +117,10 @@ export const putHousehold = async (req: Request<IdParam, object, HouseReqBody>, 
 
   await req.household.updateOne(update).exec();
 
-  /** @todo properly serialize this using our standard function, if possible */
-  const data: SerializedHousehold = {
-        id: req.household._id.toString(),
-        createdAt: req.household.createdAt.toISOString(),
-        ownerId: req.household.ownerId.toString(),
-        members: req.household.members.map(x => x.toString()),
-        name: req.body.name,
-        description: req.body.description ?? req.household.description,
-      };
+  // Apply updates to the document and use consistent serialization
+  Object.assign(req.household, update);
+  const data = transformHousehold(req.user.householdRoles)(req.household);
+  
   res
     .status(HTTP_STATUS.OK)
     .apiSuccess({data});

@@ -35,7 +35,7 @@ export function createHousehold(name: string, description?: string) {
 }
 
 export function updateHousehold(householdId: string, name: string, description?: string) {
-  return apiRequest<SerializedHousehold>(`/households/${householdId}`, {
+  return apiRequest<HouseResponse>(`/households/${householdId}`, {
     method: 'PUT',
     body: JSON.stringify({name, description})
   });

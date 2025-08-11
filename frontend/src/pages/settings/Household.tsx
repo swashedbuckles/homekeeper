@@ -46,13 +46,17 @@ export const HouseholdDetailsForm = () => {
     try {
       const response = await updateHousehold(hContext.activeHouseholdId, formData.name, formData.description);
       if (response.data) {
-        queryClient.setQueryData(QUERY_KEYS.household(response.data.id), response);
+        console.log('RESPONSE DATA', response.data);
+        queryClient.setQueryData(QUERY_KEYS.household(response.data.id), response.data);
         queryClient.setQueryData(QUERY_KEYS.households(), (oldHouseholds: ApiResponse<HouseResponse[]> | undefined) => {
           if (!oldHouseholds?.data) {
             return oldHouseholds;
           }
           
-          return oldHouseholds.data.map(household => household.id === response.data?.id ? response : household);
+          return {
+            ...oldHouseholds,
+            data: oldHouseholds.data.map(household => household.id === response.data?.id ? response.data : household)
+          };
         });
       }
     } catch (error) {
@@ -142,7 +146,7 @@ export const DeleteHousehold = ({householdId}: {householdId: string}) => {
 export const HouseholdSettings = () => {
   const { currentRole, activeHouseholdId } = useHousehold();
   const isOwner = currentRole === HOUSEHOLD_ROLE.OWNER;
-
+  console.log('isOwner?', isOwner, currentRole, activeHouseholdId);
   return (
     <>
       <Card shadow="double">
