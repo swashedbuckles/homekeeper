@@ -34,7 +34,7 @@ const mockSuccessfulLogin = (user: any) => {
     url: 'path:/auth/csrf-token', 
     response: {
       status: 200,
-      body: { csrfToken: 'mock-token' }
+      body: { data: { csrfToken: 'mock-token' } }
     }
   });
 };
@@ -107,7 +107,7 @@ describe('LoginForm', () => {
       url: 'path:/auth/csrf-token', 
       response: {
         status: 200,
-        body: { csrfToken: 'mock-token' }
+        body: { data: { csrfToken: 'mock-token' } }
       }
     });
     

@@ -122,7 +122,7 @@ async function getCsrfToken(): Promise<string> {
     credentials: 'include'
   });
   const data = await response.json();
-  return data.csrfToken;
+  return data.data.csrfToken;
 };
 
 export function clearCsrfToken(): void {

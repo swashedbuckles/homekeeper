@@ -53,7 +53,7 @@ describe('apiClient', () => {
         response: {
           status: 200,
           body: {
-            csrfToken: 'mock-csrf-token'
+            data: { csrfToken: 'mock-csrf-token' }
           }
         }
       });
@@ -88,7 +88,7 @@ describe('apiClient', () => {
         response: {
           status: 200,
           body: {
-            csrfToken: 'mock-csrf-token'
+            data: { csrfToken: 'mock-csrf-token' }
           }
         }
       });
@@ -274,7 +274,7 @@ describe('apiClient', () => {
           url: 'path:/auth/csrf-token',
           response: {
             status: 200,
-            body: { csrfToken: 'mock-csrf-token' }
+            body: { data: { csrfToken: 'mock-csrf-token' } }
           }
         });
 
@@ -302,7 +302,7 @@ describe('apiClient', () => {
           url: 'path:/auth/csrf-token',
           response: {
             status: 200,
-            body: { csrfToken: 'mock-csrf-token' }
+            body: { data: { csrfToken: 'mock-csrf-token' } }
           }
         });
 
@@ -331,7 +331,7 @@ describe('apiClient', () => {
           url: 'path:/auth/csrf-token',
           response: {
             status: 200,
-            body: { csrfToken: 'mock-csrf-token' }
+            body: { data: { csrfToken: 'mock-csrf-token' } }
           }
         });
 
@@ -383,7 +383,7 @@ describe('apiClient', () => {
           url: 'path:/auth/csrf-token',
           response: {
             status: 200,
-            body: { csrfToken: 'mock-csrf-token' }
+            body: { data: { csrfToken: 'mock-csrf-token' } }
           }
         });
 
@@ -406,7 +406,7 @@ describe('apiClient', () => {
           response: {
             status: 200,
             body: {
-              csrfToken: 'mock-csrf-token'
+              data: { csrfToken: 'mock-csrf-token' }
             }
           }
         });

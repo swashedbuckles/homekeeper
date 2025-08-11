@@ -70,9 +70,13 @@ export const putMember = async (req: Request<IdParam, object, AddMemberRequest>,
   }
 
   await req.household.addMember(userId, role);
-
+  
+  const members = await req.household.getMembers();
   res.apiSuccess({
-    data: (await req.household.getMembers())
+    data: {
+      memberCount: members.length,
+      members
+    }
   });
 };
 
