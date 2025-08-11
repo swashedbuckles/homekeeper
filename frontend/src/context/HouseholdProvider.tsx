@@ -3,6 +3,7 @@ import { type ReactNode, useState, useEffect } from 'react';
 
 import { useAuth } from '../hooks/useAuth';
 import { getHouseholds, getHousehold } from '../lib/api/household';
+import { QUERY_KEYS } from '../lib/constants/queryKeys';
 import { type HouseholdContextType, HouseholdContext } from './householdContext';
 
 import type { Nullable } from '../lib/types/nullable';
@@ -15,6 +16,7 @@ const DEFAULT_HOUSEHOLD: HouseResponse = {
   ownerId: '',
   memberCount: 0,
   userRole: 'guest',
+  createdAt: new Date().toLocaleDateString(),
 };
 
 export const HouseholdProvider = ({ children }: { children: ReactNode }) => {
@@ -28,7 +30,7 @@ export const HouseholdProvider = ({ children }: { children: ReactNode }) => {
   } = useQuery({
     enabled:   isAuthenticated,
     queryFn:   getHouseholds,
-    queryKey:  ['households-list'],
+    queryKey:  QUERY_KEYS.households(),
     select:    (data: ApiResponse<HouseResponse[]>): HouseResponse[] => data.data ?? [],
     staleTime: TEN_MINUTES,
   });
@@ -38,9 +40,14 @@ export const HouseholdProvider = ({ children }: { children: ReactNode }) => {
     isLoading: isLoadingActiveHousehold,
     error:     activeHouseholdError
   } = useQuery ({
-    enabled:   Boolean(activeHouseholdId),
-    queryFn:   () => activeHouseholdId ? getHousehold(activeHouseholdId): Promise.reject('no household'),
-    queryKey:  ['household'],
+    enabled:   isAuthenticated && Boolean(activeHouseholdId),
+    queryFn:   () => {
+      if (!activeHouseholdId) {
+        return Promise.reject(new Error('No active household selected'));
+      }
+      return getHousehold(activeHouseholdId);
+    },
+    queryKey:  activeHouseholdId ? QUERY_KEYS.household(activeHouseholdId) : ['no-household'],
     select:    (data: ApiResponse<HouseResponse>): HouseResponse => data.data ?? DEFAULT_HOUSEHOLD,
     staleTime: TEN_MINUTES,
   });

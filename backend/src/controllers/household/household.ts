@@ -9,7 +9,7 @@ import { Household, HouseholdDocument } from '../../models/household';
 import { removeKeysReducer } from '../../utils/removeKeys';
 
 import type { HouseReqBody, IdParam } from '../../types/apiRequests';
-import type { HouseholdRoles, HouseResponse } from '@homekeeper/shared';
+import type { HouseholdRoles, HouseResponse, SerializedHousehold } from '@homekeeper/shared';
 
 export const router = Router();
 
@@ -36,7 +36,7 @@ export const getHouseholds = async (req: Request, res: Response) => {
   try {
     const membership = await Household.findByMember(userId);
     const data = membership.map(transformHousehold(req.user.householdRoles));
-
+    
     /** @todo currently all roles have household_view, but if we ever have a role that can't view household... */
     res
       .status(HTTP_STATUS.OK)
@@ -117,16 +117,18 @@ export const putHousehold = async (req: Request<IdParam, object, HouseReqBody>, 
 
   await req.household.updateOne(update).exec();
 
-  res
-    .status(HTTP_STATUS.OK)
-    .apiSuccess({
-      data: { /** @todo json representation for household */
-        ownerId: req.household.ownerId,
-        members: req.household.members,
+  /** @todo properly serialize this using our standard function, if possible */
+  const data: SerializedHousehold = {
+        id: req.household._id.toString(),
+        createdAt: req.household.createdAt.toISOString(),
+        ownerId: req.household.ownerId.toString(),
+        members: req.household.members.map(x => x.toString()),
         name: req.body.name,
         description: req.body.description ?? req.household.description,
-      }
-    });
+      };
+  res
+    .status(HTTP_STATUS.OK)
+    .apiSuccess({data});
 };
 
 /**

@@ -6,6 +6,7 @@ export interface SerializedHousehold {
   description?: string;
   ownerId: string;
   members: string[];
+  createdAt: string;
 };
 
 export interface HouseholdDescription {

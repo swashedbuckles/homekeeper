@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router';
 
 import { useHousehold } from '../../hooks/useHousehold.ts';
 import { createHousehold } from '../../lib/api/household.ts';
+import { QUERY_KEYS } from '../../lib/constants/queryKeys.ts';
 import { UI as logger } from '../../lib/logger.ts';
 import { ApiError } from '../../lib/types/apiError.ts';
 import { Button } from '../common/Button';
@@ -30,7 +31,7 @@ export const CreateHouseholdForm = () => {
       const response = await createHousehold(formData.name, formData.description);
       logger.log('Result!', response);
       if (response.data) {
-        queryClient.setQueryData(['household', response.data.id], response.data);
+        queryClient.setQueryData(QUERY_KEYS.household(response.data.id), response.data);
         hContext.switchHousehold(response.data.id);
       }
 

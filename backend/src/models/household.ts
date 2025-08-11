@@ -81,12 +81,12 @@ const householdSchema = new Schema<IHousehold, IHouseholdModel, IHouseholdMethod
 
     async findByMember(member: string): Promise<HouseholdDocument[]> {
       const asObjectId = new Types.ObjectId(member);
-      return this.find<HouseholdDocument>({ members: asObjectId }).populate('ownerId members').exec();
+      return this.find<HouseholdDocument>({ members: asObjectId }).populate('members').exec();
     },
 
     async findByOwner(owner: string): Promise<HouseholdDocument[]> {
       const asObjectId = new Types.ObjectId(owner);
-      return this.find<HouseholdDocument>({ ownerId: asObjectId }).populate('ownerId members').exec();
+      return this.find<HouseholdDocument>({ ownerId: asObjectId }).populate('members').exec();
     }
   },
 
