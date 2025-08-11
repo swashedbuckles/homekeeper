@@ -21,7 +21,7 @@ export function redeemInvitation(code: string) {
   });
 }
 
-export function fetchInvitations(householdId: string) {
+export function getInvitations(householdId: string) {
   const url = `/households/${householdId}/invitations`;
   return apiRequest<InvitationResponse[]>(url);
 }
