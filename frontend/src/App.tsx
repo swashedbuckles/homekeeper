@@ -1,4 +1,4 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter, Route, Routes } from 'react-router';
 
 import { AuthRouteGuard } from './components/auth/AuthRouteGuard';
@@ -6,6 +6,7 @@ import { Root } from './components/Root';
 import { AuthInitializer } from './context/AuthInitializer';
 import { AuthProvider } from './context/AuthProvider';
 import { HouseholdProvider } from './context/HouseholdProvider';
+import { queryClient } from './lib/queryClient';
 import { AuthStatus } from './lib/types/authStatus';
 
 import { Login } from './pages/auth/Login';
@@ -23,28 +24,11 @@ import { JoinHousehold } from './pages/onboarding/Join';
 import { OnboardingSuccess } from './pages/onboarding/Success';
 import { Settings } from './pages/Settings';
 
-/** @todo setup constants file for front-end */
-const FIVE_MINUTES = 5 * 60 * 1000;
-const QUERY_RETRIES = 1;
-
 export function App() {
   const initialAuthState = {
     authStatus: AuthStatus.UNKNOWN,
     user: null,
   };
-
-  const queryClient = new QueryClient({
-    defaultOptions: { /** @todo feels like this config should be elsewhere */
-      queries: {
-        staleTime: FIVE_MINUTES,
-        retry: QUERY_RETRIES,
-        refetchOnWindowFocus: false,
-      },
-      mutations: {
-        retry: QUERY_RETRIES,
-      },
-    },
-  });
 
   return (
     <QueryClientProvider client={queryClient}>

@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { 
   createInvitation, 
   redeemInvitation, 
-  fetchInvitations, 
+  getInvitations, 
   cancelInvitation 
 } from '../../../src/lib/api/invitations';
 import { apiRequest } from '../../../src/lib/apiClient';
@@ -170,7 +170,7 @@ describe('invitations API', () => {
     });
   });
 
-  describe('fetchInvitations', () => {
+  describe('getInvitations', () => {
     const householdId = 'household-123';
 
     it('makes correct API call to fetch household invitations', async () => {
@@ -180,7 +180,7 @@ describe('invitations API', () => {
       ]};
       mockApiRequest.mockResolvedValue(mockResponse);
 
-      const result = await fetchInvitations(householdId);
+      const result = await getInvitations(householdId);
 
       expect(mockApiRequest).toHaveBeenCalledWith('/households/household-123/invitations');
       expect(result).toEqual(mockResponse);
@@ -189,7 +189,7 @@ describe('invitations API', () => {
     it('returns empty array when no invitations exist', async () => {
       mockApiRequest.mockResolvedValue({data: []});
 
-      const result = await fetchInvitations(householdId);
+      const result = await getInvitations(householdId);
 
       expect(result).toEqual({data: []});
     });
@@ -210,7 +210,7 @@ describe('invitations API', () => {
     fetchErrorScenarios.forEach(({ name, error, householdId: testHouseholdId }) => {
       it(name, async () => {
         mockApiRequest.mockRejectedValue(error);
-        await expect(fetchInvitations(testHouseholdId)).rejects.toThrow(error);
+        await expect(getInvitations(testHouseholdId)).rejects.toThrow(error);
       });
     });
   });

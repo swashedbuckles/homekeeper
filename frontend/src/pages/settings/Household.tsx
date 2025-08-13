@@ -1,6 +1,5 @@
-import { HOUSEHOLD_ROLE, householdSchema, type ApiResponse, type HouseholdDescription, type HouseResponse } from '@homekeeper/shared';
+import { HOUSEHOLD_ROLE, householdSchema, type HouseholdDescription } from '@homekeeper/shared';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
@@ -14,12 +13,10 @@ import { Grid } from '../../components/layout/Grid';
 
 import { useHousehold } from '../../hooks/useHousehold';
 import { deleteHousehold, updateHousehold } from '../../lib/api/household';
-import { QUERY_KEYS } from '../../lib/constants/queryKeys.ts';
 import { UI as logger } from '../../lib/logger.ts';
 import { ApiError } from '../../lib/types/apiError.ts';
 
 export const HouseholdDetailsForm = () => {
-  const queryClient = useQueryClient();
   const hContext = useHousehold();
   const formHook = useForm({
     resolver: zodResolver(householdSchema),
@@ -44,25 +41,13 @@ export const HouseholdDetailsForm = () => {
       return;
     }
     try {
-      const response = await updateHousehold(hContext.activeHouseholdId, formData.name, formData.description);
-      if (response.data) {
-        console.log('RESPONSE DATA', response.data);
-        queryClient.setQueryData(QUERY_KEYS.household(response.data.id), response.data);
-        queryClient.setQueryData(QUERY_KEYS.households(), (oldHouseholds: ApiResponse<HouseResponse[]> | undefined) => {
-          if (!oldHouseholds?.data) {
-            return oldHouseholds;
-          }
-          
-          return {
-            ...oldHouseholds,
-            data: oldHouseholds.data.map(household => household.id === response.data?.id ? response.data : household)
-          };
-        });
-      }
+      await updateHousehold(hContext.activeHouseholdId, formData.name, formData.description);
+      // Cache automatically updated by API function!
+      console.log('Household updated successfully');
     } catch (error) {
       logger.error(error);
       if (error instanceof ApiError) {
-        // do somethign
+        // Handle error UI state if needed
       }
     }
   };
