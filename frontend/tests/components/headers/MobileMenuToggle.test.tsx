@@ -3,16 +3,16 @@ import { describe, it, expect, vi } from 'vitest';
 import { MobileMenuToggle } from '../../../src/components/headers/MobileMenuToggle';
 
 // Helper function to render MobileMenuToggle with default props
-const renderMobileMenuToggle = (props = {}) => {
-  const defaultProps = {
-    isOpen: false,
-    setIsOpen: vi.fn()
-  };
-  return render(<MobileMenuToggle {...defaultProps} {...props} />);
-};
+// const renderMobileMenuToggle = (props = {}) => {
+//   const defaultProps = {
+//     isOpen: false,
+//     setIsOpen: vi.fn()
+//   };
+//   return render(<MobileMenuToggle {...defaultProps} {...props} />);
+// };
 
 // Helper function to get toggle button
-const getToggleButton = () => screen.getByLabelText('Toggle menu');
+// const getToggleButton = () => screen.getByLabelText('Toggle menu');
 
 describe('MobileMenuToggle', () => {
   const mockSetIsOpen = vi.fn();

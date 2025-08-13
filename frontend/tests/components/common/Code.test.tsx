@@ -1,11 +1,18 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
-import { Code } from '../../../src/components/common/Code';
+import { Code, type CodeProps, type CodeVariant, type CodeSize } from '../../../src/components/common/Code';
+
+type TestCodeProps = Omit<CodeProps, 'children'>;
+const INLINE = 'inline' as CodeVariant;
+const BLOCK = 'block' as CodeVariant;
+const SM = 'sm' as CodeSize;
+const MD = 'md' as CodeSize;
+const LG = 'lg' as CodeSize;
 
 // Helper function to render Code and get code element
-const renderCode = (children = 'Test Code', props = {}) => {
-  render(<Code {...props}>{children}</Code>);
-  return screen.getByTestId(props.testId || 'code');
+const renderCode = (children = 'Test Code', props: TestCodeProps = {}) => {
+  const {getByTestId} = render(<Code {...props}>{children}</Code>);
+  return getByTestId(props.testId || 'code');
 };
 
 describe('Code', () => {
@@ -23,14 +30,14 @@ describe('Code', () => {
   const variantTests = [
     {
       name: 'renders inline variant correctly',
-      variant: 'inline',
+      variant: INLINE as CodeVariant,
       expectedTag: 'CODE',
       expectedClasses: ['inline-block', 'mx-1'],
       notExpectedClasses: ['block', 'whitespace-pre-wrap']
     },
     {
       name: 'renders block variant correctly',
-      variant: 'block',
+      variant: BLOCK as CodeVariant,
       expectedTag: 'PRE',
       expectedClasses: ['block', 'p-4', 'my-2', 'whitespace-pre-wrap', 'brutal-shadow-primary'],
       notExpectedClasses: ['inline-block', 'mx-1']
@@ -55,17 +62,18 @@ describe('Code', () => {
 
   const sizeTests = [
     // Inline variant sizes
-    { name: 'renders small inline size correctly', variant: 'inline', size: 'sm', expectedClasses: ['text-sm', 'px-3', 'py-2'] },
-    { name: 'renders medium inline size correctly', variant: 'inline', size: 'md', expectedClasses: ['text-base', 'px-4', 'py-3'] },
-    { name: 'renders large inline size correctly', variant: 'inline', size: 'lg', expectedClasses: ['text-lg', 'px-6', 'py-4'] },
+    { name: 'renders small inline size correctly', variant: INLINE, size: SM, expectedClasses: ['text-sm', 'px-3', 'py-2'] },
+    { name: 'renders medium inline size correctly', variant: INLINE, size: MD, expectedClasses: ['text-base', 'px-4', 'py-3'] },
+    { name: 'renders large inline size correctly', variant: INLINE, size: LG, expectedClasses: ['text-lg', 'px-6', 'py-4'] },
     // Block variant sizes
-    { name: 'renders small block size correctly', variant: 'block', size: 'sm', expectedClasses: ['text-sm', 'p-3'] },
-    { name: 'renders medium block size correctly', variant: 'block', size: 'md', expectedClasses: ['text-base', 'p-4'] },
-    { name: 'renders large block size correctly', variant: 'block', size: 'lg', expectedClasses: ['text-lg', 'p-6'] }
+    { name: 'renders small block size correctly', variant: BLOCK, size: SM, expectedClasses: ['text-sm', 'p-3'] },
+    { name: 'renders medium block size correctly', variant: BLOCK, size: MD, expectedClasses: ['text-base', 'p-4'] },
+    { name: 'renders large block size correctly', variant: BLOCK, size: LG, expectedClasses: ['text-lg', 'p-6'] }
   ];
 
+  type TestConfiguration = {name: string, variant: CodeVariant, size: CodeSize, expectedClasses: string[]}
   describe('sizes', () => {
-    sizeTests.forEach(({ name, variant, size, expectedClasses }) => {
+    sizeTests.forEach(({ name, variant, size, expectedClasses }: TestConfiguration) => {
       it(name, () => {
         const code = renderCode(`${size} ${variant}`, { variant, size });
         expectedClasses.forEach(className => {
@@ -109,8 +117,8 @@ describe('Code', () => {
   });
 
   const elementTests = [
-    { name: 'uses <code> element for inline variant', variant: 'inline', expectedTag: 'CODE' },
-    { name: 'uses <pre> element for block variant', variant: 'block', expectedTag: 'PRE' }
+    { name: 'uses <code> element for inline variant', variant: INLINE, expectedTag: 'CODE' },
+    { name: 'uses <pre> element for block variant', variant: BLOCK, expectedTag: 'PRE' }
   ];
 
   describe('HTML element selection', () => {
@@ -126,34 +134,34 @@ describe('Code', () => {
     {
       name: 'renders model number correctly',
       content: 'RF28T5001SR',
-      props: {},
+      props: {} as CodeProps,
       expectedClasses: ['inline-block', 'font-mono', 'border-brutal-md'],
       expectedTag: 'CODE'
     },
     {
       name: 'renders inline model with context',
       content: 'RF28T5001SR',
-      props: {},
+      props: {} as CodeProps,
       expectedClasses: ['inline-block', 'mx-1'],
       wrapper: (children: React.ReactNode) => <span>Samsung Refrigerator {children}</span>
     },
     {
       name: 'renders small ID code',
       content: 'ID: #12345',
-      props: { size: 'sm' },
+      props: { size: SM } as CodeProps,
       expectedClasses: ['text-sm', 'px-3', 'py-2']
     },
     {
       name: 'renders technical specifications block',
       content: 'Serial: 987654321\nManufactured: 2023-01-15\nWarranty: 5 years',
-      props: { variant: 'block', size: 'lg' },
+      props: { variant: BLOCK, size: LG } as CodeProps,
       expectedClasses: ['text-lg', 'p-6', 'whitespace-pre-wrap', 'brutal-shadow-primary'],
       useTestId: true
     },
     {
       name: 'renders version numbers in documentation',
       content: 'v2.1.3',
-      props: { size: 'sm' },
+      props: { size: SM } as CodeProps,
       expectedClasses: ['text-sm'],
       expectedTag: 'CODE',
       wrapper: (children: React.ReactNode) => <p>Current version: {children}</p>
@@ -161,7 +169,7 @@ describe('Code', () => {
     {
       name: 'renders configuration block',
       content: 'config:\n  name: "HomeKeeper"\n  version: "1.0.0"\n  environment: "production"',
-      props: { variant: 'block', size: 'md' },
+      props: { variant: BLOCK, size: MD } as CodeProps,
       expectedClasses: ['block', 'text-base', 'p-4'],
       useTestId: true
     }

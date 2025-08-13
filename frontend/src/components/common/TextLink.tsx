@@ -2,8 +2,8 @@ import { Link } from 'react-router';
 import { type StandardSize, getSizeToken } from '../../lib/design-system/sizes';
 import type { ReactNode } from 'react';
 
-type TextLinkVariant = 'primary' | 'secondary' | 'subtle' | 'danger';
-type TextLinkSize = StandardSize;
+export type TextLinkVariant = 'primary' | 'secondary' | 'subtle' | 'danger';
+export type TextLinkSize = StandardSize;
 
 /**
  * TextLink Component.

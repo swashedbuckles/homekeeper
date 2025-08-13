@@ -1,9 +1,11 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
-import { WideContainer as ContentContainer } from '../../../../src/components/layout/containers/WideContainer';
+import { WideContainer as ContentContainer, type WideContainerProps } from '../../../../src/components/layout/containers/WideContainer';
+import type { WideContainerSize } from '../../../../src/lib/design-system/sizes';
 
+type TestContentContainerProps = Omit<WideContainerProps, 'children'>
 // Helper function to render ContentContainer and get container element
-const renderContentContainer = (props = {}, children = 'Test Content') => {
+const renderContentContainer = (props: TestContentContainerProps = {}, children = 'Test Content') => {
   render(
     <ContentContainer {...props}>
       <div data-testid="content">{children}</div>
@@ -35,10 +37,10 @@ describe('ContentContainer', () => {
   });
 
   const maxWidthTests = [
-    { name: 'renders with 4xl max width', maxWidth: '4xl', expectedClass: 'max-w-4xl' },
-    { name: 'renders with 5xl max width', maxWidth: '5xl', expectedClass: 'max-w-5xl' },
-    { name: 'renders with 6xl max width', maxWidth: '6xl', expectedClass: 'max-w-6xl' },
-    { name: 'renders with 7xl max width (default)', maxWidth: '7xl', expectedClass: 'max-w-7xl' }
+    { name: 'renders with 4xl max width', maxWidth: '4xl' as WideContainerSize, expectedClass: 'max-w-4xl' },
+    { name: 'renders with 5xl max width', maxWidth: '5xl' as WideContainerSize, expectedClass: 'max-w-5xl' },
+    { name: 'renders with 6xl max width', maxWidth: '6xl' as WideContainerSize, expectedClass: 'max-w-6xl' },
+    { name: 'renders with 7xl max width (default)', maxWidth: '7xl' as WideContainerSize, expectedClass: 'max-w-7xl' }
   ];
 
   describe('maxWidth prop', () => {
@@ -63,17 +65,17 @@ describe('ContentContainer', () => {
   const classNameTests = [
     {
       name: 'applies custom className',
-      props: { className: 'custom-class' },
+      props: { className: 'custom-class' } as TestContentContainerProps,
       expectedClasses: ['custom-class']
     },
     {
       name: 'combines custom className with default classes',
-      props: { className: 'bg-blue-500 py-8', maxWidth: '5xl' },
+      props: { className: 'bg-blue-500 py-8', maxWidth: '5xl' } as TestContentContainerProps,
       expectedClasses: ['max-w-5xl', 'bg-blue-500', 'py-8']
     },
     {
       name: 'applies base layout styles consistently',
-      props: {},
+      props: {}  as TestContentContainerProps  as TestContentContainerProps,
       expectedClasses: ['mx-auto', 'px-5']
     }
   ];
@@ -131,7 +133,7 @@ describe('ContentContainer', () => {
   const realWorldExamples = [
     {
       name: 'renders main content area with standard width',
-      props: { maxWidth: '7xl' },
+      props: { maxWidth: '7xl' }  as TestContentContainerProps,
       content: (
         <main>
           <h1>Main Content</h1>
@@ -143,7 +145,7 @@ describe('ContentContainer', () => {
     },
     {
       name: 'renders narrow content for better readability',
-      props: { maxWidth: '4xl', className: 'prose' },
+      props: { maxWidth: '4xl', className: 'prose' }  as TestContentContainerProps,
       content: (
         <article>
           <h2>Article Title</h2>
@@ -155,7 +157,7 @@ describe('ContentContainer', () => {
     },
     {
       name: 'renders full-width hero section',
-      props: { maxWidth: 'none', className: 'bg-gradient-to-r from-blue-500 to-purple-600' },
+      props: { maxWidth: 'none', className: 'bg-gradient-to-r from-blue-500 to-purple-600' }  as TestContentContainerProps,
       content: (
         <div className="hero-content">
           <h1>Full Width Hero</h1>
@@ -168,7 +170,7 @@ describe('ContentContainer', () => {
     },
     {
       name: 'renders dashboard layout with extra wide content',
-      props: { maxWidth: '7xl', className: 'py-8' },
+      props: { maxWidth: '7xl', className: 'py-8' }  as TestContentContainerProps,
       content: (
         <div className="dashboard-layout">
           <header>Dashboard Header</header>
@@ -185,7 +187,7 @@ describe('ContentContainer', () => {
     },
     {
       name: 'renders form container with medium width',
-      props: { maxWidth: '5xl', className: 'bg-white rounded-lg shadow-lg p-8' },
+      props: { maxWidth: '5xl', className: 'bg-white rounded-lg shadow-lg p-8' }  as TestContentContainerProps,
       content: (
         <form>
           <h2>Contact Form</h2>

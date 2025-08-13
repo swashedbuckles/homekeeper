@@ -24,6 +24,7 @@ const createMockHousehold = (overrides = {}) => ({
   ownerId: 'user-123',
   memberCount: 2,
   userRole: HOUSEHOLD_ROLE.OWNER,
+  createdAt: new Date().toISOString(),
   ...overrides
 });
 

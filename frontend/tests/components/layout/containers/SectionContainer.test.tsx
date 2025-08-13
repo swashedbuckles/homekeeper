@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
-import { SectionContainer } from '../../../../src/components/layout/containers/SectionContainer';
+import { SectionContainer, type ContainerSpacing } from '../../../../src/components/layout/containers/SectionContainer';
 
 // Helper function to render SectionContainer and get container element
 const renderSectionContainer = (props = {}, children = 'Test Content') => {
@@ -163,7 +163,7 @@ describe('SectionContainer', () => {
     },
     {
       name: 'renders features section with dark background',
-      props: { className: 'bg-text-primary border-t-8 border-primary', spacing: 'lg', hero: true },
+      props: { className: 'bg-text-primary border-t-8 border-primary', spacing: 'lg' as ContainerSpacing, hero: true },
       content: (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>Feature 1</div>
@@ -177,7 +177,7 @@ describe('SectionContainer', () => {
     },
     {
       name: 'renders call-to-action section',
-      props: { className: 'bg-primary', spacing: 'lg', hero: true },
+      props: { className: 'bg-primary', spacing: 'lg' as ContainerSpacing, hero: true },
       content: (
         <div className="text-center max-w-4xl mx-auto">
           <h2>Ready to Get Organized?</h2>
@@ -192,7 +192,7 @@ describe('SectionContainer', () => {
     },
     {
       name: 'renders content section with constrained width',
-      props: { spacing: 'md' },
+      props: { spacing: 'md' as ContainerSpacing },
       content: (
         <div className="prose max-w-none">
           <h2>Content Section</h2>
@@ -205,7 +205,7 @@ describe('SectionContainer', () => {
     },
     {
       name: 'renders tight spacing for compact sections',
-      props: { spacing: 'sm', className: 'border-b border-gray-200' },
+      props: { spacing: 'sm' as ContainerSpacing, className: 'border-b border-gray-200' },
       content: (
         <nav>
           <ul>

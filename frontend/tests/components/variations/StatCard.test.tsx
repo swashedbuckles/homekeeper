@@ -46,17 +46,17 @@ describe('StatCard', () => {
   const sizeTests = [
     {
       name: 'renders small size correctly',
-      props: { label: 'Small Card', value: 25, size: 'sm' },
+      props: { label: 'Small Card', value: '25', size: 'sm' },
       expectedClasses: ['text-2xl', 'md:text-3xl']
     },
     {
       name: 'renders medium size correctly',
-      props: { label: 'Medium Card', value: 50, size: 'md' },
+      props: { label: 'Medium Card', value: '50', size: 'md' },
       expectedClasses: ['text-4xl', 'md:text-5xl']
     },
     {
       name: 'renders large size correctly',
-      props: { label: 'Large Card', value: 100, size: 'lg' },
+      props: { label: 'Large Card', value: '100', size: 'lg' },
       expectedClasses: ['text-5xl', 'md:text-6xl', 'lg:text-7xl']
     }
   ];
@@ -75,13 +75,13 @@ describe('StatCard', () => {
   });
 
   const variantTests = [
-    { name: 'renders default variant with dark text', variant: 'default', value: 10, expectedColor: 'text-text-primary' },
-    { name: 'renders subtle variant with dark text', variant: 'subtle', value: 20, expectedColor: 'text-text-primary' },
-    { name: 'renders primary variant with white text', variant: 'primary', value: 30, expectedColor: 'text-white' },
-    { name: 'renders secondary variant with white text', variant: 'secondary', value: 40, expectedColor: 'text-white' },
-    { name: 'renders accent variant with white text', variant: 'accent', value: 50, expectedColor: 'text-white' },
-    { name: 'renders danger variant with white text', variant: 'danger', value: 60, expectedColor: 'text-white' },
-    { name: 'renders dark variant with white text', variant: 'dark', value: 70, expectedColor: 'text-white' }
+    { name: 'renders default variant with dark text', variant: 'default', value: '10', expectedColor: 'text-text-primary' },
+    { name: 'renders subtle variant with dark text', variant: 'subtle', value: '20', expectedColor: 'text-text-primary' },
+    { name: 'renders primary variant with white text', variant: 'primary', value: '30', expectedColor: 'text-white' },
+    { name: 'renders secondary variant with white text', variant: 'secondary', value: '40', expectedColor: 'text-white' },
+    { name: 'renders accent variant with white text', variant: 'accent', value: '50', expectedColor: 'text-white' },
+    { name: 'renders danger variant with white text', variant: 'danger', value: '60', expectedColor: 'text-white' },
+    { name: 'renders dark variant with white text', variant: 'dark', value: '70', expectedColor: 'text-white' }
   ];
 
   describe('variants and color mapping', () => {

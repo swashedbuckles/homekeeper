@@ -3,9 +3,10 @@ import { describe, it, expect, vi } from 'vitest';
 import { Calendar, Wrench } from 'lucide-react';
 import { IconChoice } from '../../../src/components/variations/IconChoice';
 import { Option } from '../../../src/components/form/Option';
+import type { AllowedOptionChildren } from '../../../src/lib/validation/children';
 
 // Helper function to render IconChoice with standard options
-const renderIconChoice = (props = {}, children?: React.ReactNode) => {
+const renderIconChoice = (props = {}, children?: AllowedOptionChildren) => {
   const defaultChildren = [
     <Option key="once" value="once">One Time</Option>,
     <Option key="recurring" value="recurring">Recurring</Option>

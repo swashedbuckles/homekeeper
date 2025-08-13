@@ -1,7 +1,9 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { BrowserRouter } from 'react-router';
-import { TextLink } from '../../../src/components/common/TextLink';
+import { TextLink, type TextLinkProps, type TextLinkSize, type TextLinkVariant } from '../../../src/components/common/TextLink';
+
+type TestTextLinkProps = Omit<TextLinkProps, 'children'>;
 
 // Wrapper for React Router tests
 const RouterWrapper = ({ children }: { children: React.ReactNode }) => (
@@ -9,7 +11,7 @@ const RouterWrapper = ({ children }: { children: React.ReactNode }) => (
 );
 
 // Helper function to render TextLink
-const renderTextLink = (children = 'Test Link', props = {}, useRouter = false) => {
+const renderTextLink = (children = 'Test Link', props: TestTextLinkProps = {}, useRouter = false) => {
   const linkElement = <TextLink {...props}>{children}</TextLink>;
   
   if (useRouter) {
@@ -76,10 +78,10 @@ describe('TextLink', () => {
   });
 
   const variantTests = [
-    { name: 'renders primary variant correctly', variant: 'primary', expectedClasses: ['text-primary', 'border-primary'] },
-    { name: 'renders secondary variant correctly', variant: 'secondary', expectedClasses: ['text-secondary', 'border-secondary'] },
-    { name: 'renders subtle variant correctly', variant: 'subtle', expectedClasses: ['text-text-secondary', 'border-text-secondary'] },
-    { name: 'renders danger variant correctly', variant: 'danger', expectedClasses: ['text-error', 'border-error'] }
+    { name: 'renders primary variant correctly', variant: 'primary' as TextLinkVariant, expectedClasses: ['text-primary', 'border-primary'] },
+    { name: 'renders secondary variant correctly', variant: 'secondary' as TextLinkVariant, expectedClasses: ['text-secondary', 'border-secondary'] },
+    { name: 'renders subtle variant correctly', variant: 'subtle'  as TextLinkVariant, expectedClasses: ['text-text-secondary', 'border-text-secondary'] },
+    { name: 'renders danger variant correctly', variant: 'danger'  as TextLinkVariant, expectedClasses: ['text-error', 'border-error'] }
   ];
 
   describe('variants', () => {
@@ -94,9 +96,9 @@ describe('TextLink', () => {
   });
 
   const sizeTests = [
-    { name: 'renders small size correctly', size: 'sm', expectedClasses: ['text-sm', 'border-b-2'] },
-    { name: 'renders medium size correctly', size: 'md', expectedClasses: ['text-base', 'border-b-4'] },
-    { name: 'renders large size correctly', size: 'lg', expectedClasses: ['text-lg', 'border-b-4'] }
+    { name: 'renders small size correctly', size: 'sm' as TextLinkSize, expectedClasses: ['text-sm', 'border-b-2'] },
+    { name: 'renders medium size correctly', size: 'md' as TextLinkSize, expectedClasses: ['text-base', 'border-b-4'] },
+    { name: 'renders large size correctly', size: 'lg' as TextLinkSize, expectedClasses: ['text-lg', 'border-b-4'] }
   ];
 
   describe('sizes', () => {
@@ -113,13 +115,13 @@ describe('TextLink', () => {
   const targetTests = [
     {
       name: 'applies target="_blank" correctly',
-      props: { href: 'https://example.com', target: '_blank' },
+      props: { href: 'https://example.com', target: '_blank' } as TestTextLinkProps,
       expectedTarget: '_blank',
       expectedRel: 'noopener noreferrer'
     },
     {
       name: 'does not add rel attribute for non-blank targets',
-      props: { href: '#', target: '_self' },
+      props: { href: '#', target: '_self' }  as TestTextLinkProps,
       expectedTarget: '_self',
       shouldNotHaveRel: true
     }
@@ -223,13 +225,13 @@ describe('TextLink', () => {
     {
       name: 'renders footer privacy link correctly',
       content: 'Privacy',
-      props: { href: '#', variant: 'subtle', className: 'text-white hover:text-primary' },
+      props: { href: '#', variant: 'subtle', className: 'text-white hover:text-primary' }  as TestTextLinkProps,
       expectedClasses: ['text-text-secondary', 'text-white', 'hover:text-primary']
     },
     {
       name: 'renders internal navigation link',
       content: 'View All Manuals',
-      props: { to: '/manuals', variant: 'primary', size: 'lg' },
+      props: { to: '/manuals', variant: 'primary', size: 'lg' }  as TestTextLinkProps,
       useRouter: true,
       expectedClasses: ['text-primary', 'text-lg'],
       expectedHref: '/manuals'
@@ -237,7 +239,7 @@ describe('TextLink', () => {
     {
       name: 'renders external documentation link',
       content: 'External Documentation',
-      props: { href: 'https://docs.example.com', variant: 'secondary', target: '_blank' },
+      props: { href: 'https://docs.example.com', variant: 'secondary', target: '_blank' }  as TestTextLinkProps,
       expectedClasses: ['text-secondary'],
       expectedTarget: '_blank',
       expectedRel: 'noopener noreferrer'
@@ -245,7 +247,7 @@ describe('TextLink', () => {
     {
       name: 'renders clickable action link',
       content: 'Delete Item',
-      props: { onClick: vi.fn(), variant: 'danger', size: 'sm' },
+      props: { onClick: vi.fn(), variant: 'danger', size: 'sm' }  as TestTextLinkProps,
       expectedClasses: ['text-error', 'text-sm'],
       testClick: true
     }

@@ -2,10 +2,10 @@ import { type StandardColor, getTextColor } from '../../lib/design-system/colors
 import { type TypographySize, getResponsiveTextToken } from '../../lib/design-system/sizes';
 import type { ReactNode } from 'react';
 
-type TextVariant = 'body' | 'caption' | 'label';
-type TextSize = TypographySize;
-type TextWeight = 'normal' | 'bold' | 'black';
-type TextColor = StandardColor;
+export type TextVariant = 'body' | 'caption' | 'label';
+export type TextSize = TypographySize;
+export type TextWeight = 'normal' | 'bold' | 'black';
+export type TextColor = StandardColor;
 
 /**
  * Text Component.

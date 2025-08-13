@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
-import { NarrowContainer as PageContainer } from '../../../../src/components/layout/containers/NarrowContainer';
+import { NarrowContainer as PageContainer, type MaxNarrowWidth } from '../../../../src/components/layout/containers/NarrowContainer';
 
 // Helper function to render PageContainer and get container element
 const renderPageContainer = (props = {}, children = 'Test Content') => {
@@ -115,7 +115,7 @@ describe('PageContainer', () => {
   const realWorldExamples = [
     {
       name: 'renders dashboard page container',
-      props: { maxWidth: '2xl' },
+      props: { maxWidth: '2xl' as MaxNarrowWidth },
       content: (
         <div className="dashboard-content">
           <h1>Dashboard</h1>
@@ -128,7 +128,7 @@ describe('PageContainer', () => {
     },
     {
       name: 'renders form page container',
-      props: { maxWidth: 'md', className: 'bg-background' },
+      props: { maxWidth: 'md' as MaxNarrowWidth, className: 'bg-background' },
       content: (
         <form>
           <h2>Login Form</h2>
@@ -141,7 +141,7 @@ describe('PageContainer', () => {
     },
     {
       name: 'renders content page with custom spacing',
-      props: { className: 'py-20', maxWidth: 'xl' },
+      props: { className: 'py-20', maxWidth: 'xl' as MaxNarrowWidth },
       content: (
         <article>
           <h1>Article Title</h1>
@@ -153,7 +153,7 @@ describe('PageContainer', () => {
     },
     {
       name: 'renders narrow content container',
-      props: { maxWidth: 'md' },
+      props: { maxWidth: 'md' as MaxNarrowWidth },
       content: (
         <div className="text-center">
           <h1>Narrow Content</h1>

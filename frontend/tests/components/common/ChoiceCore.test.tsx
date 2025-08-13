@@ -3,6 +3,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { ChoiceCore } from '../../../src/components/common/ChoiceCore';
 import type { OptionRenderProps } from '../../../src/components/common/ChoiceCore';
 import { Option } from '../../../src/components/form/Option';
+import type { AllowedOptionChildren } from '../../../src/lib/validation/children';
 
 // Simple test renderer
 const testRenderer = ({ option, isSelected, isDisabled, onClick }: OptionRenderProps) => (
@@ -16,7 +17,7 @@ const testRenderer = ({ option, isSelected, isDisabled, onClick }: OptionRenderP
 );
 
 // Helper function to render ChoiceCore with standard options
-const renderChoiceCore = (props = {}, children?: React.ReactNode) => {
+const renderChoiceCore = (props = {}, children?: AllowedOptionChildren) => {
   const defaultChildren = [
     <Option key="a" value="a">Option A</Option>,
     <Option key="b" value="b">Option B</Option>

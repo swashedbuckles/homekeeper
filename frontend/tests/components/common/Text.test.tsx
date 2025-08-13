@@ -1,9 +1,10 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
-import { Text } from '../../../src/components/common/Text';
+import { Text, type TextColor, type TextProps, type TextSize, type TextVariant, type TextWeight } from '../../../src/components/common/Text';
+type TestTextProps = Omit<TextProps, 'children'>;
 
 // Helper function to render Text and get text element
-const renderText = (children = 'Test Text', props = {}) => {
+const renderText = (children = 'Test Text', props: TestTextProps = { testId: 'text'}) => {
   render(<Text {...props}>{children}</Text>);
   return screen.getByTestId(props.testId || 'text');
 };
@@ -22,17 +23,17 @@ describe('Text', () => {
   const variantTests = [
     {
       name: 'renders body variant correctly',
-      variant: 'body',
+      variant: 'body' as TextVariant,
       expectedClasses: ['text-sm', 'md:text-base']
     },
     {
       name: 'renders caption variant correctly',
-      variant: 'caption',
+      variant: 'caption' as TextVariant,
       expectedClasses: ['text-xs', 'md:text-sm']
     },
     {
       name: 'renders label variant correctly',
-      variant: 'label',
+      variant: 'label' as TextVariant,
       expectedClasses: ['text-xs', 'md:text-sm', 'tracking-wide']
     }
   ];
@@ -51,12 +52,12 @@ describe('Text', () => {
   });
 
   const sizeTests = [
-    { name: 'renders small size correctly', size: 'sm', expectedClasses: ['text-xs', 'md:text-sm'] },
-    { name: 'renders medium size correctly', size: 'md', expectedClasses: ['text-sm', 'md:text-base'] },
-    { name: 'renders large size correctly', size: 'lg', expectedClasses: ['text-base', 'md:text-lg'] },
-    { name: 'renders extra large size correctly', size: 'xl', expectedClasses: ['text-lg', 'md:text-xl'] },
-    { name: 'renders 2xl size correctly', size: '2xl', expectedClasses: ['text-xl', 'md:text-2xl'] },
-    { name: 'renders 3xl size correctly', size: '3xl', expectedClasses: ['text-2xl', 'md:text-3xl'] }
+    { name: 'renders small size correctly', size: 'sm' as TextSize, expectedClasses: ['text-xs', 'md:text-sm'] },
+    { name: 'renders medium size correctly', size: 'md' as TextSize, expectedClasses: ['text-sm', 'md:text-base'] },
+    { name: 'renders large size correctly', size: 'lg' as TextSize, expectedClasses: ['text-base', 'md:text-lg'] },
+    { name: 'renders extra large size correctly', size: 'xl' as TextSize, expectedClasses: ['text-lg', 'md:text-xl'] },
+    { name: 'renders 2xl size correctly', size: '2xl' as TextSize, expectedClasses: ['text-xl', 'md:text-2xl'] },
+    { name: 'renders 3xl size correctly', size: '3xl' as TextSize, expectedClasses: ['text-2xl', 'md:text-3xl'] }
   ];
 
   describe('sizes', () => {
@@ -71,9 +72,9 @@ describe('Text', () => {
   });
 
   const weightTests = [
-    { name: 'renders normal weight correctly', weight: 'normal', expectedClass: 'font-normal' },
-    { name: 'renders bold weight correctly', weight: 'bold', expectedClass: 'font-bold' },
-    { name: 'renders black weight correctly', weight: 'black', expectedClass: 'font-black' }
+    { name: 'renders normal weight correctly', weight: 'normal' as TextWeight, expectedClass: 'font-normal' },
+    { name: 'renders bold weight correctly', weight: 'bold' as TextWeight, expectedClass: 'font-bold' },
+    { name: 'renders black weight correctly', weight: 'black' as TextWeight, expectedClass: 'font-black' }
   ];
 
   describe('weights', () => {
@@ -86,11 +87,11 @@ describe('Text', () => {
   });
 
   const colorTests = [
-    { name: 'renders primary color correctly', color: 'primary', expectedClass: 'text-primary' },
-    { name: 'renders secondary color correctly', color: 'secondary', expectedClass: 'text-text-secondary' },
-    { name: 'renders dark color correctly', color: 'dark', expectedClass: 'text-text-primary' },
-    { name: 'renders error color correctly', color: 'error', expectedClass: 'text-error' },
-    { name: 'renders white color correctly', color: 'white', expectedClass: 'text-white' }
+    { name: 'renders primary color correctly', color: 'primary' as TextColor, expectedClass: 'text-primary' },
+    { name: 'renders secondary color correctly', color: 'secondary' as TextColor, expectedClass: 'text-text-secondary' },
+    { name: 'renders dark color correctly', color: 'dark' as TextColor, expectedClass: 'text-text-primary' },
+    { name: 'renders error color correctly', color: 'error' as TextColor, expectedClass: 'text-error' },
+    { name: 'renders white color correctly', color: 'white' as TextColor, expectedClass: 'text-white' }
   ];
 
   describe('colors', () => {
@@ -148,25 +149,25 @@ describe('Text', () => {
   const realWorldExamples = [
     {
       name: 'renders body text for descriptions',
-      props: { variant: 'body', size: 'lg', weight: 'bold', uppercase: true, className: 'mb-0' },
+      props: { variant: 'body', size: 'lg', weight: 'bold', uppercase: true, className: 'mb-0' } as TestTextProps,
       content: "Here's what's happening with your home maintenance.",
       expectedClasses: ['text-base', 'md:text-lg', 'font-bold', 'uppercase', 'mb-0']
     },
     {
       name: 'renders caption text for subtitles',
-      props: { variant: 'caption', size: 'sm', weight: 'bold', color: 'secondary', uppercase: true },
+      props: { variant: 'caption', size: 'sm', weight: 'bold', color: 'secondary', uppercase: true } as TestTextProps,
       content: 'Kitchen Appliances • 2 hours ago',
       expectedClasses: ['text-xs', 'text-text-secondary', 'uppercase']
     },
     {
       name: 'renders label text for form fields',
-      props: { variant: 'label', size: 'md', weight: 'bold', color: 'dark' },
+      props: { variant: 'label', size: 'md', weight: 'bold', color: 'dark' } as TestTextProps,
       content: 'HVAC Filter Change',
       expectedClasses: ['text-xs', 'md:text-sm', 'text-text-primary']
     },
     {
       name: 'renders white text for dark backgrounds',
-      props: { variant: 'caption', size: 'sm', weight: 'bold', color: 'white', uppercase: true },
+      props: { variant: 'caption', size: 'sm', weight: 'bold', color: 'white', uppercase: true } as TestTextProps,
       content: '© 2025 HomeKeeper. All rights reserved.',
       expectedClasses: ['text-white', 'uppercase']
     }

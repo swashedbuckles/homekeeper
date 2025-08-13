@@ -2,7 +2,11 @@ import { type WideContainerSize, getContainerWidth } from '../../../lib/design-s
 import type {ReactNode} from 'react';
 
 export type MaxWideWidth = WideContainerSize;
-
+export interface WideContainerProps {
+  children: ReactNode;
+  className?: string;
+  maxWidth?: MaxWideWidth
+}
 /**
  * Wide container for dashboards, multi-column layouts, and expansive content
  * 
@@ -14,11 +18,7 @@ export const WideContainer = ({
   children, 
   className = '',
   maxWidth = '7xl'
-}: { 
-  children: ReactNode;
-  className?: string;
-  maxWidth?: MaxWideWidth
-}) => {
+}: WideContainerProps) => {
   const maxWidthClass = getContainerWidth(maxWidth);
   
   return (

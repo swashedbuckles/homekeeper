@@ -15,14 +15,16 @@ const createMockContextValue = (overrides: Partial<HouseholdContextType> = {}): 
       name: 'Test Household',
       ownerId: 'user-456',
       memberCount: 3,
-      userRole: HOUSEHOLD_ROLE.OWNER
+      userRole: HOUSEHOLD_ROLE.OWNER,
+      createdAt: new Date().toISOString(),
     },
     {
       id: 'household-456',
       name: 'Another Household',
       ownerId: 'user-789',
       memberCount: 2,
-      userRole: HOUSEHOLD_ROLE.MEMBER
+      userRole: HOUSEHOLD_ROLE.MEMBER,
+      createdAt: new Date().toISOString(),
     }
   ],
   isLoadingHouseholds: false,
@@ -32,7 +34,8 @@ const createMockContextValue = (overrides: Partial<HouseholdContextType> = {}): 
     name: 'Test Household',
     ownerId: 'user-456',
     memberCount: 3,
-    userRole: HOUSEHOLD_ROLE.OWNER
+    userRole: HOUSEHOLD_ROLE.OWNER,
+    createdAt: new Date().toISOString(),
   },
   isLoadingActiveHousehold: false,
   activeHouseholdError: null,
@@ -69,7 +72,8 @@ describe('useHousehold', () => {
           name: 'My Home',
           ownerId: 'user-123',
           memberCount: 4,
-          userRole: 'admin'
+          userRole: 'admin',
+          createdAt: new Date().toISOString(),
         },
         currentRole: 'admin',
         canManageHousehold: true
@@ -86,9 +90,9 @@ describe('useHousehold', () => {
 
     it('returns user households list', () => {
       const mockHouseholds = [
-        { id: 'house-1', name: 'House 1', ownerId: 'user-1', memberCount: 2, userRole: HOUSEHOLD_ROLE.OWNER },
-        { id: 'house-2', name: 'House 2', ownerId: 'user-2', memberCount: 3, userRole: HOUSEHOLD_ROLE.MEMBER },
-        { id: 'house-3', name: 'House 3', ownerId: 'user-3', memberCount: 1, userRole: HOUSEHOLD_ROLE.GUEST }
+        { id: 'house-1', name: 'House 1', ownerId: 'user-1', memberCount: 2, userRole: HOUSEHOLD_ROLE.OWNER, createdAt: new Date().toISOString() },
+        { id: 'house-2', name: 'House 2', ownerId: 'user-2', memberCount: 3, userRole: HOUSEHOLD_ROLE.MEMBER, createdAt: new Date().toISOString() },
+        { id: 'house-3', name: 'House 3', ownerId: 'user-3', memberCount: 1, userRole: HOUSEHOLD_ROLE.GUEST, createdAt: new Date().toISOString() }
       ];
       const mockContext = createMockContextValue({
         userHouseholds: mockHouseholds

@@ -2,9 +2,10 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { FilterChoice } from '../../../src/components/variations/FilterChoice';
 import { Option } from '../../../src/components/form/Option';
+import type { AllowedOptionChildren } from '../../../src/lib/validation/children';
 
 // Helper function to render FilterChoice with standard options
-const renderFilterChoice = (props = {}, children?: React.ReactNode) => {
+const renderFilterChoice = (props = {}, children?: AllowedOptionChildren) => {
   const defaultChildren = [
     <Option key="all" value="all">All</Option>,
     <Option key="active" value="active">Active</Option>,
