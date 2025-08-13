@@ -5,6 +5,7 @@ import { AuthRouteGuard } from './components/auth/AuthRouteGuard';
 import { Root } from './components/Root';
 import { AuthInitializer } from './context/AuthInitializer';
 import { AuthProvider } from './context/AuthProvider';
+import { ConfirmationProvider } from './context/ConfirmationProvider';
 import { HouseholdProvider } from './context/HouseholdProvider';
 import { queryClient } from './lib/queryClient';
 import { AuthStatus } from './lib/types/authStatus';
@@ -35,7 +36,8 @@ export function App() {
       <AuthProvider initialState={initialAuthState}>
         <AuthInitializer>
           <HouseholdProvider>
-            <BrowserRouter>
+            <ConfirmationProvider>
+              <BrowserRouter>
               <Routes>
                 <Route path="/" element={<Root />}>
                   <Route index element={<AuthRouteGuard publicRoute><LandingPage /></AuthRouteGuard>} />
@@ -61,7 +63,8 @@ export function App() {
                   <Route index element={<AuthRouteGuard requireAuth><Settings /></AuthRouteGuard>} />
                 </Route>
               </Routes>
-            </BrowserRouter>
+              </BrowserRouter>
+            </ConfirmationProvider>
           </HouseholdProvider>
         </AuthInitializer>
       </AuthProvider>
