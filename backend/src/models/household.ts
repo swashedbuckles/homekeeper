@@ -104,7 +104,7 @@ const householdSchema = new Schema<IHousehold, IHouseholdModel, IHouseholdMethod
 
     async getMembers() {
       const memberIds = this.members;
-      const users = await User.find({ _id: { $in: memberIds } }, 'name householdRoles').exec();
+      const users = await User.find({ _id: { $in: memberIds } }, 'name email householdRoles').exec();
 
       const members = users.map(user => {
         const role = user.householdRoles.get(this._id.toString());
@@ -115,6 +115,7 @@ const householdSchema = new Schema<IHousehold, IHouseholdModel, IHouseholdMethod
         return {
           id: user._id.toString(),
           name: user.name,
+          email: user.email,
           role,
         };
       });

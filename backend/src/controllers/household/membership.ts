@@ -100,6 +100,7 @@ export const getMemberById = async (req: Request, res: Response) => {
     data: {
       id: user._id.toString(),
       name: user.name,
+      email: user.email,
       role: user.householdRoles.get(req.household._id.toString())
     }
   });
@@ -138,6 +139,7 @@ export const putMemberRole = async (req: Request<HouseAndUserParams, object, Rol
     data: {
       id: user._id.toString(),
       name: user.name,
+      email: user.email,
       role,
     }
   });

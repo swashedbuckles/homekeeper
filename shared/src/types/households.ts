@@ -33,6 +33,7 @@ export type HouseResponse = Omit<SerializedHousehold, 'members'> & {
 export type MemberDetail = {
     id: string;
     name: string;
+    email: string;
     role: HouseholdRoles;
 };
 
