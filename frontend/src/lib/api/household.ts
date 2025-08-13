@@ -27,6 +27,10 @@ export function getHouseholds() {
 export function deleteHousehold(householdId: string) {
   return apiRequest(`/households/${householdId}`, {
     method: 'DELETE'
+  }).then(response => {
+    cacheHelpers.invalidateHouseholds();
+    queryClient.removeQueries({ queryKey: QUERY_KEYS.household(householdId) });
+    return response;
   });
 }
 
@@ -35,7 +39,7 @@ export function createHousehold(name: string, description?: string) {
     method: 'POST',
     body: JSON.stringify({ name, description })
   }).then(response => {
-    // Transform SerializedHousehold to HouseResponse format and cache
+    
     if (response.data) {
       const householdData: HouseResponse = {
         id: response.data.id,
@@ -43,8 +47,8 @@ export function createHousehold(name: string, description?: string) {
         description: response.data.description,
         ownerId: response.data.ownerId,
         createdAt: response.data.createdAt,
-        memberCount: 1, // Creator is the first member
-        userRole: 'owner' // Creator is always the owner
+        memberCount: 1, 
+        userRole: 'owner' 
       };
       cacheHelpers.setHouseholdData(householdData);
       cacheHelpers.addHouseholdToList(householdData);
@@ -61,14 +65,13 @@ export function updateHousehold(householdId: string, name: string, description?:
     method: 'PUT',
     body: JSON.stringify({name, description})
   }).then(response => {
-    // Automatic cache management on success
     if (response.data) {
       cacheHelpers.setHouseholdData(response.data);
       cacheHelpers.updateHouseholdInList(response.data);
     }
     return response;
   }).catch(error => {
-    // Rollback cache on error if we had original data
+    // Rollback cache on error
     if (originalData) {
       cacheHelpers.rollbackHouseholdData(householdId, originalData);
     }
@@ -88,5 +91,35 @@ export function setMemberRole(householdId: string, memberId: string, role: House
     body: JSON.stringify({
       role
     })
+  }).then(response => {
+    if (response.data) {
+      cacheHelpers.updateMemberInList(householdId, response.data);
+    }
+    return response;
+  });
+}
+
+export function addMember(householdId: string, userId: string, role: HouseholdRoles) {
+  return apiRequest<MemberResponse>(`/households/${householdId}/members`, {
+    method: 'PUT',
+    body: JSON.stringify({ userId, role })
+  }).then(response => {
+    if (response.data) {
+      cacheHelpers.invalidateMembers(householdId);
+      cacheHelpers.invalidateHousehold(householdId); 
+    }
+    return response;
+  });
+}
+
+export function removeMember(householdId: string, userId: string) {
+  return apiRequest<MemberResponse>(`/households/${householdId}/members/${userId}`, {
+    method: 'DELETE'
+  }).then(response => {
+    if (response.data) {
+      cacheHelpers.invalidateMembers(householdId);
+      cacheHelpers.invalidateHousehold(householdId); 
+    }
+    return response;
   });
 }
