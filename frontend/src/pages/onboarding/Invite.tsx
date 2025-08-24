@@ -1,41 +1,24 @@
-import { HOUSEHOLD_ROLE, type InvitationResponse } from '@homekeeper/shared';
+import { type InvitationResponse, type HouseholdRoles } from '@homekeeper/shared';
 import { useMutation } from '@tanstack/react-query';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router';
 
-import { z } from 'zod';
 import { Button } from '../../components/common/Button';
 import { Card } from '../../components/common/Card';
 import { SimpleListItem } from '../../components/common/SimpleListItem';
 import { Title } from '../../components/common/Title';
-import { TextInput } from '../../components/form/TextInput';
+import { InviteForm } from '../../components/fragments/InviteForm';
 import { SectionTitle } from '../../components/variations/SectionTitle';
+import { useCopyToClipboard } from '../../hooks/useCopyToClipboard';
 import { useHousehold } from '../../hooks/useHousehold';
 import { cancelInvitation, createInvitation } from '../../lib/api/invitations';
+import { formatExpirationDays } from '../../lib/utils/expirationUtils';
 
-const handleCopy = async (code: string) => {
-  try {
-    await navigator.clipboard.writeText(code);
-    /** @todo Show success feedback when you add toasts  */
-  } catch (err) {
-    /** @todo Show error feedback when you add toasts  */
-    console.error('Failed to copy:', err);
-  }
-};
-
-const validateEmail = (email: string): string | null => {
-  const emailSchema = z.object({
-    email: z.string().email('Please enter a valid email address')
-  });
-
-  const result = emailSchema.safeParse({ email });
-  return result.success ? null : result.error.errors[0]?.message || 'Invalid email';
-};
 
 export const InviteOthers = () => {
   const [invitations, setInvitations] = useState<InvitationResponse[]>([]);
-  const emailRef = useRef<HTMLInputElement>(null);
   const { activeHouseholdId } = useHousehold();
+  const { copyToClipboard, copied } = useCopyToClipboard();
 
   const cancelInviteMutation = useMutation({
     mutationFn: async (invitationId: string) => {
@@ -59,28 +42,18 @@ export const InviteOthers = () => {
   });
 
   const inviteMutation = useMutation({
-    mutationFn: async (email: string) => {
+    mutationFn: async (inviteData: { email: string; role: HouseholdRoles; message?: string }) => {
       if (activeHouseholdId) {
-        const payload = { email, role: HOUSEHOLD_ROLE.GUEST };
-        const { data } = await createInvitation(activeHouseholdId, payload);
+        const { data } = await createInvitation(activeHouseholdId, inviteData);
         return data ? data : Promise.reject('Missing invitation data');
       }
 
       return Promise.reject('No active household');
     },
 
-
     onSuccess: (data) => {
-      if (emailRef.current) {
-        emailRef.current.value = '';
-      }
-
       console.log('Invitation sent successfully!');
       setInvitations(prev => [...prev, data]);
-
-      if (emailRef.current) {
-        emailRef.current.value = '';
-      }
       /** @todo: Show success toast */
     },
 
@@ -90,30 +63,25 @@ export const InviteOthers = () => {
     }
   });
 
-  const handleAdd = () => {
-    const email = emailRef.current?.value;
-    if (!email) {
-      return;
-    }
-
-    const emailError = validateEmail(email);
-    if (emailError) {
-      /** @todo show error toast */
-      console.error(emailError);
-      return;
-    }
-
-    inviteMutation.mutate(email);
+  const handleInviteSubmit = async (data: { email: string; role: HouseholdRoles; message?: string }) => {
+    await inviteMutation.mutateAsync(data);
   };
 
   const pendingInvitations = invitations.map(invitation => {
-
     return (
       <SimpleListItem
+        key={invitation.id}
         title={invitation.email}
-        subtitle={`Code: ${invitation.code}. Expires in 14 days`}
+        subtitle={`Code: ${invitation.code}. ${formatExpirationDays(14)}`}
       >
-        <Button variant="outline" size="sm" onClick={() => handleCopy(invitation.code)}>Copy</Button>
+        <Button 
+          variant="outline" 
+          size="sm" 
+          className="min-w-[80px]"
+          onClick={() => copyToClipboard(invitation.code)}
+        >
+          {copied ? 'Copied!' : 'Copy'}
+        </Button>
         <Button variant="danger" size="sm" onClick={() => cancelInviteMutation.mutate(invitation.id)}>Delete</Button>
       </SimpleListItem>
     );
@@ -127,11 +95,11 @@ export const InviteOthers = () => {
           <Title description="Generate invitation codes to share with family members.">Invite Others</Title>
         </div>
 
-        <Card variant="default" className="flex-row mb-6">
-          <div className="flex space-x-2 items-end">
-            <TextInput ref={emailRef} label="Invite Someone" placeholder="Enter email address" type="email" grouped />
-            <Button variant="primary" className="px-4 mb-4" onClick={handleAdd}>Add</Button>
-          </div>
+        <Card variant="default" className="mb-6">
+          <InviteForm 
+            onSubmit={handleInviteSubmit}
+            isLoading={inviteMutation.isPending}
+          />
         </Card>
 
         <div className="space-y-4 mb-6">

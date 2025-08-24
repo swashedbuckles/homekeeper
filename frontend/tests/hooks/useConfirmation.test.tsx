@@ -47,14 +47,13 @@ describe('useConfirmation', () => {
   };
 
   it('throws error when used outside of ConfirmationProvider', () => {
-    // Mock console.error to avoid noise in test output
-    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
     
     expect(() => {
       renderHook(() => useConfirmation());
     }).toThrow('useConfirmation must be used within a ConfirmationProvider');
     
-    consoleSpy.mockRestore();
+    consoleErrorSpy.mockRestore();
   });
 
   it('returns confirmation function that shows dialog', async () => {
@@ -135,8 +134,8 @@ describe('useConfirmation', () => {
       expect(screen.getByRole('dialog')).toBeInTheDocument();
     });
     
-    // Press escape key
-    fireEvent.keyDown(document, { key: 'Escape' });
+    // Press escape key on the dialog element itself
+    fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape' });
     
     // Wait for result to be added to DOM
     await waitFor(() => {

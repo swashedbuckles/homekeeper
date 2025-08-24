@@ -27,6 +27,4 @@ export interface ConfirmationContextValue {
 /**
  * Context for accessing the confirmation service
  */
-export const ConfirmationContext = createContext<ConfirmationContextValue>({
-  showConfirmation: async () => false,
-});
+export const ConfirmationContext = createContext<ConfirmationContextValue | null>(null);

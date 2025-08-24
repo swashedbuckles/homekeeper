@@ -5,7 +5,7 @@ import { useAuth } from './useAuth';
 
 const TEN_MINUTES = 10 * 60 * 1000;
 
-export const useMembers = (householdId: string) => {
+export const useInvitations = (householdId: string) => {
   const { isAuthenticated } = useAuth();
 
   const query = useQuery({

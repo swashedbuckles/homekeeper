@@ -143,9 +143,10 @@ export const cacheHelpers = {
    * ```
    */
   removeInvitationFromList: (householdId: string, invitationId: string) => {
-    queryClient.setQueryData(QUERY_KEYS.invitations(householdId), (oldData: InvitationResponse[] | undefined) => {
-      if (!oldData) return oldData;
-      return oldData.filter(inv => inv.id !== invitationId);
+    queryClient.setQueryData(QUERY_KEYS.invitations(householdId), (oldData: ApiResponse<InvitationResponse[]> | undefined) => {
+      if (!oldData?.data) return oldData;
+      console.log('OLD DATA', oldData);
+      return oldData.data.filter(inv => inv.id !== invitationId);
     });
   },
 

@@ -57,7 +57,7 @@ describe('ConfirmationProvider', () => {
     
     await waitFor(() => {
       expect(screen.getByRole('dialog')).toBeInTheDocument();
-      expect(screen.getByText('First Confirmation')).toBeInTheDocument();
+      expect(screen.getByRole('dialog')).toHaveTextContent('First Confirmation');
     });
   });
 
@@ -72,7 +72,7 @@ describe('ConfirmationProvider', () => {
     fireEvent.click(screen.getByTestId('first-trigger'));
     
     await waitFor(() => {
-      expect(screen.getByText('First Confirmation')).toBeInTheDocument();
+      expect(screen.getByRole('dialog')).toHaveTextContent('First Confirmation');
     });
 
     // Confirm first dialog
@@ -89,7 +89,7 @@ describe('ConfirmationProvider', () => {
     fireEvent.click(screen.getByTestId('second-trigger'));
     
     await waitFor(() => {
-      expect(screen.getByText('Second Confirmation')).toBeInTheDocument();
+      expect(screen.getByRole('dialog')).toHaveTextContent('Second Confirmation');
     });
 
     // Cancel second dialog
@@ -117,8 +117,8 @@ describe('ConfirmationProvider', () => {
       expect(screen.getByRole('dialog')).toBeInTheDocument();
     });
 
-    // Close dialog with escape
-    fireEvent.keyDown(document, { key: 'Escape' });
+    // Close dialog with escape - fire on the dialog element itself
+    fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape' });
     
     await waitFor(() => {
       expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
@@ -129,7 +129,7 @@ describe('ConfirmationProvider', () => {
     
     await waitFor(() => {
       expect(screen.getByRole('dialog')).toBeInTheDocument();
-      expect(screen.getByText('Second Confirmation')).toBeInTheDocument();
+      expect(screen.getByRole('dialog')).toHaveTextContent('Second Confirmation');
     });
   });
 
@@ -149,7 +149,7 @@ describe('ConfirmationProvider', () => {
 
     // Should only have one dialog
     expect(screen.getAllByRole('dialog')).toHaveLength(1);
-    expect(screen.getByText('First Confirmation')).toBeInTheDocument();
+    expect(screen.getByRole('dialog')).toHaveTextContent('First Confirmation');
   });
 
   it('preserves confirmation state during dialog interaction', async () => {
@@ -164,12 +164,12 @@ describe('ConfirmationProvider', () => {
     
     await waitFor(() => {
       expect(screen.getByRole('dialog')).toBeInTheDocument();
-      expect(screen.getByText('First Confirmation')).toBeInTheDocument();
-      expect(screen.getByText('First message')).toBeInTheDocument();
+      expect(screen.getByRole('dialog')).toHaveTextContent('First Confirmation');
+      expect(screen.getByRole('dialog')).toHaveTextContent('First message');
     });
 
     // Content should remain stable
-    expect(screen.getByText('First Confirmation')).toBeInTheDocument();
-    expect(screen.getByText('First message')).toBeInTheDocument();
+    expect(screen.getByRole('dialog')).toHaveTextContent('First Confirmation');
+    expect(screen.getByRole('dialog')).toHaveTextContent('First message');
   });
 });

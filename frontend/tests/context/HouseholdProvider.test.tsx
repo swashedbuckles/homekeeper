@@ -330,9 +330,7 @@ describe('HouseholdProvider', () => {
         expect(screen.getByTestId('active-household-id')).toHaveTextContent('new-household-id');
       });
 
-      // Due to the queryKey being ['household'] without the ID, ReactQuery won't 
-      // refetch when the activeHouseholdId changes - this is a limitation of the current implementation
-      expect(mockGetHousehold).toHaveBeenCalledTimes(1);
+      expect(mockGetHousehold).toHaveBeenCalledTimes(2);
       expect(mockGetHousehold).toHaveBeenCalledWith('house-1');
     });
   });
