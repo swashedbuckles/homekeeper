@@ -16,7 +16,8 @@ export function AuthRouteGuard({ children, requireAuth = false, publicRoute = fa
   }
 
   const { authStatus, isLoading } = useAuth();
-  const IS_DEV = !import.meta.env.PROD;
+  const IS_TESTING = import.meta.env.NODE_ENV === 'test';
+  console.log('ENV', IS_TESTING, import.meta.env);
 
 
   if (isLoading) {
@@ -25,11 +26,11 @@ export function AuthRouteGuard({ children, requireAuth = false, publicRoute = fa
 
   const isAuthenticated = authStatus === AuthStatus.LOGGED_IN;
 
-  if (!IS_DEV && requireAuth && !isAuthenticated) {
+  if (!IS_TESTING && requireAuth && !isAuthenticated) {
     return <Navigate to="/" replace />;
   }
 
-  if (!IS_DEV && !requireAuth && isAuthenticated) {
+  if (!IS_TESTING && !requireAuth && isAuthenticated) {
     return <Navigate to="/dashboard" replace />;
   }
 
