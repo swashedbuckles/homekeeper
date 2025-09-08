@@ -24,6 +24,7 @@ import  {
 import { requireAuth } from '../middleware/auth';
 import { isMemberOf } from '../middleware/isMemberOf';
 import { requirePermission } from '../middleware/rbac';
+import { validateInvitationQuery } from '../middleware/routeQueryValidations';
 import { handleValidation } from '../middleware/validation';
 
 export const router = Router();
@@ -168,6 +169,7 @@ router.get('/:id/invitations',
   requireAuth,
   isMemberOf,
   requirePermission(HouseholdPermissions.HOUSEHOLD_INVITE_MEMBERS),
+  validateInvitationQuery,
   getInvitations
 );
 

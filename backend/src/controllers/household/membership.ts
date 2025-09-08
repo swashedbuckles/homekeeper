@@ -185,6 +185,8 @@ export const deleteMember = async (req: Request<HouseAndUserParams, object, obje
  * @route GET /household/:id/invitations
  * @params {{ id: string }} Household ID
  * @response {{ data: InvitationResponse[] }} List of pending invitations
+ * 
+ * @todo type the request here so we have the query options.
  */
 export const getInvitations = async (req: Request, res: Response) => {
   assertHasUser<typeof req>(req);
@@ -194,6 +196,8 @@ export const getInvitations = async (req: Request, res: Response) => {
     res.apiError(HTTP_STATUS.BAD_REQUEST, 'Missing Household ID');
     return;
   }
+
+  const FILTER_BY_STATUS = !!req.query.status;
 
   const invitations = await Invitation.find({householdId: req.household.id}).exec();
   const data = invitations.map(invitation => {
@@ -210,9 +214,10 @@ export const getInvitations = async (req: Request, res: Response) => {
     return response;
   });
 
+
   res
     .apiSuccess({
-      data,
+      data: FILTER_BY_STATUS ? data.filter(x => x.status === req.query.status) : data,
     });
 };
 
