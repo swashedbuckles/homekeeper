@@ -21,7 +21,7 @@ export const Settings = (_props: SettingsProps) => {
           Manage your household and account settings.
         </Text>
       </div>
-      <Tabs defaultTab="Household">
+      <Tabs defaultTab="household">
         <Tabs.List className="mb-6">
           <Tabs.Button size="lg" value="household">Household</Tabs.Button>
           <Tabs.Button size="lg" value="members">Members</Tabs.Button>
