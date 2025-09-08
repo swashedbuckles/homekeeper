@@ -42,6 +42,11 @@ export function getInvitations(householdId: string) {
   return apiRequest<InvitationResponse[]>(url);
 }
 
+export function getPendingInvitations(householdId: string) {
+  const url = `/households/${householdId}/invitations?status=pending`;
+  return apiRequest<InvitationResponse[]>(url);
+}
+
 export function cancelInvitation(householdId: string, invitationId: string) {
   const url = `/households/${householdId}/invitations/${invitationId}`;
   return apiRequest<InvitationResponse>(url, {

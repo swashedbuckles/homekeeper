@@ -10,8 +10,8 @@ import { Grid } from '../../components/layout/Grid';
 import { useConfirmation } from '../../hooks/useConfirmation';
 import { useCopyToClipboard } from '../../hooks/useCopyToClipboard';
 import { useHousehold } from '../../hooks/useHousehold';
-import { useInvitations } from '../../hooks/useInvitations';
-import { cancelInvitation, createInvitation } from '../../lib/api/invitations';
+import { useCancelInvitation, usePendingInvitations } from '../../hooks/useInvitations';
+import { createInvitation } from '../../lib/api/invitations';
 import { getExpirationInfo, formatExpirationDays } from '../../lib/utils/expirationUtils';
 import type { HouseholdRoles } from '@homekeeper/shared';
 
@@ -30,6 +30,7 @@ type Variants = 'default' | 'primary' | 'secondary' | 'accent' | 'danger' | 'dar
 
 export const Invitation = ({ email, code, role, rotation, expirationDays, invitationId, householdId }: InvitationProps) => {
   const { copyToClipboard, copied } = useCopyToClipboard();
+  const cancelInvitationMutation = useCancelInvitation();
   const confirm = useConfirmation();
 
   const VARIANTS_BY_ROLE: Record<HouseholdRoles, Variants> = {
@@ -51,7 +52,7 @@ export const Invitation = ({ email, code, role, rotation, expirationDays, invita
         variant: 'danger'
       });
       if(confirmation) {
-        const result = await cancelInvitation(householdId, invitationId);
+        const result = await cancelInvitationMutation.mutateAsync({ householdId, invitationId });
         console.log(result);
       }
     } catch (error) {
@@ -83,7 +84,7 @@ export const Invitation = ({ email, code, role, rotation, expirationDays, invita
 
 export const InvitesSettings = () => {
   const { activeHouseholdId } = useHousehold();
-  const { data: invitations, refetch } = useInvitations(activeHouseholdId || '');
+  const { data: invitations, refetch } = usePendingInvitations(activeHouseholdId || '');
   
   if (!activeHouseholdId) {
     return null;
